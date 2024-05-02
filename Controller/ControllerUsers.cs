@@ -6,7 +6,7 @@ using System.Linq;
 using System.Web;
 
 namespace aspharmony.Controller {
-    public class Controller_User {
+    public class ControllerUser {
         public static DataTable GetAllUsers() {
             return ModelUsers.GetAllUsers();
         }

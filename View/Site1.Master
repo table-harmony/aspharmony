@@ -1,0 +1,49 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site1.master.cs" Inherits="aspharmony.View.Site1" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+    <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/1531/1531344.png" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Rubik&display=swap');
+    </style>
+
+    <asp:ContentPlaceHolder ID="head" runat="server">
+
+    </asp:ContentPlaceHolder>
+
+</head>
+<body>
+    
+    <nav>
+
+        <a href='Home.aspx'>home</a>
+
+        <%
+
+            // user logged
+            if (Session["username"] != null) { 
+                Response.Write($"<p>{Session["username"].ToString()}</p>");
+                Response.Write($"<a href='logout.aspx'>logout</a>");
+                Response.Write($"<a href='delete.aspx'>delete</a>");
+                Response.Write($"<a href='update.aspx'>update</a>");
+                if (int.Parse(Session["accesskey"].ToString()) > 1)
+                    Response.Write($"<a href='admin.aspx'>admin</a>");
+            }
+            else  // guest
+                Response.Write("<a href='Login.aspx'><button>login</button></a>");
+
+        %>
+
+    </nav>
+
+   <div>
+       
+       <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            
+       </asp:ContentPlaceHolder>
+   </div>
+</body>
+</html>
