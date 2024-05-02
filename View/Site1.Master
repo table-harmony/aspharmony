@@ -16,14 +16,9 @@
 
 </head>
 <body>
-    
     <nav>
-
         <a href='Home.aspx'>home</a>
-
         <%
-
-            // user logged
             if (Session["username"] != null) { 
                 Response.Write($"<p>{Session["username"].ToString()}</p>");
                 Response.Write($"<a href='logout.aspx'>logout</a>");
@@ -32,18 +27,10 @@
                 if (int.Parse(Session["accesskey"].ToString()) > 1)
                     Response.Write($"<a href='admin.aspx'>admin</a>");
             }
-            else  // guest
+            else
                 Response.Write("<a href='Login.aspx'><button>login</button></a>");
-
         %>
-
     </nav>
-
-   <div>
-       
-       <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
-            
-       </asp:ContentPlaceHolder>
-   </div>
+    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server"></asp:ContentPlaceHolder>
 </body>
 </html>

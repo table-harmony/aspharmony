@@ -18,7 +18,6 @@ namespace aspharmony.View
             if (int.Parse(Session["accesskey"].ToString()) == 1)
                 Response.Redirect("Home.aspx");
 
-
             if (!IsPostBack)
                 BindGrid();
         }
