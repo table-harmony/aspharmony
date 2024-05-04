@@ -5,6 +5,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
+    <script src="FormValid.js" defer></script>
+    <style>
+        input {
+            outline: none;
+        }
+        input.invalid {
+            border-color: rgb(255, 150, 150);
+        }
+        input.valid {
+            border-color: rgb(150, 255, 150);
+        }
+
+    </style>
 </head>
 <body>
     <form id="form1" runat="server">
@@ -19,5 +32,7 @@
             <%=msg %>
         </div>
     </form>
+    
+    <footer> have an account ? <a href="Login.aspx"><b>sign in now</b></a></footer>
 </body>
 </html>

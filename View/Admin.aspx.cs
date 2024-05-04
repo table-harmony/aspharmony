@@ -25,7 +25,7 @@ namespace aspharmony.View
 
         private void BindGrid() {
 
-            UsersGrid.DataSource = ControllerUser.GetAllUsers();
+            UsersGrid.DataSource = ControllerUser.GetUsers();
             UsersGrid.DataBind();
 
             UsersGrid.SelectedIndex = 0;
@@ -33,7 +33,7 @@ namespace aspharmony.View
 
         protected void UsersGrid_Sorting(object sender, GridViewSortEventArgs e) {
 
-            DataTable dt = ControllerUser.GetAllUsers();
+            DataTable dt = ControllerUser.GetUsers();
 
             DataView dataView = new DataView(dt);
             dataView.Sort = e.SortExpression;

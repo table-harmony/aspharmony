@@ -7,20 +7,23 @@ using System.Web;
 
 namespace aspharmony.Controller {
     public class ControllerUser {
-        public static DataTable GetAllUsers() {
-            return ModelUsers.GetAllUsers();
+
+        public static DataTable GetUsers() {
+            return ModelUsers.GetUsers();
         }
 
-        public static DataTable GetUserData(string username)  {
-            return ModelUsers.GetUserData(username);
+        public static DataTable GetUserByUsername(string username)  {
+            return ModelUsers.GetUserByUsername(username);
         }
 
         public static bool IsUserExist(string username, string password) {
-            return ModelUsers.IsUserExist(username, password);
+            DataTable dt = ModelUsers.GetUserByCredentials(username, password);
+            return dt.Rows.Count != 0;
         }
 
         public static bool IsUserExist(string username) {
-            return ModelUsers.IsUserExist(username);
+            DataTable dt = ModelUsers.GetUserByUsername(username);
+            return dt.Rows.Count != 0;
         }
 
         public static bool CreateUser(string username, string password, string gmail, int gender) {
@@ -30,10 +33,10 @@ namespace aspharmony.Controller {
             return true;
         }
 
-        public static bool DeleteUser(string username) {
+        public static bool DeleteUserByUsername(string username) {
             if (!IsUserExist(username))
                 return false;
-            ModelUsers.DeleteUser(username);
+            ModelUsers.DeleteUserByUsername(username);
             return true;
         }
 

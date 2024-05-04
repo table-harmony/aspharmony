@@ -24,7 +24,7 @@ namespace aspharmony.View
                 CollectFormData();
 
                 if (ControllerUser.IsUserExist(username, password)) {
-                    DataTable userData = ControllerUser.GetUserData(username);
+                    DataTable userData = ControllerUser.GetUserByUsername(username);
                     Session["username"] = username;
                     Session["password"] = password;
                     Session["accessKey"] = int.Parse(userData.Rows[0]["accesskeyField"].ToString());

@@ -18,8 +18,8 @@ namespace aspharmony.View
             if (Session["username"] == null)
                 Response.Redirect("Home.aspx");
 
-            DataTable userData = ControllerUser.GetUserData(Session["username"].ToString());
-            SetFormData(userData);
+            DataTable user = ControllerUser.GetUserByUsername(Session["username"].ToString());
+            SetFormData(user);
 
             if (Request.Form["submit"] != null) {
                 CollectFormData();

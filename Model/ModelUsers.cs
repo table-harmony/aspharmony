@@ -8,22 +8,18 @@ namespace aspharmony.Model
 {
     public class ModelUsers {
 
-        public static DataTable GetAllUsers() {
-            return AdoHelper.GetDataTable("getAllUsers", true);
+        public static DataTable GetUsers() {
+            return AdoHelper.GetDataTable("getUsers", true);
         }
 
-        public static DataTable GetUserData(string username) {
-            return AdoHelper.GetDataTable("getUserByUsername", new { username }, true);
-        }
-
-        public static bool IsUserExist(string username, string password) {
-            DataTable dt = AdoHelper.GetDataTable("getUserByCredentials", new { username, password }, true);
-            return dt.Rows.Count != 0;
-        }
-
-        public static bool IsUserExist(string username) {
+        public static DataTable GetUserByUsername(string username) {
             DataTable dt = AdoHelper.GetDataTable("getUserByUsername", new { username }, true);
-            return dt.Rows.Count != 0;
+            return dt;
+        }
+
+        public static DataTable GetUserByCredentials(string username, string password) {
+            DataTable dt = AdoHelper.GetDataTable("getUserByCredentials", new { username, password }, true);
+            return dt; 
         }
 
         public static void CreateUser(string username, string password, string gmail,
@@ -33,7 +29,7 @@ namespace aspharmony.Model
                 new { username, password, gmail, gender, accesskey });
         }
 
-        public static void DeleteUser(string username) {
+        public static void DeleteUserByUsername(string username) {
             AdoHelper.GetDataTable("deleteUserByUsername", new { username }, true);
         }
 

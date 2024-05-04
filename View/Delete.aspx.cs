@@ -16,7 +16,7 @@ namespace aspharmony.View
             if (Session["username"] == null)
                 Response.Redirect("Home.aspx");
 
-            ControllerUser.DeleteUser(Session["username"].ToString());
+            ControllerUser.DeleteUserByUsername(Session["username"].ToString());
             Session.Abandon();
             Response.Redirect("Home.aspx");
         }
