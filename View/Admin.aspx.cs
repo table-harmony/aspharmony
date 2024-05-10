@@ -9,20 +9,23 @@ using System.Web.UI.WebControls;
 
 namespace aspharmony.View {
     public partial class Admin : System.Web.UI.Page {
+
         protected void Page_Load(object sender, EventArgs e) {
-
-            if (Session["id"] == null)
-                Response.Redirect("Home.aspx");
-
-            if (int.Parse(Session["role"].ToString()) == 1)
-                Response.Redirect("Home.aspx");
+            Middleware();
 
             if (!IsPostBack)
                 BindGrid();
         }
 
+        protected void Middleware() {
+            if (Session["id"] == null)
+                Response.Redirect("Home.aspx");
 
-        private void BindGrid() {
+            if (int.Parse(Session["role"].ToString()) == 1)
+                Response.Redirect("Home.aspx");
+        }
+
+        protected void BindGrid() {
 
             UsersGrid.DataSource = ControllerUser.GetUsers();
             UsersGrid.DataBind();
@@ -57,27 +60,20 @@ namespace aspharmony.View {
         }
 
         protected void UsersGrid_RowUpdating(object sender, GridViewUpdateEventArgs e) {
-            GridViewRow updatedRow = UsersGrid.Rows[e.RowIndex];
-
-            int id = int.Parse(updatedRow.Cells[0].Text),
-                gender = int.Parse(((TextBox)updatedRow.Cells[3].Controls[0]).Text),
-                role = int.Parse(((TextBox)updatedRow.Cells[4].Controls[0]).Text);
-
-            string email = ((TextBox)updatedRow.Cells[1].Controls[0]).Text,
-                   password = ((TextBox)updatedRow.Cells[1].Controls[0]).Text;
-
-            ControllerUser.UpdateUser(id, email, password, gender, role);
+            GridViewRow row = UsersGrid.Rows[e.RowIndex];
+            
+            //TODO: get data from row
+            //TODO: update row by data
 
             UsersGrid.EditIndex = -1;
             BindGrid();
-
         }
 
         protected void UsersGrid_RowDeleting(object sender, GridViewDeleteEventArgs e) {
-            GridViewRow deletedRow = UsersGrid.Rows[e.RowIndex];
+            GridViewRow row = UsersGrid.Rows[e.RowIndex];
 
-            int id = int.Parse(deletedRow.Cells[0].Text);
-            ControllerUser.DeleteUser(id);
+            //TODO: get data by row
+            //TODO: delete row
 
             UsersGrid.EditIndex = -1;
             BindGrid();

@@ -13,9 +13,7 @@ namespace aspharmony.View {
         public int id, gender, role;
 
         protected void Page_Load(object sender, EventArgs e) {
-
-            if (Session["id"] == null)
-                Response.Redirect("Home.aspx");
+            Middleware();
 
             SetFormData();
 
@@ -26,7 +24,12 @@ namespace aspharmony.View {
 
         }
 
-        private void Action() {
+        protected void Middleware() {
+            if (Session["id"] == null)
+                Response.Redirect("Home.aspx");
+        }
+
+        protected void Action() {
             try {
                 ControllerUser.UpdateUser(id, email, password, gender, role);
                 AppendSession();
@@ -35,11 +38,12 @@ namespace aspharmony.View {
             }
         }
 
-        private void AppendSession() {
+        protected void AppendSession() {
             Session["email"] = email;
+            Session["role"] = role;
         }
 
-        private void SetFormData() {
+        protected void SetFormData() {
             id = int.Parse(Session["id"].ToString());
             role = int.Parse(Session["role"].ToString());
 
@@ -50,7 +54,7 @@ namespace aspharmony.View {
             gender = Convert.ToInt32(user.Rows[0]["gender"]);
         }
 
-        private void CollectFormData() {
+        protected void CollectFormData() {
             email = Request.Form["email"];
             password = Request.Form["password"];
             gender = int.Parse(Request.Form["gender"].ToString());

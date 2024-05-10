@@ -11,15 +11,18 @@ namespace aspharmony.View {
         public string msg;
 
         protected void Page_Load(object sender, EventArgs e) {
-
-            if (Session["id"] == null)
-                Response.Redirect("Home.aspx");
+            Middleware();
 
             if (Request.Form["submit"] != null)
                 Action();
         }
 
-        private void Action() {
+        protected void Middleware() {
+            if (Session["id"] == null)
+                Response.Redirect("Home.aspx");
+        }
+
+        protected void Action() {
             try {
                 int userId = int.Parse(Session["id"].ToString());
 

@@ -13,9 +13,7 @@ namespace aspharmony.View {
         public int gender;
 
         protected void Page_Load(object sender, EventArgs e) {
-
-            if (Session["id"] != null)
-                Response.Redirect("Home.aspx");
+            Middleware();
 
             if (Request.Form["submit"] != null) {
                 CollectFormData();
@@ -23,7 +21,13 @@ namespace aspharmony.View {
             }
         }
 
-        private void Action() {
+        protected void Middleware() {
+            if (Session["id"] != null)
+                Response.Redirect("Home.aspx");
+        }
+
+
+        protected void Action() {
             try {
                 ControllerUser.CreateUser(email, password, gender);
 
@@ -36,13 +40,13 @@ namespace aspharmony.View {
             }
         }
 
-        private void AppendSession(DataTable user) {
+        protected void AppendSession(DataTable user) {
             Session["id"] = int.Parse(user.Rows[0]["id"].ToString());
             Session["email"] = email;
             Session["role"] = int.Parse(user.Rows[0]["role"].ToString());
         }
 
-        private void CollectFormData() {
+        protected void CollectFormData() {
             email = Request.Form["email"];
             password = Request.Form["password"];
             gender = int.Parse(Request.Form["gender"]);

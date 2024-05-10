@@ -10,8 +10,7 @@ namespace aspharmony.Controller {
     public class ControllerUser {
 
         public static DataTable GetUsers() {
-            DataTable foundUsers = ModelUsers.GetUsers();
-            return foundUsers;
+            return ModelUsers.GetUsers();
         }
 
         public static DataTable GetUser(int id)  {
@@ -24,12 +23,11 @@ namespace aspharmony.Controller {
         }
 
         public static DataTable GetUserByEmail(string email) {
-            DataTable foundUser = ModelUsers.GetUserByEmail(email);
-            return foundUser;
+            return ModelUsers.GetUserByEmail(email);
         }
 
         public static DataTable GetUserByCredentials(string email, string password) {
-            DataTable foundUser = ModelUsers.GetUserByEmail(email);
+            DataTable foundUser = GetUserByEmail(email);
 
             if (foundUser.Rows.Count == 0)
                 throw new Exception("User not found!");

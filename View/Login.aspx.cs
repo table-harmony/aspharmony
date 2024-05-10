@@ -9,27 +9,27 @@ using aspharmony.Controller;
 
 namespace aspharmony.View
 {
-    public partial class Login : System.Web.UI.Page
+    public partial class Login : System.Web.UI.Page 
     {
-
         public string email, password, msg;
 
         protected void Page_Load(object sender, EventArgs e) {
-
-            if (Session["id"] != null)
-                Response.Redirect("Home.aspx");
+            Middleware();
 
             if (Request.Form["submit"] != null) {
                 CollectFormData();
                 Action();
             }
-            
         }
 
-        private void Action() {
+        protected void Middleware() {
+            if (Session["id"] != null)
+                Response.Redirect("Home.aspx");
+        }
+
+        protected void Action() {
             try {
                 DataTable user = ControllerUser.GetUserByCredentials(email, password);
-
                 AppendSession(user);
 
                 Response.Redirect("Home.aspx");
@@ -38,13 +38,13 @@ namespace aspharmony.View
             }
         }
 
-        private void AppendSession(DataTable user) {
+        protected void AppendSession(DataTable user) {
             Session["id"] = int.Parse(user.Rows[0]["id"].ToString());
             Session["email"] = email;
             Session["role"] = int.Parse(user.Rows[0]["role"].ToString());
         }
 
-        private void CollectFormData() {
+        protected void CollectFormData() {
             email = Request.Form["email"];
             password = Request.Form["password"];
         }

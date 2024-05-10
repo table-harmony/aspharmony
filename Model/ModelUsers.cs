@@ -9,22 +9,16 @@ namespace aspharmony.Model
     public class ModelUsers {
 
         public static DataTable GetUsers() {
-            DataTable foundUsers = AdoHelper.GetDataTable("getUsers", true);
-            return foundUsers;
+            return AdoHelper.GetDataTable("getUsers", true);
         }
 
         public static DataTable GetUser(int id) {
-            DataTable foundUser = AdoHelper.GetDataTable("getUser", new { id }, true);
-
-            if (foundUser.Rows.Count == 0)
-                throw new Exception("User not found!");
-
-            return foundUser;
+            return AdoHelper.GetDataTable("getUser", new { id }, true);
         }
 
         public static DataTable GetUserByEmail(string email) {
-            DataTable foundUser = AdoHelper.GetDataTable("SELECT * FROM users WHERE email = @email", new { email });
-            return foundUser;
+            return AdoHelper.GetDataTable("SELECT * FROM users WHERE email = @email", 
+                                            new { email });
         }
 
         public static void CreateUser(string email, string password,

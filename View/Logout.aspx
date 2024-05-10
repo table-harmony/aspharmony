@@ -8,8 +8,11 @@ Inherits="aspharmony.View.Logout" %>
     <title></title>
   </head>
   <body>
-    <form id="form1" runat="server">
-      <div></div>
-    </form>
+    <div id="access-window">
+      <header>Logout</header>
+      <form id="form1" runat="server">
+        <input type="submit" name="submit" id="submit" value="logout" />
+      </form>
+    </div>
   </body>
 </html>
