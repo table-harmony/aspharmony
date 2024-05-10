@@ -6,10 +6,10 @@ using System.Web;
 namespace aspharmony.Model
 {
     public class User {
-        private string username;
+        private int id;
+        private string email;
         private string password;
-        private string gmail;
-        private int accessKey;
         private int gender;
+        private int role;
     }
 }

@@ -12,33 +12,40 @@ namespace aspharmony.View
     public partial class Login : System.Web.UI.Page
     {
 
-        public string username, password, msg;
+        public string email, password, msg;
 
         protected void Page_Load(object sender, EventArgs e) {
 
-            if (Session["username"] != null)
+            if (Session["id"] != null)
                 Response.Redirect("Home.aspx");
 
             if (Request.Form["submit"] != null) {
-
                 CollectFormData();
-
-                if (ControllerUser.IsUserExist(username, password)) {
-                    DataTable userData = ControllerUser.GetUserByUsername(username);
-                    Session["username"] = username;
-                    Session["password"] = password;
-                    Session["accessKey"] = int.Parse(userData.Rows[0]["accesskeyField"].ToString());
-                    Response.Redirect("Home.aspx");
-                }
-                else
-                    msg = "<p style='color: red'> user doesn't exist <p>";
-
+                Action();
             }
             
         }
 
+        private void Action() {
+            try {
+                DataTable user = ControllerUser.GetUserByCredentials(email, password);
+
+                AppendSession(user);
+
+                Response.Redirect("Home.aspx");
+            } catch (Exception error) {
+                msg = error.Message;
+            }
+        }
+
+        private void AppendSession(DataTable user) {
+            Session["id"] = int.Parse(user.Rows[0]["id"].ToString());
+            Session["email"] = email;
+            Session["role"] = int.Parse(user.Rows[0]["role"].ToString());
+        }
+
         private void CollectFormData() {
-            username = Request.Form["username"];
+            email = Request.Form["email"];
             password = Request.Form["password"];
         }
 

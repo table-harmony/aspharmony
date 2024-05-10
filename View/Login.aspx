@@ -12,12 +12,10 @@ Inherits="aspharmony.View.Login" %>
       <header>Login</header>
       <form id="form1" runat="server">
         <input
-          type="text"
-          id="username"
-          name="username"
+          type="email"
+          name="email"
           spellcheck="false"
-          placeholder="Username"
-          autocomplete="off"
+          placeholder="Email"
           required="required"
         />
         <input
@@ -30,7 +28,7 @@ Inherits="aspharmony.View.Login" %>
         />
         <input type="submit" name="submit" id="submit" value="submit" />
 
-        <%=msg %>
+        <p><%=msg %></p>
       </form>
       <footer>
         don't have an account ? <a href="Register.aspx"><b>sign up now</b></a>

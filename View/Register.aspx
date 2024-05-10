@@ -1,33 +1,20 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Register.aspx.cs"
-Inherits="aspharmony.View.Register" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Register.aspx.cs" Inherits="aspharmony.View.Register" %>
 
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head runat="server">
     <title></title>
-    <script src="FormValid.js" defer></script>
-    <style>
-      input {
-        outline: none;
-      }
-      input.invalid {
-        border-color: rgb(255, 150, 150);
-      }
-      input.valid {
-        border-color: rgb(150, 255, 150);
-      }
-    </style>
   </head>
   <body>
     <form id="form1" runat="server">
       <div>
         <input
-          type="text"
-          name="username"
+          type="email"
+          name="email"
+          data-pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
           spellcheck="false"
-          placeholder="Username"
-          data-pattern="^[A-Za-z0-9]{2,15}$"
+          placeholder="Email"
           autocomplete="off"
           required="required"
         />
@@ -39,20 +26,11 @@ Inherits="aspharmony.View.Register" %>
           placeholder="Password"
           required="required"
         />
-        <input
-          type="email"
-          name="gmail"
-          data-pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
-          spellcheck="false"
-          placeholder="Email"
-          autocomplete="off"
-          required="required"
-        />
         <input type="radio" name="gender" value="1" checked="checked" />
         <input type="radio" name="gender" value="0" />
         <input type="submit" name="submit" value="submit" />
 
-        <%=msg %>
+        <p><%=msg %></p>
       </div>
     </form>
 

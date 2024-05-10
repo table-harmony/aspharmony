@@ -9,35 +9,40 @@ namespace aspharmony.Model
     public class ModelUsers {
 
         public static DataTable GetUsers() {
-            return AdoHelper.GetDataTable("getUsers", true);
+            DataTable foundUsers = AdoHelper.GetDataTable("getUsers", true);
+            return foundUsers;
         }
 
-        public static DataTable GetUserByUsername(string username) {
-            DataTable dt = AdoHelper.GetDataTable("getUserByUsername", new { username }, true);
-            return dt;
+        public static DataTable GetUser(int id) {
+            DataTable foundUser = AdoHelper.GetDataTable("getUser", new { id }, true);
+
+            if (foundUser.Rows.Count == 0)
+                throw new Exception("User not found!");
+
+            return foundUser;
         }
 
-        public static DataTable GetUserByCredentials(string username, string password) {
-            DataTable dt = AdoHelper.GetDataTable("getUserByCredentials", new { username, password }, true);
-            return dt; 
+        public static DataTable GetUserByEmail(string email) {
+            DataTable foundUser = AdoHelper.GetDataTable("SELECT * FROM users WHERE email = @email", new { email });
+            return foundUser;
         }
 
-        public static void CreateUser(string username, string password, string gmail,
-                                      int gender, int accesskey = 1) {
-            AdoHelper.GetDataTable("INSERT INTO userTable (usernameField, passwordField, gmailField, genderField, accesskeyField)" +
-                "VALUES (@username, @password, @gmail, @gender, @accesskey)",
-                new { username, password, gmail, gender, accesskey });
+        public static void CreateUser(string email, string password,
+                                      int gender, int role = 1) {
+            AdoHelper.GetDataTable("INSERT INTO users (email, password, gender, role)" +
+                "VALUES (@email, @password, @gender, @role)",
+                new { email, password, gender, role });
         }
 
-        public static void DeleteUserByUsername(string username) {
-            AdoHelper.GetDataTable("deleteUserByUsername", new { username }, true);
+        public static void DeleteUser(int id) {
+            AdoHelper.GetDataTable("deleteUser", new { id }, true);
         }
 
-        public static void UpdateUser(string username, string password, string gmail,
-                                      int gender) {
-            AdoHelper.GetDataTable("UPDATE userTable SET passwordField = @password, " +
-                "gmailField = @gmail, genderField = @gender WHERE usernameField = @username",
-                new { username, password, gmail, gender });
+        public static void UpdateUser(int id, string email, 
+                                      string password, int gender, int role) {
+            AdoHelper.GetDataTable("UPDATE users SET email = @email, " +
+                "password = @password, gender = @gender, role = @role WHERE id = @id",
+                new { id, email, password, gender, role });
         }
 
     }

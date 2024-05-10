@@ -1,42 +1,57 @@
-﻿using System;
+﻿using aspharmony.Controller;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using aspharmony.Controller;
 
-namespace aspharmony.View
-{
+namespace aspharmony.View {
     public partial class Update : System.Web.UI.Page {
-        public string gmail, password;
-        public int gender;
+        public string email, password, msg;
+        public int id, gender, role;
 
         protected void Page_Load(object sender, EventArgs e) {
 
-            if (Session["username"] == null)
+            if (Session["id"] == null)
                 Response.Redirect("Home.aspx");
 
-            DataTable user = ControllerUser.GetUserByUsername(Session["username"].ToString());
-            SetFormData(user);
+            SetFormData();
 
             if (Request.Form["submit"] != null) {
                 CollectFormData();
-                if (ControllerUser.UpdateUser(Session["username"].ToString(), password, gmail, gender))
-                    Response.Redirect("Home.aspx");
+                Action();
             }
 
         }
 
-        public void SetFormData(DataTable data) {
-            gmail = data.Rows[0]["gmailField"].ToString();
-            password = data.Rows[0]["passwordField"].ToString();
-            gender = Convert.ToInt32(data.Rows[0]["genderField"]);
+        private void Action() {
+            try {
+                ControllerUser.UpdateUser(id, email, password, gender, role);
+                AppendSession();
+            } catch (Exception error) {
+                msg = error.Message;
+            }
+        }
+
+        private void AppendSession() {
+            Session["email"] = email;
+        }
+
+        private void SetFormData() {
+            id = int.Parse(Session["id"].ToString());
+            role = int.Parse(Session["role"].ToString());
+
+            DataTable user = ControllerUser.GetUser(id);
+
+            email = user.Rows[0]["email"].ToString();
+            password = user.Rows[0]["password"].ToString();
+            gender = Convert.ToInt32(user.Rows[0]["gender"]);
         }
 
         private void CollectFormData() {
-            gmail = Request.Form["gmail"];
+            email = Request.Form["email"];
             password = Request.Form["password"];
             gender = int.Parse(Request.Form["gender"].ToString());
         }

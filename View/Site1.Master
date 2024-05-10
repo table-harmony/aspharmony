@@ -19,12 +19,12 @@
     <nav>
         <a href='Home.aspx'>home</a>
         <%
-            if (Session["username"] != null) { 
-                Response.Write($"<p>{Session["username"].ToString()}</p>");
+            if (Session["id"] != null) { 
+                Response.Write($"<p>{Session["email"].ToString()}</p>");
                 Response.Write($"<a href='logout.aspx'>logout</a>");
                 Response.Write($"<a href='delete.aspx'>delete</a>");
                 Response.Write($"<a href='update.aspx'>update</a>");
-                if (int.Parse(Session["accesskey"].ToString()) > 1)
+                if (int.Parse(Session["role"].ToString()) > 1)
                     Response.Write($"<a href='admin.aspx'>admin</a>");
             }
             else

@@ -3,50 +3,65 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Web;
 
 namespace aspharmony.Controller {
     public class ControllerUser {
 
         public static DataTable GetUsers() {
-            return ModelUsers.GetUsers();
+            DataTable foundUsers = ModelUsers.GetUsers();
+            return foundUsers;
         }
 
-        public static DataTable GetUserByUsername(string username)  {
-            return ModelUsers.GetUserByUsername(username);
+        public static DataTable GetUser(int id)  {
+            DataTable foundUser = ModelUsers.GetUser(id);
+
+            if (foundUser.Rows.Count == 0)
+                throw new Exception("User not found!");
+
+            return foundUser;
         }
 
-        public static bool IsUserExist(string username, string password) {
-            DataTable dt = ModelUsers.GetUserByCredentials(username, password);
-            return dt.Rows.Count != 0;
+        public static DataTable GetUserByEmail(string email) {
+            DataTable foundUser = ModelUsers.GetUserByEmail(email);
+            return foundUser;
         }
 
-        public static bool IsUserExist(string username) {
-            DataTable dt = ModelUsers.GetUserByUsername(username);
-            return dt.Rows.Count != 0;
+        public static DataTable GetUserByCredentials(string email, string password) {
+            DataTable foundUser = ModelUsers.GetUserByEmail(email);
+
+            if (foundUser.Rows.Count == 0)
+                throw new Exception("User not found!");
+
+            if (password != foundUser.Rows[0]["password"].ToString())
+               throw new Exception("Invalid Credentials!");
+
+            return foundUser;
         }
 
-        public static bool CreateUser(string username, string password, string gmail, int gender) {
-            if (IsUserExist(username))
-                return false;
-            ModelUsers.CreateUser(username, password, gmail, gender);
-            return true;
+        public static void CreateUser(string email, string password, int gender) {
+            DataTable existingUser = GetUserByEmail(email);
+
+            if (existingUser.Rows.Count != 0) 
+                throw new Exception("User already exists!");
+
+            ModelUsers.CreateUser(email, password, gender);
         }
 
-        public static bool DeleteUserByUsername(string username) {
-            if (!IsUserExist(username))
-                return false;
-            ModelUsers.DeleteUserByUsername(username);
-            return true;
+        public static void DeleteUser(int id) {
+            ModelUsers.DeleteUser(id);
         }
 
-        public static bool UpdateUser(string username, string password, string gmail,
-                                      int gender) {
-            if (!IsUserExist(username))
-                return false;
-            ModelUsers.UpdateUser(username, password, gmail, gender);
-            return true;
-        }
+        public static void UpdateUser(int id, string email, string password, int gender, int role) {
+            DataTable updatedUser = GetUser(id);
+            DataTable existingUser = GetUserByEmail(email);
 
+            if (existingUser.Rows.Count != 0 && 
+                existingUser.Rows[0]["id"].ToString() != updatedUser.Rows[0]["id"].ToString())
+                throw new Exception("User already exists with the same email!");
+
+            ModelUsers.UpdateUser(id, email, password, gender, role);
+        }
     }
 }

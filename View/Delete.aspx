@@ -1,5 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Delete.aspx.cs"
-Inherits="aspharmony.View.Delete" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Delete.aspx.cs" Inherits="aspharmony.View.Delete" %>
 
 <!DOCTYPE html>
 
@@ -8,8 +7,13 @@ Inherits="aspharmony.View.Delete" %>
     <title></title>
   </head>
   <body>
-    <form id="form1" runat="server">
-      <div></div>
-    </form>
+    <div id="access-window">
+      <header>Delete</header>
+      <form id="form1" runat="server">
+        <input type="submit" name="submit" id="submit" value="delete" />
+
+        <p><%=msg %></p>
+      </form>
+    </div>
   </body>
 </html>
