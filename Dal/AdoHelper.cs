@@ -23,8 +23,7 @@ public class AdoHelper
 
     // טענת כניסה: אין
     // טענת יציאה: קישור למסד נתונים
-    public static SqlConnection ConnectToDb()
-    {
+    public static SqlConnection ConnectToDb() {
         string path = HttpContext.Current.Server.MapPath("/App_Data/" + fileName); //מאתר את מיקום מסד הנתונים מהשורש ועד התקייה בה ממוקם המסד
         string connString = @"Data Source = (LocalDB)\MSSQLLocalDB; AttachDbFilename = " + path + "; Integrated Security = True";
 
@@ -34,8 +33,7 @@ public class AdoHelper
 
     // טענת כניסה: שאילתה, עצם המכיל פרמטרים, האם השאילתה היא פרוצדורה
     // טענת יציאה: טבלה המכילה את תוצאות השאילתה
-    public static DataTable GetDataTable(string sql, object parameters, bool isSp = false)
-    {
+    public static DataTable GetDataTable(string sql, object parameters, bool isSp = false) {
         SqlConnection conn = ConnectToDb();
 
         SqlCommand command = new SqlCommand(sql, conn);
@@ -48,16 +46,13 @@ public class AdoHelper
         SqlDataAdapter tableAdapter = new SqlDataAdapter(command);
         DataTable dt = new DataTable();
 
-        try
-        {
+        try {
             conn.Open();
             tableAdapter.Fill(dt);
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
         }
-        finally
-        {
+        finally {
             conn.Close();
         }
 
@@ -66,8 +61,7 @@ public class AdoHelper
 
     // טענת כניסה: שאילתה, האם השאילתה היא פרוצדורה
     // טענת יציאה: טבלה המכילה את תוצאות השאילתה
-    public static DataTable GetDataTable(string sql, bool isSp = false)
-    {
+    public static DataTable GetDataTable(string sql, bool isSp = false) {
 
         SqlConnection conn = ConnectToDb();
 
@@ -77,16 +71,13 @@ public class AdoHelper
         SqlDataAdapter tableAdapter = new SqlDataAdapter(command);
         DataTable dt = new DataTable();
 
-        try
-        {
+        try {
             conn.Open();
             tableAdapter.Fill(dt);
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
         }
-        finally
-        {
+        finally {
             conn.Close();
         }
 
