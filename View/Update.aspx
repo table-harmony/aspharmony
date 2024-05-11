@@ -10,7 +10,7 @@
           spellcheck="false"
           placeholder="Email"
           required="required"
-          value=<%=Session["email"] %>
+          value=<%=email %>
         />
         <input
           type="password"
@@ -27,10 +27,10 @@
           spellcheck="false"
           placeholder="Name"
           required="required"
-          value=<%=Session["name"] %>
+          value=<%=name %>
         />
         <input type="submit" name="submit" value="submit" />
-    
+
         <p><%=msg %></p>
       </div>
     </form>

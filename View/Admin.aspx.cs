@@ -75,6 +75,12 @@ namespace aspharmony.View {
 
                 ControllerUser.UpdateUser(id, email, password, name, role);
 
+                if (int.Parse(Session["id"].ToString()) == id) {
+                    Session["email"] = email;
+                    Session["name"] = name;
+                    Session["role"] = role;
+                }
+
                 msg = "User updated successfully!";
             } catch (Exception error) {
                 msg = error.Message;

@@ -7,13 +7,14 @@ using System.Runtime.Remoting.Contexts;
 using System.Web;
 
 namespace aspharmony.Controller {
+
     public class ControllerUser {
 
         public static DataTable GetUsers() {
             return ModelUsers.GetUsers();
         }
 
-        public static DataTable GetUser(int id)  {
+        public static DataTable GetUser(int id) {
             DataTable foundUser = ModelUsers.GetUser(id);
 
             if (foundUser.Rows.Count == 0)
@@ -33,7 +34,7 @@ namespace aspharmony.Controller {
                 throw new Exception("User not found!");
 
             if (password != foundUser.Rows[0]["password"].ToString())
-               throw new Exception("Invalid Credentials!");
+                throw new Exception("Invalid Credentials!");
 
             return foundUser;
         }
@@ -41,7 +42,7 @@ namespace aspharmony.Controller {
         public static void CreateUser(string email, string password, string name) {
             DataTable existingUser = GetUserByEmail(email);
 
-            if (existingUser.Rows.Count != 0) 
+            if (existingUser.Rows.Count != 0)
                 throw new Exception("User already exists!");
 
             ModelUsers.CreateUser(email, password, name);
@@ -55,7 +56,7 @@ namespace aspharmony.Controller {
             DataTable updatedUser = GetUser(id);
             DataTable existingUser = GetUserByEmail(email);
 
-            if (existingUser.Rows.Count != 0 && 
+            if (existingUser.Rows.Count != 0 &&
                 existingUser.Rows[0]["id"].ToString() != updatedUser.Rows[0]["id"].ToString())
                 throw new Exception("User already exists with the same email!");
 

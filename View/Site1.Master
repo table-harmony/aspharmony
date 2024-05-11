@@ -20,7 +20,7 @@
         <a href='Home.aspx'>home</a>
         <%
             if (Session["id"] != null) { 
-                Response.Write($"<p>{Session["email"].ToString()}</p>");
+                Response.Write($"<p>Hello {Session["name"].ToString()}, email: {Session["email"].ToString()}</p>");
                 Response.Write($"<a href='logout.aspx'><button>logout</button></a>");
                 Response.Write($"<a href='delete.aspx'><button>delete</button></a>");
                 Response.Write($"<a href='update.aspx'><button>update</button></a>");
