@@ -22,10 +22,10 @@ namespace aspharmony.Model
         }
 
         public static void CreateUser(string email, string password,
-                                      int gender, int role = 1) {
-            AdoHelper.GetDataTable("INSERT INTO users (email, password, gender, role)" +
-                "VALUES (@email, @password, @gender, @role)",
-                new { email, password, gender, role });
+                                      string name, int role = 1) {
+            AdoHelper.GetDataTable("INSERT INTO users (email, password, name, role)" +
+                "VALUES (@email, @password, @name, @role)",
+                new { email, password, name, role });
         }
 
         public static void DeleteUser(int id) {
@@ -33,10 +33,10 @@ namespace aspharmony.Model
         }
 
         public static void UpdateUser(int id, string email, 
-                                      string password, int gender, int role) {
+                                      string password, string name, int role) {
             AdoHelper.GetDataTable("UPDATE users SET email = @email, " +
-                "password = @password, gender = @gender, role = @role WHERE id = @id",
-                new { id, email, password, gender, role });
+                "password = @password, name = @name, role = @role WHERE id = @id",
+                new { id, email, password, name, role });
         }
 
     }

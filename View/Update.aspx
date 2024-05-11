@@ -21,19 +21,14 @@
           required="required"
           value="<%=password %>"
         />
-        <input 
-          type="radio" 
-          name="gender" 
-          value="1" 
-          <% if (gender.ToString() == "1") Response.Write("checked"); %> 
+        <input
+          type="text"
+          name="name"
+          spellcheck="false"
+          placeholder="Name"
+          required="required"
+          value=<%=Session["name"] %>
         />
-        <input 
-          type="radio" 
-          name="gender" 
-          value="0" 
-          <% if (gender.ToString() == "0") Response.Write("checked"); %> 
-        /> 
-
         <input type="submit" name="submit" value="submit" />
     
         <p><%=msg %></p>

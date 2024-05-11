@@ -21,11 +21,11 @@
         <%
             if (Session["id"] != null) { 
                 Response.Write($"<p>{Session["email"].ToString()}</p>");
-                Response.Write($"<a href='logout.aspx'>logout</a>");
-                Response.Write($"<a href='delete.aspx'>delete</a>");
-                Response.Write($"<a href='update.aspx'>update</a>");
+                Response.Write($"<a href='logout.aspx'><button>logout</button></a>");
+                Response.Write($"<a href='delete.aspx'><button>delete</button></a>");
+                Response.Write($"<a href='update.aspx'><button>update</button></a>");
                 if (int.Parse(Session["role"].ToString()) > 1)
-                    Response.Write($"<a href='admin.aspx'>admin</a>");
+                    Response.Write($"<a href='admin.aspx'><button>admin</button></a>");
             }
             else
                 Response.Write("<a href='Login.aspx'><button>login</button></a>");

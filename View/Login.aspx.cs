@@ -41,6 +41,7 @@ namespace aspharmony.View
         protected void AppendSession(DataTable user) {
             Session["id"] = int.Parse(user.Rows[0]["id"].ToString());
             Session["email"] = email;
+            Session["name"] = user.Rows[0]["name"].ToString();
             Session["role"] = int.Parse(user.Rows[0]["role"].ToString());
         }
 

@@ -9,8 +9,7 @@ using System.Web.UI.WebControls;
 
 namespace aspharmony.View {
     public partial class Register : System.Web.UI.Page {
-        public string email, password, msg;
-        public int gender;
+        public string email, password, name, msg;
 
         protected void Page_Load(object sender, EventArgs e) {
             Middleware();
@@ -29,7 +28,7 @@ namespace aspharmony.View {
 
         protected void Action() {
             try {
-                ControllerUser.CreateUser(email, password, gender);
+                ControllerUser.CreateUser(email, password, name);
 
                 DataTable user = ControllerUser.GetUserByEmail(email);
                 AppendSession(user);
@@ -43,13 +42,14 @@ namespace aspharmony.View {
         protected void AppendSession(DataTable user) {
             Session["id"] = int.Parse(user.Rows[0]["id"].ToString());
             Session["email"] = email;
+            Session["name"] = name;
             Session["role"] = int.Parse(user.Rows[0]["role"].ToString());
         }
 
         protected void CollectFormData() {
             email = Request.Form["email"];
             password = Request.Form["password"];
-            gender = int.Parse(Request.Form["gender"]);
+            name = Request.Form["name"];
         }
     }
 }

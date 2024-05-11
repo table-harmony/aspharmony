@@ -26,8 +26,14 @@
           placeholder="Password"
           required="required"
         />
-        <input type="radio" name="gender" value="1" checked="checked" />
-        <input type="radio" name="gender" value="0" />
+        <input
+          type="text"
+          name="name"
+          spellcheck="false"
+          placeholder="Name"
+          autocomplete="off"
+          required="required"
+        />
         <input type="submit" name="submit" value="submit" />
 
         <p><%=msg %></p>

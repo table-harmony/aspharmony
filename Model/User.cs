@@ -9,7 +9,8 @@ namespace aspharmony.Model
         private int id;
         private string email;
         private string password;
-        private int gender;
+        private string name;
+        private DateTime createdAt;
         private int role;
     }
 }

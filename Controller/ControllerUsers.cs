@@ -38,20 +38,20 @@ namespace aspharmony.Controller {
             return foundUser;
         }
 
-        public static void CreateUser(string email, string password, int gender) {
+        public static void CreateUser(string email, string password, string name) {
             DataTable existingUser = GetUserByEmail(email);
 
             if (existingUser.Rows.Count != 0) 
                 throw new Exception("User already exists!");
 
-            ModelUsers.CreateUser(email, password, gender);
+            ModelUsers.CreateUser(email, password, name);
         }
 
         public static void DeleteUser(int id) {
             ModelUsers.DeleteUser(id);
         }
 
-        public static void UpdateUser(int id, string email, string password, int gender, int role) {
+        public static void UpdateUser(int id, string email, string password, string name, int role) {
             DataTable updatedUser = GetUser(id);
             DataTable existingUser = GetUserByEmail(email);
 
@@ -59,7 +59,7 @@ namespace aspharmony.Controller {
                 existingUser.Rows[0]["id"].ToString() != updatedUser.Rows[0]["id"].ToString())
                 throw new Exception("User already exists with the same email!");
 
-            ModelUsers.UpdateUser(id, email, password, gender, role);
+            ModelUsers.UpdateUser(id, email, password, name, role);
         }
     }
 }

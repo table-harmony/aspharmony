@@ -9,8 +9,8 @@ using System.Web.UI.WebControls;
 
 namespace aspharmony.View {
     public partial class Update : System.Web.UI.Page {
-        public string email, password, msg;
-        public int id, gender, role;
+        public string email, password, name, msg;
+        public int id, role;
 
         protected void Page_Load(object sender, EventArgs e) {
             Middleware();
@@ -31,7 +31,7 @@ namespace aspharmony.View {
 
         protected void Action() {
             try {
-                ControllerUser.UpdateUser(id, email, password, gender, role);
+                ControllerUser.UpdateUser(id, email, password, name, role);
                 AppendSession();
             } catch (Exception error) {
                 msg = error.Message;
@@ -40,6 +40,7 @@ namespace aspharmony.View {
 
         protected void AppendSession() {
             Session["email"] = email;
+            Session["name"] = name;
             Session["role"] = role;
         }
 
@@ -51,13 +52,13 @@ namespace aspharmony.View {
 
             email = user.Rows[0]["email"].ToString();
             password = user.Rows[0]["password"].ToString();
-            gender = Convert.ToInt32(user.Rows[0]["gender"]);
+            name = user.Rows[0]["name"].ToString();
         }
 
         protected void CollectFormData() {
             email = Request.Form["email"];
             password = Request.Form["password"];
-            gender = int.Parse(Request.Form["gender"].ToString());
+            name = Request.Form["name"];
         }
     }
 }

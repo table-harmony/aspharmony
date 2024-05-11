@@ -39,9 +39,15 @@
             HeaderText="password"
           />
           <asp:BoundField
-            DataField="gender"
-            SortExpression="gender"
-            HeaderText="gender"
+            DataField="name"
+            SortExpression="name"
+            HeaderText="name"
+          />
+          <asp:BoundField
+            DataField="createdAt"
+            SortExpression="createdAt"
+            HeaderText="createdAt"
+            ReadOnly="true"
           />
           <asp:BoundField
             DataField="role"
@@ -53,5 +59,6 @@
           <asp:CommandField ButtonType="Button" ShowEditButton="true" EditText="edit" HeaderText="edit" />
         </Columns>
       </asp:GridView>
+      <p><%=msg %></p>
     </form>
 </asp:Content>
