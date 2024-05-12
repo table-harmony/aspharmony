@@ -35,11 +35,8 @@
           required="required"
         />
         <input type="submit" name="submit" value="submit" />
-
-        <p><%=msg %></p>
       </div>
     </form>
-
     <footer>
       have an account ? <a href="Login.aspx"><b>sign in now</b></a>
     </footer>

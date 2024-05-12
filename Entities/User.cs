@@ -3,34 +3,42 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
+using System.Web.DynamicData;
 
 namespace aspharmony.Entities {
-    public class User {
-        private int id;
-        private string email;
-        private string password;
-        private string name;
-        private DateTime createdAt;
-        private int role;
+    public class UserEntity {
+        public int Id { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string Name { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public int Role { get; set; }
 
-        public User(DataTable dt) { 
+        public UserEntity() { }
+
+        public UserEntity(DataRow row) {
+            if (row.Table.Columns.Contains("id"))
+                Id = Convert.ToInt32(row["id"]);
+
+            if (row.Table.Columns.Contains("email"))
+                Email = row["email"].ToString();
+
+            if (row.Table.Columns.Contains("password"))
+                Password = row["password"].ToString();
+
+            if (row.Table.Columns.Contains("name"))
+                Name = row["name"].ToString();
+
+            if (row.Table.Columns.Contains("createdAt") && DateTime.TryParse(row["createdAt"].ToString(), out DateTime createdAt))
+                CreatedAt = createdAt;
+
+            if (row.Table.Columns.Contains("role"))
+                Role = Convert.ToInt32(row["role"]);
         }
 
-        public int GetId() { return id; }
-        public void SetId(int id) { this.id = id; }
-
-        public string GetEmail() { return email; } 
-        public void SetEmail(string email) { this.email = email;}
-
-        public string GetPassword() { return password; }
-        public void SetPassword(string password) {  this.password = password; }
-        
-        public string GetName() { return name; }
-        public void SetName(string name) {  this.name = name; }
-
-        public DateTime GetCreatedAt() { return createdAt; }
-        
-        public int GetRole() { return role; }
-        public void SetRole(int role) { this.role = role; }
+        public override string ToString() {
+            return $"Id: {Id}, Email: {Email}, Password: {Password}, " +
+                $"Name: {Name}, CreatedAt: {CreatedAt}, Role: {Role}";
+        }
     }
 }

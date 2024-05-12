@@ -1,4 +1,5 @@
-﻿using aspharmony.Model;
+﻿using aspharmony.Entities;
+using aspharmony.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,59 +9,56 @@ using System.Web;
 
 namespace aspharmony.Controller {
 
-    public class ControllerUser {
+    public class UserController {
 
         public static DataTable GetUsers() {
-            return ModelUsers.GetUsers();
+            return UserModel.GetUsers();
         }
 
-        public static DataTable GetUser(int id) {
-            DataTable foundUser = ModelUsers.GetUser(id);
+        public static UserEntity GetUser(int id) {
+            return UserModel.GetUser(id);
+        }
 
-            if (foundUser.Rows.Count == 0)
+        public static UserEntity GetUserByEmail(string email) {
+            return UserModel.GetUserByEmail(email);
+        }
+
+        public static UserEntity GetUserByCredentials(string email, string password) {
+            UserEntity foundUser = GetUserByEmail(email);
+
+            if (foundUser == null)
                 throw new Exception("User not found!");
 
-            return foundUser;
-        }
-
-        public static DataTable GetUserByEmail(string email) {
-            return ModelUsers.GetUserByEmail(email);
-        }
-
-        public static DataTable GetUserByCredentials(string email, string password) {
-            DataTable foundUser = GetUserByEmail(email);
-
-            if (foundUser.Rows.Count == 0)
-                throw new Exception("User not found!");
-
-            if (password != foundUser.Rows[0]["password"].ToString())
+            if (foundUser.Password != password)
                 throw new Exception("Invalid Credentials!");
 
             return foundUser;
         }
 
         public static void CreateUser(string email, string password, string name) {
-            DataTable existingUser = GetUserByEmail(email);
+            UserEntity existingUser = GetUserByEmail(email);
 
-            if (existingUser.Rows.Count != 0)
-                throw new Exception("User already exists!");
+            if (existingUser != null)
+                throw new Exception("User already exists with the same email!");
 
-            ModelUsers.CreateUser(email, password, name);
+            UserModel.CreateUser(email, password, name);
         }
 
         public static void DeleteUser(int id) {
-            ModelUsers.DeleteUser(id);
+            UserModel.DeleteUser(id);
         }
 
-        public static void UpdateUser(int id, string email, string password, string name, int role) {
-            DataTable updatedUser = GetUser(id);
-            DataTable existingUser = GetUserByEmail(email);
+        public static UserEntity UpdateUser(int id, string email, string password, string name, int role) {
+            UserEntity updatedUser = GetUser(id);
+            UserEntity existingUser = GetUserByEmail(email);
 
-            if (existingUser.Rows.Count != 0 &&
-                existingUser.Rows[0]["id"].ToString() != updatedUser.Rows[0]["id"].ToString())
+            if (existingUser != null && updatedUser.ToString() != existingUser.ToString())
                 throw new Exception("User already exists with the same email!");
 
-            ModelUsers.UpdateUser(id, email, password, name, role);
+            UserModel.UpdateUser(id, email, password, name, role);
+
+            return UserModel.GetUser(id);
         }
+
     }
 }

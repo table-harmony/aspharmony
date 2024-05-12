@@ -26,7 +26,7 @@ namespace aspharmony.View {
             try {
                 int userId = int.Parse(Session["id"].ToString());
 
-                ControllerUser.DeleteUser(userId);
+                UserController.DeleteUser(userId);
                 Session.Abandon();
 
                 Response.Redirect("Home.aspx");

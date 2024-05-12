@@ -27,8 +27,6 @@ Inherits="aspharmony.View.Login" %>
           required="required"
         />
         <input type="submit" name="submit" id="submit" value="submit" />
-
-        <p><%=msg %></p>
       </form>
       <footer>
         don't have an account ? <a href="Register.aspx"><b>sign up now</b></a>

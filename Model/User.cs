@@ -1,4 +1,5 @@
-﻿using System;
+﻿using aspharmony.Entities;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -6,19 +7,28 @@ using System.Web;
 
 namespace aspharmony.Model
 {
-    public class ModelUsers {
+    public class UserModel {
 
         public static DataTable GetUsers() {
             return AdoHelper.GetDataTable("getUsers", true);
         }
 
-        public static DataTable GetUser(int id) {
-            return AdoHelper.GetDataTable("getUser", new { id }, true);
+        public static UserEntity GetUser(int id) {
+            DataTable dt = AdoHelper.GetDataTable("getUser", new { id }, true);
+
+            if (dt == null || dt.Rows.Count == 0)
+                throw new Exception("User not found!");
+
+            return new UserEntity(dt.Rows[0]);
         }
 
-        public static DataTable GetUserByEmail(string email) {
-            return AdoHelper.GetDataTable("SELECT * FROM users WHERE email = @email",
-                                            new { email });
+        public static UserEntity GetUserByEmail(string email) {
+            DataTable dt = AdoHelper.GetDataTable("SELECT * FROM users WHERE email = @email", new { email });
+
+            if (dt == null || dt.Rows.Count == 0)
+                return null;
+
+            return new UserEntity(dt.Rows[0]);
         }
 
         public static void CreateUser(string email, string password,

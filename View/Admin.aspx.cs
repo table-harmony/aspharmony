@@ -1,4 +1,5 @@
 ﻿using aspharmony.Controller;
+using aspharmony.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,8 +12,6 @@ using System.Xml.Linq;
 
 namespace aspharmony.View {
     public partial class Admin : System.Web.UI.Page {
-        public string msg;
-
         protected void Page_Load(object sender, EventArgs e) {
             Middleware();
 
@@ -29,23 +28,12 @@ namespace aspharmony.View {
         }
 
         protected void BindGrid() {
-
-            UsersGrid.DataSource = ControllerUser.GetUsers();
+            UsersGrid.DataSource = UserController.GetUsers();
             UsersGrid.DataBind();
 
             UsersGrid.SelectedIndex = 0;
         }
 
-        protected void UsersGrid_Sorting(object sender, GridViewSortEventArgs e) {
-
-            DataTable dt = ControllerUser.GetUsers();
-
-            DataView dataView = new DataView(dt);
-            dataView.Sort = e.SortExpression;
-
-            UsersGrid.DataSource = dataView;
-            UsersGrid.DataBind();
-        }
 
         protected void UsersGrid_PageIndexChanging(object sender, GridViewPageEventArgs e) {
             UsersGrid.PageIndex = e.NewPageIndex;
@@ -62,18 +50,29 @@ namespace aspharmony.View {
             BindGrid();
         }
 
+        protected void UsersGrid_Sorting(object sender, GridViewSortEventArgs e) {
+
+            DataTable dt = UserController.GetUsers();
+
+            DataView dataView = new DataView(dt);
+            dataView.Sort = e.SortExpression;
+
+            UsersGrid.DataSource = dataView;
+            UsersGrid.DataBind();
+        }
+
         protected void UsersGrid_RowUpdating(object sender, GridViewUpdateEventArgs e) {
 
             try {
                 GridViewRow row = UsersGrid.Rows[e.RowIndex];
                 
-                int    id = int.Parse(row.Cells[1].Text);
-                string email = ((TextBox)row.Cells[2].Controls[0]).Text;
+                int    id       = int.Parse(row.Cells[1].Text);
+                string email    = ((TextBox)row.Cells[2].Controls[0]).Text;
                 string password = ((TextBox)row.Cells[3].Controls[0]).Text;
-                string name = ((TextBox)row.Cells[4].Controls[0]).Text;
-                int    role = int.Parse(((TextBox)row.Cells[6].Controls[0]).Text);
+                string name     = ((TextBox)row.Cells[4].Controls[0]).Text;
+                int    role     = int.Parse(((TextBox)row.Cells[6].Controls[0]).Text);
 
-                ControllerUser.UpdateUser(id, email, password, name, role);
+                UserController.UpdateUser(id, email, password, name, role);
 
                 if (int.Parse(Session["id"].ToString()) == id) {
                     Session["email"] = email;
@@ -81,9 +80,9 @@ namespace aspharmony.View {
                     Session["role"] = role;
                 }
 
-                msg = "User updated successfully!";
+                Response.Write("User updated successfully!");
             } catch (Exception error) {
-                msg = error.Message;
+                Response.Write(error.Message);
             }
 
             UsersGrid.EditIndex = -1;
@@ -95,11 +94,11 @@ namespace aspharmony.View {
                 GridViewRow row = UsersGrid.Rows[e.RowIndex];
 
                 int id = int.Parse(row.Cells[1].Text);
-                ControllerUser.DeleteUser(id);
+                UserController.DeleteUser(id);
 
-                msg = "User deleted successfully!";
+                Response.Write("User deleted successfully!");
             } catch (Exception error) {
-                msg = error.Message;
+                Response.Write(error.Message);
             }
 
             UsersGrid.EditIndex = -1;

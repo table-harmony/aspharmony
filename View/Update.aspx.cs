@@ -1,4 +1,5 @@
 ﻿using aspharmony.Controller;
+using aspharmony.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,7 +10,7 @@ using System.Web.UI.WebControls;
 
 namespace aspharmony.View {
     public partial class Update : System.Web.UI.Page {
-        public string email, password, name, msg;
+        public string email, password, name;
         public int id, role;
 
         protected void Page_Load(object sender, EventArgs e) {
@@ -31,28 +32,28 @@ namespace aspharmony.View {
 
         protected void Action() {
             try {
-                ControllerUser.UpdateUser(id, email, password, name, role);
-                AppendSession();
+                UserEntity user = UserController.UpdateUser(id, email, password, name, role);
+                AppendSession(user);
             } catch (Exception error) {
-                msg = error.Message;
+                Response.Write(error.Message);
             }
         }
 
-        protected void AppendSession() {
-            Session["email"] = email;
-            Session["name"] = name;
-            Session["role"] = role;
+        protected void AppendSession(UserEntity user) {
+            Session["email"] = user.Email;
+            Session["name"] = user.Name;
+            Session["role"] = user.Role;
         }
 
         protected void SetFormData() {
             id = int.Parse(Session["id"].ToString());
             role = int.Parse(Session["role"].ToString());
 
-            DataTable user = ControllerUser.GetUser(id);
+            UserEntity user = UserController.GetUser(id);
 
-            email = user.Rows[0]["email"].ToString();
-            password = user.Rows[0]["password"].ToString();
-            name = user.Rows[0]["name"].ToString();
+            email = user.Email;
+            password = user.Password;
+            name = user.Name;
         }
 
         protected void CollectFormData() {

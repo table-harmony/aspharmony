@@ -6,12 +6,13 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using aspharmony.Controller;
+using aspharmony.Entities;
 
 namespace aspharmony.View
 {
     public partial class Login : System.Web.UI.Page 
     {
-        public string email, password, msg;
+        public string email, password;
 
         protected void Page_Load(object sender, EventArgs e) {
             Middleware();
@@ -29,20 +30,20 @@ namespace aspharmony.View
 
         protected void Action() {
             try {
-                DataTable user = ControllerUser.GetUserByCredentials(email, password);
+                UserEntity user = UserController.GetUserByCredentials(email, password);
                 AppendSession(user);
 
                 Response.Redirect("Home.aspx");
             } catch (Exception error) {
-                msg = error.Message;
+                Response.Write(error.Message);
             }
         }
 
-        protected void AppendSession(DataTable user) {
-            Session["id"] = int.Parse(user.Rows[0]["id"].ToString());
-            Session["email"] = email;
-            Session["name"] = user.Rows[0]["name"].ToString();
-            Session["role"] = int.Parse(user.Rows[0]["role"].ToString());
+        protected void AppendSession(UserEntity user) {
+            Session["id"]    = user.Id;
+            Session["email"] = user.Email;
+            Session["name"]  = user.Name;
+            Session["role"]  = user.Role;
         }
 
         protected void CollectFormData() {

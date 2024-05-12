@@ -30,8 +30,6 @@
           value=<%=name %>
         />
         <input type="submit" name="submit" value="submit" />
-
-        <p><%=msg %></p>
       </div>
     </form>
 </asp:Content>
