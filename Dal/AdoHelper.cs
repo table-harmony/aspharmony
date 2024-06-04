@@ -33,7 +33,7 @@ public class AdoHelper
 
     // טענת כניסה: שאילתה, עצם המכיל פרמטרים, האם השאילתה היא פרוצדורה
     // טענת יציאה: טבלה המכילה את תוצאות השאילתה
-    public static DataTable GetDataTable(string sql, object parameters, bool isSp = false) {
+    public static DataTable GetDataTable(string sql, object parameters = null, bool isSp = false) {
         SqlConnection conn = ConnectToDb();
 
         SqlCommand command = new SqlCommand(sql, conn);
@@ -42,31 +42,6 @@ public class AdoHelper
         // עבור כל פרמטר נכניס לשאילתה את השם והערך שלו
         foreach (var property in parameters.GetType().GetProperties())
             command.Parameters.AddWithValue($"@{property.Name}", property.GetValue(parameters));
-
-        SqlDataAdapter tableAdapter = new SqlDataAdapter(command);
-        DataTable dt = new DataTable();
-
-        try {
-            conn.Open();
-            tableAdapter.Fill(dt);
-        }
-        catch (Exception e) {
-        }
-        finally {
-            conn.Close();
-        }
-
-        return dt;
-    }
-
-    // טענת כניסה: שאילתה, האם השאילתה היא פרוצדורה
-    // טענת יציאה: טבלה המכילה את תוצאות השאילתה
-    public static DataTable GetDataTable(string sql, bool isSp = false) {
-
-        SqlConnection conn = ConnectToDb();
-
-        SqlCommand command = new SqlCommand(sql, conn);
-        if (isSp) command.CommandType = CommandType.StoredProcedure;
 
         SqlDataAdapter tableAdapter = new SqlDataAdapter(command);
         DataTable dt = new DataTable();
