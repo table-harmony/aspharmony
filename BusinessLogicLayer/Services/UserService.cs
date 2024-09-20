@@ -52,8 +52,22 @@ namespace BusinessLogicLayer.Services
         }
 
         public async Task UpdateAsync(User user) {
-            await _userRepository.UpdateAsync(user);
+            if (user == null)
+                throw new ArgumentNullException();
+
+            User existingUser = await _userRepository.GetByIdAsync(user.Id);
+            if (existingUser == null)
+                throw new NotFoundException();
+
+            existingUser.Email = user.Email;
+
+            if (!string.IsNullOrWhiteSpace(user.Password)) {
+                existingUser.Password = _encryption.Encrypt(user.Password);
+            }
+
+            await _userRepository.UpdateAsync(existingUser);
         }
+
 
         public async Task DeleteAsync(int id) {
             await _userRepository.DeleteAsync(id);

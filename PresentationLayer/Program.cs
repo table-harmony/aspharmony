@@ -16,6 +16,9 @@ builder.Services.AddScoped<IEncryption, Sha256Encryption>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IBookRepository, BookRepository>();
+
 
 var app = builder.Build();
 
