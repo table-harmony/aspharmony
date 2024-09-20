@@ -1,5 +1,5 @@
+using Utils.Encryption;
 using BusinessLogicLayer.Services;
-using BusinessLogicLayer.Utils;
 using DataAccessLayer.Repositories;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +16,6 @@ builder.Services.AddScoped<IEncryption, Sha256Encryption>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-
 
 var app = builder.Build();
 

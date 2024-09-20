@@ -7,15 +7,19 @@ namespace Infrastructure.Data {
         }
 
         protected override void OnModelCreating(ModelBuilder builder) {
-            builder.Entity<Entity>()
-                    .Property(e => e.CreationTime)
-                    .HasDefaultValueSql("GETDATE()");
-
             builder.Entity<User>()
-                    .HasIndex(user => user.Email)
-                    .IsUnique();
+                .HasIndex(user => user.Email)
+                .IsUnique();
+
+            builder.Entity<Book>()
+                .HasOne(book => book.Author)
+                .WithMany(user => user.Books)
+                .HasForeignKey(book => book.AuthorId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         public DbSet<User> Users { get; set; }
+
+        public DbSet<Book> Books { get; set; }
     }
 }

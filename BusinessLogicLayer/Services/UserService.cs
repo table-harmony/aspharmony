@@ -1,11 +1,8 @@
-﻿using BusinessLogicLayer.Utils;
+﻿using Utils.Exceptions;
+using Utils.Encryption;
 using DataAccessLayer.Entities;
 using DataAccessLayer.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace BusinessLogicLayer.Services
 {
@@ -49,10 +46,7 @@ namespace BusinessLogicLayer.Services
                 throw new PublicException("User already exists!");
 
             string hashedPassword = _encryption.Encrypt(password);
-            User user = new User {
-                Email = email,
-                Password = hashedPassword,
-            };
+            User user = new() { Email = email, Password = hashedPassword };
 
             await _userRepository.CreateAsync(user);
         }

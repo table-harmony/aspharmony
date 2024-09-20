@@ -5,9 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccessLayer.Entities {
-    public class User : Entity {
-        public required string Email { get; set; }
-        public required string Password { get; set; }
+    public class User {
+        public int Id { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public ICollection<Book> Books { get; set; }
+
     }
 
 }

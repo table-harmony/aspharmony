@@ -21,9 +21,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Id)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreationTime)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -38,9 +35,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreationTime)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |

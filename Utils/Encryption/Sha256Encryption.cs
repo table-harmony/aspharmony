@@ -1,8 +1,11 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace BusinessLogicLayer.Utils
-{
+namespace Utils.Encryption {
     public class Sha256Encryption : IEncryption {
         //TODO: add salt encryption
         public string Encrypt(string input) {

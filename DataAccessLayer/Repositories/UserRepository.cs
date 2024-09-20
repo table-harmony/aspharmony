@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utils.Exceptions;
 
 namespace DataAccessLayer.Repositories
 {
@@ -42,7 +43,7 @@ namespace DataAccessLayer.Repositories
             User user = await GetByIdAsync(id);
 
             if (user == null)
-                throw new Exception("User not found");
+                throw new NotFoundException();
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
