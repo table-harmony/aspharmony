@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using BusinessLogicLayer.Interfaces;
+using BusinessLogicLayer.Services;
 
-namespace PresentationLayer.Controllers {
+namespace PresentationLayer.Controllers
+{
     public class UserController : Controller {
         private readonly IUserService _userService;
 

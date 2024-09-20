@@ -6,6 +6,16 @@ namespace Infrastructure.Data {
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) {
         }
 
+        protected override void OnModelCreating(ModelBuilder builder) {
+            builder.Entity<Entity>()
+                    .Property(e => e.CreationTime)
+                    .HasDefaultValueSql("GETDATE()");
+
+            builder.Entity<User>()
+                    .HasIndex(user => user.Email)
+                    .IsUnique();
+        }
+
         public DbSet<User> Users { get; set; }
     }
 }

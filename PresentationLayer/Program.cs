@@ -1,6 +1,5 @@
-using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Services;
-using DataAccessLayer.Interfaces;
+using BusinessLogicLayer.Utils;
 using DataAccessLayer.Repositories;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -10,8 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+
+builder.Services.AddScoped<IEncryption, Sha256Encryption>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();

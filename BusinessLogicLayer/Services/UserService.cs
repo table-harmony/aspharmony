@@ -1,29 +1,59 @@
-﻿using BusinessLogicLayer.Interfaces;
+﻿using BusinessLogicLayer.Utils;
 using DataAccessLayer.Entities;
-using DataAccessLayer.Interfaces;
+using DataAccessLayer.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BusinessLogicLayer.Services {
+namespace BusinessLogicLayer.Services
+{
     public class UserService : IUserService {
         private readonly IUserRepository _userRepository;
-        
-        public UserService(IUserRepository userRepository) {
+        private readonly IEncryption _encryption;
+
+        public UserService(IUserRepository userRepository, IEncryption encryption) {
             _userRepository = userRepository;
+            _encryption = encryption;
         }
 
         public async Task<User> GetByIdAsync(int id) {
             return await _userRepository.GetByIdAsync(id);
         }
 
+        public async Task<User> GetByEmailAsync(string email) {
+            return await _userRepository.GetByEmailAsync(email);
+        }
+
+        public async Task<User> GetByCredentialsAsync(string email, string password) {
+            User user = await GetByEmailAsync(email);
+
+            if (user == null)
+                throw new NotFoundException();
+
+            if (!_encryption.Compare(password, user.Password))
+                throw new PublicException("Passwords do not match");
+
+            return user;
+        }
+
         public async Task<IEnumerable<User>> GetAllAsync() {
             return await _userRepository.GetAllAsync();
         }
 
-        public async Task CreateAsync(User user) {
+        public async Task CreateAsync(string email, string password) {
+            User existingUser = await _userRepository.GetByEmailAsync(email);
+
+            if (existingUser != null)
+                throw new PublicException("User already exists!");
+
+            string hashedPassword = _encryption.Encrypt(password);
+            User user = new User {
+                Email = email,
+                Password = hashedPassword,
+            };
+
             await _userRepository.CreateAsync(user);
         }
 

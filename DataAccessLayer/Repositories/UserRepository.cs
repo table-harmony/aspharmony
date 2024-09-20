@@ -1,5 +1,4 @@
 ﻿using DataAccessLayer.Entities;
-using DataAccessLayer.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,7 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLayer.Repositories {
+namespace DataAccessLayer.Repositories
+{
     public class UserRepository : IUserRepository {
         private readonly ApplicationContext _context;
 
@@ -17,12 +17,11 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task<User> GetByIdAsync(int id) {
-            var user = await _context.Users.FindAsync(id);
+            return await _context.Users.FindAsync(id);
+        }
 
-            if (user == null)
-                throw new Exception("User not found");
-
-            return user;
+        public async Task<User> GetByEmailAsync(string email) {
+            return await _context.Users.FirstAsync(user => user.Email == email);
         }
 
         public async Task<IEnumerable<User>> GetAllAsync() {
