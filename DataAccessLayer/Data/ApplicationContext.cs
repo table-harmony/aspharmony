@@ -17,17 +17,17 @@ namespace Infrastructure.Data {
                 .HasForeignKey(book => book.AuthorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<LibraryMemberships>()
+            modelBuilder.Entity<LibraryMembership>()
                 .Property(membership => membership.Role)
                 .HasConversion<string>();
 
-            modelBuilder.Entity<LibraryMemberships>()
+            modelBuilder.Entity<LibraryMembership>()
                 .HasOne(membership => membership.User)    
                 .WithMany(user => user.Memberships)        
                 .HasForeignKey(membership => membership.UserId)
                 .OnDelete(DeleteBehavior.Restrict);        
 
-            modelBuilder.Entity<LibraryMemberships>()
+            modelBuilder.Entity<LibraryMembership>()
                 .HasOne(membership => membership.Library)  
                 .WithMany(library => library.Memberships)  
                 .HasForeignKey(membership => membership.LibraryId)
@@ -48,7 +48,7 @@ namespace Infrastructure.Data {
         public DbSet<Book> Books { get; set; }
         public DbSet<Library> Libraries { get; set; }
         public DbSet<LibraryBook> LibraryBooks { get; set; }
-        public DbSet<LibraryMemberships> LibraryMemberships { get; set; }
+        public DbSet<LibraryMembership> LibraryMemberships { get; set; }
 
     }
 }

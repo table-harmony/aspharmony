@@ -10,7 +10,7 @@ namespace DataAccessLayer.Entities {
         public string Email { get; set; }
         public string Password { get; set; }
         public ICollection<Book> Books { get; set; }
-        public ICollection<LibraryMemberships> Memberships { get; set; }
+        public ICollection<LibraryMembership> Memberships { get; set; }
 
     }
 
