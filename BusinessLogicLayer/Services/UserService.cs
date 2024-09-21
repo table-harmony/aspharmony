@@ -5,8 +5,7 @@ using Utils.Exceptions;
 
 namespace BusinessLogicLayer.Services
 {
-    public interface IUserService
-    {
+    public interface IUserService {
         Task<User> GetByIdAsync(string id);
         Task<User> GetByEmailAsync(string email);
         Task<IEnumerable<User>> GetAllAsync();
@@ -15,8 +14,7 @@ namespace BusinessLogicLayer.Services
         Task<IdentityResult> DeleteAsync(string id);
     }
 
-    public class UserService : IUserService
-    {
+    public class UserService : IUserService {
         private readonly IUserRepository _userRepository;
         private readonly UserManager<User> _userManager;
 
