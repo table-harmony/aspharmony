@@ -26,7 +26,7 @@ namespace DataAccessLayer.Repositories
         }
 
         public async Task<User> GetByEmailAsync(string email) {
-            return await _context.Users.FirstAsync(user => user.Email == email);
+            return await _context.Users.FirstOrDefaultAsync(user => user.Email == email);
         }
 
         public async Task<IEnumerable<User>> GetAllAsync() {

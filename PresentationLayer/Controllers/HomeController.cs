@@ -16,21 +16,6 @@ namespace PresentationLayer.Controllers {
         public async Task<ActionResult> Index() {
             await _apiService.TrackEventAsync("User hit landing page");
 
-            var schoolData = await _apiService.GetSchoolDataAsync();
-
-            if (schoolData != null) {
-                ViewBag.SchoolData = JsonConvert.SerializeObject(
-                    JsonConvert.DeserializeObject(schoolData),
-                    Formatting.Indented
-                );
-            } else {
-                ViewBag.SchoolData = "Error loading school data.";
-            }
-
-            return View();
-        }
-
-        public IActionResult Privacy() {
             return View();
         }
 

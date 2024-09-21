@@ -1,10 +1,12 @@
 ﻿using DataAccessLayer.Entities;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using Utils.Exceptions;
 
 namespace DataAccessLayer.Repositories {
     public interface IBookRepository {
         Task<Book> GetByIdAsync(int id);
+        Task<IEnumerable<Book>> GetAllAsync();
         Task CreateAsync(Book book);
         Task UpdateAsync(Book book);
         Task DeleteAsync(int id);
@@ -19,6 +21,10 @@ namespace DataAccessLayer.Repositories {
 
         public async Task<Book> GetByIdAsync(int id) {
             return await _context.Books.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<Book>> GetAllAsync() {
+            return await _context.Books.ToListAsync();
         }
 
         public async Task CreateAsync(Book book) {

@@ -11,7 +11,6 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
 builder.Services.AddScoped<IEncryption, Sha256Encryption>();
 
 builder.Services.AddScoped<IUserService, UserService>();
@@ -20,6 +19,8 @@ builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<ILibraryService, LibraryService>();
 builder.Services.AddScoped<ILibraryRepository, LibraryRepository>();
+builder.Services.AddScoped<ILibraryMembershipService, LibraryMembershipService>();
+builder.Services.AddScoped<ILibraryMembershipRepository, LibraryMembershipRepository>();
 
 var app = builder.Build();
 
@@ -35,6 +36,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
