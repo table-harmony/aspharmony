@@ -1,12 +1,12 @@
 ﻿using DataAccessLayer.Entities;
-using Infrastructure.Data;
+using DataAccessLayer.Data;
 using Microsoft.EntityFrameworkCore;
 using Utils.Exceptions;
 
 namespace DataAccessLayer.Repositories {
     public interface ILibraryMembershipRepository {
         Task<LibraryMembership> GetById(int id);
-        Task<LibraryMembership> GetByUser(int userId);
+        Task<LibraryMembership> GetByUser(string userId);
         Task CreateAsync(LibraryMembership membership);
         Task UpdateAsync(LibraryMembership membership);
         Task DeleteAsync(int id);
@@ -24,7 +24,7 @@ namespace DataAccessLayer.Repositories {
             await _context.SaveChangesAsync();
         }
 
-        public async Task<LibraryMembership> GetByUser(int userId) {
+        public async Task<LibraryMembership> GetByUser(string userId) {
             return await _context.LibraryMemberships
                          .FirstOrDefaultAsync(membership => membership.UserId == userId);
         }

@@ -5,7 +5,7 @@ namespace BusinessLogicLayer.Services {
     public interface IBookService {
         Task<Book> GetByIdAsync(int id);
         Task<IEnumerable<Book>> GetAllAsync();
-        Task CreateAsync(string title, string description, string content, int authorId);
+        Task CreateAsync(string title, string description, string content, string authorId);
         Task UpdateAsync(Book book);
         Task DeleteAsync(int id);
     }
@@ -25,7 +25,7 @@ namespace BusinessLogicLayer.Services {
             return await _bookRepository.GetAllAsync();
         }
 
-        public async Task CreateAsync(string title, string description, string content, int authorId) {
+        public async Task CreateAsync(string title, string description, string content, string authorId) {
             Book book = new() {
                 Title = title,
                 Description = description,

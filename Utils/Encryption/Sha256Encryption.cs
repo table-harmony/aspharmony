@@ -2,8 +2,8 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Utils.Encryption
-{
+namespace Utils.Encryption 
+{ 
     public class Sha256Encryption : IEncryption {
         private const int SaltSize = 16; // 128 bits
 

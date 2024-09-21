@@ -1,14 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using BusinessLogicLayer.Services;
 using PresentationLayer.Models;
+using DataAccessLayer.Entities;
 
 namespace PresentationLayer.Controllers
 {
     public class LibraryController : Controller {
         private readonly ILibraryService _libraryService;
+        private readonly UserManager<User> _userManager;
 
-        public LibraryController(ILibraryService libraryService) {
+        public LibraryController(ILibraryService libraryService, UserManager<User> userManager) {
             _libraryService = libraryService;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index() {
@@ -22,13 +26,14 @@ namespace PresentationLayer.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Create(CreateLibraryViewModel model) {
-
             if (!ModelState.IsValid)
                 return View(model);
 
-            int userId = 3; //TODO: get current user id
-            
-            await _libraryService.CreateAsync(model.Name, userId);
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return NotFound();
+           
+            await _libraryService.CreateAsync(model.Name, user.Id);
             return RedirectToAction(nameof(Index));
         }
     }

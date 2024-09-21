@@ -1,7 +1,4 @@
-using System;
-using BCrypt.Net;
-
-namespace Utils.Encryption
+namespace Utils.Encryption 
 {
     public class BcryptEncryption : IEncryption {
         private const int WorkFactor = 12; // Adjust this based on your security needs

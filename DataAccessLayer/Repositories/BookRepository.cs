@@ -1,5 +1,5 @@
-﻿using DataAccessLayer.Entities;
-using Infrastructure.Data;
+﻿using DataAccessLayer.Data;
+using DataAccessLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using Utils.Exceptions;
 

@@ -1,12 +1,14 @@
 ﻿using DataAccessLayer.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Data {
-    public class ApplicationContext : DbContext {
-        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) {
-        }
+namespace DataAccessLayer.Data {
+    public class ApplicationContext : IdentityDbContext<User> {
+        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<User>()
                 .HasIndex(user => user.Email)
                 .IsUnique();
@@ -15,23 +17,23 @@ namespace Infrastructure.Data {
                 .HasOne(book => book.Author)
                 .WithMany(user => user.Books)
                 .HasForeignKey(book => book.AuthorId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<LibraryMembership>()
                 .Property(membership => membership.Role)
                 .HasConversion<string>();
 
             modelBuilder.Entity<LibraryMembership>()
-                .HasOne(membership => membership.User)    
-                .WithMany(user => user.Memberships)        
+                .HasOne(membership => membership.User)
+                .WithMany(user => user.Memberships)
                 .HasForeignKey(membership => membership.UserId)
-                .OnDelete(DeleteBehavior.Restrict);        
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<LibraryMembership>()
-                .HasOne(membership => membership.Library)  
-                .WithMany(library => library.Memberships)  
+                .HasOne(membership => membership.Library)
+                .WithMany(library => library.Memberships)
                 .HasForeignKey(membership => membership.LibraryId)
-                .OnDelete(DeleteBehavior.Restrict);       
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<LibraryBook>()
                 .HasOne(lb => lb.Library)
@@ -49,6 +51,5 @@ namespace Infrastructure.Data {
         public DbSet<Library> Libraries { get; set; }
         public DbSet<LibraryBook> LibraryBooks { get; set; }
         public DbSet<LibraryMembership> LibraryMemberships { get; set; }
-
     }
 }

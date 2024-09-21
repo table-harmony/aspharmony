@@ -1,88 +1,58 @@
-﻿using Utils.Exceptions;
-using Utils.Encryption;
+﻿using Microsoft.AspNetCore.Identity;
 using DataAccessLayer.Entities;
 using DataAccessLayer.Repositories;
-
+using Utils.Exceptions;
 
 namespace BusinessLogicLayer.Services
 {
-    public interface IUserService {
-        Task<User> GetByIdAsync(int id);
+    public interface IUserService
+    {
+        Task<User> GetByIdAsync(string id);
         Task<User> GetByEmailAsync(string email);
-        Task<User> GetByCredentialsAsync(string email, string password);
         Task<IEnumerable<User>> GetAllAsync();
-        Task CreateAsync(string email, string password);
-        Task UpdateAsync(User user);
-        Task DeleteAsync(int id);
+        Task<IdentityResult> CreateAsync(string email, string password);
+        Task<IdentityResult> UpdateAsync(User user);
+        Task<IdentityResult> DeleteAsync(string id);
     }
 
-    public class UserService : IUserService {
+    public class UserService : IUserService
+    {
         private readonly IUserRepository _userRepository;
-        private readonly IEncryption _encryption;
+        private readonly UserManager<User> _userManager;
 
-        public UserService(IUserRepository userRepository, IEncryption encryption) {
+        public UserService(IUserRepository userRepository, UserManager<User> userManager) {
             _userRepository = userRepository;
-            _encryption = encryption;
+            _userManager = userManager;
         }
 
-        public async Task<User> GetByIdAsync(int id) {
-            var user = await _userRepository.GetByIdAsync(id);
-            if (user == null)
-                throw new NotFoundException();
-            return user;
+        public async Task<User> GetByIdAsync(string id) {
+            return await _userRepository.GetByIdAsync(id);
         }
 
         public async Task<User> GetByEmailAsync(string email) {
             return await _userRepository.GetByEmailAsync(email);
         }
 
-        public async Task<User> GetByCredentialsAsync(string email, string password) {
-            User user = await GetByEmailAsync(email);
-
-            if (user == null)
-                throw new NotFoundException();
-
-            if (!_encryption.Compare(password, user.Password))
-                throw new PublicException("Passwords do not match");
-
-            return user;
-        }
-
         public async Task<IEnumerable<User>> GetAllAsync() {
             return await _userRepository.GetAllAsync();
         }
 
-        public async Task CreateAsync(string email, string password) {
-            User existingUser = await _userRepository.GetByEmailAsync(email);
-
-            if (existingUser != null)
-                throw new PublicException("User already exists!");
-
-            string hashedPassword = _encryption.Encrypt(password);
-            User user = new() { Email = email, Password = hashedPassword };
-
-            await _userRepository.CreateAsync(user);
+        public async Task<IdentityResult> CreateAsync(string email, string password) {
+            var user = new User { UserName = email, Email = email };
+            return await _userManager.CreateAsync(user, password);
         }
 
-        public async Task UpdateAsync(User user) {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
+        public async Task<IdentityResult> UpdateAsync(User user) {
+            return await _userManager.UpdateAsync(user);
+        }
 
-            var existingUser = await _userRepository.GetByIdAsync(user.Id);
-            if (existingUser == null)
+        public async Task<IdentityResult> DeleteAsync(string id) {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
                 throw new NotFoundException();
 
-            existingUser.Email = user.Email;
-
-            if (!string.IsNullOrWhiteSpace(user.Password)) 
-                existingUser.Password = _encryption.Encrypt(user.Password);
-           
-            await _userRepository.UpdateAsync(existingUser);
+            return await _userManager.DeleteAsync(user);
         }
-
-        public async Task DeleteAsync(int id) {
-            await _userRepository.DeleteAsync(id);
-        }
-
     }
 }

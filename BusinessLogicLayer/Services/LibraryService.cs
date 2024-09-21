@@ -3,7 +3,7 @@ using DataAccessLayer.Repositories;
 
 namespace BusinessLogicLayer.Services {
     public interface ILibraryService {
-        Task CreateAsync(string name, int userId);
+        Task CreateAsync(string name, string userId);
         Task UpdateAsync(int id, string name);
         Task DeleteAsync(int id);
         IEnumerable<LibraryBook> GetBooks(int id);
@@ -25,7 +25,7 @@ namespace BusinessLogicLayer.Services {
             _membershipService = membershipsService;
         }
 
-        public async Task CreateAsync(string name, int userId) {
+        public async Task CreateAsync(string name, string userId) {
             User user = await _userRepository.GetByIdAsync(userId);
             Library library = new() {
                 Name = name,
