@@ -30,9 +30,7 @@ namespace PresentationLayer.Controllers
             int authorId = 3;
 
             await _bookService.CreateAsync(model.Title, model.Description, model.Content, authorId);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(model);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

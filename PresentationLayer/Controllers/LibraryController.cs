@@ -28,10 +28,8 @@ namespace PresentationLayer.Controllers
 
             int userId = 3; //TODO: get current user id
             
-                await _libraryService.CreateAsync(model.Name, userId);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(model);
+            await _libraryService.CreateAsync(model.Name, userId);
+            return RedirectToAction(nameof(Index));
         }
     }
 }
