@@ -1,14 +1,19 @@
 ﻿using DataAccessLayer.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utils.Exceptions;
 
 namespace DataAccessLayer.Repositories {
+    public interface ILibraryRepository {
+        IEnumerable<LibraryBook> GetBooks(int id);
+        IEnumerable<LibraryMembership> GetMemberships(int id);
+        Task<Library> GetByIdAsync(int id);
+        Task<IEnumerable<Library>> GetAllAsync();
+        Task CreateAsync(Library library);
+        Task UpdateAsync(Library library);
+        Task DeleteAsync(int id);
+    }
+
     public class LibraryRepository : ILibraryRepository {
         private readonly ApplicationContext _context;
 

@@ -1,28 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Utils.Encryption {
+namespace Utils.Encryption
+{
     public class Sha256Encryption : IEncryption {
-        //TODO: add salt encryption
+        private const int SaltSize = 16; // 128 bits
+
         public string Encrypt(string input) {
-            using (SHA256 hash = SHA256.Create()) {
-                byte[] bytes = hash.ComputeHash(Encoding.UTF8.GetBytes(input));
-                StringBuilder builder = new StringBuilder();
+            string salt = GenerateSalt();
+            string hash = ComputeHash(input, salt);
+            return $"{hash}:{salt}";
+        }
 
-                foreach (byte b in bytes)
-                    builder.Append(b.ToString("x2"));
+        public bool Compare(string input, string hashWithSalt) {
+            var parts = hashWithSalt.Split(':');
+            if (parts.Length != 2)
+                return false;
 
-                return builder.ToString();
+            string storedHash = parts[0];
+            string storedSalt = parts[1];
+
+            string computedHash = ComputeHash(input, storedSalt);
+            return computedHash == storedHash;
+        }
+
+        private string GenerateSalt() {
+            using (var rng = new RNGCryptoServiceProvider()) {
+                byte[] saltBytes = new byte[SaltSize];
+                rng.GetBytes(saltBytes);
+                return Convert.ToBase64String(saltBytes);
             }
         }
 
-        public bool Compare(string input, string hash) {
-            string hashedInput = Encrypt(input);
-            return hashedInput == hash;
+        private string ComputeHash(string input, string salt) {
+            using (var sha256 = SHA256.Create()) {
+                string inputWithSalt = input + salt;
+                byte[] inputBytes = Encoding.UTF8.GetBytes(inputWithSalt);
+                byte[] hashBytes = sha256.ComputeHash(inputBytes);
+                return Convert.ToBase64String(hashBytes);
+            }
         }
     }
 }
