@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using DataAccessLayer.Entities;
 using DataAccessLayer.Data;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using PresentationLayer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,7 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 builder.Services.AddDefaultIdentity<User>(options => {
     options.Password.RequiredLength = 6;
     options.SignIn.RequireConfirmedAccount = true;
+    options.SignIn.RequireConfirmedEmail = true; // Add this line
 })
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<ApplicationContext>()
@@ -30,6 +33,10 @@ builder.Services.AddSession(options => {
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+// Email services
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
 
 // Register services and repositories
 builder.Services.AddScoped<IEncryption, Sha256Encryption>();
@@ -60,5 +67,20 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+// Creating roles
+using (var scope = app.Services.CreateScope()) {
+    var roleManager = 
+        scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    var roles = new[] { "Admin", "Member" };
+
+    foreach (var role in roles) {
+        bool isRoleExist = await roleManager.RoleExistsAsync(role);
+        
+        if (!isRoleExist)
+            await roleManager.CreateAsync(new IdentityRole(role));
+    }
+}
 
 app.Run();

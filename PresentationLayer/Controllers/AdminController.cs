@@ -4,14 +4,16 @@ using BusinessLogicLayer.Services;
 using PresentationLayer.Models;
 using Utils.Exceptions;
 using DataAccessLayer.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PresentationLayer.Controllers
 {
-    public class UserController : Controller {
+    [Authorize(Roles = "Admin")]
+    public class AdminController : Controller {
         private readonly IUserService _userService;
         private readonly UserManager<User> _userManager;
 
-        public UserController(IUserService userService, UserManager<User> userManager) {
+        public AdminController(IUserService userService, UserManager<User> userManager) {
             _userService = userService;
             _userManager = userManager;
         }

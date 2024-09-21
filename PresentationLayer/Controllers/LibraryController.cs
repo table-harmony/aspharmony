@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Identity;
 using BusinessLogicLayer.Services;
 using PresentationLayer.Models;
 using DataAccessLayer.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PresentationLayer.Controllers
 {
+    [Authorize]
     public class LibraryController : Controller {
         private readonly ILibraryService _libraryService;
         private readonly UserManager<User> _userManager;

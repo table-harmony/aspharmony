@@ -12,16 +12,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using DataAccessLayer.Entities;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace PresentationLayer.Areas.Identity.Pages.Account
 {
+    [AllowAnonymous]
     public class ResetPasswordModel : PageModel
     {
         private readonly UserManager<User> _userManager;
+        private readonly IEmailSender _emailSender;
 
-        public ResetPasswordModel(UserManager<User> userManager)
+        public ResetPasswordModel(UserManager<User> userManager, IEmailSender emailSender)
         {
             _userManager = userManager;
+            _emailSender = emailSender;
         }
 
         /// <summary>
@@ -105,6 +109,12 @@ namespace PresentationLayer.Areas.Identity.Pages.Account
             var result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password);
             if (result.Succeeded)
             {
+                // Send email notification about password reset
+                await _emailSender.SendEmailAsync(
+                    Input.Email,
+                    "Password Reset Confirmation",
+                    "Your password has been reset successfully. If you did not initiate this change, please contact support immediately.");
+
                 return RedirectToPage("./ResetPasswordConfirmation");
             }
 
