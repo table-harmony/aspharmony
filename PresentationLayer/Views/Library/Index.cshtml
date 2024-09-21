@@ -1,0 +1,29 @@
+@model IEnumerable<DataAccessLayer.Entities.Library>
+
+<h2>Libraries</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var library in Model)
+        {
+            <tr>
+                <td>@library.Name</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@library.Id">Details</a> |
+                    <a asp-action="Edit" asp-route-id="@library.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@library.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
