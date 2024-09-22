@@ -7,6 +7,7 @@ using DataAccessLayer.Entities;
 using DataAccessLayer.Data;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using PresentationLayer.Services;
+using Utils.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,18 +21,18 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 builder.Services.AddDefaultIdentity<User>(options => {
     options.Password.RequiredLength = 6;
     options.SignIn.RequireConfirmedAccount = true;
-    options.SignIn.RequireConfirmedEmail = true; // Add this line
+    //options.SignIn.RequireConfirmedEmail = true;
 })
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<ApplicationContext>()
 .AddDefaultTokenProviders();
-
-// Add session services
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options => {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
+builder.Services.ConfigureApplicationCookie(options =>
+{
     options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    options.SlidingExpiration = true;
 });
 
 // Email services
@@ -40,6 +41,7 @@ builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
 
 // Register services and repositories
 builder.Services.AddScoped<IEncryption, Sha256Encryption>();
+builder.Services.AddScoped<IEventsService, EventsService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBookService, BookService>();
@@ -56,7 +58,6 @@ if (!app.Environment.IsDevelopment()) {
     app.UseHsts();
 }
 
-app.UseSession();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();

@@ -1,0 +1,48 @@
+@using DataAccessLayer.Entities
+@model DataAccessLayer.Entities.Library
+
+<h2>Library Details</h2>
+
+<div>
+    <h4>@Model.Name</h4>
+    <hr />
+
+    @if (User.IsInRole("Admin") || Model.Memberships.Any(m => m.UserId == ViewBag.UserId && m.Role == MembershipRole.Manager)) {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+    }
+
+    @if (!Model.Memberships.Any(m => m.UserId == ViewBag.UserId)) {
+        <form asp-action="JoinLibrary" method="post">
+            <input type="hidden" name="libraryId" value="@Model.Id" />
+            <button type="submit" class="btn btn-primary">Join Library</button>
+        </form>
+    }
+
+    <h5>Books in this Library</h5>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var libraryBook in Model.Books)
+            {
+                <tr>
+                    <td>@libraryBook.Book.Title</td>
+                    <td>@libraryBook.Book.Author.UserName</td>
+                    <td>
+                        <a asp-controller="Book" asp-action="Details" asp-route-id="@libraryBook.BookId" class="btn btn-info btn-sm">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>

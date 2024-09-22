@@ -1,8 +1,9 @@
 @model PresentationLayer.Models.BookViewModel
 
-<h2>Create Book</h2>
+<h2>Edit Book</h2>
 
-<form asp-action="Create">
+<form asp-action="Edit">
+    <input type="hidden" asp-for="Id" />
     <div class="form-group">
         <label asp-for="Title"></label>
         <input asp-for="Title" class="form-control" />
@@ -18,5 +19,5 @@
         <textarea asp-for="Content" class="form-control"></textarea>
         <span asp-validation-for="Content" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="submit" class="btn btn-primary">Save</button>
 </form>

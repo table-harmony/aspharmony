@@ -1,21 +1,23 @@
-using BusinessLogicLayer.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PresentationLayer.Models;
 using System.Diagnostics;
+using Utils.Services;
 
-namespace PresentationLayer.Controllers {
+namespace PresentationLayer.Controllers
+{
     public class HomeController : Controller {
         private readonly ILogger<HomeController> _logger;
-        private readonly ApiService _apiService;
-        public HomeController(ILogger<HomeController> logger) {
+        private readonly IEventsService _eventsService;
+
+        public HomeController(ILogger<HomeController> logger, IEventsService eventsService) {
             _logger = logger;
-            _apiService = new ApiService();
+            _eventsService = eventsService;
         }
 
         public async Task<ActionResult> Index() {
-            await _apiService.TrackEventAsync("User hit landing page");
-
+            await _eventsService.TrackEventAsync("User hit landing page");
             return View();
         }
 

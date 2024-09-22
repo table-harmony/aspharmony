@@ -1,9 +1,12 @@
+@using System.Security.Claims
 @model IEnumerable<DataAccessLayer.Entities.Book>
 
-<h2>Books</h2>
+<h2>All Books</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    @if (User.Identity.IsAuthenticated) {
+        <a asp-action="Create" class="btn btn-primary">Create New Book</a>
+    }
 </p>
 
 <table class="table">
@@ -15,15 +18,16 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var book in Model)
-        {
+        @foreach (var book in Model) {
             <tr>
                 <td>@book.Title</td>
                 <td>@book.Description</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@book.Id">Details</a> |
-                    <a asp-action="Edit" asp-route-id="@book.Id">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@book.Id">Delete</a>
+                    <a asp-action="Details" asp-route-id="@book.Id" class="btn btn-info btn-sm">Details</a>
+                    @if (User.IsInRole("Admin") || User.FindFirst(ClaimTypes.NameIdentifier)?.Value == book.AuthorId) {
+                        <a asp-action="Edit" asp-route-id="@book.Id" class="btn btn-warning btn-sm">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@book.Id" class="btn btn-danger btn-sm">Delete</a>
+                    }
                 </td>
             </tr>
         }

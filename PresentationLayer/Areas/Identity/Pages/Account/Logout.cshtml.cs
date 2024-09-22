@@ -4,12 +4,12 @@
 
 using System;
 using System.Threading.Tasks;
+using DataAccessLayer.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using DataAccessLayer.Entities;
 
 namespace PresentationLayer.Areas.Identity.Pages.Account
 {

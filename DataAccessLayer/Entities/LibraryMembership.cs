@@ -1,7 +1,7 @@
 ﻿namespace DataAccessLayer.Entities {
     public enum MembershipRole {
         Manager,
-        Staff
+        Member
     }
 
     public class LibraryMembership {

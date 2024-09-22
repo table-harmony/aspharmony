@@ -1,9 +1,10 @@
+@using DataAccessLayer.Entities
 @model IEnumerable<DataAccessLayer.Entities.Library>
 
-<h2>Libraries</h2>
+<h2>All Libraries</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Create New Library</a>
 </p>
 
 <table class="table">
@@ -14,14 +15,11 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var library in Model)
-        {
+        @foreach (var library in Model) {
             <tr>
                 <td>@library.Name</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@library.Id">Details</a> |
-                    <a asp-action="Edit" asp-route-id="@library.Id">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@library.Id">Delete</a>
+                    <a asp-action="Details" asp-route-id="@library.Id" class="btn btn-info btn-sm">Details</a>
                 </td>
             </tr>
         }
