@@ -1,55 +1,98 @@
 ﻿using DataAccessLayer.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;    
 
 namespace DataAccessLayer.Data {
-    public class ApplicationContext : IdentityDbContext<User> {
-        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
+        public class ApplicationContext : IdentityDbContext<User> {
+            public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder) {
-            base.OnModelCreating(modelBuilder);
+            protected override void OnModelCreating(ModelBuilder modelBuilder) {
+                base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>()
-                .HasIndex(user => user.Email)
-                .IsUnique();
+                // User
+                modelBuilder.Entity<User>()
+                    .HasMany(u => u.Books)
+                    .WithOne(b => b.Author)
+                    .HasForeignKey(b => b.AuthorId)
+                    .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Book>()
-                .HasOne(book => book.Author)
-                .WithMany(user => user.Books)
-                .HasForeignKey(book => book.AuthorId)
-                .OnDelete(DeleteBehavior.Cascade);
+                modelBuilder.Entity<User>()
+                    .HasMany(u => u.Memberships)
+                    .WithOne(m => m.User)
+                    .HasForeignKey(m => m.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<LibraryMembership>()
-                .Property(membership => membership.Role)
-                .HasConversion<string>();
+                modelBuilder.Entity<User>()
+                    .HasMany(u => u.BookLoans)
+                    .WithOne(bl => bl.User)
+                    .HasForeignKey(bl => bl.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<LibraryMembership>()
-                .HasOne(membership => membership.User)
-                .WithMany(user => user.Memberships)
-                .HasForeignKey(membership => membership.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                // Book
+                modelBuilder.Entity<Book>()
+                    .HasOne(b => b.Author)
+                    .WithMany(u => u.Books)
+                    .HasForeignKey(b => b.AuthorId)
+                    .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<LibraryMembership>()
-                .HasOne(membership => membership.Library)
-                .WithMany(library => library.Memberships)
-                .HasForeignKey(membership => membership.LibraryId)
-                .OnDelete(DeleteBehavior.Cascade);
+                // Library
+                modelBuilder.Entity<Library>()
+                    .HasMany(l => l.Memberships)
+                    .WithOne(m => m.Library)
+                    .HasForeignKey(m => m.LibraryId)
+                    .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<LibraryBook>()
-                .HasOne(lb => lb.Library)
-                .WithMany(library => library.Books)
-                .HasForeignKey(lb => lb.LibraryId);
+                modelBuilder.Entity<Library>()
+                    .HasMany(l => l.Books)
+                    .WithOne(lb => lb.Library)
+                    .HasForeignKey(lb => lb.LibraryId)
+                    .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<LibraryBook>()
-                .HasOne(lb => lb.Book)
-                .WithMany()
-                .HasForeignKey(lb => lb.BookId);
+                // LibraryMembership
+                modelBuilder.Entity<LibraryMembership>()
+                    .HasKey(m => new { m.UserId, m.LibraryId });
+
+                modelBuilder.Entity<LibraryMembership>()
+                    .Property(m => m.Role)
+                    .HasConversion<string>();
+
+                // LibraryBook
+                modelBuilder.Entity<LibraryBook>()
+                    .HasOne(lb => lb.Library)
+                    .WithMany(l => l.Books)
+                    .HasForeignKey(lb => lb.LibraryId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                modelBuilder.Entity<LibraryBook>()
+                    .HasOne(lb => lb.Book)
+                    .WithMany(b => b.LibraryBooks)
+                    .HasForeignKey(lb => lb.BookId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                modelBuilder.Entity<LibraryBook>()
+                    .HasMany(lb => lb.Loans)
+                    .WithOne(bl => bl.LibraryBook)
+                    .HasForeignKey(bl => bl.LibraryBookId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // BookLoan
+                modelBuilder.Entity<BookLoan>()
+                    .HasOne(bl => bl.LibraryBook)
+                    .WithMany(lb => lb.Loans)
+                    .HasForeignKey(bl => bl.LibraryBookId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                modelBuilder.Entity<BookLoan>()
+                    .HasOne(bl => bl.Library)
+                    .WithMany()
+                    .HasForeignKey(bl => bl.LibraryId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            }
+
+            public DbSet<Book> Books { get; set; }
+            public DbSet<Library> Libraries { get; set; }
+            public DbSet<LibraryBook> LibraryBooks { get; set; }
+            public DbSet<LibraryMembership> LibraryMemberships { get; set; }
+            public DbSet<BookLoan> BookLoans { get; set; }
         }
-
-        public DbSet<User> Users { get; set; }
-        public DbSet<Book> Books { get; set; }
-        public DbSet<Library> Libraries { get; set; }
-        public DbSet<LibraryBook> LibraryBooks { get; set; }
-        public DbSet<LibraryMembership> LibraryMemberships { get; set; }
     }
-}

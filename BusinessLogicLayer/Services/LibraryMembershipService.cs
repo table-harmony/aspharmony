@@ -7,6 +7,7 @@ namespace BusinessLogicLayer.Services
         Task CreateAsync(User user, Library library, MembershipRole role);
         Task<IEnumerable<LibraryMembership>> GetMembersByLibraryIdAsync(int libraryId);
         Task DeleteAsync(int libraryId, string userId);
+        Task<bool> IsMemberAsync(int libraryId, string userId);
     }
 
     public class LibraryMembershipService : ILibraryMembershipService
@@ -35,6 +36,11 @@ namespace BusinessLogicLayer.Services
         public async Task DeleteAsync(int libraryId, string userId)
         {
             await _libraryMembershipRepository.DeleteAsync(libraryId, userId);
+        }
+
+        public async Task<bool> IsMemberAsync(int libraryId, string userId) {
+            var membership = await _libraryMembershipRepository.GetByLibraryAndUserIdAsync(libraryId, userId);
+            return membership != null;
         }
     }
 }

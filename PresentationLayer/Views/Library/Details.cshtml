@@ -25,7 +25,7 @@
             <tr>
                 <th>Title</th>
                 <th>Author</th>
-                <th>Amount</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -34,7 +34,9 @@
                 <tr>
                     <td>@libraryBook.Book.Title</td>
                     <td>@libraryBook.Book.Author.UserName</td>
-                    <td>@libraryBook.Amount</td>
+                    <td>
+                        <a asp-action="BookDetails" asp-route-libraryBookId="@libraryBook.Id" class="btn btn-info btn-sm">Details</a>
+                    </td>
                 </tr>
             }
         </tbody>

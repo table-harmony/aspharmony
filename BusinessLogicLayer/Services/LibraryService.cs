@@ -12,6 +12,7 @@ namespace BusinessLogicLayer.Services {
         Task<Library> GetByIdAsync(int id);
         Task<IEnumerable<Library>> GetAllAsync();
         Task AddBookToLibraryAsync(int libraryId, int bookId);
+        Task<LibraryBook> GetLibraryBookByIdAsync(int libraryBookId);
     }
 
     public class LibraryService : ILibraryService {
@@ -70,19 +71,16 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task AddBookToLibraryAsync(int libraryId, int bookId) {
-            var library = await _libraryRepository.GetByIdAsync(libraryId);
-            var book = await _bookService.GetByIdAsync(bookId);
-
-            if (library == null || book == null)
-                throw new NotFoundException();
-
             var libraryBook = new LibraryBook {
                 LibraryId = libraryId,
-                BookId = bookId,
-                Amount = 1  // You might want to make this configurable
+                BookId = bookId
             };
 
             await _libraryRepository.AddBookAsync(libraryBook);
+        }
+
+        public async Task<LibraryBook> GetLibraryBookByIdAsync(int libraryBookId) {
+            return await _libraryRepository.GetLibraryBookByIdAsync(libraryBookId);
         }
     }
 }

@@ -1,5 +1,8 @@
+@using BusinessLogicLayer.Services
 @using DataAccessLayer.Entities
+@using Microsoft.AspNet.Identity
 @model IEnumerable<DataAccessLayer.Entities.Library>
+@inject ILibraryMembershipService LibraryMembershipService
 
 <h2>All Libraries</h2>
 
@@ -20,6 +23,16 @@
                 <td>@library.Name</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@library.Id" class="btn btn-info btn-sm">Details</a>
+                    @{
+                        var userId = "ddd";
+                        var isMember = await LibraryMembershipService.IsMemberAsync(library.Id, userId);
+                        if (!isMember) {
+                            <form asp-action="JoinLibrary" method="post" style="display: inline;">
+                                <input type="hidden" name="libraryId" value="@library.Id" />
+                                <button type="submit" class="btn btn-primary btn-sm">Join</button>
+                            </form>
+                        }
+                    }
                 </td>
             </tr>
         }

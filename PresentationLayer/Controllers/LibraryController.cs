@@ -13,15 +13,18 @@ namespace PresentationLayer.Controllers
         private readonly ILibraryMembershipService _libraryMembershipService;
         private readonly IBookService _bookService;
         private readonly IUserService _userService;
+        private readonly IBookLoanService _bookLoanService;
 
         public LibraryController(ILibraryService libraryService, 
                                     IBookService bookService, 
                                     IUserService userService,
-                                    ILibraryMembershipService libraryMembershipService) {
+                                    ILibraryMembershipService libraryMembershipService,
+                                    IBookLoanService bookLoanService) {
             _libraryService = libraryService;
             _bookService = bookService;
             _userService = userService;
             _libraryMembershipService = libraryMembershipService;
+            _bookLoanService = bookLoanService;
         }
 
         public async Task<IActionResult> Index() {
@@ -166,6 +169,65 @@ namespace PresentationLayer.Controllers
             await _libraryService.AddBookToLibraryAsync(libraryId, bookId);
 
             return RedirectToAction(nameof(Details), new { id = libraryId });
+        }
+
+        public async Task<IActionResult> BookDetails(int libraryBookId)
+        {
+            var libraryBook = await _libraryService.GetLibraryBookByIdAsync(libraryBookId);
+            if (libraryBook == null)
+            {
+                return NotFound();
+            }
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var isMember = await _libraryMembershipService.IsMemberAsync(libraryBook.LibraryId, userId);
+            if (!isMember)
+            {
+                return Forbid();
+            }
+
+            var pastLoans = await _bookLoanService.GetPastLoansByLibraryBookIdAsync(libraryBookId);
+            var currentLoan = await _bookLoanService.GetCurrentLoanByLibraryBookIdAsync(libraryBookId);
+
+            var viewModel = new BookDetailsViewModel
+            {
+                LibraryBook = libraryBook,
+                PastLoans = pastLoans,
+                CurrentLoan = currentLoan,
+                CanBeBorrowed = currentLoan == null
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LoanBook(int libraryBookId, int libraryId, DateTime dueDate)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var libraryBook = await _libraryService.GetLibraryBookByIdAsync(libraryBookId);
+            
+            if (libraryBook == null)
+            {
+                return NotFound();
+            }
+
+            var isMember = await _libraryMembershipService.IsMemberAsync(libraryId, userId);
+            if (!isMember)
+            {
+                return Forbid();
+            }
+
+            var currentLoan = await _bookLoanService.GetCurrentLoanByLibraryBookIdAsync(libraryBookId);
+            if (currentLoan != null)
+            {
+                ModelState.AddModelError("", "This book is already on loan.");
+                return RedirectToAction(nameof(BookDetails), new { libraryBookId = libraryBookId });
+            }
+
+            await _bookLoanService.CreateLoanAsync(libraryBookId, userId, libraryId, dueDate);
+            return RedirectToAction(nameof(BookDetails), new { libraryBookId = libraryBookId });
         }
 
         [HttpPost]

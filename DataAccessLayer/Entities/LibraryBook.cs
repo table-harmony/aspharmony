@@ -14,6 +14,6 @@ namespace DataAccessLayer.Entities {
         public Library Library { get; set; }
         public int LibraryId { get; set; }
 
-        public int Amount { get; set; }
+        public ICollection<BookLoan> Loans { get; set; }
     }
 }

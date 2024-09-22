@@ -50,6 +50,8 @@ builder.Services.AddScoped<ILibraryService, LibraryService>();
 builder.Services.AddScoped<ILibraryRepository, LibraryRepository>();
 builder.Services.AddScoped<ILibraryMembershipService, LibraryMembershipService>();
 builder.Services.AddScoped<ILibraryMembershipRepository, LibraryMembershipRepository>();
+builder.Services.AddScoped<IBookLoanService, BookLoanService>();
+builder.Services.AddScoped<IBookRepository, BookRepository>();
 
 var app = builder.Build();
 

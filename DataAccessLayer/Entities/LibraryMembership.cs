@@ -14,5 +14,6 @@
         public int LibraryId { get; set; }
 
         public MembershipRole Role { get; set; }
+        public ICollection<BookLoan> BookLoans { get; set; }
     }
 }

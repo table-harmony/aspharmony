@@ -13,6 +13,7 @@ namespace DataAccessLayer.Repositories {
         Task UpdateAsync(Library library);
         Task DeleteAsync(int id);
         Task AddBookAsync(LibraryBook libraryBook);
+        Task<LibraryBook> GetLibraryBookByIdAsync(int libraryBookId);
     }
 
     public class LibraryRepository : ILibraryRepository {
@@ -75,6 +76,13 @@ namespace DataAccessLayer.Repositories {
         public async Task AddBookAsync(LibraryBook libraryBook) {
             await _context.LibraryBooks.AddAsync(libraryBook);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<LibraryBook> GetLibraryBookByIdAsync(int libraryBookId) {
+            return await _context.LibraryBooks
+                .Include(lb => lb.Book)
+                .Include(lb => lb.Library)
+                .FirstOrDefaultAsync(lb => lb.Id == libraryBookId);
         }
     }
 }

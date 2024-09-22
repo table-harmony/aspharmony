@@ -12,6 +12,7 @@ namespace DataAccessLayer.Repositories {
         Task DeleteAsync(int id);
         Task<IEnumerable<LibraryMembership>> GetMembersByLibraryIdAsync(int libraryId);
         Task DeleteAsync(int libraryId, string userId);
+        Task<LibraryMembership> GetByLibraryAndUserIdAsync(int libraryId, string userId);
     }
 
     public class LibraryMembershipRepository : ILibraryMembershipRepository {
@@ -66,6 +67,11 @@ namespace DataAccessLayer.Repositories {
 
             _context.LibraryMemberships.Remove(membership);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<LibraryMembership> GetByLibraryAndUserIdAsync(int libraryId, string userId) {
+            return await _context.LibraryMemberships
+                .FirstOrDefaultAsync(m => m.LibraryId == libraryId && m.UserId == userId);
         }
     }
 

@@ -13,5 +13,7 @@ namespace DataAccessLayer.Entities {
 
         public string AuthorId { get; set; }
         public User Author { get; set; }
+
+        public ICollection<LibraryBook> LibraryBooks { get; set; }
     }
 }
