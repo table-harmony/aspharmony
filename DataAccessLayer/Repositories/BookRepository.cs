@@ -20,11 +20,15 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task<Book> GetByIdAsync(int id) {
-            return await _context.Books.FindAsync(id);
+            return await _context.Books
+                .Include(b => b.Author)
+                .FirstOrDefaultAsync(b => b.Id == id);
         }
 
         public async Task<IEnumerable<Book>> GetAllAsync() {
-            return await _context.Books.ToListAsync();
+            return await _context.Books
+                .Include(b => b.Author)
+                .ToListAsync();
         }
 
         public async Task CreateAsync(Book book) {

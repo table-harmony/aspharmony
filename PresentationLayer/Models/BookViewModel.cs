@@ -15,5 +15,7 @@ namespace PresentationLayer.Models
 
         [Required]
         public string Content { get; set; }
+
+        public string AuthorName { get; set; }
     }
 }

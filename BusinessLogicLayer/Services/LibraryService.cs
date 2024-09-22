@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.Entities;
 using DataAccessLayer.Repositories;
+using Utils.Exceptions;
 
 namespace BusinessLogicLayer.Services {
     public interface ILibraryService {
@@ -10,23 +11,27 @@ namespace BusinessLogicLayer.Services {
         IEnumerable<LibraryMembership> GetMemberships(int id);
         Task<Library> GetByIdAsync(int id);
         Task<IEnumerable<Library>> GetAllAsync();
+        Task AddBookToLibraryAsync(int libraryId, int bookId);
     }
 
     public class LibraryService : ILibraryService {
         private readonly ILibraryRepository _libraryRepository;
         private readonly ILibraryMembershipService _membershipService;
-        private readonly IUserRepository _userRepository;
+        private readonly IBookService _bookService;
+        private readonly IUserService _userService;
 
         public LibraryService(ILibraryRepository libraryRepository, 
                                 ILibraryMembershipService membershipsService,
-                                IUserRepository userRepository) {
+                                IUserService userService,
+                                IBookService bookService) {
             _libraryRepository = libraryRepository;
-            _userRepository = userRepository;
+            _userService = userService;
             _membershipService = membershipsService;
+            _bookService = bookService;
         }
 
         public async Task CreateAsync(string name, string userId) {
-            User user = await _userRepository.GetByIdAsync(userId);
+            User user = await _userService.GetByIdAsync(userId);
             Library library = new() {
                 Name = name,
             };
@@ -62,6 +67,22 @@ namespace BusinessLogicLayer.Services {
 
         public IEnumerable<LibraryBook> GetBooks(int id) {
             return _libraryRepository.GetBooks(id);
+        }
+
+        public async Task AddBookToLibraryAsync(int libraryId, int bookId) {
+            var library = await _libraryRepository.GetByIdAsync(libraryId);
+            var book = await _bookService.GetByIdAsync(bookId);
+
+            if (library == null || book == null)
+                throw new NotFoundException();
+
+            var libraryBook = new LibraryBook {
+                LibraryId = libraryId,
+                BookId = bookId,
+                Amount = 1  // You might want to make this configurable
+            };
+
+            await _libraryRepository.AddBookAsync(libraryBook);
         }
     }
 }

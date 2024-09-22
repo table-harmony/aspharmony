@@ -7,12 +7,12 @@
     <h4>@Model.Name</h4>
     <hr />
 
-    @if (User.IsInRole("Admin") || Model.Memberships.Any(m => m.UserId == ViewBag.UserId && m.Role == MembershipRole.Manager)) {
+    @if (User.IsInRole("Admin") || ViewBag.IsManager) {
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
         <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
     }
 
-    @if (!Model.Memberships.Any(m => m.UserId == ViewBag.UserId)) {
+    @if (!ViewBag.IsMember) {
         <form asp-action="JoinLibrary" method="post">
             <input type="hidden" name="libraryId" value="@Model.Id" />
             <button type="submit" class="btn btn-primary">Join Library</button>
@@ -25,7 +25,7 @@
             <tr>
                 <th>Title</th>
                 <th>Author</th>
-                <th>Actions</th>
+                <th>Amount</th>
             </tr>
         </thead>
         <tbody>
@@ -34,13 +34,59 @@
                 <tr>
                     <td>@libraryBook.Book.Title</td>
                     <td>@libraryBook.Book.Author.UserName</td>
-                    <td>
-                        <a asp-controller="Book" asp-action="Details" asp-route-id="@libraryBook.BookId" class="btn btn-info btn-sm">Details</a>
-                    </td>
+                    <td>@libraryBook.Amount</td>
                 </tr>
             }
         </tbody>
     </table>
+
+    @if (ViewBag.IsManager)
+    {
+        <h5>Add Book to Library</h5>
+        <form asp-action="AddBook" method="post">
+            <input type="hidden" name="libraryId" value="@Model.Id" />
+            <div class="form-group">
+                <label for="bookId">Select a Book:</label>
+                <select name="bookId" class="form-control">
+                    @foreach (var book in ViewBag.AvailableBooks)
+                    {
+                        <option value="@book.Id">@book.Title by @book.Author.UserName</option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Book</button>
+
+            <h5>Library Members</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var member in ViewBag.Members)
+                    {
+                        <tr>
+                            <td>@member.User.UserName</td>
+                            <td>@member.Role</td>
+                            <td>
+                                @if (member.Role != MembershipRole.Manager)
+                                {
+                                    <form asp-action="RemoveMember" method="post">
+                                        <input type="hidden" name="libraryId" value="@Model.Id" />
+                                        <input type="hidden" name="userId" value="@member.UserId" />
+                                        <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </form>
+    }
 </div>
 
 <div>

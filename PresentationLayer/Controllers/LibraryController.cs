@@ -38,10 +38,18 @@ namespace PresentationLayer.Controllers
             }
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            ViewBag.IsManager = library.Memberships.Any(m => m.UserId == userId && m.Role == MembershipRole.Manager);
+            
+            ViewBag.IsManager = library.Memberships != null && 
+                library.Memberships.Any(m => m.UserId == userId && m.Role == MembershipRole.Manager);
+            ViewBag.IsMember = library.Memberships != null &&
+                library.Memberships.Any(m => m.UserId == userId);
 
             var availableBooks = await _bookService.GetAllAsync();
             ViewBag.AvailableBooks = availableBooks.Where(b => !library.Books.Any(lb => lb.BookId == b.Id));
+
+            if (ViewBag.IsManager) {
+                ViewBag.Members = await _libraryMembershipService.GetMembersByLibraryIdAsync(id);
+            }
 
             return View(library);
         }
@@ -155,8 +163,7 @@ namespace PresentationLayer.Controllers
                 return Forbid();
             }
 
-            // Implement this method in your LibraryService
-            //await _libraryService.AddBookToLibraryAsync(libraryId, bookId);
+            await _libraryService.AddBookToLibraryAsync(libraryId, bookId);
 
             return RedirectToAction(nameof(Details), new { id = libraryId });
         }
@@ -176,6 +183,27 @@ namespace PresentationLayer.Controllers
             }
 
             await _libraryMembershipService.CreateAsync(user, library, MembershipRole.Member);
+            return RedirectToAction(nameof(Details), new { id = libraryId });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveMember(int libraryId, string userId)
+        {
+            var library = await _libraryService.GetByIdAsync(libraryId);
+            if (library == null)
+            {
+                return NotFound();
+            }
+
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!User.IsInRole("Admin") && !library.Memberships.Any(m => m.UserId == currentUserId && m.Role == MembershipRole.Manager))
+            {
+                return Forbid();
+            }
+
+            await _libraryMembershipService.DeleteAsync(libraryId, userId);
             return RedirectToAction(nameof(Details), new { id = libraryId });
         }
     }

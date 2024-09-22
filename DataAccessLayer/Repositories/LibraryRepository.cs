@@ -12,6 +12,7 @@ namespace DataAccessLayer.Repositories {
         Task CreateAsync(Library library);
         Task UpdateAsync(Library library);
         Task DeleteAsync(int id);
+        Task AddBookAsync(LibraryBook libraryBook);
     }
 
     public class LibraryRepository : ILibraryRepository {
@@ -22,7 +23,11 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task<Library> GetByIdAsync(int id) {
-            return await _context.Libraries.FindAsync(id);
+            return await _context.Libraries
+                .Include(l => l.Memberships)
+                .Include(l => l.Books)
+                    .ThenInclude(lb => lb.Book)
+                .FirstOrDefaultAsync(l => l.Id == id);
         }
 
         public IEnumerable<LibraryMembership> GetMemberships(int id) {
@@ -64,6 +69,11 @@ namespace DataAccessLayer.Repositories {
                 throw new NotFoundException();
 
             _context.Libraries.Remove(library);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddBookAsync(LibraryBook libraryBook) {
+            await _context.LibraryBooks.AddAsync(libraryBook);
             await _context.SaveChangesAsync();
         }
     }

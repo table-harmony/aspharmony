@@ -14,6 +14,7 @@
         <tr>
             <th>Title</th>
             <th>Description</th>
+            <th>Author</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -22,6 +23,7 @@
             <tr>
                 <td>@book.Title</td>
                 <td>@book.Description</td>
+                <td>@(book.Author?.UserName ?? "Unknown")</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@book.Id" class="btn btn-info btn-sm">Details</a>
                     @if (User.IsInRole("Admin") || User.FindFirst(ClaimTypes.NameIdentifier)?.Value == book.AuthorId) {

@@ -8,7 +8,6 @@ using System.Security.Claims;
 
 namespace PresentationLayer.Controllers
 {
-    [Authorize]
     public class BookController : Controller {
         private readonly IBookService _bookService;
         private readonly IUserService _userService;
@@ -55,16 +54,13 @@ namespace PresentationLayer.Controllers
                 return NotFound();
             }
 
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (!User.IsInRole("Admin") && book.AuthorId != userId) {
-                return Forbid();
-            }
-
-            var viewModel = new BookViewModel {
+            var viewModel = new BookViewModel
+            {
                 Id = book.Id,
                 Title = book.Title,
                 Description = book.Description,
-                Content = book.Content
+                Content = book.Content,
+                AuthorName = book.Author?.UserName ?? "Unknown"
             };
 
             return View(viewModel);
@@ -95,7 +91,7 @@ namespace PresentationLayer.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Admin,Author")]
+        [Authorize]
         public async Task<IActionResult> Delete(int id) {
             var book = await _bookService.GetByIdAsync(id);
             if (book == null) {
@@ -110,8 +106,8 @@ namespace PresentationLayer.Controllers
             return View(book);
         }
 
+        [Authorize]
         [HttpPost, ActionName("Delete")]
-        [Authorize(Roles = "Admin,Author")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id) {
             var book = await _bookService.GetByIdAsync(id);
