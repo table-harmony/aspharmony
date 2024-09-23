@@ -1,138 +1,53 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using BusinessLogicLayer.Services;
-using PresentationLayer.Models;
-using Utils.Exceptions;
-using DataAccessLayer.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using DataAccessLayer.Entities;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace PresentationLayer.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class AdminController : Controller {
-        private readonly IUserService _userService;
+    public class AdminController : Controller
+    {
         private readonly UserManager<User> _userManager;
+        private readonly ILogger<AdminController> _logger;
 
-        public AdminController(IUserService userService, UserManager<User> userManager) {
-            _userService = userService;
+        public AdminController(UserManager<User> userManager, ILogger<AdminController> logger)
+        {
             _userManager = userManager;
+            _logger = logger;
         }
 
-        public async Task<IActionResult> Index() {
-            var users = await _userService.GetAllAsync();
+        public IActionResult Index()
+        {
+            var users = _userManager.Users.ToList();
             return View(users);
         }
 
-        public IActionResult Create() {
-            return View();
-        }
-
         [HttpPost]
-        public async Task<IActionResult> Create(CreateUserViewModel model) {
-
-            if (!ModelState.IsValid)
-                return View(model);
-
-            try {
-                await _userService.CreateAsync(model.Email, model.Password);
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)  {
-                string error = "Something went wrong";
-
-                if (ex is PublicException)
-                    error = ex.Message;
-
-                ModelState.AddModelError("CustomError", error);
-            }
-            return View(model);
-        }
-
-        public async Task<IActionResult> Edit(string id) {
-            try {
-                var user = await _userManager.FindByIdAsync(id);
-                if (user == null)
-                    return NotFound();
-
-                var viewModel = new EditUserViewModel {
-                    Id = user.Id,
-                    Email = user.Email
-                };
-
-                return View(viewModel);
-            }
-            catch (NotFoundException) {
-                return NotFound();
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Edit(string id, EditUserViewModel model) {
-            if (id != model.Id) {
-                return NotFound();
-            }
-
-            if (!ModelState.IsValid)
-                return View(model);
-
-            try {
-                var user = await _userManager.FindByIdAsync(id);
-                if (user == null)
-                    return NotFound();
-
-                user.Email = model.Email;
-                user.UserName = model.Email;
-
-                var result = await _userManager.UpdateAsync(user);
-
-                if (!string.IsNullOrEmpty(model.NewPassword)) {
-                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
-                }
-
-                if (result.Succeeded)
-                    return RedirectToAction(nameof(Index));
-
-                foreach (var error in result.Errors)
-                    ModelState.AddModelError(string.Empty, error.Description);
-            }
-            catch (Exception ex) {
-                ModelState.AddModelError(string.Empty, "An error occurred while updating the user.");
-            }
-
-            return View(model);
-        }
-
-        public async Task<IActionResult> Details(string id) {
-            try {
-                var user = await _userService.GetByIdAsync(id);
-                return View(user);
-            }
-            catch (NotFoundException) {
-                return NotFound();
-            }
-        }
-
-        public async Task<IActionResult> Delete(string id) {
-            try {
-                var user = await _userService.GetByIdAsync(id);
-                return View(user);
-            }
-            catch (NotFoundException) {
-                return NotFound();
-            }
-        }
-
-        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id) {
-            try {
-                await _userService.DeleteAsync(id);
-                return RedirectToAction(nameof(Index));
-            }
-            catch (NotFoundException) {
+        public async Task<IActionResult> DeleteUser(string userId)
+        {
+            _logger.LogInformation($"Deleting user {userId}");
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                _logger.LogError($"User {userId} not found");
                 return NotFound();
             }
+
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                _logger.LogError($"Failed to delete user {userId}");
+                return BadRequest("Failed to delete user.");
+            }
+
+            _logger.LogInformation($"Successfully deleted user {userId}");
+            return RedirectToAction(nameof(Index));
         }
     }
 }

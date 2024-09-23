@@ -1,6 +1,8 @@
 ﻿using DataAccessLayer.Entities;
 using DataAccessLayer.Repositories;
 using Utils.Exceptions;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace BusinessLogicLayer.Services {
     public interface IBookService {
@@ -13,9 +15,15 @@ namespace BusinessLogicLayer.Services {
 
     public class BookService : IBookService {
         private readonly IBookRepository _bookRepository;
+        private readonly INotificationService _notificationService;
 
-        public BookService(IBookRepository bookRepository) {
+        public event BookEventHandler? BookAdded;
+        public event BookEventHandler? BookEdited;
+        public event BookEventHandler? BookDeleted;
+
+        public BookService(IBookRepository bookRepository, INotificationService notificationService) {
             _bookRepository = bookRepository;
+            _notificationService = notificationService;
         }
 
         public async Task<Book> GetByIdAsync(int id) {
@@ -35,6 +43,8 @@ namespace BusinessLogicLayer.Services {
                 AuthorId = authorId
             };
             await _bookRepository.CreateAsync(book);
+            await _notificationService.CreateAsync(authorId, $"Your book '{title}' has been added.");
+            BookAdded?.Invoke(this, new BookEventArgs { Book = book });
         }
 
         public async Task UpdateAsync(Book book) {
@@ -48,10 +58,26 @@ namespace BusinessLogicLayer.Services {
             existingBook.Content = book.Content;
 
             await _bookRepository.UpdateAsync(existingBook);
+            await _notificationService.CreateAsync(existingBook.AuthorId, $"Your book '{existingBook.Title}' has been edited.");
+            BookEdited?.Invoke(this, new BookEventArgs { Book = existingBook });
         }
 
         public async Task DeleteAsync(int id) {
+            var book = await _bookRepository.GetByIdAsync(id);
+            if (book == null) {
+                throw new NotFoundException();
+            }
+
             await _bookRepository.DeleteAsync(id);
+            await _notificationService.CreateAsync(book.AuthorId, $"Your book '{book.Title}' has been deleted.");
+            BookDeleted?.Invoke(this, new BookEventArgs { Book = book });
         }
+    }
+
+    public delegate void BookEventHandler(object sender, BookEventArgs e);
+
+    public class BookEventArgs : EventArgs
+    {
+        public Book Book { get; set; }
     }
 }

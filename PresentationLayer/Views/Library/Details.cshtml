@@ -1,5 +1,6 @@
 @using DataAccessLayer.Entities
 @model DataAccessLayer.Entities.Library
+@using System.Security.Claims
 
 <h2>Library Details</h2>
 
@@ -12,13 +13,6 @@ else
     <div class="mb-4">
         <h4>@Model.Name</h4>
         <hr />
-
-        @if (User.IsInRole("Admin") || ViewBag.IsManager) {
-            <div class="mb-3">
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning me-2">Edit</a>
-                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
-            </div>
-        }
     </div>
 
     <div class="mb-4">
@@ -27,6 +21,7 @@ else
             <thead>
                 <tr>
                     <th>Title</th>
+                    <th>Description</th>
                     <th>Author</th>
                     <th>Actions</th>
                 </tr>
@@ -36,10 +31,11 @@ else
                 {
                     <tr>
                         <td>@libraryBook.Book.Title</td>
-                        <td>@libraryBook.Book.Author.UserName</td>
+                        <td>@libraryBook.Book.Description</td>
+                        <td>@(libraryBook.Book.Author?.UserName ?? "Unknown")</td>
                         <td>
-                            <a asp-action="BookDetails" asp-route-libraryBookId="@libraryBook.Id" class="btn btn-info btn-sm me-2">Details</a>
-                            @if (User.IsInRole("Admin") || ViewBag.IsManager)
+                            <a asp-action="BookDetails" asp-route-libraryBookId="@libraryBook.Id" class="btn btn-info btn-sm">Details</a>
+                            @if (User.IsInRole("Admin"))
                             {
                                 <form asp-action="RemoveBook" method="post" class="d-inline">
                                     <input type="hidden" name="libraryId" value="@Model.Id" />
@@ -72,6 +68,33 @@ else
                 </div>
                 <button type="submit" class="btn btn-primary" id="addBookButton" disabled>Add Book</button>
             </form>
+        </div>
+
+        <div class="mb-4">
+            <h5>Members</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>User Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var member in ViewBag.Members)
+                    {
+                        <tr>
+                            <td>@member.User.UserName</td>
+                            <td>
+                                <form asp-action="RemoveMember" method="post" class="d-inline">
+                                    <input type="hidden" name="libraryId" value="@Model.Id" />
+                                    <input type="hidden" name="userId" value="@member.UserId" />
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to remove this member from the library?');">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
 
         @section Scripts {

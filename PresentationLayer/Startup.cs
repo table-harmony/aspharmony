@@ -47,6 +47,7 @@ namespace PresentationLayer
             services.AddScoped<ILibraryRepository, LibraryRepository>();
             services.AddScoped<ILibraryMembershipRepository, LibraryMembershipRepository>();
             services.AddScoped<IBookLoanRepository, BookLoanRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
 
             // Register services
             services.AddScoped<IBookService, BookService>();
@@ -55,6 +56,7 @@ namespace PresentationLayer
             services.AddScoped<ILibraryMembershipService, LibraryMembershipService>();
             services.AddScoped<IBookLoanService, BookLoanService>();
             services.AddScoped<IEventsService, EventsService>();
+            services.AddScoped<INotificationService, NotificationService>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();

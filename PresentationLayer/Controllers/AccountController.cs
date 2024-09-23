@@ -4,6 +4,8 @@ using PresentationLayer.Models;
 using DataAccessLayer.Entities;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using DataAccessLayer.Repositories;
+using BusinessLogicLayer.Services;
 
 namespace PresentationLayer.Controllers
 {
@@ -11,12 +13,20 @@ namespace PresentationLayer.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly INotificationService _notificationService;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, INotificationService notificationService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _notificationService = notificationService;
         }
+
+        public delegate void UserRegisteredEventHandler(object sender, UserEventArgs e);
+        public event UserRegisteredEventHandler UserRegistered;
+
+        public delegate void UserLoggedInEventHandler(object sender, UserEventArgs e);
+        public event UserLoggedInEventHandler UserLoggedIn;
 
         [HttpGet]
         public IActionResult Register()
@@ -33,6 +43,7 @@ namespace PresentationLayer.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    UserRegistered?.Invoke(this, new UserEventArgs { User = user });
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Index", "Home");
                 }
@@ -58,9 +69,22 @@ namespace PresentationLayer.Controllers
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    UserLoggedIn?.Invoke(this, new UserEventArgs { User = user });
                     return RedirectToAction("Index", "Home");
                 }
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                if (result.IsLockedOut)
+                {
+                    ModelState.AddModelError(string.Empty, "This account has been locked out, please try again later.");
+                }
+                else if (result.IsNotAllowed)
+                {
+                    ModelState.AddModelError(string.Empty, "This account is not allowed to sign in.");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                }
             }
             return View(model);
         }
@@ -83,18 +107,15 @@ namespace PresentationLayer.Controllers
                 return NotFound();
             }
 
-            var model = new ProfileViewModel
-            {
-                Email = user.Email,
-                UserName = user.UserName
-            };
+            var model = new UpdatePasswordViewModel();
 
             return View(model);
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Profile(ProfileViewModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Profile(UpdatePasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -104,14 +125,13 @@ namespace PresentationLayer.Controllers
                     return NotFound();
                 }
 
-                user.UserName = model.UserName;
-                user.Email = model.Email;
-
-                var result = await _userManager.UpdateAsync(user);
+                var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
                 if (result.Succeeded)
                 {
+                    await _signInManager.RefreshSignInAsync(user);
                     return RedirectToAction("Profile");
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
@@ -132,7 +152,6 @@ namespace PresentationLayer.Controllers
 
             var model = new DeleteViewModel
             {
-                Email = user.Email,
                 UserName = user.UserName
             };
 
@@ -162,13 +181,34 @@ namespace PresentationLayer.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
 
-            var model = new ProfileViewModel
+            var model = new DeleteViewModel
             {
-                Email = user.Email,
                 UserName = user.UserName
             };
 
             return View("Profile", model);
         }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Notifications()
+        {
+            var userId = _userManager.GetUserId(User);
+            var notifications = await _notificationService.GetByUserIdAsync(userId);
+            return View(notifications);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteNotification(int id)
+        {
+            await _notificationService.DeleteAsync(id);
+            return RedirectToAction(nameof(Notifications));
+        }
+    }
+
+    public class UserEventArgs : EventArgs {
+        public User User { get; set; }
     }
 }

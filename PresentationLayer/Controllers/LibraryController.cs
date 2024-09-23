@@ -38,15 +38,20 @@ namespace PresentationLayer.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var isMember = await _libraryMembershipService.IsMemberAsync(id, userId);
+            if (!isMember)
+            {
+                return Forbid();
+            }
+
             try
             {
                 var library = await _libraryService.GetByIdAsync(id);
                 if (library == null) {
-                    throw new NotFoundException();
+                    return NotFound();
                 }
 
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                
                 ViewBag.IsManager = library.Memberships != null && 
                     library.Memberships.Any(m => m.UserId == userId && m.Role == MembershipRole.Manager);
                 ViewBag.IsMember = library.Memberships != null &&
@@ -280,27 +285,6 @@ namespace PresentationLayer.Controllers
             }
 
             await _libraryMembershipService.CreateAsync(user, library, MembershipRole.Member);
-            return RedirectToAction(nameof(Details), new { id = libraryId });
-        }
-
-        [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RemoveMember(int libraryId, string userId)
-        {
-            var library = await _libraryService.GetByIdAsync(libraryId);
-            if (library == null)
-            {
-                return NotFound();
-            }
-
-            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (!User.IsInRole("Admin") && !library.Memberships.Any(m => m.UserId == currentUserId && m.Role == MembershipRole.Manager))
-            {
-                return Forbid();
-            }
-
-            await _libraryMembershipService.DeleteAsync(libraryId, userId);
             return RedirectToAction(nameof(Details), new { id = libraryId });
         }
 

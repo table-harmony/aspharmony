@@ -23,15 +23,11 @@
             <tr>
                 <td>@library.Name</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@library.Id" class="btn btn-info btn-sm">Details</a>
                     @{
                         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                         var isMember = await LibraryMembershipService.IsMemberAsync(library.Id, userId);
-                        if (!isMember) {
-                            <form asp-action="JoinLibrary" method="post" style="display: inline;">
-                                <input type="hidden" name="libraryId" value="@library.Id" />
-                                <button type="submit" class="btn btn-primary btn-sm">Join</button>
-                            </form>
+                        if (isMember) {
+                            <a asp-action="Details" asp-route-id="@library.Id" class="btn btn-info btn-sm">Details</a>
                         }
                     }
                 </td>

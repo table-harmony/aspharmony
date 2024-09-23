@@ -1,23 +1,35 @@
-@model PresentationLayer.Models.ProfileViewModel
+@model PresentationLayer.Models.UpdatePasswordViewModel
 
 <h2>Profile</h2>
 
 <form asp-action="Profile" method="post">
-    <div class="form-group mb-4">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="CurrentPassword"></label>
+        <input asp-for="CurrentPassword" class="form-control" type="password" />
+        <span asp-validation-for="CurrentPassword" class="text-danger"></span>
     </div>
-    <div class="form-group mb-4">
-        <label asp-for="UserName"></label>
-        <input asp-for="UserName" class="form-control" />
-        <span asp-validation-for="UserName" class="text-danger"></span>
+    <div class="form-group">
+        <label asp-for="NewPassword"></label>
+        <input asp-for="NewPassword" class="form-control" type="password" />
+        <span asp-validation-for="NewPassword" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Save</button>
+    <div class="form-group">
+        <label asp-for="ConfirmNewPassword"></label>
+        <input asp-for="ConfirmNewPassword" class="form-control" type="password" />
+        <span asp-validation-for="ConfirmNewPassword" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Change Password</button>
 </form>
 
 <hr />
 
-<h3>Delete Account</h3>
-<p>Warning: This action cannot be undone.</p>
-<a asp-action="Delete" class="btn btn-danger">Delete Account</a>
+<h3>Account Management</h3>
+<p>
+    <a asp-action="Notifications class="btn btn-info">Notifications</a>
+    <a asp-action="Delete" class="btn btn-danger">Delete Account</a>
+</p>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

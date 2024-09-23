@@ -103,5 +103,39 @@ namespace BusinessLogicLayer.Services {
             library.Books.Remove(libraryBook);
             await _libraryRepository.UpdateAsync(library);
         }
+
+        public delegate void MemberEventHandler(object sender, MemberEventArgs e);
+        public event MemberEventHandler MemberAdded;
+        public event MemberEventHandler MemberRemoved;
+
+        public async Task AddMemberAsync(int libraryId, string userId)
+        {
+            var library = await _libraryRepository.GetByIdAsync(libraryId);
+            if (library == null)
+            {
+                throw new NotFoundException();
+            }
+
+            var user = await _userService.GetByIdAsync(userId);
+            if (user == null)
+                throw new NotFoundException();
+            
+
+            await _membershipService.CreateAsync(user, library, MembershipRole.Member);
+            MemberAdded?.Invoke(this, new MemberEventArgs { Library = library, User = user });
+        }
+
+        public async Task RemoveMemberAsync(int libraryId, string userId) {
+            await _membershipService.DeleteAsync(libraryId, userId);
+            MemberRemoved?.Invoke(this, new MemberEventArgs { LibraryId = libraryId, UserId = userId });
+        }
     }
+}
+
+public class MemberEventArgs : EventArgs
+{
+    public Library Library { get; set; }
+    public User User { get; set; }
+    public int LibraryId { get; set; }
+    public string UserId { get; set; }
 }

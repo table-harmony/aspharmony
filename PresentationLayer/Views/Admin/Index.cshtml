@@ -1,15 +1,12 @@
 ﻿@model IEnumerable<DataAccessLayer.Entities.User>
 
-<h2>Users</h2>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<h2>Manage Users</h2>
 
 <table class="table">
     <thead>
         <tr>
             <th>Email</th>
+            <th>User Name</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -17,10 +14,12 @@
         @foreach (var user in Model) {
             <tr>
                 <td>@user.Email</td>
+                <td>@user.UserName</td>
                 <td>
-                    <a asp-action="Edit" class="btn btn-warning  btn-sm" asp-route-id="@user.Id">Edit</a>
-                    <a asp-action="Details" class="btn btn-info  btn-sm" asp-route-id="@user.Id">Details</a>
-                    <a asp-action="Delete" class="btn btn-danger  btn-sm" asp-route-id="@user.Id">Delete</a>
+                    <form asp-action="DeleteUser" method="post" class="d-inline">
+                        <input type="hidden" name="userId" value="@user.Id" />
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?');">Delete</button>
+                    </form>
                 </td>
             </tr>
         }

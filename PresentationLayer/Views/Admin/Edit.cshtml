@@ -5,19 +5,9 @@
 <form asp-action="Edit">
     <input type="hidden" asp-for="Id" />
     <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="NewPassword"></label>
-        <input asp-for="NewPassword" class="form-control" type="password" />
-        <span asp-validation-for="NewPassword" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="ConfirmNewPassword"></label>
-        <input asp-for="ConfirmNewPassword" class="form-control" type="password" />
-        <span asp-validation-for="ConfirmNewPassword" class="text-danger"></span>
+        <label asp-for="UserName"></label>
+        <input asp-for="UserName" class="form-control" />
+        <span asp-validation-for="UserName" class="text-danger"></span>
     </div>
     @Html.ValidationMessage("CustomError")
     <button type="submit" class="btn btn-primary">Save</button>

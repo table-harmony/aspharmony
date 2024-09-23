@@ -2,6 +2,8 @@
 using DataAccessLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using Utils.Exceptions;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace DataAccessLayer.Repositories {
     public interface IBookRepository {

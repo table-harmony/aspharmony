@@ -1,5 +1,7 @@
 using DataAccessLayer.Entities;
 using DataAccessLayer.Repositories;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Services
 {
@@ -8,6 +10,7 @@ namespace BusinessLogicLayer.Services
         Task<IEnumerable<LibraryMembership>> GetMembersByLibraryIdAsync(int libraryId);
         Task DeleteAsync(int libraryId, string userId);
         Task<bool> IsMemberAsync(int libraryId, string userId);
+        Task<LibraryMembership> GetByLibraryAndUserIdAsync(int libraryId, string userId); // Add this method
     }
 
     public class LibraryMembershipService : ILibraryMembershipService
@@ -41,6 +44,11 @@ namespace BusinessLogicLayer.Services
         public async Task<bool> IsMemberAsync(int libraryId, string userId) {
             var membership = await _libraryMembershipRepository.GetByLibraryAndUserIdAsync(libraryId, userId);
             return membership != null;
+        }
+
+        public async Task<LibraryMembership> GetByLibraryAndUserIdAsync(int libraryId, string userId) // Implement this method
+        {
+            return await _libraryMembershipRepository.GetByLibraryAndUserIdAsync(libraryId, userId);
         }
     }
 }
