@@ -37,7 +37,7 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task UpdateAsync(Book book) {
-            _context.Books.Update(book);
+            _context.Entry(book).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
 

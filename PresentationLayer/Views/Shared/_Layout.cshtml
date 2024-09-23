@@ -39,13 +39,37 @@
                             </li>
                         }
                     </ul>
-                    <partial name="_LoginPartial" />
+                    <ul class="navbar-nav">
+                        @if (SignInManager.IsSignedIn(User)) {
+                            <li class="nav-item">
+                                <a id="manage" class="nav-link text-dark" asp-controller="Account" asp-action="Profile" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+                            </li>
+                            <li class="nav-item">
+                                <form id="logoutForm" class="form-inline" asp-controller="Account" asp-action="Logout">
+                                    <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
+                                </form>
+                            </li>
+                        } else {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" id="register" asp-controller="Account" asp-action="Register">Register</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" id="login" asp-controller="Account" asp-action="Login">Login</a>
+                            </li>
+                        }
+                    </ul>
                 </div>
             </div>
         </nav>
     </header>
     <main class="flex-shrink-0">
         <div class="container">
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @TempData["ErrorMessage"]
+                </div>
+            }
             @RenderBody()
         </div>
     </main>

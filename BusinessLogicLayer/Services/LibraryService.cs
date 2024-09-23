@@ -13,6 +13,7 @@ namespace BusinessLogicLayer.Services {
         Task<IEnumerable<Library>> GetAllAsync();
         Task AddBookToLibraryAsync(int libraryId, int bookId);
         Task<LibraryBook> GetLibraryBookByIdAsync(int libraryBookId);
+        Task RemoveBookFromLibraryAsync(int libraryId, int libraryBookId);
     }
 
     public class LibraryService : ILibraryService {
@@ -46,7 +47,12 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task<Library> GetByIdAsync(int id) {
-            return await _libraryRepository.GetByIdAsync(id);
+            var library = await _libraryRepository.GetByIdAsync(id);
+            if (library == null)
+            {
+                throw new NotFoundException();
+            }
+            return library;
         }
 
         public async Task<IEnumerable<Library>> GetAllAsync() {
@@ -81,6 +87,21 @@ namespace BusinessLogicLayer.Services {
 
         public async Task<LibraryBook> GetLibraryBookByIdAsync(int libraryBookId) {
             return await _libraryRepository.GetLibraryBookByIdAsync(libraryBookId);
+        }
+
+        public async Task RemoveBookFromLibraryAsync(int libraryId, int libraryBookId) {
+            var library = await _libraryRepository.GetByIdAsync(libraryId);
+            if (library == null) {
+                throw new NotFoundException();
+            }
+
+            var libraryBook = library.Books.FirstOrDefault(lb => lb.Id == libraryBookId);
+            if (libraryBook == null) {
+                throw new NotFoundException();
+            }
+
+            library.Books.Remove(libraryBook);
+            await _libraryRepository.UpdateAsync(library);
         }
     }
 }

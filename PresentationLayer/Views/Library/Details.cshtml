@@ -3,94 +3,87 @@
 
 <h2>Library Details</h2>
 
-<div>
-    <h4>@Model.Name</h4>
-    <hr />
+@if (Model == null)
+{
+    <p>Library not found.</p>
+}
+else
+{
+    <div class="mb-4">
+        <h4>@Model.Name</h4>
+        <hr />
 
-    @if (User.IsInRole("Admin") || ViewBag.IsManager) {
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
-        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
-    }
+        @if (User.IsInRole("Admin") || ViewBag.IsManager) {
+            <div class="mb-3">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning me-2">Edit</a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+            </div>
+        }
+    </div>
 
-    @if (!ViewBag.IsMember) {
-        <form asp-action="JoinLibrary" method="post">
-            <input type="hidden" name="libraryId" value="@Model.Id" />
-            <button type="submit" class="btn btn-primary">Join Library</button>
-        </form>
-    }
-
-    <h5>Books in this Library</h5>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Author</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var libraryBook in Model.Books)
-            {
+    <div class="mb-4">
+        <h5>Books in this Library</h5>
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@libraryBook.Book.Title</td>
-                    <td>@libraryBook.Book.Author.UserName</td>
-                    <td>
-                        <a asp-action="BookDetails" asp-route-libraryBookId="@libraryBook.Id" class="btn btn-info btn-sm">Details</a>
-                    </td>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var libraryBook in Model.Books)
+                {
+                    <tr>
+                        <td>@libraryBook.Book.Title</td>
+                        <td>@libraryBook.Book.Author.UserName</td>
+                        <td>
+                            <a asp-action="BookDetails" asp-route-libraryBookId="@libraryBook.Id" class="btn btn-info btn-sm me-2">Details</a>
+                            @if (User.IsInRole("Admin") || ViewBag.IsManager)
+                            {
+                                <form asp-action="RemoveBook" method="post" class="d-inline">
+                                    <input type="hidden" name="libraryId" value="@Model.Id" />
+                                    <input type="hidden" name="libraryBookId" value="@libraryBook.Id" />
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to remove this book from the library?');">Remove</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
     @if (ViewBag.IsManager)
     {
-        <h5>Add Book to Library</h5>
-        <form asp-action="AddBook" method="post">
-            <input type="hidden" name="libraryId" value="@Model.Id" />
-            <div class="form-group">
-                <label for="bookId">Select a Book:</label>
-                <select name="bookId" class="form-control">
-                    @foreach (var book in ViewBag.AvailableBooks)
-                    {
-                        <option value="@book.Id">@book.Title by @book.Author.UserName</option>
-                    }
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Add Book</button>
+        <div class="mb-4">
+            <h5>Add Book to Library</h5>
+            <form asp-action="AddBook" method="post" id="addBookForm">
+                <input type="hidden" name="libraryId" value="@Model.Id" />
+                <div class="form-group mb-3">
+                    <label for="bookId" class="form-label">Select a Book:</label>
+                    <select name="bookId" id="bookId" class="form-select">
+                        <option value="">-- Select a book --</option>
+                        @foreach (var book in ViewBag.AvailableBooks)
+                        {
+                            <option value="@book.Id">@book.Title by @book.Author.UserName</option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" id="addBookButton" disabled>Add Book</button>
+            </form>
+        </div>
 
-            <h5>Library Members</h5>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Role</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var member in ViewBag.Members)
-                    {
-                        <tr>
-                            <td>@member.User.UserName</td>
-                            <td>@member.Role</td>
-                            <td>
-                                @if (member.Role != MembershipRole.Manager)
-                                {
-                                    <form asp-action="RemoveMember" method="post">
-                                        <input type="hidden" name="libraryId" value="@Model.Id" />
-                                        <input type="hidden" name="userId" value="@member.UserId" />
-                                        <button type="submit" class="btn btn-danger btn-sm">Remove</button>
-                                    </form>
-                                }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </form>
+        @section Scripts {
+            <script>
+                document.getElementById('bookId').addEventListener('change', function() {
+                    document.getElementById('addBookButton').disabled = !this.value;
+                });
+            </script>
+        }
     }
-</div>
 
-<div>
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-</div>
+    <div>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+}

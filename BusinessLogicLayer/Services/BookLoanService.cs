@@ -3,6 +3,7 @@ using DataAccessLayer.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Utils.Exceptions;
 
 namespace BusinessLogicLayer.Services {
 
@@ -46,15 +47,13 @@ namespace BusinessLogicLayer.Services {
         public async Task CreateLoanAsync(int libraryBookId, string userId, int libraryId, DateTime dueDate)
         {
             var membership = await _libraryMembershipRepository.GetByLibraryAndUserIdAsync(libraryId, userId);
-            if (membership == null)
-            {
-                throw new InvalidOperationException("User is not a member of this library");
+            if (membership == null) {
+                throw new PublicException("User is not a member of this library");
             }
 
             var currentLoan = await _bookLoanRepository.GetCurrentLoanByLibraryBookIdAsync(libraryBookId);
-            if (currentLoan != null)
-            {
-                throw new InvalidOperationException("This book is already on loan");
+            if (currentLoan != null) {
+                throw new PublicException("This book is already on loan");
             }
 
             var bookLoan = new BookLoan
@@ -72,9 +71,9 @@ namespace BusinessLogicLayer.Services {
         public async Task ReturnBookAsync(int bookLoanId)
         {
             var bookLoan = await _bookLoanRepository.GetByIdAsync(bookLoanId);
-            if (bookLoan == null || bookLoan.ReturnDate.HasValue)
+            if (bookLoan == null)
             {
-                throw new InvalidOperationException("Invalid book loan or book already returned");
+                throw new NotFoundException();
             }
 
             bookLoan.ReturnDate = DateTime.Now;

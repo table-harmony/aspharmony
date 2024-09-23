@@ -2,6 +2,29 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+<div class="text-center p-lg-5">
+    <h1 class="display-4">Welcome to AspHarmony Library</h1>
+    <p class="lead">Your digital gateway to a world of books and knowledge.</p>
+    
+    <div class="my-5 text-center">
+        <img src="https://images.theconversation.com/files/45159/original/rptgtpxd-1396254731.jpg?ixlib=rb-4.1.0&q=45&auto=format&w=754&h=502&fit=crop&dpr=1" alt="AspHarmony Library" class="img-fluid rounded shadow" />
+    </div>
+</div>
+
+<div class="row mt-4 p-lg-3 mb-5">
+    <div class="col-md-4 text-center">
+        <h3>Explore Libraries</h3>
+        <p>Discover our vast collection of digital libraries.</p>
+        <a asp-controller="Library" asp-action="Index" class="btn btn-primary">Browse Libraries</a>
+    </div>
+    <div class="col-md-4 text-center">
+        <h3>Find Books</h3>
+        <p>Search through books across various genres.</p>
+        <a asp-controller="Book" asp-action="Index" class="btn btn-primary">Explore Books</a>
+    </div>
+    <div class="col-md-4 text-center">
+        <h3>Join the Community</h3>
+        <p>Become a part of our growing community.</p>
+        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-primary">Sign Up</a>
+    </div>
 </div>

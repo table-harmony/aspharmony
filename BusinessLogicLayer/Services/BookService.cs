@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.Entities;
 using DataAccessLayer.Repositories;
+using Utils.Exceptions;
 
 namespace BusinessLogicLayer.Services {
     public interface IBookService {
@@ -26,18 +27,27 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task CreateAsync(string title, string description, string content, string authorId) {
-            Book book = new() {
+            var book = new Book
+            {
                 Title = title,
                 Description = description,
                 Content = content,
                 AuthorId = authorId
             };
-
             await _bookRepository.CreateAsync(book);
         }
 
         public async Task UpdateAsync(Book book) {
-            await _bookRepository.UpdateAsync(book);
+            var existingBook = await _bookRepository.GetByIdAsync(book.Id);
+            if (existingBook == null) {
+                throw new NotFoundException();
+            }
+
+            existingBook.Title = book.Title;
+            existingBook.Description = book.Description;
+            existingBook.Content = book.Content;
+
+            await _bookRepository.UpdateAsync(existingBook);
         }
 
         public async Task DeleteAsync(int id) {

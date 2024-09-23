@@ -18,9 +18,9 @@
             <tr>
                 <td>@user.Email</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@user.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@user.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@user.Id">Delete</a>
+                    <a asp-action="Edit" class="btn btn-warning  btn-sm" asp-route-id="@user.Id">Edit</a>
+                    <a asp-action="Details" class="btn btn-info  btn-sm" asp-route-id="@user.Id">Details</a>
+                    <a asp-action="Delete" class="btn btn-danger  btn-sm" asp-route-id="@user.Id">Delete</a>
                 </td>
             </tr>
         }
