@@ -14,8 +14,7 @@ namespace PresentationLayer.Controllers
         private readonly UserManager<User> _userManager;
         private readonly ILogger<AdminController> _logger;
 
-        public AdminController(UserManager<User> userManager, ILogger<AdminController> logger)
-        {
+        public AdminController(UserManager<User> userManager, ILogger<AdminController> logger) {
             _userManager = userManager;
             _logger = logger;
         }
@@ -28,25 +27,15 @@ namespace PresentationLayer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteUser(string userId)
-        {
-            _logger.LogInformation($"Deleting user {userId}");
-
+        public async Task<IActionResult> DeleteUser(string userId) {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
-            {
-                _logger.LogError($"User {userId} not found");
                 return NotFound();
-            }
 
             var result = await _userManager.DeleteAsync(user);
             if (!result.Succeeded)
-            {
-                _logger.LogError($"Failed to delete user {userId}");
                 return BadRequest("Failed to delete user.");
-            }
 
-            _logger.LogInformation($"Successfully deleted user {userId}");
             return RedirectToAction(nameof(Index));
         }
     }

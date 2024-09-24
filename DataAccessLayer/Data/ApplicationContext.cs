@@ -88,7 +88,7 @@ namespace DataAccessLayer.Data {
                     .HasForeignKey(bl => bl.LibraryId)
                     .OnDelete(DeleteBehavior.Restrict);
 
-                // Notification
+                //Notification
                 modelBuilder.Entity<Notification>()
                     .HasOne(n => n.User)
                     .WithMany(u => u.Notifications)

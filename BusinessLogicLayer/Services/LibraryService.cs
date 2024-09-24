@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Entities;
+﻿using System;
+using DataAccessLayer.Entities;
 using DataAccessLayer.Repositories;
 using Utils.Exceptions;
 
@@ -14,6 +15,12 @@ namespace BusinessLogicLayer.Services {
         Task AddBookToLibraryAsync(int libraryId, int bookId);
         Task<LibraryBook> GetLibraryBookByIdAsync(int libraryBookId);
         Task RemoveBookFromLibraryAsync(int libraryId, int libraryBookId);
+        Task<IEnumerable<User>> GetLibraryManagersAsync(int libraryId);
+        Task AddMemberAsync(int libraryId, string userId);
+        Task RemoveMemberAsync(int libraryId, string userId);
+        Task DeleteLibraryAsync(int libraryId, string userId);
+        Task RemoveBookFromLibraryAsync(int libraryId, int bookId, string userId);
+        Task<bool> IsLibraryManagerAsync(int libraryId, string userId);
     }
 
     public class LibraryService : ILibraryService {
@@ -104,38 +111,67 @@ namespace BusinessLogicLayer.Services {
             await _libraryRepository.UpdateAsync(library);
         }
 
-        public delegate void MemberEventHandler(object sender, MemberEventArgs e);
-        public event MemberEventHandler MemberAdded;
-        public event MemberEventHandler MemberRemoved;
-
         public async Task AddMemberAsync(int libraryId, string userId)
         {
             var library = await _libraryRepository.GetByIdAsync(libraryId);
             if (library == null)
-            {
                 throw new NotFoundException();
-            }
-
+            
             var user = await _userService.GetByIdAsync(userId);
             if (user == null)
                 throw new NotFoundException();
             
 
             await _membershipService.CreateAsync(user, library, MembershipRole.Member);
-            MemberAdded?.Invoke(this, new MemberEventArgs { Library = library, User = user });
+            
+            var managers = await GetLibraryManagersAsync(libraryId);
+          
         }
 
         public async Task RemoveMemberAsync(int libraryId, string userId) {
             await _membershipService.DeleteAsync(libraryId, userId);
-            MemberRemoved?.Invoke(this, new MemberEventArgs { LibraryId = libraryId, UserId = userId });
+        }
+
+        public async Task<IEnumerable<User>> GetLibraryManagersAsync(int libraryId) {
+            var library = await _libraryRepository.GetByIdAsync(libraryId);
+            if (library == null)
+                throw new NotFoundException();
+
+            return library.Memberships
+                .Where(m => m.Role == MembershipRole.Manager)
+                .Select(m => m.User)
+                .ToList();
+        }
+
+        public async Task DeleteLibraryAsync(int libraryId, string userId) {
+            var isManager = await IsLibraryManagerAsync(libraryId, userId);
+            if (!isManager) {
+                throw new UnauthorizedAccessException("Only library managers can delete libraries.");
+            }
+
+            await _libraryRepository.DeleteAsync(libraryId);
+        }
+
+        public async Task RemoveBookFromLibraryAsync(int libraryId, int bookId, string userId) {
+            var isManager = await IsLibraryManagerAsync(libraryId, userId);
+            if (!isManager) {
+                throw new UnauthorizedAccessException("Only library managers can remove books from libraries.");
+            }
+
+            var library = await _libraryRepository.GetByIdAsync(libraryId);
+            var libraryBook = library.Books.FirstOrDefault(lb => lb.BookId == bookId);
+            if (libraryBook == null)
+                throw new NotFoundException();
+            
+
+            library.Books.Remove(libraryBook);
+            await _libraryRepository.UpdateAsync(library);
+        }
+
+        public async Task<bool> IsLibraryManagerAsync(int libraryId, string userId)
+        {
+            var membership = await _membershipService.GetByLibraryAndUserIdAsync(libraryId, userId);
+            return membership != null && membership.Role == MembershipRole.Manager;
         }
     }
-}
-
-public class MemberEventArgs : EventArgs
-{
-    public Library Library { get; set; }
-    public User User { get; set; }
-    public int LibraryId { get; set; }
-    public string UserId { get; set; }
 }

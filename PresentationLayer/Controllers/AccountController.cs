@@ -6,49 +6,36 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using DataAccessLayer.Repositories;
 using BusinessLogicLayer.Services;
+using BusinessLogicLayer.Events;
 
 namespace PresentationLayer.Controllers
 {
-    public class AccountController : Controller
-    {
+    public class AccountController : Controller {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly INotificationService _notificationService;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, INotificationService notificationService)
-        {
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, INotificationService notificationService) {
             _userManager = userManager;
             _signInManager = signInManager;
             _notificationService = notificationService;
         }
 
-        public delegate void UserRegisteredEventHandler(object sender, UserEventArgs e);
-        public event UserRegisteredEventHandler UserRegistered;
-
-        public delegate void UserLoggedInEventHandler(object sender, UserEventArgs e);
-        public event UserLoggedInEventHandler UserLoggedIn;
-
         [HttpGet]
-        public IActionResult Register()
-        {
+        public IActionResult Register() {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
+        public async Task<IActionResult> Register(RegisterViewModel model) {
+            if (ModelState.IsValid) {
                 var user = new User { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    UserRegistered?.Invoke(this, new UserEventArgs { User = user });
+                if (result.Succeeded) {
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Index", "Home");
                 }
-                foreach (var error in result.Errors)
-                {
+                foreach (var error in result.Errors) {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
@@ -56,33 +43,24 @@ namespace PresentationLayer.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login()
-        {
+        public IActionResult Login() {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
+        public async Task<IActionResult> Login(LoginViewModel model) {
+            if (ModelState.IsValid) {
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
-                {
+                if (result.Succeeded) {
                     var user = await _userManager.FindByEmailAsync(model.Email);
-                    UserLoggedIn?.Invoke(this, new UserEventArgs { User = user });
+                    UserEvents.OnUserLoggedIn(user.Id);
                     return RedirectToAction("Index", "Home");
                 }
-                if (result.IsLockedOut)
-                {
+                if (result.IsLockedOut) {
                     ModelState.AddModelError(string.Empty, "This account has been locked out, please try again later.");
-                }
-                else if (result.IsNotAllowed)
-                {
+                } else if (result.IsNotAllowed) {
                     ModelState.AddModelError(string.Empty, "This account is not allowed to sign in.");
-                }
-                else
-                {
+                } else {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                 }
             }
@@ -91,23 +69,23 @@ namespace PresentationLayer.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Logout()
-        {
+        public async Task<IActionResult> Logout() {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Profile()
-        {
+        public async Task<IActionResult> Profile() {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
+            if (user == null) {
                 return NotFound();
             }
 
-            var model = new UpdatePasswordViewModel();
+            var model = new ProfileViewModel {
+                UpdatePasswordViewModel = new UpdatePasswordViewModel(),
+                Notifications = await _notificationService.GetUserNotificationsAsync(user.Id)
+            };
 
             return View(model);
         }
@@ -115,25 +93,20 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Profile(UpdatePasswordViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
+        public async Task<IActionResult> Profile(UpdatePasswordViewModel model) {
+            if (ModelState.IsValid) {
                 var user = await _userManager.GetUserAsync(User);
-                if (user == null)
-                {
+                if (user == null) {
                     return NotFound();
                 }
 
                 var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
-                if (result.Succeeded)
-                {
+                if (result.Succeeded) {
                     await _signInManager.RefreshSignInAsync(user);
                     return RedirectToAction("Profile");
                 }
 
-                foreach (var error in result.Errors)
-                {
+                foreach (var error in result.Errors) {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
@@ -142,16 +115,13 @@ namespace PresentationLayer.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Delete()
-        {
+        public async Task<IActionResult> Delete() {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
+            if (user == null) {
                 return NotFound();
             }
 
-            var model = new DeleteViewModel
-            {
+            var model = new DeleteViewModel {
                 UserName = user.UserName
             };
 
@@ -161,54 +131,28 @@ namespace PresentationLayer.Controllers
         [HttpPost, ActionName("DeleteConfirmed")]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed()
-        {
+        public async Task<IActionResult> DeleteConfirmed() {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
+            if (user == null) {
                 return NotFound();
             }
 
             var result = await _userManager.DeleteAsync(user);
-            if (result.Succeeded)
-            {
+            if (result.Succeeded) {
                 await _signInManager.SignOutAsync();
                 return RedirectToAction("Index", "Home");
             }
 
-            foreach (var error in result.Errors)
-            {
+            foreach (var error in result.Errors) {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
 
-            var model = new DeleteViewModel
-            {
+            var model = new DeleteViewModel {
                 UserName = user.UserName
             };
 
             return View("Profile", model);
         }
 
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> Notifications()
-        {
-            var userId = _userManager.GetUserId(User);
-            var notifications = await _notificationService.GetByUserIdAsync(userId);
-            return View(notifications);
-        }
-
-        [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteNotification(int id)
-        {
-            await _notificationService.DeleteAsync(id);
-            return RedirectToAction(nameof(Notifications));
-        }
-    }
-
-    public class UserEventArgs : EventArgs {
-        public User User { get; set; }
     }
 }

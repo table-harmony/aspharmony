@@ -1,32 +1,51 @@
-@model PresentationLayer.Models.UpdatePasswordViewModel
+@model ProfileViewModel
 
 <h2>Profile</h2>
 
 <form asp-action="Profile" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-group">
-        <label asp-for="CurrentPassword"></label>
-        <input asp-for="CurrentPassword" class="form-control" type="password" />
-        <span asp-validation-for="CurrentPassword" class="text-danger"></span>
+        <label asp-for="UpdatePasswordViewModel.CurrentPassword"></label>
+        <input asp-for="UpdatePasswordViewModel.CurrentPassword" class="form-control" type="password" />
+        <span asp-validation-for="UpdatePasswordViewModel.CurrentPassword" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="NewPassword"></label>
-        <input asp-for="NewPassword" class="form-control" type="password" />
-        <span asp-validation-for="NewPassword" class="text-danger"></span>
+        <label asp-for="UpdatePasswordViewModel.NewPassword"></label>
+        <input asp-for="UpdatePasswordViewModel.NewPassword" class="form-control" type="password" />
+        <span asp-validation-for="UpdatePasswordViewModel.NewPassword" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="ConfirmNewPassword"></label>
-        <input asp-for="ConfirmNewPassword" class="form-control" type="password" />
-        <span asp-validation-for="ConfirmNewPassword" class="text-danger"></span>
+        <label asp-for="UpdatePasswordViewModel.ConfirmNewPassword"></label>
+        <input asp-for="UpdatePasswordViewModel.ConfirmNewPassword" class="form-control" type="password" />
+        <span asp-validation-for="UpdatePasswordViewModel.ConfirmNewPassword" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">Change Password</button>
 </form>
 
 <hr />
 
+<h3>Notifications</h3>
+@if (Model.Notifications.Any())
+{
+    <ul class="list-group">
+        @foreach (var notification in Model.Notifications)
+        {
+            <li class="list-group-item">
+                <span>@notification.Message</span>
+                <small class="text-muted">(@notification.CreatedAt.ToString("g"))</small>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No notifications.</p>
+}
+
+<hr />
+
 <h3>Account Management</h3>
 <p>
-    <a asp-action="Notifications class="btn btn-info">Notifications</a>
     <a asp-action="Delete" class="btn btn-danger">Delete Account</a>
 </p>
 

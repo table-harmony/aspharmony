@@ -10,7 +10,8 @@ namespace BusinessLogicLayer.Services
         Task<IEnumerable<LibraryMembership>> GetMembersByLibraryIdAsync(int libraryId);
         Task DeleteAsync(int libraryId, string userId);
         Task<bool> IsMemberAsync(int libraryId, string userId);
-        Task<LibraryMembership> GetByLibraryAndUserIdAsync(int libraryId, string userId); // Add this method
+        Task<LibraryMembership> GetByLibraryAndUserIdAsync(int libraryId, string userId);
+        Task<bool> IsManagerAsync(int libraryId, string userId); // New method
     }
 
     public class LibraryMembershipService : ILibraryMembershipService
@@ -46,9 +47,14 @@ namespace BusinessLogicLayer.Services
             return membership != null;
         }
 
-        public async Task<LibraryMembership> GetByLibraryAndUserIdAsync(int libraryId, string userId) // Implement this method
+        public async Task<LibraryMembership> GetByLibraryAndUserIdAsync(int libraryId, string userId)
         {
             return await _libraryMembershipRepository.GetByLibraryAndUserIdAsync(libraryId, userId);
+        }
+
+        public async Task<bool> IsManagerAsync(int libraryId, string userId) {
+            var membership = await _libraryMembershipRepository.GetByLibraryAndUserIdAsync(libraryId, userId);
+            return membership != null && membership.Role == MembershipRole.Manager;
         }
     }
 }

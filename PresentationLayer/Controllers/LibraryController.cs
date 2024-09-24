@@ -5,11 +5,12 @@ using DataAccessLayer.Entities;
 using System.Security.Claims;
 using PresentationLayer.Models;
 using Utils.Exceptions;
+using BusinessLogicLayer.Events;
 
 namespace PresentationLayer.Controllers
 {
     [Authorize]
-    public class LibraryController : BaseController
+    public class LibraryController : Controller
     {
         private readonly ILibraryService _libraryService;
         private readonly ILibraryMembershipService _libraryMembershipService;
@@ -36,17 +37,14 @@ namespace PresentationLayer.Controllers
             return View(libraries);
         }
 
-        public async Task<IActionResult> Details(int id)
-        {
+        public async Task<IActionResult> Details(int id) {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var isMember = await _libraryMembershipService.IsMemberAsync(id, userId);
             if (!isMember)
-            {
                 return Forbid();
-            }
+            
 
-            try
-            {
+            try {
                 var library = await _libraryService.GetByIdAsync(id);
                 if (library == null) {
                     return NotFound();
@@ -66,10 +64,17 @@ namespace PresentationLayer.Controllers
 
                 return View(library);
             }
-            catch (Exception ex)
-            {
-                return HandleException(ex);
+            catch (PublicException ex) {
+                ModelState.AddModelError("", ex.Message);
             }
+            catch (Exception ex) {
+                string error = "Something went wrong";
+                if (ex is PublicException)
+                    error = ex.Message;
+                ModelState.AddModelError("", error);
+            }
+
+            return View();
         }
 
         [Authorize]
@@ -172,20 +177,33 @@ namespace PresentationLayer.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddBook(int libraryId, int bookId) {
-            var library = await _libraryService.GetByIdAsync(libraryId);
-            if (library == null)
-            {
-                return NotFound();
+            try {
+                var library = await _libraryService.GetByIdAsync(libraryId);
+                if (library == null) {
+                    return NotFound();
+                }
+
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!User.IsInRole("Admin") && !library.Memberships.Any(m => m.UserId == userId && m.Role == MembershipRole.Manager))
+                {
+                    return Forbid();
+                }
+
+                await _libraryService.AddBookToLibraryAsync(libraryId, bookId);
+                var book = await _bookService.GetByIdAsync(bookId);
+                UserEvents.OnBookAddedToLibrary(book.AuthorId, book.Title, libraryId, library.Name);
+
+                return RedirectToAction(nameof(Details), new { id = libraryId });
             }
-
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (!User.IsInRole("Admin") && !library.Memberships.Any(m => m.UserId == userId && m.Role == MembershipRole.Manager))
-            {
-                return Forbid();
+            catch (PublicException ex) {
+                ModelState.AddModelError("", ex.Message);
             }
-
-            await _libraryService.AddBookToLibraryAsync(libraryId, bookId);
-
+            catch (Exception ex) {
+                string error = "Something went wrong";
+                if (ex is PublicException)
+                    error = ex.Message;
+                ModelState.AddModelError("", error);
+            }
             return RedirectToAction(nameof(Details), new { id = libraryId });
         }
 
@@ -214,8 +232,7 @@ namespace PresentationLayer.Controllers
             var pastLoans = await _bookLoanService.GetPastLoansByLibraryBookIdAsync(libraryBookId);
             var currentLoan = await _bookLoanService.GetCurrentLoanByLibraryBookIdAsync(libraryBookId);
 
-            var viewModel = new BookDetailsViewModel
-            {
+            var viewModel = new BookDetailsViewModel {
                 LibraryBook = libraryBook,
                 Book = book,
                 PastLoans = pastLoans,
@@ -229,31 +246,26 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LoanBook(int libraryBookId, int libraryId, DateTime dueDate)
-        {
-            if (dueDate.Date < DateTime.Now.Date)
-            {
+        public async Task<IActionResult> LoanBook(int libraryBookId, int libraryId, DateTime dueDate) {
+            if (dueDate.Date < DateTime.Now.Date) {
                 ModelState.AddModelError("", "Due date must be today or a future date.");
-                return RedirectToAction(nameof(BookDetails), new { libraryBookId = libraryBookId });
+                return RedirectToAction(nameof(BookDetails), new { libraryBookId });
             }
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var libraryBook = await _libraryService.GetLibraryBookByIdAsync(libraryBookId);
             
             if (libraryBook == null)
-            {
                 return NotFound();
-            }
+            
 
             var isMember = await _libraryMembershipService.IsMemberAsync(libraryId, userId);
             if (!isMember)
-            {
                 return Forbid();
-            }
+            
 
             var currentLoan = await _bookLoanService.GetCurrentLoanByLibraryBookIdAsync(libraryBookId);
-            if (currentLoan != null)
-            {
+            if (currentLoan != null) {
                 ModelState.AddModelError("", "This book is already on loan.");
                 return RedirectToAction(nameof(BookDetails), new { libraryBookId = libraryBookId });
             }
@@ -265,43 +277,50 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> JoinLibrary(int libraryId)
-        {
+        public async Task<IActionResult> JoinLibrary(int libraryId) {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             
-            // Check if the user is already a member
             var isMember = await _libraryMembershipService.IsMemberAsync(libraryId, userId);
-            if (isMember)
-            {
+            if (isMember) {
                 return RedirectToAction(nameof(Details), new { id = libraryId });
             }
 
-            var user = await _userService.GetByIdAsync(userId);
             var library = await _libraryService.GetByIdAsync(libraryId);
-
-            if (library == null || user == null)
-            {
+            if (library == null) {
                 return NotFound();
             }
 
-            await _libraryMembershipService.CreateAsync(user, library, MembershipRole.Member);
+            await _libraryService.AddMemberAsync(libraryId, userId);
+            UserEvents.OnUserJoinedLibrary(userId, libraryId, library.Name);
             return RedirectToAction(nameof(Details), new { id = libraryId });
         }
 
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ReturnBook(int bookLoanId)
-        {
+        public async Task<IActionResult> RemoveMember(int libraryId, string userId) {
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var isManager = await _libraryMembershipService.IsManagerAsync(libraryId, currentUserId);
+            
+            if (!isManager && currentUserId != userId) {
+                return Forbid();
+            }
+
+            await _libraryService.RemoveMemberAsync(libraryId, userId);
+            return RedirectToAction(nameof(Details), new { id = libraryId });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReturnBook(int bookLoanId) {
             var bookLoan = await _bookLoanService.GetByIdAsync(bookLoanId);
-            if (bookLoan == null)
-            {
+            if (bookLoan == null) {
                 return NotFound();
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (bookLoan.UserId != userId)
-            {
+            if (bookLoan.UserId != userId) {
                 return Forbid();
             }
 
@@ -312,22 +331,47 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RemoveBook(int libraryId, int libraryBookId)
+        public async Task<IActionResult> RemoveBook(int libraryId, int bookId)
         {
-            var library = await _libraryService.GetByIdAsync(libraryId);
-            if (library == null)
+            try
             {
-                return NotFound();
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                await _libraryService.RemoveBookFromLibraryAsync(libraryId, bookId, userId);
+                return RedirectToAction(nameof(Details), new { id = libraryId });
             }
-
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (!User.IsInRole("Admin") && !library.Memberships.Any(m => m.UserId == userId && m.Role == MembershipRole.Manager))
+            catch (UnauthorizedAccessException)
             {
                 return Forbid();
             }
+            catch (PublicException ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("", "Something went wrong. Please try again later.");
+            }
+            return RedirectToAction(nameof(Details), new { id = libraryId });
+        }
 
-            await _libraryService.RemoveBookFromLibraryAsync(libraryId, libraryBookId);
-
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteLibrary(int libraryId) {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            try {
+                await _libraryService.DeleteLibraryAsync(libraryId, userId);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (UnauthorizedAccessException) {
+                return Forbid();
+            }
+            catch (PublicException ex) {
+                ModelState.AddModelError("", ex.Message);
+            }
+            catch (Exception) {
+                ModelState.AddModelError("", "Something went wrong. Please try again later.");
+            }
             return RedirectToAction(nameof(Details), new { id = libraryId });
         }
     }

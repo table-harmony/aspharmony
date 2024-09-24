@@ -1,8 +1,3 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using DataAccessLayer.Data;
 using DataAccessLayer.Repositories;
@@ -10,6 +5,7 @@ using BusinessLogicLayer.Services;
 using DataAccessLayer.Entities;
 using Microsoft.AspNetCore.Identity;
 using Utils.Services;
+using BusinessLogicLayer.Initiate;
 
 namespace PresentationLayer
 {
@@ -55,21 +51,21 @@ namespace PresentationLayer
             services.AddScoped<ILibraryService, LibraryService>();
             services.AddScoped<ILibraryMembershipService, LibraryMembershipService>();
             services.AddScoped<IBookLoanService, BookLoanService>();
+            services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IEventsService, EventsService>();
             services.AddScoped<INotificationService, NotificationService>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            EventSubscriber.Subscribe(services.BuildServiceProvider());
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+            if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
+            else {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
@@ -81,27 +77,15 @@ namespace PresentationLayer
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
+            app.UseEndpoints(endpoints => {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
 
-            // create roles
-            using (var scope = app.ApplicationServices.CreateScope()) {
-                var roleManager =
-                    scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-                var roles = new[] { "Admin", "Member" };
-
-                foreach (var role in roles) {
-                    if (!roleManager.RoleExistsAsync(role).Result) {
-                        roleManager.CreateAsync(new IdentityRole(role)).Wait();
-                    }
-                }
-            }
+            // Initialize roles
+            RoleInitializer.InitializeAsync(app.ApplicationServices).Wait();
         }
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Utils.Exceptions;
+using BusinessLogicLayer.Events;
 
 namespace BusinessLogicLayer.Services {
 
@@ -16,17 +17,22 @@ namespace BusinessLogicLayer.Services {
         Task ReturnBookAsync(int bookLoanId);
         Task<IEnumerable<BookLoan>> GetPastLoansByLibraryBookIdAsync(int libraryBookId);
         Task<BookLoan> GetCurrentLoanByLibraryBookIdAsync(int libraryBookId);
+        event EventHandler<BookBorrowedEventArgs> BookBorrowed;
     }
 
     public class BookLoanService : IBookLoanService
     {
         private readonly IBookLoanRepository _bookLoanRepository;
         private readonly ILibraryMembershipRepository _libraryMembershipRepository;
+        private readonly ILibraryService _libraryService;
 
-        public BookLoanService(IBookLoanRepository bookLoanRepository, ILibraryMembershipRepository libraryMembershipRepository)
+        public event EventHandler<BookBorrowedEventArgs> BookBorrowed;
+
+        public BookLoanService(IBookLoanRepository bookLoanRepository, ILibraryMembershipRepository libraryMembershipRepository, ILibraryService libraryService)
         {
             _bookLoanRepository = bookLoanRepository;
             _libraryMembershipRepository = libraryMembershipRepository;
+            _libraryService = libraryService;
         }
 
         public async Task<BookLoan> GetByIdAsync(int id)
@@ -66,6 +72,9 @@ namespace BusinessLogicLayer.Services {
             };
 
             await _bookLoanRepository.CreateAsync(bookLoan);
+
+            var libraryBook = await _libraryService.GetLibraryBookByIdAsync(libraryBookId);
+            BookLoanEvents.OnBookBorrowed(libraryId, userId, libraryBook.Book.Title);
         }
 
         public async Task ReturnBookAsync(int bookLoanId)
@@ -89,5 +98,12 @@ namespace BusinessLogicLayer.Services {
         {
             return await _bookLoanRepository.GetCurrentLoanByLibraryBookIdAsync(libraryBookId);
         }
+    }
+
+    public class BookBorrowedEventArgs : EventArgs
+    {
+        public int LibraryId { get; set; }
+        public string UserId { get; set; }
+        public string BookTitle { get; set; }
     }
 }

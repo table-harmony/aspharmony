@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Authorization;
 using DataAccessLayer.Entities;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Utils.Exceptions;
 
 namespace PresentationLayer.Controllers
 {
-    public class BookController : Controller
-    {
+    public class BookController : Controller {
         private readonly IBookService _bookService;
         private readonly IUserService _userService;
 
@@ -94,11 +94,13 @@ namespace PresentationLayer.Controllers
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex) {
-                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+                    string error = "Something went wrong.";
+                    if (ex is PublicException)
+                        error = ex.Message;
+                    ModelState.AddModelError("", error);
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
 

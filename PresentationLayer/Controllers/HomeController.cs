@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PresentationLayer.Models;
 using System.Diagnostics;
+using Utils.Exceptions;
 using Utils.Services;
 
 namespace PresentationLayer.Controllers
