@@ -1,4 +1,3 @@
-@using System.Security.Claims
 @model DataAccessLayer.Entities.Book
 
 <h2>Book Details</h2>
@@ -19,7 +18,8 @@
 </div>
 <div>
     <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-    @if (User.IsInRole("Admin") || User.FindFirst(ClaimTypes.NameIdentifier)?.Value == Model.AuthorId) {
+    @if (User.IsInRole("Admin") || User.FindFirstValue(ClaimTypes.NameIdentifier) == Model.AuthorId)
+    {
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
         <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
     }

@@ -38,25 +38,30 @@ namespace PresentationLayer
                 .AddDefaultTokenProviders();
 
             // Register repositories
-            services.AddScoped<IBookRepository, BookRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ILibraryRepository, LibraryRepository>();
             services.AddScoped<ILibraryMembershipRepository, LibraryMembershipRepository>();
+            services.AddScoped<IBookRepository, BookRepository>();
+            services.AddScoped<ILibraryBookRepository, LibraryBookRepository>();
             services.AddScoped<IBookLoanRepository, BookLoanRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
 
             // Register services
-            services.AddScoped<IBookService, BookService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ILibraryService, LibraryService>();
             services.AddScoped<ILibraryMembershipService, LibraryMembershipService>();
+            services.AddScoped<IBookService, BookService>();
+            services.AddScoped<ILibraryBookService, LibraryBookService>();
             services.AddScoped<IBookLoanService, BookLoanService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IEventsService, EventsService>();
-            services.AddScoped<INotificationService, NotificationService>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.ConfigureApplicationCookie(options => {
+                options.AccessDeniedPath = "/Account/AccessDenied";
+            });
 
             EventSubscriber.Subscribe(services.BuildServiceProvider());
         }

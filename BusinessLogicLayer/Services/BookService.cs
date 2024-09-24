@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace BusinessLogicLayer.Services {
     public interface IBookService {
-        Task<Book> GetByIdAsync(int id);
+        Task<Book> GetBookAsync(int id);
         Task<IEnumerable<Book>> GetAllAsync();
         Task CreateAsync(string title, string description, string content, string authorId);
         Task UpdateAsync(Book book);
@@ -20,8 +20,8 @@ namespace BusinessLogicLayer.Services {
             _bookRepository = bookRepository;
         }
 
-        public async Task<Book> GetByIdAsync(int id) {
-            return await _bookRepository.GetByIdAsync(id);
+        public async Task<Book> GetBookAsync(int id) {
+            return await _bookRepository.GetBookAsync(id);
         }
 
         public async Task<IEnumerable<Book>> GetAllAsync() {
@@ -29,8 +29,7 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task CreateAsync(string title, string description, string content, string authorId) {
-            var book = new Book
-            {
+            Book book = new Book {
                 Title = title,
                 Description = description,
                 Content = content,
@@ -41,11 +40,10 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task UpdateAsync(Book book) {
-            var existingBook = await _bookRepository.GetByIdAsync(book.Id);
-            if (existingBook == null) {
+            var existingBook = await _bookRepository.GetBookAsync(book.Id);
+            if (existingBook == null)
                 throw new NotFoundException();
-            }
-
+           
             existingBook.Title = book.Title;
             existingBook.Description = book.Description;
             existingBook.Content = book.Content;
@@ -53,12 +51,7 @@ namespace BusinessLogicLayer.Services {
             await _bookRepository.UpdateAsync(existingBook);
         }
 
-        public async Task DeleteAsync(int id) {
-            var book = await _bookRepository.GetByIdAsync(id);
-            if (book == null) {
-                throw new NotFoundException();
-            }
-
+        public async Task DeleteAsync(int id) { 
             await _bookRepository.DeleteAsync(id);
         }
     }

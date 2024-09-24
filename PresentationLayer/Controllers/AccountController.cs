@@ -4,9 +4,7 @@ using PresentationLayer.Models;
 using DataAccessLayer.Entities;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using DataAccessLayer.Repositories;
 using BusinessLogicLayer.Services;
-using BusinessLogicLayer.Events;
 
 namespace PresentationLayer.Controllers
 {
@@ -33,6 +31,7 @@ namespace PresentationLayer.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded) {
                     await _signInManager.SignInAsync(user, isPersistent: false);
+                    await _userManager.AddToRoleAsync(user, "Member");
                     return RedirectToAction("Index", "Home");
                 }
                 foreach (var error in result.Errors) {
@@ -52,8 +51,6 @@ namespace PresentationLayer.Controllers
             if (ModelState.IsValid) {
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded) {
-                    var user = await _userManager.FindByEmailAsync(model.Email);
-                    UserEvents.OnUserLoggedIn(user.Id);
                     return RedirectToAction("Index", "Home");
                 }
                 if (result.IsLockedOut) {

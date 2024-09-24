@@ -1,121 +1,107 @@
-@using DataAccessLayer.Entities
 @model DataAccessLayer.Entities.Library
-@using System.Security.Claims
+@inject BusinessLogicLayer.Services.ILibraryMembershipService LibraryMembershipService
+@inject BusinessLogicLayer.Services.IBookService BookService
 
 <h2>Library Details</h2>
 
-@if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
-{
-    <div class="alert alert-danger">
-        @ViewData["ErrorMessage"]
-    </div>
-}
+<div class="mb-4">
+    <h4>@Model.Name</h4>
+    <hr />
+</div>
 
-@if (Model == null)
-{
-    <p>Library not found.</p>
-}
-else
-{
+<div class="mb-4">
+    <h5>Books in this Library</h5>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Author</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var libraryBook in Model.Books) {
+                <tr>
+                    <td>@libraryBook.Book.Title</td>
+                    <td>@libraryBook.Book.Description</td>
+                    <td>@(libraryBook.Book.Author?.UserName ?? "Unknown")</td>
+                    <td>
+                        <a asp-action="BookDetails" asp-route-libraryBookId="@libraryBook.Id" class="btn btn-info btn-sm">Details</a>
+                        @if (User.IsInRole("Admin") || ViewBag.Membership.Role == MembershipRole.Manager) {
+                            <form asp-action="RemoveBook" method="post" class="d-inline">
+                                <input type="hidden" name="libraryId" value="@Model.Id" />
+                                <input type="hidden" name="libraryBookId" value="@libraryBook.Id" />
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to remove this book from the library?');">Remove</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (ViewBag.Membership.Role == MembershipRole.Manager) {
     <div class="mb-4">
-        <h4>@Model.Name</h4>
-        <hr />
+        <h5>Add Book to Library</h5>
+        <form asp-action="AddBook" method="post" id="addBookForm">
+            <input type="hidden" name="libraryId" value="@Model.Id" />
+            <div class="form-group mb-3">
+                <label for="bookId" class="form-label">Select a Book:</label>
+                <select name="bookId" id="bookId" class="form-select">
+                    <option value="">-- Select a book --</option>
+                    @foreach (var book in ViewBag.AvailableBooks) {
+                        <option value="@book.Id">@book.Title by @book.Author.UserName</option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary" id="addBookButton" disabled>Add Book</button>
+        </form>
     </div>
 
     <div class="mb-4">
-        <h5>Books in this Library</h5>
+        <h5>Members</h5>
         <table class="table">
             <thead>
                 <tr>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Author</th>
+                    <th>User Name</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var libraryBook in Model.Books) {
+                @foreach (var member in ViewBag.Members) {
                     <tr>
-                        <td>@libraryBook.Book.Title</td>
-                        <td>@libraryBook.Book.Description</td>
-                        <td>@(libraryBook.Book.Author?.UserName ?? "Unknown")</td>
+                        <td>@member.User.UserName</td>
                         <td>
-                            <a asp-action="BookDetails" asp-route-libraryBookId="@libraryBook.Id" class="btn btn-info btn-sm">Details</a>
-                            @if (User.IsInRole("Admin")) {
-                                <form asp-action="RemoveBook" method="post" class="d-inline">
-                                    <input type="hidden" name="libraryId" value="@Model.Id" />
-                                    <input type="hidden" name="libraryBookId" value="@libraryBook.Id" />
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to remove this book from the library?');">Remove</button>
-                                </form>
-                            }
+                            <form asp-action="RemoveMember" method="post" class="d-inline">
+                                <input type="hidden" name="libraryId" value="@Model.Id" />
+                                <input type="hidden" name="userId" value="@member.UserId" />
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to remove this member from the library?');">Remove</button>
+                            </form>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
+}
 
-    @if (ViewBag.IsManager) {
-        <div class="mb-4">
-            <h5>Add Book to Library</h5>
-            <form asp-action="AddBook" method="post" id="addBookForm">
-                <input type="hidden" name="libraryId" value="@Model.Id" />
-                <div class="form-group mb-3">
-                    <label for="bookId" class="form-label">Select a Book:</label>
-                    <select name="bookId" id="bookId" class="form-select">
-                        <option value="">-- Select a book --</option>
-                        @foreach (var book in ViewBag.AvailableBooks) {
-                            <option value="@book.Id">@book.Title by @book.Author.UserName</option>
-                        }
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary" id="addBookButton" disabled>Add Book</button>
-            </form>
-        </div>
-
-        <div class="mb-4">
-            <h5>Members</h5>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>User Name</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var member in ViewBag.Members) {
-                        <tr>
-                            <td>@member.User.UserName</td>
-                            <td>
-                                <form asp-action="RemoveMember" method="post" class="d-inline">
-                                    <input type="hidden" name="libraryId" value="@Model.Id" />
-                                    <input type="hidden" name="userId" value="@member.UserId" />
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to remove this member from the library?');">Remove</button>
-                                </form>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-
-        @section Scripts {
-            <script>
-                document.getElementById('bookId').addEventListener('change', function() {
-                    document.getElementById('addBookButton').disabled = !this.value;
-                });
-            </script>
-        }
+<div>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    @if (ViewBag.Membership.Role == MembershipRole.Manager || User.IsInRole("Admin")) {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+        <form asp-action="DeleteLibrary" method="post" style="display: inline;">
+            <input type="hidden" name="libraryId" value="@Model.Id" />
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this library?');">Delete Library</button>
+        </form>
     }
+</div>
 
-    <div>
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-        @if (ViewBag.IsManager) {
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
-            <form asp-action="DeleteLibrary" method="post" style="display: inline;">
-                <input type="hidden" name="libraryId" value="@Model.Id" />
-                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this library?');">Delete Library</button>
-            </form>
-        }
-    </div>
+@section Scripts {
+    <script>
+        document.getElementById('bookId').addEventListener('change', function() {
+            document.getElementById('addBookButton').disabled = !this.value;
+        });
+    </script>
 }

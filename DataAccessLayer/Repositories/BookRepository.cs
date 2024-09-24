@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace DataAccessLayer.Repositories {
     public interface IBookRepository {
-        Task<Book> GetByIdAsync(int id);
+        Task<Book> GetBookAsync(int id);
         Task<IEnumerable<Book>> GetAllAsync();
         Task CreateAsync(Book book);
         Task UpdateAsync(Book book);
@@ -21,7 +21,7 @@ namespace DataAccessLayer.Repositories {
             _context = context;
         }
 
-        public async Task<Book> GetByIdAsync(int id) {
+        public async Task<Book> GetBookAsync(int id) {
             return await _context.Books
                 .Include(b => b.Author)
                 .FirstOrDefaultAsync(b => b.Id == id);
@@ -44,7 +44,7 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task DeleteAsync(int id) {
-            Book book = await GetByIdAsync(id);
+            Book book = await GetBookAsync(id);
 
             if (book == null)
                 throw new NotFoundException();

@@ -6,55 +6,49 @@ using System.Threading.Tasks;
 namespace BusinessLogicLayer.Services
 {
     public interface ILibraryMembershipService {
-        Task CreateAsync(User user, Library library, MembershipRole role);
-        Task<IEnumerable<LibraryMembership>> GetMembersByLibraryIdAsync(int libraryId);
+        Task CreateAsync(string userId, int libraryId, MembershipRole role);
+        IEnumerable<LibraryMembership> GetLibraryMembers(int libraryId);
         Task DeleteAsync(int libraryId, string userId);
-        Task<bool> IsMemberAsync(int libraryId, string userId);
-        Task<LibraryMembership> GetByLibraryAndUserIdAsync(int libraryId, string userId);
-        Task<bool> IsManagerAsync(int libraryId, string userId); // New method
+        Task DeleteAsync(int id);
+        Task<LibraryMembership> GetMembershipAsync(int libraryId, string userId);
+        Task<LibraryMembership> GetMembershipAsync(int id);
     }
 
-    public class LibraryMembershipService : ILibraryMembershipService
-    {
-        private readonly ILibraryMembershipRepository _libraryMembershipRepository;
+    public class LibraryMembershipService : ILibraryMembershipService {
+        private readonly ILibraryMembershipRepository _membershipRepository;
 
-        public LibraryMembershipService(ILibraryMembershipRepository libraryMembershipRepository) {
-            _libraryMembershipRepository = libraryMembershipRepository;
+        public LibraryMembershipService(ILibraryMembershipRepository membershipRepository) {
+            _membershipRepository = membershipRepository;
         }
 
-        public async Task CreateAsync(User user, Library library, MembershipRole role) {
-            var membership = new LibraryMembership {
-                UserId = user.Id,
-                LibraryId = library.Id,
+        public async Task CreateAsync(string userId, int libraryId, MembershipRole role) {
+            LibraryMembership membership = new LibraryMembership {
+                UserId = userId,
+                LibraryId = libraryId,
                 Role = role
             };
 
-            await _libraryMembershipRepository.CreateAsync(membership);
+            await _membershipRepository.CreateAsync(membership);
         }
 
-        public async Task<IEnumerable<LibraryMembership>> GetMembersByLibraryIdAsync(int libraryId)
-        {
-            return await _libraryMembershipRepository.GetMembersByLibraryIdAsync(libraryId);
+        public IEnumerable<LibraryMembership> GetLibraryMembers(int libraryId) {
+            return _membershipRepository.GetLibraryMembers(libraryId);
         }
 
-        public async Task DeleteAsync(int libraryId, string userId)
-        {
-            await _libraryMembershipRepository.DeleteAsync(libraryId, userId);
+        public async Task DeleteAsync(int libraryId, string userId) {
+            await _membershipRepository.DeleteAsync(libraryId, userId);
         }
 
-        public async Task<bool> IsMemberAsync(int libraryId, string userId) {
-            var membership = await _libraryMembershipRepository.GetByLibraryAndUserIdAsync(libraryId, userId);
-            return membership != null;
+        public async Task DeleteAsync(int id) {
+            await _membershipRepository.DeleteAsync(id);
         }
 
-        public async Task<LibraryMembership> GetByLibraryAndUserIdAsync(int libraryId, string userId)
-        {
-            return await _libraryMembershipRepository.GetByLibraryAndUserIdAsync(libraryId, userId);
+        public async Task<LibraryMembership> GetMembershipAsync(int libraryId, string userId) {
+            return await _membershipRepository.GetMembershipAsync(libraryId, userId);
         }
 
-        public async Task<bool> IsManagerAsync(int libraryId, string userId) {
-            var membership = await _libraryMembershipRepository.GetByLibraryAndUserIdAsync(libraryId, userId);
-            return membership != null && membership.Role == MembershipRole.Manager;
+        public async Task<LibraryMembership> GetMembershipAsync(int id) {
+            return await _membershipRepository.GetMembershipAsync(id);
         }
     }
 }

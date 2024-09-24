@@ -5,14 +5,14 @@ using Utils.Exceptions;
 
 namespace DataAccessLayer.Repositories {
     public interface ILibraryMembershipRepository {
-        Task<LibraryMembership> GetById(int id);
-        Task<LibraryMembership> GetByUser(string userId);
         Task CreateAsync(LibraryMembership membership);
+        Task<LibraryMembership> GetUserMembershipsAsync(string userId);
+        Task<LibraryMembership> GetMembershipAsync(int libraryId, string userId);
+        Task<LibraryMembership> GetMembershipAsync(int id);
         Task UpdateAsync(LibraryMembership membership);
         Task DeleteAsync(int id);
-        Task<IEnumerable<LibraryMembership>> GetMembersByLibraryIdAsync(int libraryId);
+        IEnumerable<LibraryMembership> GetLibraryMembers(int libraryId);
         Task DeleteAsync(int libraryId, string userId);
-        Task<LibraryMembership> GetByLibraryAndUserIdAsync(int libraryId, string userId);
     }
 
     public class LibraryMembershipRepository : ILibraryMembershipRepository {
@@ -27,13 +27,23 @@ namespace DataAccessLayer.Repositories {
             await _context.SaveChangesAsync();
         }
 
-        public async Task<LibraryMembership> GetByUser(string userId) {
+        public async Task<LibraryMembership> GetUserMembershipsAsync(string userId) {
             return await _context.LibraryMemberships
-                         .FirstOrDefaultAsync(membership => membership.UserId == userId);
+                .Include(membership => membership.Library)
+                .Include(membership => membership.User)
+                .FirstOrDefaultAsync(membership => membership.UserId == userId);
         }
 
-        public async Task<LibraryMembership> GetById(int id) {
-            return await _context.LibraryMemberships.FindAsync(id);    
+        public async Task<LibraryMembership> GetMembershipAsync(int libraryId, string userId) {
+            return await _context.LibraryMemberships
+                .FirstOrDefaultAsync(m => m.LibraryId == libraryId && m.UserId == userId);
+        }
+
+        public async Task<LibraryMembership> GetMembershipAsync(int id) {
+            return await _context.LibraryMemberships
+                .Include(membership => membership.Library)
+                .Include(membership => membership.User)
+                .FirstOrDefaultAsync(membership => membership.Id == id);
         }
 
         public async Task UpdateAsync(LibraryMembership membership) {
@@ -42,7 +52,7 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task DeleteAsync(int id) {
-            LibraryMembership membership = await GetById(id);
+            LibraryMembership membership = await GetMembershipAsync(id);
 
             if (membership == null)
                 throw new NotFoundException();
@@ -51,27 +61,21 @@ namespace DataAccessLayer.Repositories {
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<LibraryMembership>> GetMembersByLibraryIdAsync(int libraryId) {
-            return await _context.LibraryMemberships
-                .Include(m => m.User)
-                .Where(m => m.LibraryId == libraryId)
-                .ToListAsync();
+        public IEnumerable<LibraryMembership> GetLibraryMembers(int libraryId) {
+            return _context.LibraryMemberships
+                .Include(membership => membership.User)
+                .Where(membership => membership.LibraryId == libraryId)
+                .ToList();
         }
 
         public async Task DeleteAsync(int libraryId, string userId) {
-            var membership = await _context.LibraryMemberships
-                .FirstOrDefaultAsync(m => m.LibraryId == libraryId && m.UserId == userId);
+            var membership = await GetMembershipAsync(libraryId, userId);
 
             if (membership == null)
                 throw new NotFoundException();
 
             _context.LibraryMemberships.Remove(membership);
             await _context.SaveChangesAsync();
-        }
-
-        public async Task<LibraryMembership> GetByLibraryAndUserIdAsync(int libraryId, string userId) {
-            return await _context.LibraryMemberships
-                .FirstOrDefaultAsync(m => m.LibraryId == libraryId && m.UserId == userId);
         }
     }
 

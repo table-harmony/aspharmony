@@ -4,11 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Utils.Exceptions;
 
 namespace DataAccessLayer.Repositories {
     public interface INotificationRepository {
-        Task<Notification> GetByIdAsync(int id);
-        Task<IEnumerable<Notification>> GetByUserIdAsync(string userId);
+        Task<Notification> GetNotificationAsync(int id);
+        Task<IEnumerable<Notification>> GetNotificationAsync(string userId);
         Task CreateAsync(Notification notification);
         Task DeleteAsync(int id);
     }
@@ -20,11 +21,11 @@ namespace DataAccessLayer.Repositories {
             _context = context;
         }
 
-        public async Task<Notification> GetByIdAsync(int id) {
+        public async Task<Notification> GetNotificationAsync(int id) {
             return await _context.Notifications.FindAsync(id);
         }
 
-        public async Task<IEnumerable<Notification>> GetByUserIdAsync(string userId) {
+        public async Task<IEnumerable<Notification>> GetNotificationAsync(string userId) {
             return await _context.Notifications
                 .Where(n => n.UserId == userId)
                 .OrderByDescending(n => n.CreatedAt)
@@ -37,11 +38,13 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task DeleteAsync(int id) {
-            var notification = await _context.Notifications.FindAsync(id);
-            if (notification != null) {
-                _context.Notifications.Remove(notification);
-                await _context.SaveChangesAsync();
-            }
+            var notification = await GetNotificationAsync(id);
+
+            if (notification == null)
+                throw new NotFoundException();
+
+            _context.Notifications.Remove(notification);
+            await _context.SaveChangesAsync();
         }
     }
 }

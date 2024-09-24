@@ -12,8 +12,7 @@ namespace BusinessLogicLayer.Services
         Task DeleteNotificationAsync(int id);
     }
 
-    public class NotificationService : INotificationService
-    {
+    public class NotificationService : INotificationService {
         private readonly INotificationRepository _notificationRepository;
 
         public NotificationService(INotificationRepository notificationRepository) {
@@ -21,7 +20,7 @@ namespace BusinessLogicLayer.Services
         }
 
         public async Task<IEnumerable<Notification>> GetUserNotificationsAsync(string userId) {
-            return await _notificationRepository.GetByUserIdAsync(userId);
+            return await _notificationRepository.GetNotificationAsync(userId);
         }
 
         public async Task CreateNotificationAsync(string userId, string message) {

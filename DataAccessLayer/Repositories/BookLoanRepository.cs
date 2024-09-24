@@ -7,52 +7,28 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repositories {
 
-    public interface IBookLoanRepository
-    {
-        Task<BookLoan> GetByIdAsync(int id);
-        Task<IEnumerable<BookLoan>> GetByUserIdAsync(string userId);
-        Task<IEnumerable<BookLoan>> GetByLibraryIdAsync(int libraryId);
+    public interface IBookLoanRepository {
+        Task<BookLoan> GetBookLoanAsync(int id);
         Task CreateAsync(BookLoan bookLoan);
         Task UpdateAsync(BookLoan bookLoan);
-        Task<IEnumerable<BookLoan>> GetPastLoansByLibraryBookIdAsync(int libraryBookId);
-        Task<BookLoan> GetCurrentLoanByLibraryBookIdAsync(int libraryBookId);
+        IEnumerable<BookLoan> GetBookLoans(int bookId);
+        Task<BookLoan> GetCurrentLoanAsync(int id);
     }
 
-    public class BookLoanRepository : IBookLoanRepository
-    {
+    public class BookLoanRepository : IBookLoanRepository {
         private readonly ApplicationContext _context;
 
         public BookLoanRepository(ApplicationContext context) {
             _context = context;
         }
 
-        public async Task<BookLoan> GetByIdAsync(int id) {
+        public async Task<BookLoan> GetBookLoanAsync(int id) {
             return await _context.BookLoans
-                .Include(bl => bl.User)
-                .Include(bl => bl.LibraryBook)
-                    .ThenInclude(lb => lb.Book)
-                .Include(bl => bl.Library)
-                .FirstOrDefaultAsync(bl => bl.Id == id);
-        }
-
-        public async Task<IEnumerable<BookLoan>> GetByUserIdAsync(string userId) {
-            return await _context.BookLoans
-                .Include(bl => bl.User)
-                .Include(bl => bl.LibraryBook)
-                    .ThenInclude(lb => lb.Book)
-                .Include(bl => bl.Library)
-                .Where(bl => bl.UserId == userId)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<BookLoan>> GetByLibraryIdAsync(int libraryId) {
-            return await _context.BookLoans
-                .Include(bl => bl.User)
-                .Include(bl => bl.LibraryBook)
-                    .ThenInclude(lb => lb.Book)
-                .Include(bl => bl.Library)
-                .Where(bl => bl.LibraryId == libraryId)
-                .ToListAsync();
+                .Include(book => book.LibraryMembership)
+                    .ThenInclude(membership => membership.User)
+                .Include(book => book.LibraryBook)
+                    .ThenInclude(book => book.Book)
+                .FirstOrDefaultAsync(book => book.Id == id);
         }
 
         public async Task CreateAsync(BookLoan bookLoan) {
@@ -65,18 +41,20 @@ namespace DataAccessLayer.Repositories {
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<BookLoan>> GetPastLoansByLibraryBookIdAsync(int libraryBookId) {
-            return await _context.BookLoans
-                .Include(bl => bl.User)
-                .Where(bl => bl.LibraryBookId == libraryBookId && bl.ReturnDate.HasValue)
-                .OrderByDescending(bl => bl.LoanDate)
-                .ToListAsync();
+        public IEnumerable<BookLoan> GetBookLoans(int bookId) {
+            return _context.BookLoans
+                .Include(libraryBook => libraryBook.LibraryMembership)
+                    .ThenInclude(m => m.User)
+                .Where(libraryBook => libraryBook.LibraryBookId == bookId)
+                .OrderByDescending(libraryBook => libraryBook.LoanDate)
+                .ToList();
         }
 
-        public async Task<BookLoan> GetCurrentLoanByLibraryBookIdAsync(int libraryBookId) {
+        public async Task<BookLoan> GetCurrentLoanAsync(int id) {
             return await _context.BookLoans
-                .Include(bl => bl.User)
-                .Where(bl => bl.LibraryBookId == libraryBookId && !bl.ReturnDate.HasValue)
+                .Include(libraryBook => libraryBook.LibraryMembership)
+                    .ThenInclude(membership => membership.User)
+                .Where(libraryBook => libraryBook.LibraryBookId == id && !libraryBook.ReturnDate.HasValue)
                 .FirstOrDefaultAsync();
         }
     }

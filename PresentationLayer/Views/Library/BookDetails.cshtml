@@ -1,85 +1,67 @@
-@model BookDetailsViewModel
-@using System.Security.Claims
+@model PresentationLayer.Models.BookDetailsViewModel
 
-<h2>Book Details</h2>
+<h2>Book Details in Library</h2>
 
-<div class="mb-4">
+<div>
     <h4>@Model.Book.Title</h4>
     <hr />
     <dl class="row">
-        <dt class="col-sm-2">Author</dt>
-        <dd class="col-sm-10">@(Model.Book.Author?.UserName ?? "Unknown")</dd>
         <dt class="col-sm-2">Description</dt>
         <dd class="col-sm-10">@Model.Book.Description</dd>
+
+        <dt class="col-sm-2">Author</dt>
+        <dd class="col-sm-10">@(Model.Book.Author?.UserName ?? "Unknown")</dd>
+
+        <dt class="col-sm-2">Status</dt>
+        <dd class="col-sm-10">
+            @if (Model.CurrentLoan != null) {
+                <span>Currently on loan to @Model.CurrentLoan.LibraryMembership.User.UserName until @Model.CurrentLoan.DueDate.ToShortDateString()</span>
+            }
+            else {
+                <span>Available</span>
+            }
+        </dd>
     </dl>
 </div>
 
-@{
-    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    var isManager = User.IsInRole("Admin") || ((ViewBag.IsManager as bool?) ?? false);
-    var today = DateTime.Now.ToString("yyyy-MM-dd");
+@if (Model.CanBeBorrowed) {
+    <form asp-action="LoanBook" method="post">
+        <input type="hidden" name="libraryBookId" value="@Model.LibraryBook.Id" />
+        <div class="form-group">
+            <label for="dueDate">Due Date:</label>
+            <input type="date" id="dueDate" name="dueDate" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Borrow Book</button>
+    </form>
+}
+else if (Model.CurrentLoan?.LibraryMembership.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) {
+    <form asp-action="ReturnBook" method="post">
+        <input type="hidden" name="bookLoanId" value="@Model.CurrentLoan.Id" />
+        <button type="submit" class="btn btn-success">Return Book</button>
+    </form>
 }
 
-<div class="mb-4">
-    @if (Model.CanBeBorrowed)
-    {
-        <form asp-action="LoanBook" method="post">
-            <input type="hidden" name="libraryBookId" value="@Model.LibraryBook.Id" />
-            <input type="hidden" name="libraryId" value="@Model.LibraryBook.LibraryId" />
-            <div class="form-group mb-3">
-                <label for="dueDate" class="form-label">Due Date</label>
-                <input type="date" name="dueDate" class="form-control" required min="@today" />
-            </div>
-            <button type="submit" class="btn btn-primary">Borrow Book</button>
-        </form>
-    }
-    else if (Model.CurrentLoan != null)
-    {
-        <p>This book is currently on loan to @Model.CurrentLoan.User.UserName until @Model.CurrentLoan.DueDate.ToShortDateString().</p>
-        
-        @if (Model.CurrentLoan.UserId == currentUserId)
-        {
-            <form asp-action="ReturnBook" method="post" class="mt-3">
-                <input type="hidden" name="bookLoanId" value="@Model.CurrentLoan.Id" />
-                <button type="submit" class="btn btn-success">Return Book</button>
-            </form>
-        }
-    }
-</div>
-
-@if (isManager)
-{
-    <div class="mb-4">
-        <form asp-action="RemoveBook" method="post">
-            <input type="hidden" name="libraryId" value="@Model.LibraryBook.LibraryId" />
-            <input type="hidden" name="libraryBookId" value="@Model.LibraryBook.Id" />
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to remove this book from the library?');">Remove Book from Library</button>
-        </form>
-    </div>
-}
-
-<div class="mb-4">
-    <h3>Loan History</h3>
-    <table class="table">
-        <thead>
+<h3>Loan History</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Loan Date</th>
+            <th>Return Date</th>
+            <th>Due Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var loan in Model.PastLoans) {
             <tr>
-                <th>User</th>
-                <th>Loan Date</th>
-                <th>Return Date</th>
+                <td>@loan.LibraryMembership.User.UserName</td>
+                <td>@loan.LoanDate.ToShortDateString()</td>
+                <td>@(loan.ReturnDate?.ToShortDateString() ?? "Not returned")</td>
+                <td>@loan.DueDate.ToShortDateString()</td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var loan in Model.PastLoans)
-            {
-                <tr>
-                    <td>@loan.User.UserName</td>
-                    <td>@loan.LoanDate.ToShortDateString()</td>
-                    <td>@loan.ReturnDate?.ToShortDateString()</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+        }
+    </tbody>
+</table>
 
 <div>
     <a asp-action="Details" asp-route-id="@Model.LibraryBook.LibraryId" class="btn btn-secondary">Back to Library</a>
