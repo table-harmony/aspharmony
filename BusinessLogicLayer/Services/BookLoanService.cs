@@ -1,8 +1,5 @@
 using DataAccessLayer.Repositories;
 using DataAccessLayer.Entities;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Utils.Exceptions;
 using BusinessLogicLayer.Events;
 
@@ -19,9 +16,11 @@ namespace BusinessLogicLayer.Services {
 
     public class BookLoanService : IBookLoanService {
         private readonly IBookLoanRepository _loanRepository;
+        private readonly ILibraryBookService _libraryBookService;
 
-        public BookLoanService(IBookLoanRepository loanRepository) {
+        public BookLoanService(IBookLoanRepository loanRepository, ILibraryBookService libraryBookService) {
             _loanRepository = loanRepository;
+            _libraryBookService = libraryBookService;
         }
 
         public async Task<BookLoan> GetBookLoanAsync(int id) {
@@ -33,12 +32,17 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task CreateAsync(int bookId, int libraryMembershipId, DateTime dueDate) {
+            LibraryBook libraryBook = _libraryBookService.GetLibraryBook(bookId);
+
+            if (libraryBook == null)
+                throw new NotFoundException();
+
             BookLoan currentLoan = await GetCurrentBookLoanAsync(bookId);
             if (currentLoan != null)
                 throw new AuthorizationException();
 
-            BookLoan loan = new BookLoan {
-                LibraryBookId = currentLoan.LibraryBookId,
+            BookLoan loan = new() {
+                LibraryBookId = libraryBook.Id,
                 LibraryMembershipId = libraryMembershipId,
                 LoanDate = DateTime.Now,
                 DueDate = dueDate

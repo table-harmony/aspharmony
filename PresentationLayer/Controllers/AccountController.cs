@@ -81,7 +81,7 @@ namespace PresentationLayer.Controllers
 
             var model = new ProfileViewModel {
                 UpdatePasswordViewModel = new UpdatePasswordViewModel(),
-                Notifications = await _notificationService.GetUserNotificationsAsync(user.Id)
+                Notifications = await _notificationService.GetByUserAsync(user.Id)
             };
 
             return View(model);

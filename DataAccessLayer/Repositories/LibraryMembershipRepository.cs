@@ -52,14 +52,21 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task DeleteAsync(int id) {
-            LibraryMembership membership = await GetMembershipAsync(id);
+            var membership = await _context.LibraryMemberships
+                .Include(m => m.BookLoans)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (membership == null)
                 throw new NotFoundException();
 
+            if (membership.BookLoans.Any()) {
+                _context.BookLoans.RemoveRange(membership.BookLoans);
+            }
+
             _context.LibraryMemberships.Remove(membership);
             await _context.SaveChangesAsync();
         }
+
 
         public IEnumerable<LibraryMembership> GetLibraryMembers(int libraryId) {
             return _context.LibraryMemberships

@@ -24,6 +24,7 @@ namespace DataAccessLayer.Repositories {
                 .Include(l => l.Memberships)
                 .Include(l => l.Books)
                     .ThenInclude(lb => lb.Book)
+                    .ThenInclude(b => b.Author)
                 .FirstOrDefaultAsync(l => l.Id == id);
         }
 

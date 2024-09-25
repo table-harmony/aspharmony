@@ -6,6 +6,7 @@ using System.Security.Claims;
 using PresentationLayer.Models;
 using Utils.Exceptions;
 using BusinessLogicLayer.Events;
+using System.Linq;
 
 namespace PresentationLayer.Controllers
 {
@@ -17,6 +18,7 @@ namespace PresentationLayer.Controllers
         private readonly ILibraryBookService _libraryBookService;
         private readonly IBookService _bookService;
         private readonly IBookLoanService _bookLoanService;
+
         public LibraryController(
             ILibraryService libraryService,
             ILibraryMembershipService libraryMembershipService,
@@ -36,28 +38,32 @@ namespace PresentationLayer.Controllers
         }
 
         public async Task<IActionResult> Details(int id) {
-            var library = await _libraryService.GetLibraryAsync(id);
+            Library library = await _libraryService.GetLibraryAsync(id);
             if (library == null)
                 return NotFound();
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             ViewBag.Membership = await _libraryMembershipService.GetMembershipAsync(id, userId);
 
             if (ViewBag.Membership.Role == MembershipRole.Manager)  {
                 ViewBag.Members = _libraryMembershipService.GetLibraryMembers(id);
 
-                var libraryBooks = _libraryBookService.GetLibraryBooks(id);
                 var allBooks = await _bookService.GetAllAsync();
-                ViewBag.AvailableBooks = allBooks.Where(b => !libraryBooks.Any(lb => lb.BookId == b.Id));
+                var libraryBooks = _libraryBookService.GetLibraryBooks(library.Id);
+
+                ViewBag.AvailableBooks = allBooks
+                    .Where(book => !libraryBooks.Select(lb => lb.BookId).Contains(book.Id))
+                    .ToList();
             }
 
             return View(library);
         }
 
-        [HttpGet]
+        [Authorize]
         public IActionResult Create() {
-            return View();
+            return View(new LibraryViewModel());
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -66,8 +72,20 @@ namespace PresentationLayer.Controllers
                 return View(model);
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _libraryService.CreateAsync(model.Name, userId);
-            
+
+            Library library = new() {
+                Name = model.Name
+            };
+
+            await _libraryService.CreateAsync(library);
+
+            LibraryMembership membership = new() {
+                LibraryId = library.Id,
+                UserId = userId,
+            };
+
+            await _libraryMembershipService.CreateAsync(membership);
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -75,7 +93,15 @@ namespace PresentationLayer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Join(int id) {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _libraryMembershipService.CreateAsync(userId, id, MembershipRole.Member);
+
+            LibraryMembership membership = new() {
+                UserId = userId,
+                LibraryId = id,
+                Role = MembershipRole.Member,
+            };
+
+
+            await _libraryMembershipService.CreateAsync(membership);
 
             return RedirectToAction(nameof(Details), new { id });
         }
@@ -117,7 +143,7 @@ namespace PresentationLayer.Controllers
         }
 
         public async Task<IActionResult> BookDetails(int libraryBookId) {
-            var libraryBook = _libraryBookService.GetBook(libraryBookId);
+            LibraryBook libraryBook = _libraryBookService.GetLibraryBook(libraryBookId);
             if (libraryBook == null) return NotFound();
 
             BookDetailsViewModel viewModel = new() {
@@ -125,7 +151,6 @@ namespace PresentationLayer.Controllers
                 Book = libraryBook.Book,
                 CurrentLoan = await _bookLoanService.GetCurrentBookLoanAsync(libraryBookId),
                 PastLoans = _bookLoanService.GetBookLoans(libraryBookId),
-                CanBeBorrowed = true,
             };
 
             return View(viewModel);
@@ -133,12 +158,16 @@ namespace PresentationLayer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> BorrowBook(int libraryBookId) {
+        public async Task<IActionResult> BorrowBook(int libraryBookId, DateTime dueDate) {
+            LibraryBook libraryBook = _libraryBookService.GetLibraryBook(libraryBookId);
+
+            if (libraryBook == null)
+                throw new NotFoundException();
+
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            LibraryMembership membership = await _libraryMembershipService.GetMembershipAsync(libraryBook.LibraryId, userId);
 
-            //TODO: get user membership
-
-            await _bookLoanService.CreateAsync(libraryBookId, 1, DateTime.Now);
+            await _bookLoanService.CreateAsync(libraryBook.Id, membership.Id, dueDate);
             return RedirectToAction(nameof(BookDetails), new { libraryBookId });
         }
 
@@ -146,18 +175,17 @@ namespace PresentationLayer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ReturnBook(int bookLoanId) {
             await _bookLoanService.ReturnBookAsync(bookLoanId);
-            var bookLoan = await _bookLoanService.GetBookLoanAsync(bookLoanId);
+            BookLoan bookLoan = await _bookLoanService.GetBookLoanAsync(bookLoanId);
+
             return RedirectToAction(nameof(BookDetails), new { libraryBookId = bookLoan.LibraryBookId });
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int id)
-        {
-            var library = await _libraryService.GetLibraryAsync(id);
+        public async Task<IActionResult> Edit(int id) {
+            Library library = await _libraryService.GetLibraryAsync(id);
             if (library == null) return NotFound();
 
-            var viewModel = new EditLibraryViewModel
-            {
+            LibraryViewModel viewModel = new() {
                 Id = library.Id,
                 Name = library.Name
             };
@@ -167,28 +195,26 @@ namespace PresentationLayer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditLibraryViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                await _libraryService.UpdateAsync(model.Id, model.Name);
-                return RedirectToAction(nameof(Details), new { id = model.Id });
-            }
-            return View(model);
+        public async Task<IActionResult> Edit(LibraryViewModel model) {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            await _libraryService.UpdateAsync(model.Id, model.Name);
+            return RedirectToAction(nameof(Details), new { id = model.Id });
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var library = await _libraryService.GetLibraryAsync(id);
-            if (library == null) return NotFound();
+        public async Task<IActionResult> Delete(int id) {
+            Library library = await _libraryService.GetLibraryAsync(id);
+            if (library == null) 
+                return NotFound();
+
             return View(library);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
+        public async Task<IActionResult> DeleteConfirmed(int id) {
             await _libraryService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }

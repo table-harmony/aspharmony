@@ -1,15 +1,13 @@
 using DataAccessLayer.Entities;
 using DataAccessLayer.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Services
 {
     public interface INotificationService {
-        Task<IEnumerable<Notification>> GetUserNotificationsAsync(string userId);
-        Task CreateNotificationAsync(string userId, string message);
-        Task DeleteNotificationAsync(int id);
+        Task<Notification> GetAsync(int id);
+        Task<IEnumerable<Notification>> GetByUserAsync(string userId);
+        Task CreateAsync(string userId, string message);
+        Task DeleteAsync(int id);
     }
 
     public class NotificationService : INotificationService {
@@ -19,12 +17,16 @@ namespace BusinessLogicLayer.Services
             _notificationRepository = notificationRepository;
         }
 
-        public async Task<IEnumerable<Notification>> GetUserNotificationsAsync(string userId) {
-            return await _notificationRepository.GetNotificationAsync(userId);
+        public async Task<IEnumerable<Notification>> GetByUserAsync(string userId) {
+            return await _notificationRepository.GetByUserAsync(userId);
         }
 
-        public async Task CreateNotificationAsync(string userId, string message) {
-            var notification = new Notification {
+        public async Task<Notification> GetAsync(int id) {
+            return await _notificationRepository.GetAsync(id);
+        }
+
+        public async Task CreateAsync(string userId, string message) {
+            Notification notification = new() {
                 UserId = userId,
                 Message = message,
                 CreatedAt = DateTime.UtcNow
@@ -33,7 +35,7 @@ namespace BusinessLogicLayer.Services
             await _notificationRepository.CreateAsync(notification);
         }
 
-        public async Task DeleteNotificationAsync(int id) {
+        public async Task DeleteAsync(int id) {
             await _notificationRepository.DeleteAsync(id);
         }
     }

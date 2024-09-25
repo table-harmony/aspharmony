@@ -16,7 +16,7 @@ namespace DataAccessLayer.Repositories {
 
     public class BookRepository : IBookRepository {
         private readonly ApplicationContext _context;
-
+        
         public BookRepository(ApplicationContext context) {
             _context = context;
         }

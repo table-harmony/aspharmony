@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Utils.Exceptions;
 
-namespace DataAccessLayer.Repositories
-{
+namespace DataAccessLayer.Repositories {
     public interface IUserRepository {
         Task<User> GetByIdAsync(string id);
         Task<User> GetByEmailAsync(string email);

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace BusinessLogicLayer.Services
 {
     public interface ILibraryMembershipService {
-        Task CreateAsync(string userId, int libraryId, MembershipRole role);
+        Task CreateAsync(LibraryMembership membership);
         IEnumerable<LibraryMembership> GetLibraryMembers(int libraryId);
         Task DeleteAsync(int libraryId, string userId);
         Task DeleteAsync(int id);
@@ -21,13 +21,8 @@ namespace BusinessLogicLayer.Services
             _membershipRepository = membershipRepository;
         }
 
-        public async Task CreateAsync(string userId, int libraryId, MembershipRole role) {
-            LibraryMembership membership = new LibraryMembership {
-                UserId = userId,
-                LibraryId = libraryId,
-                Role = role
-            };
-
+        public async Task CreateAsync(LibraryMembership membership) {
+            //TODO: check if membership exists
             await _membershipRepository.CreateAsync(membership);
         }
 

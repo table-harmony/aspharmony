@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using DataAccessLayer.Entities;
 using DataAccessLayer.Repositories;
-using Utils.Exceptions;
-using System.Security.Claims;
 
-namespace BusinessLogicLayer.Services
-{
+namespace BusinessLogicLayer.Services {
     public interface IUserService {
         Task<User> GetByIdAsync(string id);
         Task<User> GetByEmailAsync(string email);

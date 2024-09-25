@@ -1,14 +1,12 @@
 ﻿using DataAccessLayer.Entities;
 using DataAccessLayer.Repositories;
 using Utils.Exceptions;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace BusinessLogicLayer.Services {
     public interface IBookService {
         Task<Book> GetBookAsync(int id);
         Task<IEnumerable<Book>> GetAllAsync();
-        Task CreateAsync(string title, string description, string content, string authorId);
+        Task CreateAsync(Book book);
         Task UpdateAsync(Book book);
         Task DeleteAsync(int id);
     }
@@ -28,14 +26,7 @@ namespace BusinessLogicLayer.Services {
             return await _bookRepository.GetAllAsync();
         }
 
-        public async Task CreateAsync(string title, string description, string content, string authorId) {
-            Book book = new Book {
-                Title = title,
-                Description = description,
-                Content = content,
-                AuthorId = authorId
-            };
-
+        public async Task CreateAsync(Book book) {
             await _bookRepository.CreateAsync(book);
         }
 

@@ -5,6 +5,7 @@ using DataAccessLayer.Entities;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace PresentationLayer.Controllers
 {
@@ -19,8 +20,7 @@ namespace PresentationLayer.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
-        {
+        public IActionResult Index() {
             var users = _userManager.Users.ToList();
             return View(users);
         }

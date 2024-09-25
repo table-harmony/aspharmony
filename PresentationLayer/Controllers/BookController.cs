@@ -45,7 +45,15 @@ namespace PresentationLayer.Controllers
                 return View(model);
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await _bookService.CreateAsync(model.Title, model.Description, model.Content, userId);
+
+            Book book = new() {
+                Title = model.Title,
+                Description = model.Description,
+                Content = model.Content,
+                AuthorId = userId,
+            };
+
+            await _bookService.CreateAsync(book);
             
             return RedirectToAction(nameof(Index));
         }

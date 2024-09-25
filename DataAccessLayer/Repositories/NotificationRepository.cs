@@ -8,8 +8,8 @@ using Utils.Exceptions;
 
 namespace DataAccessLayer.Repositories {
     public interface INotificationRepository {
-        Task<Notification> GetNotificationAsync(int id);
-        Task<IEnumerable<Notification>> GetNotificationAsync(string userId);
+        Task<Notification> GetAsync(int id);
+        Task<IEnumerable<Notification>> GetByUserAsync(string userId);
         Task CreateAsync(Notification notification);
         Task DeleteAsync(int id);
     }
@@ -21,11 +21,11 @@ namespace DataAccessLayer.Repositories {
             _context = context;
         }
 
-        public async Task<Notification> GetNotificationAsync(int id) {
+        public async Task<Notification> GetAsync(int id) {
             return await _context.Notifications.FindAsync(id);
         }
 
-        public async Task<IEnumerable<Notification>> GetNotificationAsync(string userId) {
+        public async Task<IEnumerable<Notification>> GetByUserAsync(string userId) {
             return await _context.Notifications
                 .Where(n => n.UserId == userId)
                 .OrderByDescending(n => n.CreatedAt)
@@ -38,7 +38,7 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task DeleteAsync(int id) {
-            var notification = await GetNotificationAsync(id);
+            Notification notification = await GetAsync(id);
 
             if (notification == null)
                 throw new NotFoundException();

@@ -1,17 +1,10 @@
-﻿using DataAccessLayer.Data;
-using DataAccessLayer.Entities;
+﻿using DataAccessLayer.Entities;
 using DataAccessLayer.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Utils.Exceptions;
 
 namespace BusinessLogicLayer.Services {
     public interface ILibraryBookService {
-        LibraryBook GetBook(int id);
-        LibraryBook GetBook(int libraryId, int bookId);
+        LibraryBook GetLibraryBook(int id);
+        LibraryBook GetLibraryBook(int libraryId, int bookId);
         Task CreateAsync(int libraryId, int bookId);
         IEnumerable<LibraryBook> GetLibraryBooks(int libraryId);
         Task DeleteAsync(int id);
@@ -24,12 +17,12 @@ namespace BusinessLogicLayer.Services {
             _libraryBookRepository = libraryBookRepository;
         }
 
-        public LibraryBook GetBook(int id) {
-            return _libraryBookRepository.GetBook(id);
+        public LibraryBook GetLibraryBook(int id) {
+            return _libraryBookRepository.GetLibraryBook(id);
         }
 
-        public LibraryBook GetBook(int libraryId, int bookId) {
-            return _libraryBookRepository.GetBook(bookId, libraryId);
+        public LibraryBook GetLibraryBook(int libraryId, int bookId) {
+            return _libraryBookRepository.GetLibraryBook(bookId, libraryId);
         }
         
         public IEnumerable<LibraryBook> GetLibraryBooks(int libraryId) {

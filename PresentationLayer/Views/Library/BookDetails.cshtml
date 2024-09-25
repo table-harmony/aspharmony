@@ -24,17 +24,17 @@
     </dl>
 </div>
 
-@if (Model.CanBeBorrowed) {
-    <form asp-action="LoanBook" method="post">
+@if (Model.CurrentLoan == null) {
+    <form asp-action="BorrowBook" asp-route-libraryBookId="@Model.LibraryBook.Id" method="post">
         <input type="hidden" name="libraryBookId" value="@Model.LibraryBook.Id" />
-        <div class="form-group">
+        <div class="form-group mb-4">
             <label for="dueDate">Due Date:</label>
-            <input type="date" id="dueDate" name="dueDate" class="form-control" required />
+            <input type="date" name="dueDate" class="form-control" required min="@DateTime.Now.ToString("yyyy-MM-dd")" />
         </div>
         <button type="submit" class="btn btn-primary">Borrow Book</button>
     </form>
 }
-else if (Model.CurrentLoan?.LibraryMembership.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) {
+else if (Model.CurrentLoan.LibraryMembership.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) {
     <form asp-action="ReturnBook" method="post">
         <input type="hidden" name="bookLoanId" value="@Model.CurrentLoan.Id" />
         <button type="submit" class="btn btn-success">Return Book</button>

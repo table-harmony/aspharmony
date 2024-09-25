@@ -1,6 +1,6 @@
 ﻿using DataAccessLayer.Entities;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace DataAccessLayer.Data {
     public class ApplicationContext : IdentityDbContext<User> {
@@ -51,7 +51,7 @@ namespace DataAccessLayer.Data {
                 .HasOne(m => m.User)
                 .WithMany(u => u.Memberships)
                 .HasForeignKey(m => m.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<LibraryMembership>()
                 .HasOne(m => m.Library)
@@ -89,7 +89,7 @@ namespace DataAccessLayer.Data {
                 .HasOne(bl => bl.LibraryMembership)
                 .WithMany(m => m.BookLoans)
                 .HasForeignKey(bl => bl.LibraryMembershipId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             // Notification
             modelBuilder.Entity<Notification>()
