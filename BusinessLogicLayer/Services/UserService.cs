@@ -7,7 +7,7 @@ namespace BusinessLogicLayer.Services {
         Task<User> GetByIdAsync(string id);
         Task<User> GetByEmailAsync(string email);
         Task<IEnumerable<User>> GetAllAsync();
-        Task<IdentityResult> CreateAsync(string email, string password);
+        Task CreateAsync(string email, string password);
         Task UpdateAsync(User user);
         Task DeleteAsync(string id);
     }
@@ -31,9 +31,9 @@ namespace BusinessLogicLayer.Services {
             return await _userRepository.GetAllAsync();
         }
 
-        public async Task<IdentityResult> CreateAsync(string email, string password) {
+        public async Task CreateAsync(string email, string password) {
             var user = new User { UserName = email, Email = email };
-            return await _userRepository.CreateAsync(user);
+            await _userRepository.CreateAsync(user);
         }
 
         public async Task UpdateAsync(User user) {

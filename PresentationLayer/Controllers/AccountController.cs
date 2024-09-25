@@ -5,6 +5,7 @@ using DataAccessLayer.Entities;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using BusinessLogicLayer.Services;
+using System.Security.Claims;
 
 namespace PresentationLayer.Controllers
 {
@@ -73,24 +74,24 @@ namespace PresentationLayer.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Profile() {
+        public async Task<IActionResult> Index() {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) {
                 return NotFound();
             }
 
-            var model = new ProfileViewModel {
-                UpdatePasswordViewModel = new UpdatePasswordViewModel(),
-                Notifications = await _notificationService.GetByUserAsync(user.Id)
-            };
+            return View(user);
+        }
 
-            return View(model);
+        [HttpGet]
+        public async Task<IActionResult> Update() {
+            return View(new UpdatePasswordViewModel());
         }
 
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Profile(UpdatePasswordViewModel model) {
+        public async Task<IActionResult> UpdatePassword(UpdatePasswordViewModel model) {
             if (ModelState.IsValid) {
                 var user = await _userManager.GetUserAsync(User);
                 if (user == null) {
@@ -100,7 +101,7 @@ namespace PresentationLayer.Controllers
                 var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
                 if (result.Succeeded) {
                     await _signInManager.RefreshSignInAsync(user);
-                    return RedirectToAction("Profile");
+                    return RedirectToAction(nameof(Index));
                 }
 
                 foreach (var error in result.Errors) {
@@ -149,6 +150,21 @@ namespace PresentationLayer.Controllers
             };
 
             return View("Profile", model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Notifications() {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var notifications = await _notificationService.GetByUserAsync(userId);
+
+            return View(notifications);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteNotification(int id) {
+            await _notificationService.DeleteAsync(id);
+            return RedirectToAction(nameof(Notifications));
         }
 
     }

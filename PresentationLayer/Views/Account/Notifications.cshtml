@@ -1,0 +1,21 @@
+﻿@model IEnumerable<DataAccessLayer.Entities.Notification>
+
+<h3>Notifications</h3>
+@if (Model.Any()) {
+    <ul class="list-group">
+        @foreach (var notification in Model) {
+            <li class="list-group-item">
+                <span>@notification.Message</span>
+                <small class="text-muted">(@notification.CreatedAt.ToString())</small>
+                <form asp-action="DeleteNotification">
+                    <input type="hidden" value="@notification.Id" name="id" />
+                    <input type="submit" value="Delete" class="btn btn-danger" />
+                </form>
+            </li>
+        }
+    </ul>
+} else {
+    <p>No notifications.</p>
+}
+
+<a asp-action="Index" asp-controller="Account" class="btn btn-secondary">Back</a>

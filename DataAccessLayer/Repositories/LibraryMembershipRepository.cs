@@ -76,10 +76,17 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task DeleteAsync(int libraryId, string userId) {
-            var membership = await GetMembershipAsync(libraryId, userId);
+            var membership = await _context.LibraryMemberships
+                .Include(m => m.BookLoans)
+                .FirstOrDefaultAsync(membership => membership.LibraryId == libraryId && 
+                                                    membership.UserId == userId);
 
             if (membership == null)
                 throw new NotFoundException();
+
+            if (membership.BookLoans.Any()) {
+                _context.BookLoans.RemoveRange(membership.BookLoans);
+            }
 
             _context.LibraryMemberships.Remove(membership);
             await _context.SaveChangesAsync();

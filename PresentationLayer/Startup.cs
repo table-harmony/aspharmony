@@ -22,17 +22,15 @@ namespace PresentationLayer
 
         public IConfiguration Configuration { get; }
 
-        public Startup(IConfiguration configuration)
-        {
+        public Startup(IConfiguration configuration) {
             Configuration = configuration;
         }
 
-        public void ConfigureServices(IServiceCollection services)
-        {
+        public void ConfigureServices(IServiceCollection services) {
             services.AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            // Add Identity services
+            // Register Identity services
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationContext>()
                 .AddDefaultTokenProviders();
@@ -89,7 +87,6 @@ namespace PresentationLayer
                 endpoints.MapRazorPages();
             });
 
-            // Initialize roles
             RoleInitializer.InitializeAsync(app.ApplicationServices).Wait();
         }
     }

@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Entities;
+﻿using DataAccessLayer.Data;
+using DataAccessLayer.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Utils.Exceptions;
@@ -8,16 +9,18 @@ namespace DataAccessLayer.Repositories {
         Task<User> GetByIdAsync(string id);
         Task<User> GetByEmailAsync(string email);
         Task<IEnumerable<User>> GetAllAsync();
-        Task<IdentityResult> CreateAsync(User user);
+        Task CreateAsync(User user);
         Task UpdateAsync(User user);
         Task DeleteAsync(string id);
     }
 
     public class UserRepository : IUserRepository {
         private readonly UserManager<User> _userManager;
+        private readonly ApplicationContext _context;
 
-        public UserRepository(UserManager<User> userManager) {
+        public UserRepository(UserManager<User> userManager, ApplicationContext context) {
             _userManager = userManager;
+            _context = context; 
         }
 
         public async Task<User> GetByIdAsync(string id) {
@@ -29,15 +32,16 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task<IEnumerable<User>> GetAllAsync() {
-            return await _userManager.Users.ToListAsync();
+            return await _context.Users.ToListAsync();
         }
 
-        public async Task<IdentityResult> CreateAsync(User user) {
-            return await _userManager.CreateAsync(user);
+        public async Task CreateAsync(User user) {
+            await _userManager.UpdateAsync(user);
         }
 
         public async Task UpdateAsync(User user) {
-            await _userManager.UpdateAsync(user);
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(string id) {

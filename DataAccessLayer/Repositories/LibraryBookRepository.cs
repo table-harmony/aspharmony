@@ -22,6 +22,7 @@ namespace DataAccessLayer.Repositories {
             return _context.LibraryBooks
                 .Include(libraryBook => libraryBook.Library)
                 .Include(libraryBook => libraryBook.Book)
+                    .ThenInclude(book => book.Author)
                 .First(libraryBook => libraryBook.Id == id);
         }
 
@@ -29,6 +30,7 @@ namespace DataAccessLayer.Repositories {
             return _context.LibraryBooks
                 .Include(libraryBook => libraryBook.Library)
                 .Include(libraryBook => libraryBook.Book)
+                    .ThenInclude(book => book.Author)
                 .First(libraryBook => libraryBook.Book.Id == bookId && 
                                                     libraryBook.Library.Id == libraryId);
         }

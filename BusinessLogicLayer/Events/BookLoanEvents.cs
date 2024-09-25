@@ -12,7 +12,11 @@ namespace BusinessLogicLayer.Events
         public static event EventHandler<BookBorrowedEventArgs> BookBorrowed;
 
         public static void OnBookBorrowed(int libraryId, string userId, string bookTitle) {
-            BookBorrowed?.Invoke(null, new BookBorrowedEventArgs { LibraryId = libraryId, UserId = userId, BookTitle = bookTitle });
+            BookBorrowed?.Invoke(null, new BookBorrowedEventArgs { 
+                LibraryId = libraryId, 
+                UserId = userId, 
+                BookTitle = bookTitle 
+            });
         }
     }
 }

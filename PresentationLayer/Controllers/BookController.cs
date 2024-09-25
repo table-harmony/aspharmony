@@ -14,11 +14,9 @@ namespace PresentationLayer.Controllers
     [Authorize]
     public class BookController : Controller {
         private readonly IBookService _bookService;
-        private readonly IUserService _userService;
 
-        public BookController(IBookService bookService, IUserService userService) {
+        public BookController(IBookService bookService) {
             _bookService = bookService;
-            _userService = userService;
         }
 
         public async Task<IActionResult> Index() {
