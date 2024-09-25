@@ -2,6 +2,7 @@
 using DataAccessLayer.Data;
 using Microsoft.EntityFrameworkCore;
 using Utils.Exceptions;
+using System.Collections.Generic;
 
 namespace DataAccessLayer.Repositories {
     public interface ILibraryMembershipRepository {
@@ -17,9 +18,12 @@ namespace DataAccessLayer.Repositories {
 
     public class LibraryMembershipRepository : ILibraryMembershipRepository {
         private readonly ApplicationContext _context;
+        private readonly IBookLoanRepository _bookLoanRepository;
 
-        public LibraryMembershipRepository(ApplicationContext context) {
+        public LibraryMembershipRepository(ApplicationContext context, 
+                                            IBookLoanRepository bookLoanRepository) {
             _context = context;
+            _bookLoanRepository = bookLoanRepository;   
         }
 
         public async Task CreateAsync(LibraryMembership membership) {
@@ -52,19 +56,22 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task DeleteAsync(int id) {
-            var membership = await _context.LibraryMemberships
-                .Include(m => m.BookLoans)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var transaction = _context.Database.BeginTransaction();
+
+            LibraryMembership membership = await GetMembershipAsync(id);
 
             if (membership == null)
                 throw new NotFoundException();
 
-            if (membership.BookLoans.Any()) {
+            IEnumerable<BookLoan> loans = _bookLoanRepository.GetMemberLoans(id);
+
+            if (loans.Any())
                 _context.BookLoans.RemoveRange(membership.BookLoans);
-            }
 
             _context.LibraryMemberships.Remove(membership);
             await _context.SaveChangesAsync();
+
+            transaction.Commit();
         }
 
 
@@ -76,20 +83,22 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task DeleteAsync(int libraryId, string userId) {
-            var membership = await _context.LibraryMemberships
-                .Include(m => m.BookLoans)
-                .FirstOrDefaultAsync(membership => membership.LibraryId == libraryId && 
-                                                    membership.UserId == userId);
+            var transaction = _context.Database.BeginTransaction();
+
+            LibraryMembership membership = await GetMembershipAsync(libraryId, userId);
 
             if (membership == null)
                 throw new NotFoundException();
 
-            if (membership.BookLoans.Any()) {
+            IEnumerable<BookLoan> loans = _bookLoanRepository.GetMemberLoans(membership.Id);
+            
+            if (loans.Any())
                 _context.BookLoans.RemoveRange(membership.BookLoans);
-            }
-
+            
             _context.LibraryMemberships.Remove(membership);
             await _context.SaveChangesAsync();
+
+            transaction.Commit();
         }
     }
 

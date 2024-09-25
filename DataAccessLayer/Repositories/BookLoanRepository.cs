@@ -3,6 +3,7 @@ using DataAccessLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace DataAccessLayer.Repositories {
@@ -13,6 +14,7 @@ namespace DataAccessLayer.Repositories {
         Task UpdateAsync(BookLoan bookLoan);
         IEnumerable<BookLoan> GetBookLoans(int bookId);
         Task<BookLoan> GetCurrentLoanAsync(int id);
+        IEnumerable<BookLoan> GetMemberLoans(int membershipId);
     }
 
     public class BookLoanRepository : IBookLoanRepository {
@@ -49,6 +51,13 @@ namespace DataAccessLayer.Repositories {
                 .OrderByDescending(libraryBook => libraryBook.LoanDate)
                 .ToList();
         }
+
+        public IEnumerable<BookLoan> GetMemberLoans(int membershipId) {
+            return _context.BookLoans
+                .Include(libraryBook => libraryBook.LibraryMembership)
+                .Where(libraryBook => libraryBook.LibraryMembershipId == membershipId)
+                .ToList();
+        } 
 
         public async Task<BookLoan> GetCurrentLoanAsync(int id) {
             return await _context.BookLoans
