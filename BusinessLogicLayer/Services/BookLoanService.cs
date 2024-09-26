@@ -1,7 +1,6 @@
 using DataAccessLayer.Repositories;
 using DataAccessLayer.Entities;
 using Utils.Exceptions;
-using BusinessLogicLayer.Events;
 
 namespace BusinessLogicLayer.Services {
 

@@ -1,5 +1,7 @@
-﻿using DataAccessLayer.Entities;
+﻿using BusinessLogicLayer.Events;
+using DataAccessLayer.Entities;
 using DataAccessLayer.Repositories;
+using System;
 
 namespace BusinessLogicLayer.Services {
     public interface ILibraryBookService {
@@ -12,9 +14,14 @@ namespace BusinessLogicLayer.Services {
 
     public class LibraryBookService : ILibraryBookService {
         private readonly ILibraryBookRepository _libraryBookRepository;
-
-        public LibraryBookService(ILibraryBookRepository libraryBookRepository) {
+        private readonly IBookRepository _bookRepository;
+        private readonly ILibraryRepository _libraryRepository;
+        public LibraryBookService(ILibraryBookRepository libraryBookRepository, 
+                                  IBookRepository bookRepository,
+                                  ILibraryRepository libraryRepository) {
             _libraryBookRepository = libraryBookRepository;
+            _bookRepository = bookRepository;
+            _libraryRepository = libraryRepository;
         }
 
         public LibraryBook GetLibraryBook(int id) {
@@ -36,10 +43,13 @@ namespace BusinessLogicLayer.Services {
             };
 
             await _libraryBookRepository.CreateAsync(libraryBook);
+
+            UserEvents.OnBookAddedToLibrary(bookId, libraryId);
         }
 
         public async Task DeleteAsync(int id) {
             await _libraryBookRepository.DeleteAsync(id);
         }
     }
+
 }

@@ -3,6 +3,10 @@ using System.ComponentModel.DataAnnotations;
 namespace PresentationLayer.Models
 {
     public class CreateUserViewModel {
+
+        [Required]
+        public string UserName { get; set; }
+
         [Required]
         [EmailAddress]
         public string Email { get; set; }

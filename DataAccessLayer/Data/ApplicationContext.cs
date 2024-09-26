@@ -11,15 +11,15 @@ namespace DataAccessLayer.Data {
 
             // User
             modelBuilder.Entity<User>()
-                .HasMany(u => u.Books)
-                .WithOne(b => b.Author)
-                .HasForeignKey(b => b.AuthorId)
+                .HasMany(user => user.Books)
+                .WithOne(book => book.Author)
+                .HasForeignKey(book => book.AuthorId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<User>()
-                .HasMany(u => u.Memberships)
-                .WithOne(m => m.User)
-                .HasForeignKey(m => m.UserId)
+                .HasMany(user => user.Memberships)
+                .WithOne(membership => membership.User)
+                .HasForeignKey(membership => membership.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Book

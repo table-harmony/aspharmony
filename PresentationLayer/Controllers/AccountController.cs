@@ -51,16 +51,10 @@ namespace PresentationLayer.Controllers
         public async Task<IActionResult> Login(LoginViewModel model) {
             if (ModelState.IsValid) {
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded) {
+                if (result.Succeeded)
                     return RedirectToAction("Index", "Home");
-                }
-                if (result.IsLockedOut) {
-                    ModelState.AddModelError(string.Empty, "This account has been locked out, please try again later.");
-                } else if (result.IsNotAllowed) {
-                    ModelState.AddModelError(string.Empty, "This account is not allowed to sign in.");
-                } else {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                }
+
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             }
             return View(model);
         }
@@ -73,7 +67,6 @@ namespace PresentationLayer.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> Index() {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) {

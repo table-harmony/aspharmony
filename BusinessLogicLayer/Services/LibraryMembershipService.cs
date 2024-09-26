@@ -12,18 +12,36 @@ namespace BusinessLogicLayer.Services
         Task DeleteAsync(int id);
         Task<LibraryMembership> GetMembershipAsync(int libraryId, string userId);
         Task<LibraryMembership> GetMembershipAsync(int id);
+
+        event EventHandler<LibraryMembershipEventArgs> MemberJoined;
     }
 
     public class LibraryMembershipService : ILibraryMembershipService {
         private readonly ILibraryMembershipRepository _membershipRepository;
+        private readonly ILibraryRepository _libraryRepository;
+        private readonly IUserRepository _userRepository;
 
-        public LibraryMembershipService(ILibraryMembershipRepository membershipRepository) {
+        public event EventHandler<LibraryMembershipEventArgs> MemberJoined;
+
+        public LibraryMembershipService(ILibraryMembershipRepository membershipRepository,
+                                        ILibraryRepository libraryRepository,
+                                        IUserRepository userRepository) {
             _membershipRepository = membershipRepository;
+            _libraryRepository = libraryRepository;
+            _userRepository = userRepository;
         }
 
         public async Task CreateAsync(LibraryMembership membership) {
-            //TODO: check if membership exists
             await _membershipRepository.CreateAsync(membership);
+
+            var library = await _libraryRepository.GetLibraryAsync(membership.LibraryId);
+            var user = await _userRepository.GetByIdAsync(membership.UserId);
+
+            OnMemberJoined(new LibraryMembershipEventArgs(user, library));
+        }
+
+        protected virtual void OnMemberJoined(LibraryMembershipEventArgs e) {
+            MemberJoined?.Invoke(this, e);
         }
 
         public IEnumerable<LibraryMembership> GetLibraryMembers(int libraryId) {
@@ -44,6 +62,16 @@ namespace BusinessLogicLayer.Services
 
         public async Task<LibraryMembership> GetMembershipAsync(int id) {
             return await _membershipRepository.GetMembershipAsync(id);
+        }
+    }
+
+    public class LibraryMembershipEventArgs : EventArgs {
+        public User User { get; }
+        public Library Library { get; }
+
+        public LibraryMembershipEventArgs(User user, Library library) {
+            User = user;
+            Library = library;
         }
     }
 }

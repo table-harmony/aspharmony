@@ -11,7 +11,7 @@ namespace DataAccessLayer.Entities {
         public string Description { get; set; }
         public string Content { get; set; }
 
-        public string AuthorId { get; set; }
+        public string AuthorId { get; set; }  // Foreign key
         public User Author { get; set; }
 
         public ICollection<LibraryBook> LibraryBooks { get; set; }

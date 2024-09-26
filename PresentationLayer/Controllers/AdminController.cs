@@ -94,15 +94,26 @@ namespace PresentationLayer.Controllers
         public async Task<IActionResult> Create(CreateUserViewModel model) {
 
             try {
+                User existingUser = await _userManager.FindByEmailAsync(model.Email);
+
+                if (existingUser != null)
+                    throw new Exception("User already exists");
+
                 User user = new() {
                     Email = model.Email,
-                    PasswordHash = model.Password
+                    UserName = model.Email
                 };
-                await _userManager.CreateAsync(user);
+                
+                var res = await _userManager.CreateAsync(user, model.Password);
+                
+                if (!res.Succeeded)
+                    throw new Exception("An error occurred while updating");
+
+                await _userManager.AddToRoleAsync(user, "Member");
 
                 return RedirectToAction("Index");
             } catch (Exception ex) {
-                ModelState.AddModelError("", "An error occurred while updating.");
+                ModelState.AddModelError("", ex.Message);
                 return View(model);
             }
         }

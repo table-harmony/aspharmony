@@ -53,6 +53,7 @@ namespace PresentationLayer
             services.AddScoped<IBookLoanService, BookLoanService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IEventsService, EventsService>();
+            services.AddScoped<INotificationService, NotificationService>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -64,7 +65,7 @@ namespace PresentationLayer
             EventSubscriber.Subscribe(services.BuildServiceProvider());
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider) {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             }

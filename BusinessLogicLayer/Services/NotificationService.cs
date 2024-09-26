@@ -24,7 +24,7 @@ namespace BusinessLogicLayer.Services
         public async Task<Notification> GetAsync(int id) {
             return await _notificationRepository.GetAsync(id);
         }
-
+        
         public async Task CreateAsync(string userId, string message) {
             Notification notification = new() {
                 UserId = userId,

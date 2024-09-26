@@ -5,8 +5,6 @@ using DataAccessLayer.Entities;
 using System.Security.Claims;
 using PresentationLayer.Models;
 using Utils.Exceptions;
-using BusinessLogicLayer.Events;
-using System.Linq;
 
 namespace PresentationLayer.Controllers
 {
