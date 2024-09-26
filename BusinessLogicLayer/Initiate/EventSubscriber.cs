@@ -15,11 +15,27 @@ namespace BusinessLogicLayer.Initiate {
                 Book book = await bookService.GetBookAsync(args.BookId);
                 Library library = await libraryService.GetLibraryAsync(args.LibraryId);
 
-                string message = $"Your book '{book.Title}' has been added to the library '{library.Name}'.";
-                    
-                await notificationService.CreateAsync(book.AuthorId, message);
+                await notificationService.CreateAsync(book.AuthorId,
+                    $"Your book '{book.Title}' has been added to the library '{library.Name}'.");
             };
 
+
+            UserEvents.UserJoinedLibrary += async (sender, args) => {
+                using var scope = serviceProvider.CreateScope();
+                INotificationService notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+                ILibraryService libraryService = scope.ServiceProvider.GetRequiredService<ILibraryService>();
+                IUserService userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+                ILibraryMembershipService libraryMembershipService = scope.ServiceProvider.GetRequiredService<ILibraryMembershipService>();
+
+                Library library = await libraryService.GetLibraryAsync(args.LibraryId);
+                User user = await userService.GetByIdAsync(args.UserId);
+                var managers = libraryMembershipService.GetLibraryMembers(library.Id).Where(member => member.Role == MembershipRole.Manager);
+
+                string message = $"The user '{user.UserName}' has joined to the library '{library.Name}'";
+
+                foreach (var manager in managers) 
+                    await notificationService.CreateAsync(manager.UserId, message);
+            };
         }
     }
 }

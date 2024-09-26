@@ -29,6 +29,6 @@ namespace BusinessLogicLayer.Events {
 
         public static void OnBookAddedToLibrary(int bookId, int libraryId) {
             BookAddedToLibrary?.Invoke(null, new BookAddedToLibraryEventArgs { BookId = bookId, LibraryId = libraryId });
-         }
         }
     }
+}
