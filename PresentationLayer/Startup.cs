@@ -6,6 +6,7 @@ using DataAccessLayer.Entities;
 using Microsoft.AspNetCore.Identity;
 using Utils.Services;
 using BusinessLogicLayer.Initiate;
+using BookServiceReference;
 
 namespace PresentationLayer
 {
@@ -34,6 +35,10 @@ namespace PresentationLayer
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationContext>()
                 .AddDefaultTokenProviders();
+
+            // Register the SOAP client
+            services.AddScoped<BookServiceSoapClient>(_ =>
+                new BookServiceSoapClient(BookServiceSoapClient.EndpointConfiguration.BookServiceSoap));
 
             // Register repositories
             services.AddScoped<IUserRepository, UserRepository>();

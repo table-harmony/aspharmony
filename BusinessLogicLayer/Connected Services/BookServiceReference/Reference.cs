@@ -84,6 +84,9 @@ namespace BookServiceReference
     public interface BookServiceSoap
     {
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/GetBook", ReplyAction="*")]
+        System.Threading.Tasks.Task<BookServiceReference.GetBookResponse> GetBookAsync(BookServiceReference.GetBookRequest request);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/GetAllBooks", ReplyAction="*")]
         System.Threading.Tasks.Task<BookServiceReference.GetAllBooksResponse> GetAllBooksAsync(BookServiceReference.GetAllBooksRequest request);
         
@@ -95,6 +98,86 @@ namespace BookServiceReference
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/DeleteBook", ReplyAction="*")]
         System.Threading.Tasks.Task DeleteBookAsync(int id);
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    public partial class GetBookRequest
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetBook", Namespace="http://tempuri.org/", Order=0)]
+        public BookServiceReference.GetBookRequestBody Body;
+        
+        public GetBookRequest()
+        {
+        }
+        
+        public GetBookRequest(BookServiceReference.GetBookRequestBody Body)
+        {
+            this.Body = Body;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://tempuri.org/")]
+    public partial class GetBookRequestBody
+    {
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=0)]
+        public int id;
+        
+        public GetBookRequestBody()
+        {
+        }
+        
+        public GetBookRequestBody(int id)
+        {
+            this.id = id;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    public partial class GetBookResponse
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetBookResponse", Namespace="http://tempuri.org/", Order=0)]
+        public BookServiceReference.GetBookResponseBody Body;
+        
+        public GetBookResponse()
+        {
+        }
+        
+        public GetBookResponse(BookServiceReference.GetBookResponseBody Body)
+        {
+            this.Body = Body;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://tempuri.org/")]
+    public partial class GetBookResponseBody
+    {
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+        public BookServiceReference.Book GetBookResult;
+        
+        public GetBookResponseBody()
+        {
+        }
+        
+        public GetBookResponseBody(BookServiceReference.Book GetBookResult)
+        {
+            this.GetBookResult = GetBookResult;
+        }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -354,6 +437,20 @@ namespace BookServiceReference
         public BookServiceSoapClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(binding, remoteAddress)
         {
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<BookServiceReference.GetBookResponse> BookServiceReference.BookServiceSoap.GetBookAsync(BookServiceReference.GetBookRequest request)
+        {
+            return base.Channel.GetBookAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<BookServiceReference.GetBookResponse> GetBookAsync(int id)
+        {
+            BookServiceReference.GetBookRequest inValue = new BookServiceReference.GetBookRequest();
+            inValue.Body = new BookServiceReference.GetBookRequestBody();
+            inValue.Body.id = id;
+            return ((BookServiceReference.BookServiceSoap)(this)).GetBookAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]

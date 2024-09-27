@@ -14,10 +14,13 @@ namespace BusinessLogicLayer.Services {
     public class LibraryService : ILibraryService {
         private readonly ILibraryRepository _libraryRepository;
         private readonly ILibraryMembershipService _membershipService;
+        private readonly IBookService _bookService;
 
         public LibraryService(ILibraryRepository libraryRepository, 
-                                ILibraryMembershipService membershipService) {
+                                ILibraryMembershipService membershipService,
+                                IBookService bookService) {
             _libraryRepository = libraryRepository;
+            _bookService = bookService;
             _membershipService = membershipService;
         }
 
@@ -26,7 +29,12 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task<Library> GetLibraryAsync(int id) {
-            return await _libraryRepository.GetLibraryAsync(id);
+            Library library = await _libraryRepository.GetLibraryAsync(id);
+
+            foreach (LibraryBook lbBook in library.Books)
+                lbBook.Book = await _bookService.GetBookAsync(lbBook.BookId);
+
+            return library;
         }
 
         public async Task CreateAsync(Library library) {

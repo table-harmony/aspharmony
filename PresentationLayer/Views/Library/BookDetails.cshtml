@@ -3,14 +3,15 @@
 <h2>Book Details in Library</h2>
 
 <div>
-    <h4>@Model.Book.Title</h4>
+    <h4>@Model.Book</h4>
     <hr />
+    @{ var book = Model.Book as BusinessLogicLayer.Services.Book; }
     <dl class="row">
         <dt class="col-sm-2">Description</dt>
-        <dd class="col-sm-10">@Model.Book.Description</dd>
+        <dd class="col-sm-10">@book.Title</dd>
 
         <dt class="col-sm-2">Author</dt>
-        <dd class="col-sm-10">@(Model.Book.Author?.UserName ?? "Unknown")</dd>
+        <dd class="col-sm-10">@(book.Author?.UserName ?? "Unknown")</dd>
 
         <dt class="col-sm-2">Status</dt>
         <dd class="col-sm-10">

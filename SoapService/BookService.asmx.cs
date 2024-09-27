@@ -13,6 +13,7 @@ namespace SoapService {
     public class BookService : System.Web.Services.WebService {
         private static readonly string XmlFilePath = HttpContext.Current.Server.MapPath("/Books.xml");
 
+        [WebMethod]
         public Book GetBook(int id) {
             var book = ReadBooksFromXml().FirstOrDefault(b => b.Id == id);
             if (book == null) throw new Exception("Book not found.");
@@ -27,7 +28,6 @@ namespace SoapService {
         [WebMethod]
         public void CreateBook(Book newBook) {
             var books = ReadBooksFromXml();
-            newBook.Id = books.Max(b => b.Id) + 1;
             books.Add(newBook);
             WriteBooksToXml(books);
         }

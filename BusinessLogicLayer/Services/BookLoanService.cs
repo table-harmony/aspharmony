@@ -8,30 +8,42 @@ namespace BusinessLogicLayer.Services {
         Task<BookLoan> GetBookLoanAsync(int id);
         Task CreateAsync(int bookId, int libraryMembershipId, DateTime dueDate);
         Task ReturnBookAsync(int id);
-        IEnumerable<BookLoan> GetBookLoans(int bookId);
+        Task<IEnumerable<BookLoan>> GetBookLoansAsync(int bookId);
         Task UpdateAsync(BookLoan loan);
-        Task<BookLoan> GetCurrentBookLoanAsync(int bookId);
+        Task<BookLoan> GetCurrentBookLoanAsync(int id);
     }
 
     public class BookLoanService : IBookLoanService {
         private readonly IBookLoanRepository _loanRepository;
         private readonly ILibraryBookService _libraryBookService;
+        private readonly IBookService _bookService;
 
-        public BookLoanService(IBookLoanRepository loanRepository, ILibraryBookService libraryBookService) {
+        public BookLoanService(IBookLoanRepository loanRepository, 
+                               ILibraryBookService libraryBookService,
+                               IBookService bookService) {
             _loanRepository = loanRepository;
             _libraryBookService = libraryBookService;
+            _bookService = bookService;
         }
 
         public async Task<BookLoan> GetBookLoanAsync(int id) {
-            return await _loanRepository.GetBookLoanAsync(id);
+            var bookLoan = await _loanRepository.GetBookLoanAsync(id);
+            if (bookLoan != null) {
+                bookLoan.LibraryBook.Book = await _bookService.GetBookAsync(bookLoan.LibraryBook.BookId);
+            }
+            return bookLoan;
         }
 
-        public IEnumerable<BookLoan> GetBookLoans(int bookId) {
-            return _loanRepository.GetBookLoans(bookId);
+        public async Task<IEnumerable<BookLoan>> GetBookLoansAsync(int bookId) {
+            var bookLoans = _loanRepository.GetBookLoans(bookId);
+            foreach (var loan in bookLoans) {
+               loan.LibraryBook.Book = await _bookService.GetBookAsync(loan.LibraryBook.BookId);
+            }
+            return bookLoans;
         }
 
         public async Task CreateAsync(int bookId, int libraryMembershipId, DateTime dueDate) {
-            LibraryBook libraryBook = _libraryBookService.GetLibraryBook(bookId);
+            LibraryBook libraryBook = await _libraryBookService.GetLibraryBookAsync(bookId);
 
             if (libraryBook == null)
                 throw new NotFoundException();
@@ -55,7 +67,11 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task<BookLoan> GetCurrentBookLoanAsync(int bookId) {
-            return await _loanRepository.GetCurrentLoanAsync(bookId);
+            var currentLoan = await _loanRepository.GetCurrentLoanAsync(bookId);
+            if (currentLoan != null) {
+                currentLoan.LibraryBook.Book = await _bookService.GetBookAsync(currentLoan.LibraryBook.BookId);
+            }
+            return currentLoan;
         }
 
         public async Task ReturnBookAsync(int id) {

@@ -47,7 +47,7 @@ namespace PresentationLayer.Controllers
                 ViewBag.Members = _libraryMembershipService.GetLibraryMembers(id);
 
                 var allBooks = await _bookService.GetAllAsync();
-                var libraryBooks = _libraryBookService.GetLibraryBooks(library.Id);
+                var libraryBooks = await _libraryBookService.GetLibraryBooksAsync(library.Id);
 
                 ViewBag.AvailableBooks = allBooks
                     .Where(book => !libraryBooks.Select(lb => lb.BookId).Contains(book.Id))
@@ -141,14 +141,14 @@ namespace PresentationLayer.Controllers
         }
 
         public async Task<IActionResult> BookDetails(int libraryBookId) {
-            LibraryBook libraryBook = _libraryBookService.GetLibraryBook(libraryBookId);
+            LibraryBook libraryBook = await _libraryBookService.GetLibraryBookAsync(libraryBookId);
             if (libraryBook == null) return NotFound();
 
             BookDetailsViewModel viewModel = new() {
                 LibraryBook = libraryBook,
                 Book = libraryBook.Book,
                 CurrentLoan = await _bookLoanService.GetCurrentBookLoanAsync(libraryBookId),
-                PastLoans = _bookLoanService.GetBookLoans(libraryBookId),
+                PastLoans = await _bookLoanService.GetBookLoansAsync(libraryBookId),
             };
 
             return View(viewModel);
@@ -157,11 +157,11 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> BorrowBook(int libraryBookId, DateTime dueDate) {
-            LibraryBook libraryBook = _libraryBookService.GetLibraryBook(libraryBookId);
+            LibraryBook libraryBook = await _libraryBookService.GetLibraryBookAsync(libraryBookId);
 
             if (libraryBook == null)
                 throw new NotFoundException();
-
+            
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             LibraryMembership membership = await _libraryMembershipService.GetMembershipAsync(libraryBook.LibraryId, userId);
 

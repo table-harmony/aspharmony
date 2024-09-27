@@ -5,35 +5,48 @@ using System;
 
 namespace BusinessLogicLayer.Services {
     public interface ILibraryBookService {
-        LibraryBook GetLibraryBook(int id);
-        LibraryBook GetLibraryBook(int libraryId, int bookId);
+        Task<LibraryBook> GetLibraryBookAsync(int id);
+        Task<LibraryBook> GetLibraryBookAsync(int libraryId, int bookId);
         Task CreateAsync(int libraryId, int bookId);
-        IEnumerable<LibraryBook> GetLibraryBooks(int libraryId);
+        Task<IEnumerable<LibraryBook>> GetLibraryBooksAsync(int libraryId);
         Task DeleteAsync(int id);
     }
 
     public class LibraryBookService : ILibraryBookService {
         private readonly ILibraryBookRepository _libraryBookRepository;
-        private readonly IBookRepository _bookRepository;
+        private readonly IBookService _bookService;
         private readonly ILibraryRepository _libraryRepository;
+
         public LibraryBookService(ILibraryBookRepository libraryBookRepository, 
-                                  IBookRepository bookRepository,
+                                  IBookService bookService,
                                   ILibraryRepository libraryRepository) {
             _libraryBookRepository = libraryBookRepository;
-            _bookRepository = bookRepository;
+            _bookService = bookService;
             _libraryRepository = libraryRepository;
         }
 
-        public LibraryBook GetLibraryBook(int id) {
-            return _libraryBookRepository.GetLibraryBook(id);
+        public async Task<LibraryBook> GetLibraryBookAsync(int id) {
+            var libraryBook = _libraryBookRepository.GetLibraryBook(id);
+            if (libraryBook != null) {
+                libraryBook.Book = await _bookService.GetBookAsync(libraryBook.BookId);
+            }
+            return libraryBook;
         }
 
-        public LibraryBook GetLibraryBook(int libraryId, int bookId) {
-            return _libraryBookRepository.GetLibraryBook(bookId, libraryId);
+        public async Task<LibraryBook> GetLibraryBookAsync(int libraryId, int bookId) {
+            var libraryBook = _libraryBookRepository.GetLibraryBook(libraryId, bookId);
+            if (libraryBook != null) {
+                libraryBook.Book = await _bookService.GetBookAsync(bookId);
+            }
+            return libraryBook;
         }
         
-        public IEnumerable<LibraryBook> GetLibraryBooks(int libraryId) {
-            return _libraryBookRepository.GetLibraryBooks(libraryId);
+        public async Task<IEnumerable<LibraryBook>> GetLibraryBooksAsync(int libraryId) {
+            var libraryBooks = _libraryBookRepository.GetLibraryBooks(libraryId);
+            foreach (var libraryBook in libraryBooks) {
+                libraryBook.Book = await _bookService.GetBookAsync(libraryBook.BookId);
+            }
+            return libraryBooks;
         }
 
         public async Task CreateAsync(int libraryId, int bookId) {

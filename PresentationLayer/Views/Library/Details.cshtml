@@ -23,9 +23,11 @@
         <tbody>
             @foreach (var libraryBook in Model.Books) {
                 <tr>
-                    <td>@libraryBook.Book.Title</td>
-                    <td>@libraryBook.Book.Description</td>
-                    <td>@(libraryBook.Book.Author?.UserName ?? "Unknown")</td>
+                    @{ var book = (libraryBook.Book as BusinessLogicLayer.Services.Book); }
+
+                    <td>@book.Title</td>
+                    <td>@book.Description</td>
+                    <td>@(book.Author?.UserName ?? "Unknown")</td>
                     <td>
                         <a asp-action="BookDetails" asp-route-libraryBookId="@libraryBook.Id" class="btn btn-info btn-sm">Details</a>
                         @if (ViewBag.Membership.Role == MembershipRole.Manager) {

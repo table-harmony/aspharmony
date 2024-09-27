@@ -2,15 +2,12 @@
 using DataAccessLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using Utils.Exceptions;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace DataAccessLayer.Repositories {
     public interface IBookRepository {
         Task<Book> GetBookAsync(int id);
         Task<IEnumerable<Book>> GetAllAsync();
-        Task CreateAsync(Book book);
-        Task UpdateAsync(Book book);
+        Task<int> CreateAsync(Book book);
         Task DeleteAsync(int id);
     }
 
@@ -33,14 +30,11 @@ namespace DataAccessLayer.Repositories {
                 .ToListAsync();
         }
 
-        public async Task CreateAsync(Book book) {
+        public async Task<int> CreateAsync(Book book) {
             await _context.Books.AddAsync(book);
             await _context.SaveChangesAsync();
-        }
 
-        public async Task UpdateAsync(Book book) {
-            _context.Entry(book).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            return book.Id;
         }
 
         public async Task DeleteAsync(int id) {

@@ -70,6 +70,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Books.xml" />
     <Content Include="BookService.asmx" />
     <Content Include="Web.config" />
   </ItemGroup>

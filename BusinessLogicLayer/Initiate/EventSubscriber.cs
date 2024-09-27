@@ -12,11 +12,11 @@ namespace BusinessLogicLayer.Initiate {
                 IBookService bookService = scope.ServiceProvider.GetRequiredService<IBookService>();
                 ILibraryService libraryService = scope.ServiceProvider.GetRequiredService<ILibraryService>();    
 
-                Book book = await bookService.GetBookAsync(args.BookId);
-                Library library = await libraryService.GetLibraryAsync(args.LibraryId);
+                var book = await bookService.GetBookAsync(args.BookId);
+                var library = await libraryService.GetLibraryAsync(args.LibraryId);
 
                 await notificationService.CreateAsync(book.AuthorId,
-                    $"Your book '{book.Title}' has been added to the library '{library.Name}'.");
+                    $"Your book '${book.Title}' has been added to the library '{library.Name}'.");
             };
 
 

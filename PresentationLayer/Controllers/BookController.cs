@@ -1,16 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
 using BusinessLogicLayer.Services;
 using PresentationLayer.Models;
 using Microsoft.AspNetCore.Authorization;
-using DataAccessLayer.Entities;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using Utils.Exceptions;
-using Microsoft.IdentityModel.Tokens;
 
-namespace PresentationLayer.Controllers
-{
+namespace PresentationLayer.Controllers {
+
     [Authorize]
     public class BookController : Controller {
         private readonly IBookService _bookService;
@@ -48,11 +43,11 @@ namespace PresentationLayer.Controllers
                 Title = model.Title,
                 Description = model.Description,
                 Content = model.Content,
-                AuthorId = userId,
+                AuthorId = userId
             };
 
             await _bookService.CreateAsync(book);
-            
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -66,7 +61,7 @@ namespace PresentationLayer.Controllers
                 Id = book.Id,
                 Title = book.Title,
                 Description = book.Description,
-                Content = book.Content
+                Content = book.Content,
             };
 
             return View(viewModel);
@@ -82,7 +77,7 @@ namespace PresentationLayer.Controllers
                 return View(model);
 
             try {
-                Book book = await _bookService.GetBookAsync(id);
+                var book = await _bookService.GetBookAsync(id);
                 if (book == null)
                     return NotFound();
 
@@ -95,6 +90,7 @@ namespace PresentationLayer.Controllers
                 book.Content = model.Content;
 
                 await _bookService.UpdateAsync(book);
+
                 return RedirectToAction(nameof(Index));
             } catch (Exception ex) {
                 ModelState.AddModelError("", "An error occurred while updating the book.");
@@ -114,7 +110,7 @@ namespace PresentationLayer.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id) {
-            Book book = await _bookService.GetBookAsync(id);
+            var book = await _bookService.GetBookAsync(id);
             if (book == null)
                 return NotFound();
 
@@ -123,6 +119,7 @@ namespace PresentationLayer.Controllers
                 return Forbid();
 
             await _bookService.DeleteAsync(id);
+
             return RedirectToAction(nameof(Index));
         }
     }
