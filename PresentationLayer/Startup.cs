@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Utils.Services;
 using BusinessLogicLayer.Initiate;
 using BookServiceReference;
+using BusinessLogicLayer.Events;
 
 namespace PresentationLayer
 {
@@ -58,8 +59,9 @@ namespace PresentationLayer
             services.AddScoped<ILibraryBookService, LibraryBookService>();
             services.AddScoped<IBookLoanService, BookLoanService>();
             services.AddScoped<INotificationService, NotificationService>();
-            services.AddScoped<IEventsService, EventsService>();
+            services.AddScoped<IDevHarmonyApiService, DevHarmonyService>();
             services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IEventPublisher, EventPublisher>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();

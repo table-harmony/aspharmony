@@ -1,6 +1,6 @@
 @model DataAccessLayer.Entities.User
 
-<h2>Profile</h2>
+<h2>Account Details</h2>
 
 <div>
     <dl class="row">
@@ -11,11 +11,11 @@
         <dd class="col-sm-10">@Model.UserName</dd>
     </dl>
 </div>
-    <p>
-        <a asp-action="Delete" class="btn btn-danger">Delete Account</a>
-        <a asp-action="Update" class="btn btn-primary">Update Account</a>
-        <a asp-action="Notifications" class="btn btn-info">Notifications</a>
-    </p>
+<div>
+    <a asp-action="Update" class="btn btn-primary">Update Password</a>
+    <a asp-action="Delete" class="btn btn-danger">Delete Account</a>
+    <a asp-action="Notifications" class="btn btn-info">Notifications</a>
+</div>
 
 @section Scripts {
     @{

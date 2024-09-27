@@ -32,7 +32,7 @@ namespace BusinessLogicLayer.Services
             var library = await _libraryRepository.GetLibraryAsync(membership.LibraryId);
             var user = await _userRepository.GetByIdAsync(membership.UserId);
 
-            UserEvents.OnUserJoinedLibrary(user.Id, library.Id);
+            LibraryEvents.OnUserJoinedLibrary(user, library);
         }
 
         public IEnumerable<LibraryMembership> GetLibraryMembers(int libraryId) {

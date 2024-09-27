@@ -36,7 +36,10 @@ namespace BusinessLogicLayer.Services
         }
 
         public async Task DeleteAsync(int id) {
-            await _notificationRepository.DeleteAsync(id);
+            var notification = await _notificationRepository.GetAsync(id);
+            if (notification != null) {
+                await _notificationRepository.DeleteAsync(id);
+            }
         }
     }
 }

@@ -1,14 +1,14 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System.Text;
 
 namespace Utils.Services {
 
-    public interface IEventsService {
+    public interface IDevHarmonyApiService {
         Task<List<Event>> GetEventsAsync();
         Task<bool> TrackEventAsync(string key);
     }
 
-    public class EventsService : IEventsService {
+    public class DevHarmonyService : IDevHarmonyApiService {
         private static readonly HttpClient _httpClient = new HttpClient();
         private const string BaseUrl = "https://www.devharmony.io/api/";
         private const string SchoolId = "j974jktgez2xkhmm8x5resd9m1710q15";
@@ -42,7 +42,6 @@ namespace Utils.Services {
                 var content = new StringContent(
                     JsonConvert.SerializeObject(eventPayload), Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await _httpClient.PostAsync(apiUrl, content);
-
                 return response.IsSuccessStatusCode;
             } catch (Exception ex) {
                 Console.WriteLine($"Error tracking event: {ex.Message}");

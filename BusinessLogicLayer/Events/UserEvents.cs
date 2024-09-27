@@ -1,34 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DataAccessLayer.Entities;
+using Utils.Services;
 
 namespace BusinessLogicLayer.Events {
     public class UserEventArgs : EventArgs {
-        public string UserId { get; set; }
-    }
-
-    public class LibraryMembershipEventArgs : EventArgs {
-        public string UserId { get; set; }
-        public int LibraryId { get; set; }
-    }
-
-    public class BookAddedToLibraryEventArgs : EventArgs {
-        public int BookId { get; set; }
-        public int LibraryId { get; set; }
+        public User User { get; set; }
     }
 
     public static class UserEvents {
-        public static event EventHandler<LibraryMembershipEventArgs> UserJoinedLibrary;
-        public static event EventHandler<BookAddedToLibraryEventArgs> BookAddedToLibrary;
+        private static IDevHarmonyApiService _devHarmonyApiService;
 
-        public static void OnUserJoinedLibrary(string userId, int libraryId) {
-            UserJoinedLibrary?.Invoke(null, new LibraryMembershipEventArgs { UserId = userId, LibraryId = libraryId });
+        public static void Initialize(IDevHarmonyApiService devHarmonyApiService) {
+            _devHarmonyApiService = devHarmonyApiService;
         }
 
-        public static void OnBookAddedToLibrary(int bookId, int libraryId) {
-            BookAddedToLibrary?.Invoke(null, new BookAddedToLibraryEventArgs { BookId = bookId, LibraryId = libraryId });
+        // Multicast delegate for user-related events
+        public delegate void UserEventHandler(object sender, UserEventArgs e);
+
+        // Events
+        public static event UserEventHandler UserRegistered;
+        public static event UserEventHandler UserUpdated;
+        public static event UserEventHandler UserDeleted;
+        public static event UserEventHandler UserLoggedIn;
+
+        // Event raising methods
+        public static async Task OnUserRegistered(User user) {
+            UserRegistered?.Invoke(null, new UserEventArgs { User = user });
+            await TrackEventAsync("User registered");
+        }
+
+        public static async Task OnUserUpdated(User user) {
+            UserUpdated?.Invoke(null, new UserEventArgs { User = user });
+            await TrackEventAsync("User updated");
+        }
+
+        public static async Task OnUserDeleted(User user) {
+            UserDeleted?.Invoke(null, new UserEventArgs { User = user });
+            await TrackEventAsync("User deleted");
+        }
+
+        public static async Task OnUserLoggedIn(User user) {
+            UserLoggedIn?.Invoke(null, new UserEventArgs { User = user });
+            await TrackEventAsync("User logged in");
+        }
+
+        private static async Task TrackEventAsync(string eventKey) {
+            if (_devHarmonyApiService != null) 
+               await _devHarmonyApiService.TrackEventAsync(eventKey);
         }
     }
 }

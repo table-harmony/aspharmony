@@ -57,11 +57,20 @@ namespace BusinessLogicLayer.Services {
 
             await _libraryBookRepository.CreateAsync(libraryBook);
 
-            UserEvents.OnBookAddedToLibrary(bookId, libraryId);
+            var book = await _bookService.GetBookAsync(bookId);
+            var library = await _libraryRepository.GetLibraryAsync(libraryId);
+
+            LibraryEvents.OnBookAddedToLibrary(book, library, book.Title);
         }
 
         public async Task DeleteAsync(int id) {
-            await _libraryBookRepository.DeleteAsync(id);
+            var libraryBook = await GetLibraryBookAsync(id);
+            if (libraryBook != null) {
+                await _libraryBookRepository.DeleteAsync(id);
+                var library = await _libraryRepository.GetLibraryAsync(libraryBook.LibraryId);
+                var book = await _bookService.GetBookAsync(libraryBook.BookId);
+                LibraryEvents.OnBookRemovedFromLibrary(book, library, book.Title);
+            }
         }
     }
 

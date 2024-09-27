@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using PresentationLayer.Models;
 using DataAccessLayer.Entities;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using BusinessLogicLayer.Services;
 using System.Security.Claims;
+using BusinessLogicLayer.Events;
 
 namespace PresentationLayer.Controllers
 {
@@ -13,11 +13,13 @@ namespace PresentationLayer.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly INotificationService _notificationService;
+        private readonly IEventPublisher _eventPublisher;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, INotificationService notificationService) {
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, INotificationService notificationService, IEventPublisher eventPublisher) {
             _userManager = userManager;
             _signInManager = signInManager;
             _notificationService = notificationService;
+            _eventPublisher = eventPublisher;
         }
 
         [HttpGet]
@@ -30,11 +32,14 @@ namespace PresentationLayer.Controllers
             if (ModelState.IsValid) {
                 var user = new User { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
+
                 if (result.Succeeded) {
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     await _userManager.AddToRoleAsync(user, "Member");
+                    await _eventPublisher.PublishUserRegistered(user);
                     return RedirectToAction("Index", "Home");
                 }
+
                 foreach (var error in result.Errors) {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
@@ -43,20 +48,28 @@ namespace PresentationLayer.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login() {
+        public IActionResult Login()
+        {
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model) {
-            if (ModelState.IsValid) {
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
-                    return RedirectToAction("Index", "Home");
+            if (!ModelState.IsValid) 
+                return View(model);
 
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+            if (!result.Succeeded) {
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+
+                return View(model);
             }
-            return View(model);
+            
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            await _eventPublisher.PublishUserLoggedIn(user);
+            
+            return RedirectToAction("Index", "Home");
+
         }
 
         [HttpPost]
@@ -85,32 +98,31 @@ namespace PresentationLayer.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdatePassword(UpdatePasswordViewModel model) {
-            if (ModelState.IsValid) {
-                var user = await _userManager.GetUserAsync(User);
-                if (user == null) {
-                    return NotFound();
-                }
+            if (!ModelState.IsValid)
+                return View("Update", model);
 
-                var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
-                if (result.Succeeded) {
-                    await _signInManager.RefreshSignInAsync(user);
-                    return RedirectToAction(nameof(Index));
-                }
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return NotFound();
 
-                foreach (var error in result.Errors) {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+            if (result.Succeeded) {
+                await _signInManager.RefreshSignInAsync(user);
+                return RedirectToAction(nameof(Index));
             }
-            return View(model);
+
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
+
+            return View("Update", model);
         }
 
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Delete() {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) {
+            if (user == null)
                 return NotFound();
-            }
 
             var model = new DeleteViewModel {
                 UserName = user.UserName
@@ -124,9 +136,8 @@ namespace PresentationLayer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed() {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) {
+            if (user == null)
                 return NotFound();
-            }
 
             var result = await _userManager.DeleteAsync(user);
             if (result.Succeeded) {
@@ -134,9 +145,8 @@ namespace PresentationLayer.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            foreach (var error in result.Errors) {
+            foreach (var error in result.Errors)
                 ModelState.AddModelError(string.Empty, error.Description);
-            }
 
             var model = new DeleteViewModel {
                 UserName = user.UserName
