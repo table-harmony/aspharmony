@@ -3,9 +3,9 @@
 <h2>Book Details in Library</h2>
 
 <div>
-    <h4>@Model.Book</h4>
-    <hr />
     @{ var book = Model.Book as BusinessLogicLayer.Services.Book; }
+    <h4>@book.Title</h4>
+    <hr />
     <dl class="row">
         <dt class="col-sm-2">Description</dt>
         <dd class="col-sm-10">@book.Title</dd>

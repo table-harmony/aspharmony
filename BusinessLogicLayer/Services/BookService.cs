@@ -1,7 +1,5 @@
 ﻿using BookServiceReference;
-using DataAccessLayer.Entities;
 using DataAccessLayer.Repositories;
-using Utils.Exceptions;
 
 using DbBook = DataAccessLayer.Entities.Book;
 using SoapBook = BookServiceReference.Book;
@@ -72,12 +70,12 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task CreateAsync(Book book) {
-            int id = await _bookRepository.CreateAsync(new DbBook {
+            var dbBook = await _bookRepository.CreateAsync(new DbBook {
                 AuthorId = book.AuthorId,
             });
 
             await _soapClient.CreateBookAsync(new SoapBook {
-                Id = id,
+                Id = dbBook.Id,
                 Title = book.Title,
                 Description = book.Description,
                 Content = book.Content,

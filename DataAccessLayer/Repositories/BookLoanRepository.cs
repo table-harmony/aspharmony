@@ -59,12 +59,12 @@ namespace DataAccessLayer.Repositories {
                 .ToList();
         } 
 
-        public async Task<BookLoan> GetCurrentLoanAsync(int id) {
+        public async Task<BookLoan> GetCurrentLoanAsync(int libraryBookId) {
             return await _context.BookLoans
-                .Include(libraryBook => libraryBook.LibraryMembership)
-                    .ThenInclude(membership => membership.User)
-                .Where(libraryBook => libraryBook.LibraryBookId == id && !libraryBook.ReturnDate.HasValue)
-                .FirstOrDefaultAsync();
+                .AsNoTracking()
+                .Include(bl => bl.LibraryMembership)
+                    .ThenInclude(lm => lm.User)
+                .FirstOrDefaultAsync(bl => bl.LibraryBookId == libraryBookId && !bl.ReturnDate.HasValue);
         }
     }
 }

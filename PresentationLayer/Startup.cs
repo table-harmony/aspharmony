@@ -29,7 +29,8 @@ namespace PresentationLayer
 
         public void ConfigureServices(IServiceCollection services) {
             services.AddDbContext<ApplicationContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+                    .EnableSensitiveDataLogging());
 
             // Register Identity services
             services.AddIdentity<User, IdentityRole>()

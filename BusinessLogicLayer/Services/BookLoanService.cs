@@ -1,59 +1,51 @@
 using DataAccessLayer.Repositories;
 using DataAccessLayer.Entities;
 using Utils.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLogicLayer.Services {
 
     public interface IBookLoanService {
         Task<BookLoan> GetBookLoanAsync(int id);
-        Task CreateAsync(int bookId, int libraryMembershipId, DateTime dueDate);
+        Task CreateAsync(int libraryBookId, int libraryMembershipId, DateTime dueDate);
         Task ReturnBookAsync(int id);
-        Task<IEnumerable<BookLoan>> GetBookLoansAsync(int bookId);
+        IEnumerable<BookLoan> GetBookLoans(int bookId);
         Task UpdateAsync(BookLoan loan);
         Task<BookLoan> GetCurrentBookLoanAsync(int id);
     }
 
     public class BookLoanService : IBookLoanService {
         private readonly IBookLoanRepository _loanRepository;
-        private readonly ILibraryBookService _libraryBookService;
-        private readonly IBookService _bookService;
+        private readonly ILibraryBookRepository _libraryBookRepository;
+        private readonly IBookRepository _bookRepository;
 
         public BookLoanService(IBookLoanRepository loanRepository, 
-                               ILibraryBookService libraryBookService,
-                               IBookService bookService) {
+                               ILibraryBookRepository libraryBookRepository,
+                               IBookRepository bookRepository) {
             _loanRepository = loanRepository;
-            _libraryBookService = libraryBookService;
-            _bookService = bookService;
+            _libraryBookRepository = libraryBookRepository;
+            _bookRepository = bookRepository;
         }
 
         public async Task<BookLoan> GetBookLoanAsync(int id) {
-            var bookLoan = await _loanRepository.GetBookLoanAsync(id);
-            if (bookLoan != null) {
-                bookLoan.LibraryBook.Book = await _bookService.GetBookAsync(bookLoan.LibraryBook.BookId);
-            }
-            return bookLoan;
+            return await _loanRepository.GetBookLoanAsync(id);
         }
 
-        public async Task<IEnumerable<BookLoan>> GetBookLoansAsync(int bookId) {
-            var bookLoans = _loanRepository.GetBookLoans(bookId);
-            foreach (var loan in bookLoans) {
-               loan.LibraryBook.Book = await _bookService.GetBookAsync(loan.LibraryBook.BookId);
-            }
-            return bookLoans;
+        public IEnumerable<BookLoan> GetBookLoans(int bookId) {
+            return _loanRepository.GetBookLoans(bookId);
         }
 
-        public async Task CreateAsync(int bookId, int libraryMembershipId, DateTime dueDate) {
-            LibraryBook libraryBook = await _libraryBookService.GetLibraryBookAsync(bookId);
-
+        public async Task CreateAsync(int libraryBookId, int libraryMembershipId, DateTime dueDate) {
+            var libraryBook = await _libraryBookRepository.GetLibraryBookAsync(libraryBookId);
             if (libraryBook == null)
                 throw new NotFoundException();
 
-            BookLoan currentLoan = await GetCurrentBookLoanAsync(bookId);
+            var currentLoan = await GetCurrentBookLoanAsync(libraryBookId);
             if (currentLoan != null)
                 throw new AuthorizationException();
 
-            BookLoan loan = new() {
-                LibraryBookId = libraryBook.Id,
+            var loan = new BookLoan {
+                LibraryBookId = libraryBookId,
                 LibraryMembershipId = libraryMembershipId,
                 LoanDate = DateTime.Now,
                 DueDate = dueDate
@@ -66,16 +58,12 @@ namespace BusinessLogicLayer.Services {
             await _loanRepository.UpdateAsync(loan);
         }
 
-        public async Task<BookLoan> GetCurrentBookLoanAsync(int bookId) {
-            var currentLoan = await _loanRepository.GetCurrentLoanAsync(bookId);
-            if (currentLoan != null) {
-                currentLoan.LibraryBook.Book = await _bookService.GetBookAsync(currentLoan.LibraryBook.BookId);
-            }
-            return currentLoan;
+        public async Task<BookLoan> GetCurrentBookLoanAsync(int libraryBookId) {
+            return await _loanRepository.GetCurrentLoanAsync(libraryBookId);
         }
 
         public async Task ReturnBookAsync(int id) {
-            BookLoan loan = await GetBookLoanAsync(id);
+            var loan = await GetBookLoanAsync(id);
             if (loan == null)
                 throw new NotFoundException();
 

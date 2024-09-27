@@ -21,6 +21,7 @@ namespace DataAccessLayer.Repositories {
 
         public async Task<Library> GetLibraryAsync(int id) {
             return await _context.Libraries
+                .AsNoTracking()
                 .Include(l => l.Memberships)
                 .Include(l => l.Books)
                     .ThenInclude(lb => lb.Book)
@@ -50,6 +51,12 @@ namespace DataAccessLayer.Repositories {
 
             _context.Libraries.Remove(library);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Library> GetLibraryAsNoTrackingAsync(int id) {
+            return await _context.Libraries
+                .AsNoTracking()
+                .FirstOrDefaultAsync(l => l.Id == id);
         }
     }
 }

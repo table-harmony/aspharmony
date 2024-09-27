@@ -8,15 +8,17 @@ namespace BusinessLogicLayer.Initiate {
         public static void Subscribe(IServiceProvider serviceProvider) {
             UserEvents.BookAddedToLibrary += async (sender, args) => {
                 using var scope = serviceProvider.CreateScope();
-                INotificationService notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
-                IBookService bookService = scope.ServiceProvider.GetRequiredService<IBookService>();
-                ILibraryService libraryService = scope.ServiceProvider.GetRequiredService<ILibraryService>();    
+                var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+                var bookService = scope.ServiceProvider.GetRequiredService<IBookService>();
+                var libraryService = scope.ServiceProvider.GetRequiredService<ILibraryService>();    
 
                 var book = await bookService.GetBookAsync(args.BookId);
                 var library = await libraryService.GetLibraryAsync(args.LibraryId);
 
-                await notificationService.CreateAsync(book.AuthorId,
-                    $"Your book '${book.Title}' has been added to the library '{library.Name}'.");
+                if (book != null && library != null) {
+                    await notificationService.CreateAsync(book.AuthorId,
+                        $"Your book '{book.Title}' has been added to the library '{library.Name}'.");
+                }
             };
 
 

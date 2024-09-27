@@ -148,7 +148,7 @@ namespace PresentationLayer.Controllers
                 LibraryBook = libraryBook,
                 Book = libraryBook.Book,
                 CurrentLoan = await _bookLoanService.GetCurrentBookLoanAsync(libraryBookId),
-                PastLoans = await _bookLoanService.GetBookLoansAsync(libraryBookId),
+                PastLoans = _bookLoanService.GetBookLoans(libraryBookId),
             };
 
             return View(viewModel);

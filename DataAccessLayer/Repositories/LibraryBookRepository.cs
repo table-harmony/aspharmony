@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.Repositories {
     public interface ILibraryBookRepository {
-        LibraryBook GetLibraryBook(int id);
-        LibraryBook GetLibraryBook(int libraryId, int bookId);
+        Task<LibraryBook> GetLibraryBookAsync(int id);
+        Task<LibraryBook> GetLibraryBookAsync(int libraryId, int bookId);
         Task CreateAsync(LibraryBook book);
-        IEnumerable<LibraryBook> GetLibraryBooks(int libraryId);
+        Task<IEnumerable<LibraryBook>> GetLibraryBooksAsync(int libraryId);
         Task DeleteAsync(int id);
     }
 
@@ -18,28 +18,26 @@ namespace DataAccessLayer.Repositories {
             _context = context;
         }
 
-        public LibraryBook GetLibraryBook(int id) {
-            return _context.LibraryBooks
-                .Include(libraryBook => libraryBook.Library)
-                .Include(libraryBook => libraryBook.Book)
-                    .ThenInclude(book => book.Author)
-                .First(libraryBook => libraryBook.Id == id);
+        public async Task<LibraryBook> GetLibraryBookAsync(int id) {
+            return await _context.LibraryBooks
+                .AsNoTracking()
+                .Include(lb => lb.Book)
+                .FirstOrDefaultAsync(lb => lb.Id == id);
         }
 
-        public LibraryBook GetLibraryBook(int libraryId, int bookId) {
-            return _context.LibraryBooks
-                .Include(libraryBook => libraryBook.Library)
-                .Include(libraryBook => libraryBook.Book)
-                    .ThenInclude(book => book.Author)
-                .First(libraryBook => libraryBook.Book.Id == bookId && 
-                                                    libraryBook.Library.Id == libraryId);
+        public async Task<LibraryBook> GetLibraryBookAsync(int libraryId, int bookId) {
+            return await _context.LibraryBooks
+                .AsNoTracking()
+                .Include(lb => lb.Book)
+                .FirstOrDefaultAsync(lb => lb.LibraryId == libraryId && lb.BookId == bookId);
         }
 
-        public IEnumerable<LibraryBook> GetLibraryBooks(int libraryId) {
-            return _context.LibraryBooks
-                    .Include(lb => lb.Book)
-                    .Where(lb => lb.LibraryId == libraryId)
-                    .ToList();
+        public async Task<IEnumerable<LibraryBook>> GetLibraryBooksAsync(int libraryId) {
+            return await _context.LibraryBooks
+                .AsNoTracking()
+                .Include(lb => lb.Book)
+                .Where(lb => lb.LibraryId == libraryId)
+                .ToListAsync();
         }
 
         public async Task DeleteAsync(int id) {

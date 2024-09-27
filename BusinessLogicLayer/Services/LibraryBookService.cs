@@ -26,7 +26,7 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task<LibraryBook> GetLibraryBookAsync(int id) {
-            var libraryBook = _libraryBookRepository.GetLibraryBook(id);
+            var libraryBook = await _libraryBookRepository.GetLibraryBookAsync(id);
             if (libraryBook != null) {
                 libraryBook.Book = await _bookService.GetBookAsync(libraryBook.BookId);
             }
@@ -34,7 +34,7 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task<LibraryBook> GetLibraryBookAsync(int libraryId, int bookId) {
-            var libraryBook = _libraryBookRepository.GetLibraryBook(libraryId, bookId);
+            var libraryBook = await _libraryBookRepository.GetLibraryBookAsync(libraryId, bookId);
             if (libraryBook != null) {
                 libraryBook.Book = await _bookService.GetBookAsync(bookId);
             }
@@ -42,7 +42,7 @@ namespace BusinessLogicLayer.Services {
         }
         
         public async Task<IEnumerable<LibraryBook>> GetLibraryBooksAsync(int libraryId) {
-            var libraryBooks = _libraryBookRepository.GetLibraryBooks(libraryId);
+            var libraryBooks = await _libraryBookRepository.GetLibraryBooksAsync(libraryId);
             foreach (var libraryBook in libraryBooks) {
                 libraryBook.Book = await _bookService.GetBookAsync(libraryBook.BookId);
             }
