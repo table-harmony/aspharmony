@@ -40,6 +40,8 @@ namespace DataAccessLayer.Repositories {
 
         public async Task<LibraryMembership> GetMembershipAsync(int libraryId, string userId) {
             return await _context.LibraryMemberships
+                .Include(membership => membership.Library)
+                .Include(membership => membership.User)
                 .FirstOrDefaultAsync(m => m.LibraryId == libraryId && m.UserId == userId);
         }
 

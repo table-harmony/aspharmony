@@ -1,17 +1,16 @@
 using System;
 using DataAccessLayer.Entities;
 
+using Book = BusinessLogicLayer.Services.Book;
+
 namespace BusinessLogicLayer.Events
 {
     public class LibraryMembershipEventArgs : EventArgs {
-        public User User { get; set; }
-        public Library Library { get; set; }
+        public LibraryMembership membership { get; set; }
     }
 
     public class LibraryBookEventArgs : EventArgs {
-        public Book Book { get; set; }
-        public Library Library { get; set; }
-        public string BookTitle { get; set; }
+        public LibraryBook libraryBook { get; set; }
     }
 
     public static class LibraryEvents {
@@ -23,20 +22,20 @@ namespace BusinessLogicLayer.Events
         public static event EventHandler<LibraryBookEventArgs> BookRemovedFromLibrary;
 
         // Event raising methods
-        public static void OnUserJoinedLibrary(User user, Library library) {
-            UserJoinedLibrary?.Invoke(null, new LibraryMembershipEventArgs { User = user, Library = library });
+        public static void OnUserJoinedLibrary(LibraryMembership membership) {
+            UserJoinedLibrary?.Invoke(null, new LibraryMembershipEventArgs { membership = membership });
         }
 
-        public static void OnUserLeftLibrary(User user, Library library) {
-            UserLeftLibrary?.Invoke(null, new LibraryMembershipEventArgs { User = user, Library = library });
+        public static void OnUserLeftLibrary(LibraryMembership membership) {
+            UserLeftLibrary?.Invoke(null, new LibraryMembershipEventArgs { membership = membership });
         }
 
-        public static void OnBookAddedToLibrary(Book book, Library library, string bookTitle) {
-            BookAddedToLibrary?.Invoke(null, new LibraryBookEventArgs { Book = book, Library = library, BookTitle = bookTitle });
+        public static void OnBookAddedToLibrary(LibraryBook libraryBook) {
+            BookAddedToLibrary?.Invoke(null, new LibraryBookEventArgs { libraryBook = libraryBook });
         }
 
-        public static void OnBookRemovedFromLibrary(Book book, Library library, string bookTitle) {
-            BookRemovedFromLibrary?.Invoke(null, new LibraryBookEventArgs { Book = book, Library = library, BookTitle = bookTitle });
+        public static void OnBookRemovedFromLibrary(LibraryBook libraryBook) {
+            BookRemovedFromLibrary?.Invoke(null, new LibraryBookEventArgs { libraryBook = libraryBook });
         }
     }
 }

@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using BusinessLogicLayer.Services;
 using PresentationLayer.Models;
 using System.Security.Claims;
+using BusinessLogicLayer.Events;
 
 namespace PresentationLayer.Controllers
 {
@@ -17,10 +18,13 @@ namespace PresentationLayer.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly ILogger<AdminController> _logger;
+        private readonly IEventPublisher _eventPublisher;
 
         public AdminController(UserManager<User> userManager,
+                                IEventPublisher eventPublisher,
                                 ILogger<AdminController> logger) {
             _userManager = userManager;
+            _eventPublisher = eventPublisher;
             _logger = logger;
         }
 
@@ -54,6 +58,7 @@ namespace PresentationLayer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id) {
             User existingUser = await _userManager.FindByIdAsync(id);
+            await _eventPublisher.PublishUserDeleted(existingUser);
             await _userManager.DeleteAsync(existingUser);
 
             return RedirectToAction("Index");
@@ -80,6 +85,7 @@ namespace PresentationLayer.Controllers
             User existingUser = await _userManager.FindByIdAsync(model.Id);
             existingUser.UserName = model.UserName;
 
+            await _eventPublisher.PublishUserUpdated(existingUser);
             await _userManager.UpdateAsync(existingUser);
 
             return RedirectToAction("Index");

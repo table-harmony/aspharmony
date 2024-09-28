@@ -15,36 +15,41 @@ namespace BusinessLogicLayer.Services
 
     public class LibraryMembershipService : ILibraryMembershipService {
         private readonly ILibraryMembershipRepository _membershipRepository;
-        private readonly ILibraryRepository _libraryRepository;
-        private readonly IUserRepository _userRepository;
+        private readonly IEventPublisher _eventPublisher;
 
-        public LibraryMembershipService(ILibraryMembershipRepository membershipRepository,
-                                        ILibraryRepository libraryRepository,
-                                        IUserRepository userRepository) {
+        public LibraryMembershipService(
+            ILibraryMembershipRepository membershipRepository,
+            IEventPublisher eventPublisher)
+        {
             _membershipRepository = membershipRepository;
-            _libraryRepository = libraryRepository;
-            _userRepository = userRepository;
+            _eventPublisher = eventPublisher;
         }
 
         public async Task CreateAsync(LibraryMembership membership) {
             await _membershipRepository.CreateAsync(membership);
 
-            var library = await _libraryRepository.GetLibraryAsync(membership.LibraryId);
-            var user = await _userRepository.GetByIdAsync(membership.UserId);
+            membership = await GetMembershipAsync(membership.Id);
+            _eventPublisher.PublishUserJoinedLibrary(membership);
+        }
 
-            LibraryEvents.OnUserJoinedLibrary(user, library);
+        public async Task DeleteAsync(int libraryId, string userId) {
+            var membership = await GetMembershipAsync(libraryId, userId);
+            if (membership != null) {
+                await _membershipRepository.DeleteAsync(libraryId, userId);
+                _eventPublisher.PublishUserLeftLibrary(membership);
+            }
+        }
+
+        public async Task DeleteAsync(int id) {
+            var membership = await GetMembershipAsync(id);
+            if (membership != null) {
+                await _membershipRepository.DeleteAsync(id);
+                _eventPublisher.PublishUserLeftLibrary(membership);
+            }
         }
 
         public IEnumerable<LibraryMembership> GetLibraryMembers(int libraryId) {
             return _membershipRepository.GetLibraryMembers(libraryId);
-        }
-
-        public async Task DeleteAsync(int libraryId, string userId) {
-            await _membershipRepository.DeleteAsync(libraryId, userId);
-        }
-
-        public async Task DeleteAsync(int id) {
-            await _membershipRepository.DeleteAsync(id);
         }
 
         public async Task<LibraryMembership> GetMembershipAsync(int libraryId, string userId) {

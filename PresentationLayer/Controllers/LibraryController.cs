@@ -5,6 +5,7 @@ using DataAccessLayer.Entities;
 using System.Security.Claims;
 using PresentationLayer.Models;
 using Utils.Exceptions;
+using BusinessLogicLayer.Events;
 
 namespace PresentationLayer.Controllers
 {
@@ -16,18 +17,21 @@ namespace PresentationLayer.Controllers
         private readonly ILibraryBookService _libraryBookService;
         private readonly IBookService _bookService;
         private readonly IBookLoanService _bookLoanService;
+        private readonly IEventPublisher _eventPublisher;
 
         public LibraryController(
             ILibraryService libraryService,
             ILibraryMembershipService libraryMembershipService,
             ILibraryBookService libraryBookService,
             IBookService bookService,
-            IBookLoanService bookLoanService) {
+            IBookLoanService bookLoanService,
+            IEventPublisher eventPublisher) {
             _libraryService = libraryService;
             _libraryMembershipService = libraryMembershipService;
             _libraryBookService = libraryBookService;
             _bookService = bookService;
             _bookLoanService = bookLoanService;
+            _eventPublisher = eventPublisher;
         }
 
         public async Task<IActionResult> Index() {
@@ -76,7 +80,6 @@ namespace PresentationLayer.Controllers
             };
 
             await _libraryService.CreateAsync(library);
-
             LibraryMembership membership = new() {
                 LibraryId = library.Id,
                 UserId = userId,

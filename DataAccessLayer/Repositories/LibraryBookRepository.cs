@@ -21,6 +21,7 @@ namespace DataAccessLayer.Repositories {
         public async Task<LibraryBook> GetLibraryBookAsync(int id) {
             return await _context.LibraryBooks
                 .AsNoTracking()
+                .Include(lb => lb.Library)
                 .Include(lb => lb.Book)
                 .FirstOrDefaultAsync(lb => lb.Id == id);
         }
@@ -28,6 +29,7 @@ namespace DataAccessLayer.Repositories {
         public async Task<LibraryBook> GetLibraryBookAsync(int libraryId, int bookId) {
             return await _context.LibraryBooks
                 .AsNoTracking()
+                .Include(lb => lb.Library)
                 .Include(lb => lb.Book)
                 .FirstOrDefaultAsync(lb => lb.LibraryId == libraryId && lb.BookId == bookId);
         }

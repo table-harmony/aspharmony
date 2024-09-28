@@ -44,8 +44,7 @@ namespace BusinessLogicLayer.Events {
         }
 
         private static async Task TrackEventAsync(string eventKey) {
-            if (_devHarmonyApiService != null) 
-               await _devHarmonyApiService.TrackEventAsync(eventKey);
+            await _devHarmonyApiService.TrackEventAsync(eventKey);
         }
     }
 }

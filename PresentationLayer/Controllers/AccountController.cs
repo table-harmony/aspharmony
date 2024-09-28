@@ -107,6 +107,7 @@ namespace PresentationLayer.Controllers
 
             var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
             if (result.Succeeded) {
+                await _eventPublisher.PublishUserUpdated(user);
                 await _signInManager.RefreshSignInAsync(user);
                 return RedirectToAction(nameof(Index));
             }
@@ -141,6 +142,7 @@ namespace PresentationLayer.Controllers
 
             var result = await _userManager.DeleteAsync(user);
             if (result.Succeeded) {
+                await _eventPublisher.PublishUserDeleted(user);
                 await _signInManager.SignOutAsync();
                 return RedirectToAction("Index", "Home");
             }

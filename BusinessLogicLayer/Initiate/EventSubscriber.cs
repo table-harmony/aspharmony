@@ -2,8 +2,9 @@ using BusinessLogicLayer.Events;
 using BusinessLogicLayer.Services;
 using DataAccessLayer.Entities;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using Utils.Services;
+
+using Book = BusinessLogicLayer.Services.Book;
 
 namespace BusinessLogicLayer.Initiate {
 
@@ -13,14 +14,14 @@ namespace BusinessLogicLayer.Initiate {
         public static void Subscribe(IServiceProvider serviceProvider) {
             _serviceProvider = serviceProvider;
 
-            InitializeUserEvents(serviceProvider);
+            InitializeUserEvents();
 
             SubscribeUserEvents();
             SubscribeLibraryEvents();
         }
 
-        private static void InitializeUserEvents(IServiceProvider serviceProvider) {
-            var devHarmonyApiService = serviceProvider.GetRequiredService<IDevHarmonyApiService>();
+        private static void InitializeUserEvents() {
+            var devHarmonyApiService = _serviceProvider.GetRequiredService<IDevHarmonyApiService>();
             UserEvents.Initialize(devHarmonyApiService);
         }
 
@@ -40,21 +41,32 @@ namespace BusinessLogicLayer.Initiate {
 
         private static void SubscribeLibraryEvents() {
             LibraryEvents.UserJoinedLibrary += (sender, args) => {
-                CreateNotification(args.User.Id, $"You have joined the library '{args.Library.Name}'.");
-                NotifyLibraryManagers(args.Library.Id, 
-                    $"User '{args.User.UserName}' has joined the library '{args.Library.Name}'.");
+                LibraryMembership membership = args.membership;
+
+                CreateNotification(membership.UserId, $"You have joined the library '{membership.Library.Name}'.");
+                NotifyLibraryManagers(membership.LibraryId, 
+                    $"User '{membership.User.UserName}' has joined the library '{membership.Library.Name}'.");
             };
 
-            LibraryEvents.UserLeftLibrary += (sender, args) =>
-                CreateNotification(args.User.Id, $"You have left the library '{args.Library.Name}'.");
+            LibraryEvents.UserLeftLibrary += (sender, args) => {
+                LibraryMembership membership = args.membership;
 
-            LibraryEvents.BookAddedToLibrary += (sender, args) =>
-                NotifyLibraryMembers(args.Library.Id, 
-                    $"New book '{args.BookTitle}' has been added to the library '{args.Library.Name}'.");
+                CreateNotification(membership.UserId, $"You have left the library '{membership.Library.Name}'.");
+                NotifyLibraryManagers(membership.LibraryId,
+                    $"User '{membership.User.UserName}' has left the library '{membership.Library.Name}'.");
+            };
 
-            LibraryEvents.BookRemovedFromLibrary += (sender, args) =>
-                NotifyLibraryManagers(args.Library.Id, 
-                    $"Book '{args.BookTitle}' has been removed from the library '{args.Library.Name}'.");
+            LibraryEvents.BookAddedToLibrary += (sender, args) => {
+                LibraryBook libraryBook = args.libraryBook;
+                NotifyLibraryMembers(libraryBook.LibraryId,
+                    $"New book '{(libraryBook.Book as Book).Title}' has been added to the library '{libraryBook.Library.Name}'.");
+            };
+
+            LibraryEvents.BookRemovedFromLibrary += (sender, args) => {
+                LibraryBook libraryBook = args.libraryBook;
+                NotifyLibraryManagers(libraryBook.LibraryId,
+                    $"Book '{(libraryBook.Book as Book).Title}' has been removed from the library '{libraryBook.Library.Name}'.");
+            };
         }
 
         private static void CreateNotification(string userId, string message) {

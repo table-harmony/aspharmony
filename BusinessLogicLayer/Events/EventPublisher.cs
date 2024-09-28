@@ -1,5 +1,6 @@
-using System.Threading.Tasks;
 using DataAccessLayer.Entities;
+
+using Book = BusinessLogicLayer.Services.Book;
 
 namespace BusinessLogicLayer.Events
 {
@@ -11,14 +12,13 @@ namespace BusinessLogicLayer.Events
         Task PublishUserLoggedIn(User user);
 
         // Library events
-        void PublishUserJoinedLibrary(User user, Library library);
-        void PublishUserLeftLibrary(User user, Library library);
-        void PublishBookAddedToLibrary(Book book, Library library, string bookTitle);
-        void PublishBookRemovedFromLibrary(Book book, Library library, string bookTitle);
+        void PublishUserJoinedLibrary(LibraryMembership membership);
+        void PublishUserLeftLibrary(LibraryMembership membership);
+        void PublishBookAddedToLibrary(LibraryBook libraryBook);
+        void PublishBookRemovedFromLibrary(LibraryBook libraryBook);
     }
 
-    public class EventPublisher : IEventPublisher
-    {
+    public class EventPublisher : IEventPublisher {
         // User events
         public async Task PublishUserRegistered(User user) {
             await UserEvents.OnUserRegistered(user);
@@ -37,20 +37,20 @@ namespace BusinessLogicLayer.Events
         }
 
         // Library events
-        public void PublishUserJoinedLibrary(User user, Library library) {
-            LibraryEvents.OnUserJoinedLibrary(user, library);
+        public void PublishUserJoinedLibrary(LibraryMembership membership) {
+            LibraryEvents.OnUserJoinedLibrary(membership);
         }
 
-        public void PublishUserLeftLibrary(User user, Library library) {
-            LibraryEvents.OnUserLeftLibrary(user, library);
+        public void PublishUserLeftLibrary(LibraryMembership membership) {
+            LibraryEvents.OnUserLeftLibrary(membership);
         }
 
-        public void PublishBookAddedToLibrary(Book book, Library library, string bookTitle) {
-            LibraryEvents.OnBookAddedToLibrary(book, library, bookTitle);
+        public void PublishBookAddedToLibrary(LibraryBook libraryBook) {
+            LibraryEvents.OnBookAddedToLibrary(libraryBook);
         }
 
-        public void PublishBookRemovedFromLibrary(Book book, Library library, string bookTitle) {
-            LibraryEvents.OnBookRemovedFromLibrary(book, library, bookTitle);
+        public void PublishBookRemovedFromLibrary(LibraryBook libraryBook) {
+            LibraryEvents.OnBookRemovedFromLibrary(libraryBook);
         }
     }
 }
