@@ -70,16 +70,22 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task CreateAsync(Book book) {
-            var dbBook = await _bookRepository.CreateAsync(new DbBook {
-                AuthorId = book.AuthorId,
-            });
+            var transaction = _bookRepository.BeginTransaction();
 
-            await _soapClient.CreateBookAsync(new SoapBook {
-                Id = dbBook.Id,
-                Title = book.Title,
-                Description = book.Description,
-                Content = book.Content,
-            });
+            try {
+                var dbBook = await _bookRepository.CreateAsync(new DbBook {
+                    AuthorId = book.AuthorId,
+                });
+
+                await _soapClient.CreateBookAsync(new SoapBook {
+                    Id = dbBook.Id,
+                    Title = book.Title,
+                    Description = book.Description,
+                    Content = book.Content,
+                });
+            } catch {
+                await transaction.RollbackAsync();
+            }
         }
 
         public async Task UpdateAsync(Book book) {
@@ -92,8 +98,16 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task DeleteAsync(int id) {
-            await _bookRepository.DeleteAsync(id);
-            await _soapClient.DeleteBookAsync(id);
+            var transaction = _bookRepository.BeginTransaction();
+
+            try {
+                await _bookRepository.DeleteAsync(id);
+                await _soapClient.DeleteBookAsync(id);
+
+                transaction.Commit();
+            } catch {
+                await transaction.RollbackAsync();
+            }
         }
     }
 }

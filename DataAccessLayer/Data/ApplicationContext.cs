@@ -1,6 +1,9 @@
 ﻿using DataAccessLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+using System;
+using System.Threading.Tasks;
 
 namespace DataAccessLayer.Data {
     public class ApplicationContext : IdentityDbContext<User> {
@@ -105,5 +108,15 @@ namespace DataAccessLayer.Data {
         public DbSet<LibraryMembership> LibraryMemberships { get; set; }
         public DbSet<BookLoan> BookLoans { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            if (Database.CurrentTransaction != null)
+            {
+                return null;
+            }
+
+            return await Database.BeginTransactionAsync();
+        }
     }
 }

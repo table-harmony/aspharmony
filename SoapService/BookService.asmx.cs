@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Services;
+using System.Web.Services.Protocols;
 using System.Xml.Linq;
 
 namespace SoapService {
@@ -12,6 +13,18 @@ namespace SoapService {
     [System.ComponentModel.ToolboxItem(false)]
     public class BookService : System.Web.Services.WebService {
         private static readonly string XmlFilePath = HttpContext.Current.Server.MapPath("/Books.xml");
+
+        private void BackupXmlFile() {
+            var backupFilePath = XmlFilePath + ".bak";
+            File.Copy(XmlFilePath, backupFilePath, true);
+        }
+
+        private void RestoreXmlFile() {
+            var backupFilePath = XmlFilePath + ".bak";
+            if (File.Exists(backupFilePath)) {
+                File.Copy(backupFilePath, XmlFilePath, true);
+            }
+        }
 
         [WebMethod]
         public Book GetBook(int id) {
@@ -34,24 +47,40 @@ namespace SoapService {
 
         [WebMethod]
         public void UpdateBook(Book updatedBook) {
-            var books = ReadBooksFromXml();
-            var book = books.FirstOrDefault(b => b.Id == updatedBook.Id);
-            if (book == null) throw new Exception("Book not found.");
+            BackupXmlFile(); // Backup before modifying
 
-            book.Title = updatedBook.Title;
-            book.Description = updatedBook.Description;
-            book.Content = updatedBook.Content;
-            WriteBooksToXml(books);
+            try {
+                var books = ReadBooksFromXml();
+                var book = books.FirstOrDefault(b => b.Id == updatedBook.Id);
+                if (book == null) throw new Exception("Book not found.");
+
+                book.Title = updatedBook.Title;
+                book.Description = updatedBook.Description;
+                book.Content = updatedBook.Content;
+
+                WriteBooksToXml(books);
+            } catch (Exception) {
+                RestoreXmlFile(); // Restore original file if something goes wrong
+            }
         }
+
 
         [WebMethod]
         public void DeleteBook(int id) {
-            var books = ReadBooksFromXml();
-            var book = books.FirstOrDefault(b => b.Id == id);
-            if (book == null) throw new Exception("Book not found.");
-            books.Remove(book);
-            WriteBooksToXml(books);
+            BackupXmlFile(); // Backup before modifying
+
+            try {
+                var books = ReadBooksFromXml();
+                var book = books.FirstOrDefault(b => b.Id == 20);
+                if (book == null) throw new Exception("Book not found.");
+
+                books.Remove(book);
+                WriteBooksToXml(books);
+            } catch (Exception ex) {
+                RestoreXmlFile(); // Restore original file if something goes wrong
+            }
         }
+
 
         private List<Book> ReadBooksFromXml() {
             var books = new List<Book>();

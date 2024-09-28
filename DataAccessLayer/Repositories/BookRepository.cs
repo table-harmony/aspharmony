@@ -1,6 +1,7 @@
 ﻿using DataAccessLayer.Data;
 using DataAccessLayer.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Utils.Exceptions;
 
 namespace DataAccessLayer.Repositories {
@@ -9,7 +10,8 @@ namespace DataAccessLayer.Repositories {
         Task<IEnumerable<Book>> GetAllAsync();
         Task<Book> CreateAsync(Book book);
         Task DeleteAsync(int id);
-        Task<Book> GetBookAsNoTrackingAsync(int id);
+        IDbContextTransaction BeginTransaction();
+
     }
 
     public class BookRepository : IBookRepository {
@@ -50,10 +52,8 @@ namespace DataAccessLayer.Repositories {
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Book> GetBookAsNoTrackingAsync(int id) {
-            return await _context.Books
-                .AsNoTracking()
-                .FirstOrDefaultAsync(b => b.Id == id);
+        public IDbContextTransaction BeginTransaction() {
+            return _context.Database.BeginTransaction();
         }
     }
 
