@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Services;
-using System.Web.Services.Protocols;
 using System.Xml.Linq;
 
 namespace SoapService {
@@ -29,7 +29,7 @@ namespace SoapService {
         [WebMethod]
         public Book GetBook(int id) {
             var book = ReadBooksFromXml().FirstOrDefault(b => b.Id == id);
-            if (book == null) throw new Exception("Book not found.");
+            if (book == null) return null;
             return book;
         }
 
@@ -40,44 +40,51 @@ namespace SoapService {
 
         [WebMethod]
         public void CreateBook(Book newBook) {
-            var books = ReadBooksFromXml();
-            books.Add(newBook);
-            WriteBooksToXml(books);
+            BackupXmlFile();
+
+            try {
+                var books = ReadBooksFromXml();
+                books.Add(newBook);
+
+                WriteBooksToXml(books);
+            } catch {
+                RestoreXmlFile();
+            }
         }
 
         [WebMethod]
         public void UpdateBook(Book updatedBook) {
-            BackupXmlFile(); // Backup before modifying
+            BackupXmlFile();
 
             try {
                 var books = ReadBooksFromXml();
                 var book = books.FirstOrDefault(b => b.Id == updatedBook.Id);
-                if (book == null) throw new Exception("Book not found.");
+                if (book == null) return;
 
                 book.Title = updatedBook.Title;
                 book.Description = updatedBook.Description;
                 book.Content = updatedBook.Content;
 
                 WriteBooksToXml(books);
-            } catch (Exception) {
-                RestoreXmlFile(); // Restore original file if something goes wrong
+            } catch {
+                RestoreXmlFile();
             }
         }
 
 
         [WebMethod]
         public void DeleteBook(int id) {
-            BackupXmlFile(); // Backup before modifying
+            BackupXmlFile();
 
             try {
                 var books = ReadBooksFromXml();
-                var book = books.FirstOrDefault(b => b.Id == 20);
-                if (book == null) throw new Exception("Book not found.");
+                var book = books.FirstOrDefault(b => b.Id == id);
+                if (book == null) return;
 
                 books.Remove(book);
                 WriteBooksToXml(books);
-            } catch (Exception ex) {
-                RestoreXmlFile(); // Restore original file if something goes wrong
+            } catch {
+                RestoreXmlFile();
             }
         }
 
@@ -94,6 +101,7 @@ namespace SoapService {
                     Description = x.Element("Description")?.Value,
                     Content = x.Element("Content")?.Value
                 }).ToList();
+
             return books;
         }
 
@@ -109,6 +117,23 @@ namespace SoapService {
                 )
             );
             xdoc.Save(XmlFilePath);
+        }
+
+        private void WriteBooksToXml(DataSet books) {
+            List<Book> list = new List<Book>();
+
+            foreach (DataRow row in books.Tables[0].Rows) {
+                Book book = new Book {
+                    Id = int.Parse(row["id"].ToString()),
+                    Title = row["title"].ToString(),
+                    Description = row["description"].ToString(),
+                    Content = row["content"].ToString()
+                };
+
+                list.Add(book);
+            }
+
+            WriteBooksToXml(list);
         }
     }
 

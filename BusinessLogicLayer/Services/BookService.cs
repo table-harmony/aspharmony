@@ -83,6 +83,8 @@ namespace BusinessLogicLayer.Services {
                     Description = book.Description,
                     Content = book.Content,
                 });
+
+                transaction.Commit();
             } catch {
                 await transaction.RollbackAsync();
             }

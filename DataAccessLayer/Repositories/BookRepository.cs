@@ -11,7 +11,6 @@ namespace DataAccessLayer.Repositories {
         Task<Book> CreateAsync(Book book);
         Task DeleteAsync(int id);
         IDbContextTransaction BeginTransaction();
-
     }
 
     public class BookRepository : IBookRepository {

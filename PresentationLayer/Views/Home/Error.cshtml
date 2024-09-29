@@ -1,8 +1,21 @@
-﻿@{
+﻿@model ErrorViewModel
+@using Utils.Exceptions
+@{
     ViewData["Title"] = "Error";
 }
 
-<header>
-    <h1 class="text-danger">Error</h1>
-    <p class="text-danger">Something went wrong</p>
-</header>
+<h1 class="text-danger">Something went wrong.</h1>
+
+@if (Model.Exception is PublicException publicException) {
+    <h2 class="text-danger">@publicException.Message</h2>
+} else {
+    <p class="text-danger">An error occurred while processing your request.</p>
+}
+
+@if (Model.ShowRequestId) {
+    <p>
+        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+    </p>
+}
+
+<a asp-action="Index" asp-controller="Home" class="btn btn-primary">Go Back Home</a>

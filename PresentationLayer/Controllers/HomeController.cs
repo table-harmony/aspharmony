@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using PresentationLayer.Models;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Diagnostics;
+using Utils.Exceptions;
 
 namespace PresentationLayer.Controllers
 {
@@ -17,7 +19,12 @@ namespace PresentationLayer.Controllers
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error() {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+            
+            return View(new ErrorViewModel { 
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+                Exception = exceptionFeature?.Error
+            });
         }
     }
 }

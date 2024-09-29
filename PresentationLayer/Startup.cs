@@ -8,6 +8,7 @@ using Utils.Services;
 using BusinessLogicLayer.Initiate;
 using BookServiceReference;
 using BusinessLogicLayer.Events;
+using Utils.Encryption;
 
 namespace PresentationLayer
 {
@@ -63,6 +64,9 @@ namespace PresentationLayer
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IEventPublisher, EventPublisher>();
 
+            // Register utils
+            services.AddScoped<IEncryption, Sha256Encryption>();
+
             services.AddControllersWithViews();
             services.AddRazorPages();
 
@@ -76,8 +80,7 @@ namespace PresentationLayer
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider) {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
-            }
-            else {
+            } else {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }

@@ -64,12 +64,6 @@
     </header>
     <main class="flex-shrink-0">
         <div class="container">
-            @if (TempData["ErrorMessage"] != null)
-            {
-                <div class="alert alert-danger" role="alert">
-                    @TempData["ErrorMessage"]
-                </div>
-            }
             @RenderBody()
         </div>
     </main>
