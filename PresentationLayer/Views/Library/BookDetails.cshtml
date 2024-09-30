@@ -2,27 +2,33 @@
 
 <h2>Book Details in Library</h2>
 
-<div>
+<div class="row">
     @{ var book = Model.Book as BusinessLogicLayer.Services.Book; }
-    <h4>@book.Title</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Description</dt>
-        <dd class="col-sm-10">@book.Title</dd>
+    <div class="col-md-8">
+        <h4>@book.Title</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">@book.Description</dd>
 
-        <dt class="col-sm-2">Author</dt>
-        <dd class="col-sm-10">@(book.Author?.UserName ?? "Unknown")</dd>
+            <dt class="col-sm-3">Author</dt>
+            <dd class="col-sm-9">@(book.Author?.UserName ?? "Unknown")</dd>
 
-        <dt class="col-sm-2">Status</dt>
-        <dd class="col-sm-10">
-            @if (Model.CurrentLoan != null) {
-                <span>Currently on loan to @Model.CurrentLoan.LibraryMembership.User.UserName until @Model.CurrentLoan.DueDate.ToShortDateString()</span>
-            }
-            else {
-                <span>Available</span>
-            }
-        </dd>
-    </dl>
+            <dt class="col-sm-3">Status</dt>
+            <dd class="col-sm-9">
+                @if (Model.CurrentLoan != null) {
+                    <span>Currently on loan to @Model.CurrentLoan.LibraryMembership.User.UserName until @Model.CurrentLoan.DueDate.ToShortDateString()</span>
+                }
+                else {
+                    <span>Available</span>
+                }
+            </dd>
+            <dt class="col-sm-3">Image</dt>
+            <dd class="col-sm-9">
+                <img src="@book.ImageUrl" alt="@book.Title" style="max-width: 75px; max-height: 75px;" />
+            </dd>
+        </dl>
+    </div>
 </div>
 
 @if (Model.CurrentLoan == null) {

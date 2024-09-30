@@ -2,7 +2,7 @@
 
 <h2 class="mb-4">Edit Book</h2>
 
-<form asp-action="Edit">
+<form asp-action="Edit" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="hidden" asp-for="Id" />
     <div class="form-group mb-3">
@@ -14,6 +14,18 @@
         <label asp-for="Description" class="control-label"></label>
         <textarea asp-for="Description" class="form-control"></textarea>
         <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    
+    <div class="form-group mb-3">
+        <label class="control-label">Current Image</label>
+        <img src="@Model.CurrentImageUrl" alt="@Model.Title" style="max-width: 75px; max-height: 75px;" class="d-block mb-2" />
+        <input type="hidden" asp-for="CurrentImageUrl" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="NewImage" class="control-label"></label>
+        <input asp-for="NewImage" class="form-control" type="file" accept="image/*" />
+        <span asp-validation-for="NewImage" class="text-danger"></span>
     </div>
     
     <h4 class="mt-4 mb-3">Chapters</h4>
@@ -43,7 +55,7 @@
         }
     </div>
     
-    <button type="button" id="addChapter" class="btn btn-info mb-3">Add Chapter</button>
+    <button type="button" id="addChapter" class="btn btn-secondary mb-3">Add Chapter</button>
     
     <div class="d-flex gap-2 my-4">
         <button type="submit" class="btn btn-primary">Save</button>

@@ -1,14 +1,2 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Books>
-  <Book>
-    <Id>1030</Id>
-    <Title>Harry potter</Title>
-    <Description>Harry potter's chronicles of something</Description>
-    <Chapters>
-      <Chapter index="0">
-        <Title>This is the first chapter</Title>
-        <Content>LOSDF'LASMDKLF/MZLC VASDFASKDFMALSKDMFLskdfskdlmflsdmf</Content>
-      </Chapter>
-    </Chapters>
-  </Book>
-</Books>
+<Books />

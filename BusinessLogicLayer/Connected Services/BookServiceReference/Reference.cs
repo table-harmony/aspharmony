@@ -24,6 +24,8 @@ namespace BookServiceReference
         
         private string DescriptionField;
         
+        private string ImageUrlField;
+        
         private BookServiceReference.Chapter[] ChaptersField;
         
         [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
@@ -66,6 +68,19 @@ namespace BookServiceReference
         }
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+        public string ImageUrl
+        {
+            get
+            {
+                return this.ImageUrlField;
+            }
+            set
+            {
+                this.ImageUrlField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
         public BookServiceReference.Chapter[] Chapters
         {
             get

@@ -7,8 +7,9 @@ using Chapter = BookServiceReference.Chapter;
 
 namespace BusinessLogicLayer.Services {
     public class Book : DbBook {
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public new string Title { get; set; }
+        public new string Description { get; set; }
+        public new string ImageUrl { get; set; } 
         public List<Chapter> Chapters { get; set; } = new List<Chapter>();
     }
 
@@ -23,6 +24,7 @@ namespace BusinessLogicLayer.Services {
     public class BookService : IBookService {
         private readonly IBookRepository _bookRepository;
         private readonly BookServiceSoapClient _soapClient;
+        private readonly string DEFAULT_IMAGE = "https://birkhauser.com/product-not-found.png";
 
         public BookService(IBookRepository bookRepository, BookServiceSoapClient soapClient) {
             _bookRepository = bookRepository;
@@ -39,6 +41,7 @@ namespace BusinessLogicLayer.Services {
                 Id = dbBook.Id,
                 Title = soapBook.Title,
                 Description = soapBook.Description,
+                ImageUrl = soapBook.ImageUrl,
                 Chapters = soapBook.Chapters.Select(c => new Chapter {
                     Index = c.Index,
                     Title = c.Title,
@@ -64,6 +67,7 @@ namespace BusinessLogicLayer.Services {
                         Id = dbBook.Id,
                         Title = soapBook.Title,
                         Description = soapBook.Description,
+                        ImageUrl = soapBook.ImageUrl,
                         Chapters = soapBook.Chapters.Select(c => new Chapter {
                             Index = c.Index,
                             Title = c.Title,
@@ -90,7 +94,8 @@ namespace BusinessLogicLayer.Services {
                     Id = dbBook.Id,
                     Title = book.Title,
                     Description = book.Description,
-                    Chapters = book.Chapters.Select((c, index) => new BookServiceReference.Chapter {
+                    ImageUrl = book.ImageUrl ?? DEFAULT_IMAGE,
+                    Chapters = book.Chapters.Select((c, index) => new Chapter {
                         Index = index,
                         Title = c.Title,
                         Content = c.Content
@@ -108,7 +113,8 @@ namespace BusinessLogicLayer.Services {
                 Id = book.Id,
                 Title = book.Title,
                 Description = book.Description,
-                Chapters = book.Chapters.Select(c => new BookServiceReference.Chapter {
+                ImageUrl = book.ImageUrl,
+                Chapters = book.Chapters.Select(c => new Chapter {
                     Index = c.Index,
                     Title = c.Title,
                     Content = c.Content

@@ -64,6 +64,7 @@ namespace SoapService {
 
                 book.Title = updatedBook.Title;
                 book.Description = updatedBook.Description;
+                book.ImageUrl = updatedBook.ImageUrl;
                 book.Chapters = updatedBook.Chapters;
 
                 WriteBooksToXml(books);
@@ -71,7 +72,6 @@ namespace SoapService {
                 RestoreXmlFile();
             }
         }
-
 
         [WebMethod]
         public void DeleteBook(int id) {
@@ -89,7 +89,6 @@ namespace SoapService {
             }
         }
 
-
         private List<Book> ReadBooksFromXml() {
             var books = new List<Book>();
             if (!File.Exists(XmlFilePath)) return books;
@@ -100,6 +99,7 @@ namespace SoapService {
                     Id = int.Parse(x.Element("Id")?.Value ?? "0"),
                     Title = x.Element("Title")?.Value,
                     Description = x.Element("Description")?.Value,
+                    ImageUrl = x.Element("ImageUrl")?.Value,
                     Chapters = x.Element("Chapters")?.Elements("Chapter")
                         .Select(c => new Chapter {
                             Index = int.Parse(c.Attribute("index")?.Value ?? "0"),
@@ -118,6 +118,7 @@ namespace SoapService {
                         new XElement("Id", b.Id),
                         new XElement("Title", b.Title),
                         new XElement("Description", b.Description),
+                        new XElement("ImageUrl", b.ImageUrl),
                         new XElement("Chapters",
                             b.Chapters.Select(c => new XElement("Chapter",
                                 new XAttribute("index", c.Index),
@@ -130,36 +131,13 @@ namespace SoapService {
             );
             xdoc.Save(XmlFilePath);
         }
-
-        private void WriteBooksToXml(DataSet books) {
-            List<Book> list = new List<Book>();
-
-            foreach (DataRow row in books.Tables[0].Rows) {
-                Book book = new Book {
-                    Id = int.Parse(row["id"].ToString()),
-                    Title = row["title"].ToString(),
-                    Description = row["description"].ToString(),
-                    Chapters = row["chapters"].ToString() == null ? null :
-                        row["chapters"].ToString()
-                            .Split(',')
-                            .Select(c => new Chapter { 
-                                Index = int.Parse(c.Split(':')[0]), 
-                                Title = c.Split(':')[1], 
-                                Content = c.Split(':')[2] 
-                            }).ToList() 
-                };
-
-                list.Add(book);
-            }
-
-            WriteBooksToXml(list);
-        }
     }
 
     public class Book {
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public string ImageUrl { get; set; }
         public List<Chapter> Chapters { get; set; } = new List<Chapter>();
     }
 

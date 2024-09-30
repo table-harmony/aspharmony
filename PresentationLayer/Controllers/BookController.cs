@@ -3,17 +3,25 @@ using BusinessLogicLayer.Services;
 using PresentationLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using Utils.Services;
+using DataAccessLayer.Entities;
 
 using Chapter = BookServiceReference.Chapter;
+using Book = BusinessLogicLayer.Services.Book;
 
 namespace PresentationLayer.Controllers {
 
     [Authorize]
     public class BookController : Controller {
         private readonly IBookService _bookService;
+        private readonly IFileUploader _fileUploader;
+        private readonly UserManager<User> _userManager;
 
-        public BookController(IBookService bookService) {
+        public BookController(IBookService bookService, IFileUploader fileUploader, UserManager<User> userManager) {
             _bookService = bookService;
+            _fileUploader = fileUploader;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index() {
@@ -36,25 +44,36 @@ namespace PresentationLayer.Controllers {
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateBookViewModel model) {
-            if (!ModelState.IsValid)
-                return View(model);
+            if (ModelState.IsValid) {
+                try {
+                    string imageUrl = null;
+                    if (model.Image != null) {
+                        imageUrl = await _fileUploader.UploadFileAsync(model.Image);
+                    }
 
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var user = await _userManager.GetUserAsync(User);
+                    var book = new Book {
+                        Title = model.Title,
+                        Description = model.Description,
+                        AuthorId = user.Id,
+                        ImageUrl = imageUrl
+                    };
 
-            Book book = new() {
-                Title = model.Title,
-                Description = model.Description,
-                AuthorId = userId,
-                Chapters = model.Chapters.Select((c, index) => new Chapter {
-                    Index = index,
-                    Title = c.Title,
-                    Content = c.Content
-                }).ToList()
-            };
+                    foreach (var chapterViewModel in model.Chapters) {
+                        book.Chapters.Add(new Chapter {
+                            Title = chapterViewModel.Title,
+                            Content = chapterViewModel.Content,
+                            Index = chapterViewModel.Index
+                        });
+                    }
 
-            await _bookService.CreateAsync(book);
-
-            return RedirectToAction(nameof(Index));
+                    await _bookService.CreateAsync(book);
+                    return RedirectToAction(nameof(Index));
+                } catch (Exception ex) {
+                    ModelState.AddModelError("", "An error occurred while creating the book: " + ex.Message);
+                }
+            }
+            return View(model);
         }
 
         [HttpGet]
@@ -67,6 +86,7 @@ namespace PresentationLayer.Controllers {
                 Id = book.Id,
                 Title = book.Title,
                 Description = book.Description,
+                CurrentImageUrl = book.ImageUrl,
                 Chapters = book.Chapters.Select(c => new ChapterViewModel {
                     Index = c.Index,
                     Title = c.Title,
@@ -97,6 +117,14 @@ namespace PresentationLayer.Controllers {
 
                 book.Title = model.Title;
                 book.Description = model.Description;
+
+                if (model.NewImage != null) {
+                    book.ImageUrl = await _fileUploader.UploadFileAsync(model.NewImage);
+                }
+                else {
+                    book.ImageUrl = model.CurrentImageUrl;
+                }
+
                 book.Chapters = model.Chapters.Select(c => new Chapter {
                     Index = c.Index,
                     Title = c.Title,
@@ -106,7 +134,8 @@ namespace PresentationLayer.Controllers {
                 await _bookService.UpdateAsync(book);
 
                 return RedirectToAction(nameof(Index));
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 ModelState.AddModelError("", "An error occurred while updating the book.");
                 return View(model);
             }

@@ -66,6 +66,10 @@ namespace PresentationLayer
 
             // Register utils
             services.AddScoped<IEncryption, Sha256Encryption>();
+            services.AddScoped<IFileUploader, FileUploader>();
+
+            // Add HttpClient
+            services.AddHttpClient();
 
             services.AddControllersWithViews();
             services.AddRazorPages();

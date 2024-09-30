@@ -6,10 +6,11 @@
         <xs:element name="Book" minOccurs="0" maxOccurs="unbounded">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="Id" type="xs:integer"/>
-              <xs:element name="Title" type="xs:string"/>
-              <xs:element name="Description" type="xs:string"/>
-              <xs:element name="Chapters">
+                <xs:element name="Id" type="xs:integer"/>
+                <xs:element name="Title" type="xs:string"/>
+                <xs:element name="Description" type="xs:string"/>
+		        <xs:element name="ImageUrl" type="xs:string"/>
+				<xs:element name="Chapters">
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="Chapter" minOccurs="0" maxOccurs="unbounded">

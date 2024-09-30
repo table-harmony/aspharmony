@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace PresentationLayer.Models
 {
@@ -14,5 +15,10 @@ namespace PresentationLayer.Models
         public string Description { get; set; }
 
         public List<ChapterViewModel> Chapters { get; set; } = new List<ChapterViewModel>();
+
+        public string CurrentImageUrl { get; set; }
+
+        [Display(Name = "New Book Image")]
+        public IFormFile? NewImage { get; set; }
     }
 }

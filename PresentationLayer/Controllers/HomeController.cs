@@ -3,6 +3,7 @@ using PresentationLayer.Models;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics;
 using Utils.Exceptions;
+using Utils.Services;
 
 namespace PresentationLayer.Controllers
 {

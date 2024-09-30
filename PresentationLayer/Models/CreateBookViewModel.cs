@@ -12,6 +12,10 @@ namespace PresentationLayer.Models
         public string Description { get; set; }
 
         public List<ChapterViewModel> Chapters { get; set; } = new List<ChapterViewModel>();
+
+        [Display(Name = "Book Image")]
+        public IFormFile? Image { get; set; }
+
     }
 
     public class ChapterViewModel {
