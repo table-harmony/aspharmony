@@ -1,28 +1,81 @@
 @model PresentationLayer.Models.CreateBookViewModel
 
-<h2>Create Book</h2>
+<h2 class="mb-4">Create Book</h2>
 
 <form asp-action="Create" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group mb-4">
+    <div class="form-group mb-3">
         <label asp-for="Title" class="control-label"></label>
         <input asp-for="Title" class="form-control" />
         <span asp-validation-for="Title" class="text-danger"></span>
     </div>
-    <div class="form-group mb-4">
+    <div class="form-group mb-3">
         <label asp-for="Description" class="control-label"></label>
         <textarea asp-for="Description" class="form-control"></textarea>
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
-    <div class="form-group mb-4">
-        <label asp-for="Content" class="control-label"></label>
-        <textarea asp-for="Content" class="form-control"></textarea>
-        <span asp-validation-for="Content" class="text-danger"></span>
+    
+    <h4 class="mt-4 mb-3">Chapters</h4>
+    <div id="chapters" class="row">
+        <!-- Chapters will be added dynamically here -->
     </div>
-    <button type="submit" class="btn btn-primary">Create</button>
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    
+    <button type="button" id="addChapter" class="btn btn-secondary mb-3">Add Chapter</button>
+    
+    <div class="d-flex gap-2 my-4">
+        <button type="submit" class="btn btn-primary">Create</button>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
 </form>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function() {
+            let chapterCount = 0;
+            
+            $("#addChapter").click(function() {
+                const chapterHtml = `
+                    <div class="col-md-4 mb-3 chapter-card" data-index="${chapterCount}">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Chapter ${chapterCount + 1}</h5>
+                                <button type="button" class="btn btn-danger btn-sm delete-chapter">Delete</button>
+                            </div>
+                            <div class="card-body">
+                                <input type="hidden" name="Chapters[${chapterCount}].Index" value="${chapterCount}" />
+                                <div class="form-group mb-4">
+                                    <label class="control-label">Title</label>
+                                    <input name="Chapters[${chapterCount}].Title" class="form-control" required />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Content</label>
+                                    <textarea name="Chapters[${chapterCount}].Content" class="form-control" rows="3" required></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                $("#chapters").append(chapterHtml);
+                chapterCount++;
+                updateChapterIndexes();
+            });
+
+            $(document).on('click', '.delete-chapter', function() {
+                $(this).closest('.chapter-card').remove();
+                chapterCount--;
+                updateChapterIndexes();
+            });
+
+            function updateChapterIndexes() {
+                $('.chapter-card').each(function(index) {
+                    $(this).attr('data-index', index);
+                    $(this).find('h5').text(`Chapter ${index + 1}`);
+                    $(this).find('input[type="hidden"]').attr('name', `Chapters[${index}].Index`).val(index);
+                    $(this).find('input[type="text"]').attr('name', `Chapters[${index}].Title`);
+                    $(this).find('textarea').attr('name', `Chapters[${index}].Content`);
+                });
+            }
+        });
+    </script>
 }

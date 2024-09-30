@@ -1,22 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Books>
   <Book>
-    <Id>1023</Id>
-    <Title>Liron kaner</Title>
-    <Description>This is my book</Description>
-    <Content>This is my book </Content>
-  </Book>
-  <Book>
-    <Id>1024</Id>
-    <Title>Table</Title>
-    <Description>Tableharmony
-</Description>
-    <Content>Tableharmony</Content>
-  </Book>
-  <Book>
-    <Id>1026</Id>
-    <Title>Hello123</Title>
-    <Description>World123</Description>
-    <Content>ASDASD12</Content>
+    <Id>1030</Id>
+    <Title>Harry potter</Title>
+    <Description>Harry potter's chronicles of something</Description>
+    <Chapters>
+      <Chapter index="0">
+        <Title>This is the first chapter</Title>
+        <Content>LOSDF'LASMDKLF/MZLC VASDFASKDFMALSKDMFLskdfskdlmflsdmf</Content>
+      </Chapter>
+    </Chapters>
   </Book>
 </Books>

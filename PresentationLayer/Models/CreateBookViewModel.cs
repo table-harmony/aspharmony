@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace PresentationLayer.Models
 {
@@ -10,8 +11,14 @@ namespace PresentationLayer.Models
         [Required]
         public string Description { get; set; }
 
+        public List<ChapterViewModel> Chapters { get; set; } = new List<ChapterViewModel>();
+    }
+
+    public class ChapterViewModel {
+        public int Index { get; set; }
+        [Required]
+        public string Title { get; set; }
         [Required]
         public string Content { get; set; }
-
     }
 }

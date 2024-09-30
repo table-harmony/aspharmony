@@ -24,7 +24,7 @@ namespace BookServiceReference
         
         private string DescriptionField;
         
-        private string ContentField;
+        private BookServiceReference.Chapter[] ChaptersField;
         
         [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
         public int Id
@@ -66,6 +66,58 @@ namespace BookServiceReference
         }
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+        public BookServiceReference.Chapter[] Chapters
+        {
+            get
+            {
+                return this.ChaptersField;
+            }
+            set
+            {
+                this.ChaptersField = value;
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Chapter", Namespace="http://tempuri.org/")]
+    public partial class Chapter : object
+    {
+        
+        private int IndexField;
+        
+        private string TitleField;
+        
+        private string ContentField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public int Index
+        {
+            get
+            {
+                return this.IndexField;
+            }
+            set
+            {
+                this.IndexField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+        public string Title
+        {
+            get
+            {
+                return this.TitleField;
+            }
+            set
+            {
+                this.TitleField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
         public string Content
         {
             get

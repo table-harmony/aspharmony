@@ -1,15 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Books>
   <Book>
-    <Id>1023</Id>
-    <Title>Liron kaner</Title>
-    <Description>This is my book</Description>
-    <Content>This is my book </Content>
-  </Book>
-  <Book>
-    <Id>1024</Id>
-    <Title>Table</Title>
-    <Description>Tableharmony</Description>
-    <Content>Tableharmony</Content>
+    <Id>1030</Id>
+    <Title>Harry potter</Title>
+    <Description>Harry potter's chronicles of something</Description>
+    <Chapters />
   </Book>
 </Books>

@@ -16,7 +16,8 @@ namespace SoapService {
 
         private void BackupXmlFile() {
             var backupFilePath = XmlFilePath + ".bak";
-            File.Copy(XmlFilePath, backupFilePath, true);
+            var xdoc = XDocument.Load(XmlFilePath);
+            xdoc.Save(backupFilePath);
         }
 
         private void RestoreXmlFile() {
@@ -63,7 +64,7 @@ namespace SoapService {
 
                 book.Title = updatedBook.Title;
                 book.Description = updatedBook.Description;
-                book.Content = updatedBook.Content;
+                book.Chapters = updatedBook.Chapters;
 
                 WriteBooksToXml(books);
             } catch {
@@ -99,7 +100,12 @@ namespace SoapService {
                     Id = int.Parse(x.Element("Id")?.Value ?? "0"),
                     Title = x.Element("Title")?.Value,
                     Description = x.Element("Description")?.Value,
-                    Content = x.Element("Content")?.Value
+                    Chapters = x.Element("Chapters")?.Elements("Chapter")
+                        .Select(c => new Chapter {
+                            Index = int.Parse(c.Attribute("index")?.Value ?? "0"),
+                            Title = c.Element("Title")?.Value,
+                            Content = c.Element("Content")?.Value
+                        }).ToList() ?? new List<Chapter>()
                 }).ToList();
 
             return books;
@@ -112,7 +118,13 @@ namespace SoapService {
                         new XElement("Id", b.Id),
                         new XElement("Title", b.Title),
                         new XElement("Description", b.Description),
-                        new XElement("Content", b.Content)
+                        new XElement("Chapters",
+                            b.Chapters.Select(c => new XElement("Chapter",
+                                new XAttribute("index", c.Index),
+                                new XElement("Title", c.Title),
+                                new XElement("Content", c.Content)
+                            ))
+                        )
                     ))
                 )
             );
@@ -127,7 +139,14 @@ namespace SoapService {
                     Id = int.Parse(row["id"].ToString()),
                     Title = row["title"].ToString(),
                     Description = row["description"].ToString(),
-                    Content = row["content"].ToString()
+                    Chapters = row["chapters"].ToString() == null ? null :
+                        row["chapters"].ToString()
+                            .Split(',')
+                            .Select(c => new Chapter { 
+                                Index = int.Parse(c.Split(':')[0]), 
+                                Title = c.Split(':')[1], 
+                                Content = c.Split(':')[2] 
+                            }).ToList() 
                 };
 
                 list.Add(book);
@@ -141,6 +160,12 @@ namespace SoapService {
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public List<Chapter> Chapters { get; set; } = new List<Chapter>();
+    }
+
+    public class Chapter {
+        public int Index { get; set; }
+        public string Title { get; set; }
         public string Content { get; set; }
     }
 }

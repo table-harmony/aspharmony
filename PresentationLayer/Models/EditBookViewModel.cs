@@ -13,7 +13,6 @@ namespace PresentationLayer.Models
         [Required]
         public string Description { get; set; }
 
-        [Required]
-        public string Content { get; set; }
+        public List<ChapterViewModel> Chapters { get; set; } = new List<ChapterViewModel>();
     }
 }

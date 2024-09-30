@@ -3,12 +3,13 @@ using DataAccessLayer.Repositories;
 
 using DbBook = DataAccessLayer.Entities.Book;
 using SoapBook = BookServiceReference.Book;
+using Chapter = BookServiceReference.Chapter;
 
 namespace BusinessLogicLayer.Services {
     public class Book : DbBook {
         public string Title { get; set; }
         public string Description { get; set; }
-        public string Content { get; set; }
+        public List<Chapter> Chapters { get; set; } = new List<Chapter>();
     }
 
     public interface IBookService {
@@ -38,7 +39,11 @@ namespace BusinessLogicLayer.Services {
                 Id = dbBook.Id,
                 Title = soapBook.Title,
                 Description = soapBook.Description,
-                Content = soapBook.Content,
+                Chapters = soapBook.Chapters.Select(c => new Chapter {
+                    Index = c.Index,
+                    Title = c.Title,
+                    Content = c.Content
+                }).ToList(),
                 AuthorId = dbBook.AuthorId,
                 Author = dbBook.Author,
             };
@@ -50,7 +55,7 @@ namespace BusinessLogicLayer.Services {
             var dbBooks = await _bookRepository.GetAllAsync();
             var soapBooks = (await _soapClient.GetAllBooksAsync()).Body.GetAllBooksResult;
 
-            List<Book> books = new List<Book>(); 
+            List<Book> books = new(); 
 
             foreach (var dbBook in dbBooks) {
                 var soapBook = soapBooks.FirstOrDefault(b => b.Id == dbBook.Id);
@@ -59,7 +64,11 @@ namespace BusinessLogicLayer.Services {
                         Id = dbBook.Id,
                         Title = soapBook.Title,
                         Description = soapBook.Description,
-                        Content = soapBook.Content,
+                        Chapters = soapBook.Chapters.Select(c => new Chapter {
+                            Index = c.Index,
+                            Title = c.Title,
+                            Content = c.Content
+                        }).ToList(),
                         AuthorId = dbBook.AuthorId,
                         Author = dbBook.Author,
                     });
@@ -81,7 +90,11 @@ namespace BusinessLogicLayer.Services {
                     Id = dbBook.Id,
                     Title = book.Title,
                     Description = book.Description,
-                    Content = book.Content,
+                    Chapters = book.Chapters.Select((c, index) => new BookServiceReference.Chapter {
+                        Index = index,
+                        Title = c.Title,
+                        Content = c.Content
+                    }).ToArray()
                 });
 
                 transaction.Commit();
@@ -95,7 +108,11 @@ namespace BusinessLogicLayer.Services {
                 Id = book.Id,
                 Title = book.Title,
                 Description = book.Description,
-                Content = book.Content
+                Chapters = book.Chapters.Select(c => new BookServiceReference.Chapter {
+                    Index = c.Index,
+                    Title = c.Title,
+                    Content = c.Content
+                }).ToArray()
             });
         }
 

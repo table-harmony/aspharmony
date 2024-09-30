@@ -4,6 +4,8 @@ using PresentationLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
+using Chapter = BookServiceReference.Chapter;
+
 namespace PresentationLayer.Controllers {
 
     [Authorize]
@@ -42,8 +44,12 @@ namespace PresentationLayer.Controllers {
             Book book = new() {
                 Title = model.Title,
                 Description = model.Description,
-                Content = model.Content,
-                AuthorId = userId
+                AuthorId = userId,
+                Chapters = model.Chapters.Select((c, index) => new Chapter {
+                    Index = index,
+                    Title = c.Title,
+                    Content = c.Content
+                }).ToList()
             };
 
             await _bookService.CreateAsync(book);
@@ -61,7 +67,11 @@ namespace PresentationLayer.Controllers {
                 Id = book.Id,
                 Title = book.Title,
                 Description = book.Description,
-                Content = book.Content,
+                Chapters = book.Chapters.Select(c => new ChapterViewModel {
+                    Index = c.Index,
+                    Title = c.Title,
+                    Content = c.Content
+                }).ToList()
             };
 
             return View(viewModel);
@@ -87,7 +97,11 @@ namespace PresentationLayer.Controllers {
 
                 book.Title = model.Title;
                 book.Description = model.Description;
-                book.Content = model.Content;
+                book.Chapters = model.Chapters.Select(c => new Chapter {
+                    Index = c.Index,
+                    Title = c.Title,
+                    Content = c.Content
+                }).ToList();
 
                 await _bookService.UpdateAsync(book);
 

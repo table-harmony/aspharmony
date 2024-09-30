@@ -9,7 +9,21 @@
               <xs:element name="Id" type="xs:integer"/>
               <xs:element name="Title" type="xs:string"/>
               <xs:element name="Description" type="xs:string"/>
-              <xs:element name="Content" type="xs:string"/>
+              <xs:element name="Chapters">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Chapter" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="Title" type="xs:string"/>
+                          <xs:element name="Content" type="xs:string"/>
+                        </xs:sequence>
+                        <xs:attribute name="index" type="xs:integer" use="required"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
