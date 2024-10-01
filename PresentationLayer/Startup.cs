@@ -42,6 +42,10 @@ namespace PresentationLayer
             // Register the SOAP client
             services.AddScoped<BookServiceSoapClient>(_ =>
                 new BookServiceSoapClient(BookServiceSoapClient.EndpointConfiguration.BookServiceSoap));
+            //services.AddScoped<ASPHarmonyPortTypeClient>(_ =>
+            //    new ASPHarmonyPortTypeClient(ASPHarmonyPortTypeClient.EndpointConfiguration.ASPHarmonyPort,
+            //    "http://aspharmony-production.up.railway.app/service"
+            //));
 
             // Register repositories
             services.AddScoped<IUserRepository, UserRepository>();

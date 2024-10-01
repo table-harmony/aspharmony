@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.Data;
 using DataAccessLayer.Entities;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Utils.Exceptions;
@@ -20,7 +21,7 @@ namespace DataAccessLayer.Repositories {
 
         public UserRepository(UserManager<User> userManager, ApplicationContext context) {
             _userManager = userManager;
-            _context = context; 
+            _context = context;
         }
 
         public async Task<User> GetByIdAsync(string id) {

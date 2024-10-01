@@ -2,8 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using PresentationLayer.Models;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics;
-using Utils.Exceptions;
-using Utils.Services;
 
 namespace PresentationLayer.Controllers
 {
@@ -15,6 +13,13 @@ namespace PresentationLayer.Controllers
         }
 
         public async Task<ActionResult> Index() {
+            //AddNumbersRequest request = new() {
+            //    a = 1,
+            //    b = 2,
+            //};
+
+            //var response = await _soapClient.AddNumbersAsync(request);
+            //throw new Exception(response.AddNumbersResponse.AddResult.ToString());
             return View();
         }
 

@@ -98,6 +98,13 @@ namespace DataAccessLayer.Data {
                 .WithMany(u => u.Notifications)
                 .HasForeignKey(n => n.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Feedbacks
+            modelBuilder.Entity<Feedback>()
+                .HasOne(f => f.User)
+                .WithMany(u => u.Feedbacks)
+                .HasForeignKey(f => f.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         public DbSet<Book> Books { get; set; }
@@ -106,5 +113,6 @@ namespace DataAccessLayer.Data {
         public DbSet<LibraryMembership> LibraryMemberships { get; set; }
         public DbSet<BookLoan> BookLoans { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Feedback> Feedbacks { get; set; }
     }
 }
