@@ -75,7 +75,7 @@ namespace PresentationLayer
             services.AddRazorPages();
 
             services.ConfigureApplicationCookie(options => {
-                options.AccessDeniedPath = "/Account/AccessDenied";
+                options.AccessDeniedPath = "/Home/AccessDenied";
             });
 
             EventSubscriber.Subscribe(services.BuildServiceProvider());

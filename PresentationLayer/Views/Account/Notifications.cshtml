@@ -9,7 +9,7 @@
                 <small class="text-muted">(@notification.CreatedAt.ToString())</small>
                 <form asp-action="DeleteNotification">
                     <input type="hidden" value="@notification.Id" name="id" />
-                    <input type="submit" value="Delete" class="btn btn-danger" />
+                    <input type="submit" value="Delete" class="btn btn-danger btn-sm" />
                 </form>
             </li>
         }

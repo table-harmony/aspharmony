@@ -27,5 +27,9 @@ namespace PresentationLayer.Controllers
                 Exception = exceptionFeature?.Error
             });
         }
+
+        public IActionResult AccessDenied() {
+            return View();
+        }
     }
 }

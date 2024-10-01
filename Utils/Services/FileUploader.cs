@@ -7,6 +7,9 @@ namespace Utils.Services {
         Task<string> UploadFileAsync(IFormFile file);
     }
     
+    /// <summary>
+    /// File uploader using convex file storage.
+    /// </summary>
     public class FileUploader : IFileUploader {
         private readonly HttpClient _httpClient;
         private readonly string API_URL = "https://colorless-shrimp-958.convex.site";
@@ -51,11 +54,11 @@ namespace Utils.Services {
         // Get file url by storage id from convex
         private async Task<string> GetFileUrlAsync(string storageId) {
             var response = await _httpClient.GetAsync($"{API_URL}/getFileUrl?storageId={storageId}");
-            var responseContent = await response.Content.ReadAsStringAsync();
-
             response.EnsureSuccessStatusCode();
 
+            var responseContent = await response.Content.ReadAsStringAsync();
             dynamic result = JsonConvert.DeserializeObject(responseContent);
+
             if (result?.fileUrl == null) {
                 throw new InvalidOperationException($"File URL not found in the response. Response: {responseContent}");
             }

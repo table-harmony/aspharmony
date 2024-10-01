@@ -1,2 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Books />
+<Books>
+  <Book>
+    <Id>1040</Id>
+    <Title>Harry potter</Title>
+    <Description>This is harry potter</Description>
+    <ImageUrl>https://colorless-shrimp-958.convex.cloud/api/storage/1f326892-620c-479a-8a5b-77802b72f2b2</ImageUrl>
+    <Chapters>
+      <Chapter index="0">
+        <Title>chapter number 1</Title>
+        <Content>231231231231</Content>
+      </Chapter>
+      <Chapter index="1">
+        <Title>chapter number 2</Title>
+        <Content>123123123123</Content>
+      </Chapter>
+    </Chapters>
+  </Book>
+</Books>

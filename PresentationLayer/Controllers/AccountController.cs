@@ -15,7 +15,8 @@ namespace PresentationLayer.Controllers
         private readonly INotificationService _notificationService;
         private readonly IEventPublisher _eventPublisher;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, INotificationService notificationService, IEventPublisher eventPublisher) {
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, 
+                                INotificationService notificationService, IEventPublisher eventPublisher) {
             _userManager = userManager;
             _signInManager = signInManager;
             _notificationService = notificationService;
