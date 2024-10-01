@@ -1,4 +1,10 @@
-﻿namespace DataAccessLayer.Entities {
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DataAccessLayer.Entities {
     public class LibraryBook {
         public int Id { get; set; } // Primary key
         public ICollection<BookLoan> Loans { get; set; }
