@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Books>
+  <Book>
+    <Id>2</Id>
+    <Title>Harry potter</Title>
+    <Description>This is harry potter</Description>
+    <ImageUrl>https://colorless-shrimp-958.convex.cloud/api/storage/d8f74489-e716-4403-a02b-7658d15f5374</ImageUrl>
+    <Chapters />
+  </Book>
+</Books>

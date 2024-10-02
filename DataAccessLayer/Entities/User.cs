@@ -5,5 +5,6 @@ namespace DataAccessLayer.Entities {
         public ICollection<Book> Books { get; set; }
         public ICollection<LibraryMembership> Memberships { get; set; }
         public ICollection<Notification> Notifications { get; set; }
+        public ICollection<Feedback> Feedbacks { get; set; }
     }
 }

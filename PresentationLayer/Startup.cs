@@ -33,8 +33,8 @@ namespace PresentationLayer
 
         public void ConfigureServices(IServiceCollection services) {
             services.AddDbContext<ApplicationContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
-                    .EnableSensitiveDataLogging());
+              options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+                .EnableSensitiveDataLogging());
 
             // Register Identity services
             services.AddIdentity<User, IdentityRole>()
@@ -73,7 +73,6 @@ namespace PresentationLayer
             services.AddScoped<IBookLoanService, BookLoanService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IDevHarmonyApiService, DevHarmonyService>();
-            services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IEventPublisher, EventPublisher>();
 
             // Register utils

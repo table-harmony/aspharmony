@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -7,12 +6,13 @@ using System.Web;
 using System.Web.Services;
 using System.Xml.Linq;
 
-namespace SoapService {
+namespace WebServices.Books {
     [WebService(Namespace = "http://tempuri.org/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [System.ComponentModel.ToolboxItem(false)]
+
     public class BookService : System.Web.Services.WebService {
-        private static readonly string XmlFilePath = HttpContext.Current.Server.MapPath("/Books.xml");
+        private static readonly string XmlFilePath = HttpContext.Current.Server.MapPath("/Books/Storage/Books.xml");
 
         private void BackupXmlFile() {
             var backupFilePath = XmlFilePath + ".bak";

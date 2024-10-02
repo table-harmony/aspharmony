@@ -1,7 +1,7 @@
 {
   "ExtendedData": {
     "inputs": [
-      "https://localhost:44383/BookService.asmx?WSDL"
+      "https://localhost:44355/Books/Service.asmx?wsdl"
     ],
     "collectionTypes": [
       "System.Collections.Generic.Dictionary`2",
@@ -14,8 +14,6 @@
       "Azure.Core, {Azure.Core, 1.35.0}",
       "Azure.Identity, {Azure.Identity, 1.10.3}",
       "BCrypt.Net-Next, {BCrypt.Net-Next, 4.0.3}",
-      "C:\\Users\\liron\\School\\אתרים\\aspharmony\\BusinessLogicLayer\\bin\\Debug\\net8.0\\DataAccessLayer.dll",
-      "C:\\Users\\liron\\School\\אתרים\\aspharmony\\BusinessLogicLayer\\bin\\Debug\\net8.0\\Utils.dll",
       "EntityFramework, {EntityFramework, 6.5.1}",
       "EntityFramework.SqlServer, {EntityFramework, 6.5.1}",
       "Microsoft.AspNet.Identity.Core, {Microsoft.AspNet.Identity.Core, 2.2.4}",

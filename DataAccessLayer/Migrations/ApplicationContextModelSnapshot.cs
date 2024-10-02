@@ -73,6 +73,36 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("Books");
                 });
 
+            modelBuilder.Entity("DataAccessLayer.Entities.Feedback", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Label")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Feedback");
+                });
+
             modelBuilder.Entity("DataAccessLayer.Entities.Library", b =>
                 {
                     b.Property<int>("Id")
@@ -395,6 +425,17 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Author");
                 });
 
+            modelBuilder.Entity("DataAccessLayer.Entities.Feedback", b =>
+                {
+                    b.HasOne("DataAccessLayer.Entities.User", "User")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DataAccessLayer.Entities.LibraryBook", b =>
                 {
                     b.HasOne("DataAccessLayer.Entities.Book", "Book")
@@ -520,6 +561,8 @@ namespace DataAccessLayer.Migrations
             modelBuilder.Entity("DataAccessLayer.Entities.User", b =>
                 {
                     b.Navigation("Books");
+
+                    b.Navigation("Feedbacks");
 
                     b.Navigation("Memberships");
 

@@ -10,7 +10,7 @@ namespace Api.Controllers {
         private readonly ILogger<LibraryController> _logger;
         private readonly ILibraryService _libraryService;
 
-        public LibraryController(ILogger<LibraryController> logger, 
+        public LibraryController(ILogger<LibraryController> logger,
                                     ILibraryService libraryService) {
             _logger = logger;
             _libraryService = libraryService;
@@ -33,7 +33,7 @@ namespace Api.Controllers {
         }
 
         [HttpDelete(Name = "DeleteLibrary")]
-        public async void Delete(int id) {  
+        public async void Delete(int id) {
             await _libraryService.DeleteAsync(id);
         }
 
