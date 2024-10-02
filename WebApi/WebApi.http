@@ -1,6 +1,28 @@
-@WebApi_HostAddress = http://localhost:5169
+@baseUrl = https://localhost:7137/api
 
-GET {{WebApi_HostAddress}}/libraries/
+### Get all libraries
+GET {{baseUrl}}/Library
 Accept: application/json
 
-###
+### Get a specific library
+GET {{baseUrl}}/Library/1
+Accept: application/json
+
+### Create a new library
+POST {{baseUrl}}/Library
+Content-Type: application/json
+
+{
+  "name": "New Library"
+}
+
+### Update a library
+PUT {{baseUrl}}/Library/1
+Content-Type: application/json
+
+{
+  "name": "Updated Library Name"
+}
+
+### Delete a library
+DELETE {{baseUrl}}/Library/1
