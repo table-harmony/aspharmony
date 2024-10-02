@@ -9,6 +9,8 @@ using BusinessLogicLayer.Initiate;
 using BookServiceReference;
 using BusinessLogicLayer.Events;
 using Utils.Encryption;
+using AspHarmonyServiceReference;
+using System.ServiceModel;
 
 namespace PresentationLayer
 {
@@ -42,10 +44,16 @@ namespace PresentationLayer
             // Register the SOAP client
             services.AddScoped<BookServiceSoapClient>(_ =>
                 new BookServiceSoapClient(BookServiceSoapClient.EndpointConfiguration.BookServiceSoap));
-            //services.AddScoped<ASPHarmonyPortTypeClient>(_ =>
-            //    new ASPHarmonyPortTypeClient(ASPHarmonyPortTypeClient.EndpointConfiguration.ASPHarmonyPort,
-            //    "http://aspharmony-production.up.railway.app/service"
-            //));
+            services.AddScoped<AspHarmonyPortTypeClient>(_ => {
+                var binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
+                binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
+
+                var endpoint = new EndpointAddress("https://aspharmony-production.up.railway.app/service");
+
+                var client = new AspHarmonyPortTypeClient(binding, endpoint);
+
+                return client;
+            });
 
             // Register repositories
             services.AddScoped<IUserRepository, UserRepository>();

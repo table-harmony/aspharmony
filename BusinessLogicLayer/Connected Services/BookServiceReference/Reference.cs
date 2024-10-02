@@ -26,7 +26,7 @@ namespace BookServiceReference
         
         private string ImageUrlField;
         
-        private BookServiceReference.Chapter[] ChaptersField;
+        private System.Collections.Generic.List<BookServiceReference.Chapter> ChaptersField;
         
         [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
         public int Id
@@ -81,7 +81,7 @@ namespace BookServiceReference
         }
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
-        public BookServiceReference.Chapter[] Chapters
+        public System.Collections.Generic.List<BookServiceReference.Chapter> Chapters
         {
             get
             {
@@ -307,13 +307,13 @@ namespace BookServiceReference
     {
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
-        public BookServiceReference.Book[] GetAllBooksResult;
+        public System.Collections.Generic.List<BookServiceReference.Book> GetAllBooksResult;
         
         public GetAllBooksResponseBody()
         {
         }
         
-        public GetAllBooksResponseBody(BookServiceReference.Book[] GetAllBooksResult)
+        public GetAllBooksResponseBody(System.Collections.Generic.List<BookServiceReference.Book> GetAllBooksResult)
         {
             this.GetAllBooksResult = GetAllBooksResult;
         }

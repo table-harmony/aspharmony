@@ -1,6 +1,5 @@
 ﻿using DataAccessLayer.Data;
 using DataAccessLayer.Entities;
-using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Utils.Exceptions;

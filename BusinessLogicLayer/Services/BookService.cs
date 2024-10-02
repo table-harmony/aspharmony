@@ -99,7 +99,7 @@ namespace BusinessLogicLayer.Services {
                         Index = index,
                         Title = c.Title,
                         Content = c.Content
-                    }).ToArray()
+                    }).ToList()
                 });
 
                 transaction.Commit();
@@ -118,7 +118,7 @@ namespace BusinessLogicLayer.Services {
                     Index = c.Index,
                     Title = c.Title,
                     Content = c.Content
-                }).ToArray()
+                }).ToList()
             });
         }
 
