@@ -63,6 +63,7 @@ namespace PresentationLayer
             services.AddScoped<ILibraryBookRepository, LibraryBookRepository>();
             services.AddScoped<IBookLoanRepository, BookLoanRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 
             // Register services
             services.AddScoped<IUserService, UserService>();
@@ -74,6 +75,7 @@ namespace PresentationLayer
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IDevHarmonyApiService, DevHarmonyService>();
             services.AddScoped<IEventPublisher, EventPublisher>();
+            services.AddScoped<IFeedbackService, FeedbackService>();
 
             // Register utils
             services.AddScoped<IEncryption, Sha256Encryption>();

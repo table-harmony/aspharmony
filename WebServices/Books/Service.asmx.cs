@@ -14,19 +14,6 @@ namespace WebServices.Books {
     public class BookService : System.Web.Services.WebService {
         private static readonly string XmlFilePath = HttpContext.Current.Server.MapPath("/Books/Storage/Books.xml");
 
-        private void BackupXmlFile() {
-            var backupFilePath = XmlFilePath + ".bak";
-            var xdoc = XDocument.Load(XmlFilePath);
-            xdoc.Save(backupFilePath);
-        }
-
-        private void RestoreXmlFile() {
-            var backupFilePath = XmlFilePath + ".bak";
-            if (File.Exists(backupFilePath)) {
-                File.Copy(backupFilePath, XmlFilePath, true);
-            }
-        }
-
         [WebMethod]
         public Book GetBook(int id) {
             var book = ReadBooksFromXml().FirstOrDefault(b => b.Id == id);
@@ -89,6 +76,19 @@ namespace WebServices.Books {
             }
         }
 
+        private void BackupXmlFile() {
+            var backupFilePath = XmlFilePath + ".bak";
+            var xdoc = XDocument.Load(XmlFilePath);
+            xdoc.Save(backupFilePath);
+        }
+
+        private void RestoreXmlFile() {
+            var backupFilePath = XmlFilePath + ".bak";
+            if (File.Exists(backupFilePath)) {
+                File.Copy(backupFilePath, XmlFilePath, true);
+            }
+        }
+
         private List<Book> ReadBooksFromXml() {
             var books = new List<Book>();
             if (!File.Exists(XmlFilePath)) return books;
@@ -96,7 +96,7 @@ namespace WebServices.Books {
             var xdoc = XDocument.Load(XmlFilePath);
             books = xdoc.Descendants("Book")
                 .Select(x => new Book {
-                    Id = int.Parse(x.Element("Id")?.Value ?? "0"),
+                    Id = int.Parse(x.Attribute("Id")?.Value ?? "0"),
                     Title = x.Element("Title")?.Value,
                     Description = x.Element("Description")?.Value,
                     ImageUrl = x.Element("ImageUrl")?.Value,
@@ -115,7 +115,7 @@ namespace WebServices.Books {
             var xdoc = new XDocument(
                 new XElement("Books",
                     books.Select(b => new XElement("Book",
-                        new XElement("Id", b.Id),
+                        new XAttribute("Id", b.Id),
                         new XElement("Title", b.Title),
                         new XElement("Description", b.Description),
                         new XElement("ImageUrl", b.ImageUrl),
@@ -131,6 +131,33 @@ namespace WebServices.Books {
             );
             xdoc.Save(XmlFilePath);
         }
+
+        private void WriteBooksToXml(DataSet books) {
+            List<Book> list = new List<Book>();
+            foreach (DataRow row in books.Tables[0].Rows) {
+                Book book = new Book {
+                    Id = int.Parse(row["id"].ToString()),
+                    Title = row["title"].ToString(),
+                    Description = row["description"].ToString(),
+                    ImageUrl = row["imageUrl"].ToString(),
+                    Chapters = new List<Chapter>()
+                };
+
+                if (row["Chapters"] is DataTable chaptersTable) {
+                    foreach (DataRow chapterRow in chaptersTable.Rows) {
+                        Chapter chapter = new Chapter {
+                            Index = int.Parse(chapterRow["Index"].ToString()),
+                            Title = chapterRow["Title"].ToString(),
+                            Content = chapterRow["Content"].ToString()
+                        };
+                        book.Chapters.Add(chapter);
+                    }
+                }
+
+                list.Add(book);
+            }
+            WriteBooksToXml(list);
+        }
     }
 
     public class Book {
@@ -138,7 +165,7 @@ namespace WebServices.Books {
         public string Title { get; set; }
         public string Description { get; set; }
         public string ImageUrl { get; set; }
-        public List<Chapter> Chapters { get; set; } = new List<Chapter>();
+        public List<Chapter> Chapters { get; set; }
     }
 
     public class Chapter {

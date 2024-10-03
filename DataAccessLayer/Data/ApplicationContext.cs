@@ -107,6 +107,7 @@ namespace DataAccessLayer.Data {
                 .OnDelete(DeleteBehavior.Cascade);
         }
 
+        public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<Library> Libraries { get; set; }
         public DbSet<LibraryBook> LibraryBooks { get; set; }
