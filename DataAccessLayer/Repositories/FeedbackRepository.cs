@@ -1,11 +1,8 @@
-using System;
 using System.Data;
-using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using DataAccessLayer.Data;
 using DataAccessLayer.Entities;
-using DataAccessLayer.Migrations;
 
 namespace DataAccessLayer.Repositories {
     public interface IFeedbackRepository {

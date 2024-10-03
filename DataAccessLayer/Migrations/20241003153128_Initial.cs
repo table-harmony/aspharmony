@@ -189,7 +189,7 @@ namespace DataAccessLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Feedback",
+                name: "Feedbacks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -201,9 +201,9 @@ namespace DataAccessLayer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Feedback", x => x.Id);
+                    table.PrimaryKey("PK_Feedbacks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Feedback_AspNetUsers_UserId",
+                        name: "FK_Feedbacks_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -367,8 +367,8 @@ namespace DataAccessLayer.Migrations
                 column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Feedback_UserId",
-                table: "Feedback",
+                name: "IX_Feedbacks_UserId",
+                table: "Feedbacks",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -419,7 +419,7 @@ namespace DataAccessLayer.Migrations
                 name: "BookLoans");
 
             migrationBuilder.DropTable(
-                name: "Feedback");
+                name: "Feedbacks");
 
             migrationBuilder.DropTable(
                 name: "Notifications");
