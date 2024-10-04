@@ -603,11 +603,11 @@ namespace BookServiceReference
         {
             if ((endpointConfiguration == EndpointConfiguration.BookServiceSoap))
             {
-                return new System.ServiceModel.EndpointAddress("https://localhost:44355/Books/Service.asmx");
+                return new System.ServiceModel.EndpointAddress("https://localhost:44355/BookService.asmx");
             }
             if ((endpointConfiguration == EndpointConfiguration.BookServiceSoap12))
             {
-                return new System.ServiceModel.EndpointAddress("https://localhost:44355/Books/Service.asmx");
+                return new System.ServiceModel.EndpointAddress("https://localhost:44355/BookService.asmx");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

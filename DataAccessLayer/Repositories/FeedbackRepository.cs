@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using DataAccessLayer.Data;
 using DataAccessLayer.Entities;
 using System.Xml.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace DataAccessLayer.Repositories {
     public interface IFeedbackRepository {
@@ -17,10 +18,13 @@ namespace DataAccessLayer.Repositories {
     public class FeedbackRepository : IFeedbackRepository {
         private readonly ApplicationContext _context;
         private readonly string _connectionString;
+        private readonly string _xmlFilePath;
 
-        public FeedbackRepository(ApplicationContext context) {
+        public FeedbackRepository(ApplicationContext context, IConfiguration configuration) {
             _context = context;
             _connectionString = _context.Database.GetDbConnection().ConnectionString;
+
+            _xmlFilePath = configuration["XmlPaths:Feedbacks"];
         }
 
         public async Task<DataSet> GetAllAsync() {
@@ -28,7 +32,10 @@ namespace DataAccessLayer.Repositories {
                                 FROM Feedbacks f
                                 LEFT JOIN AspNetUsers u ON f.UserId = u.Id";
 
-            return await ExecuteQueryAsync(query);
+            DataSet feedbacks = await ExecuteQueryAsync(query);
+            await BackupToXmlAsync(feedbacks);
+
+            return feedbacks;
         }
 
         public async Task<DataSet> GetAsync(int id) {
@@ -54,6 +61,8 @@ namespace DataAccessLayer.Repositories {
             if (result.Tables[0].Rows.Count > 0) {
                 feedback.Id = int.Parse(result.Tables[0].Rows[0][0].ToString());
             }
+
+            await BackupToXmlAsync(feedback);
         }
 
         public async Task UpdateAsync(Feedback feedback) {
@@ -70,6 +79,7 @@ namespace DataAccessLayer.Repositories {
             };
 
             await ExecuteQueryAsync(query, parameters);
+            await BackupToXmlAsync(feedback);
         }
 
         public async Task DeleteAsync(int id) {
@@ -77,6 +87,8 @@ namespace DataAccessLayer.Repositories {
             var parameters = new[] { new SqlParameter("@Id", id) };
 
             await ExecuteQueryAsync(query, parameters, true);
+
+            await RemoveFromXmlAsync(id);
         }
 
         private async Task<DataSet> ExecuteQueryAsync(string query, 
@@ -100,6 +112,85 @@ namespace DataAccessLayer.Repositories {
                     return dataSet;
                 }
             }
+        }
+
+        private async Task BackupToXmlAsync(Feedback feedback) {
+            var xdoc = await Task.Run(() => {
+                if (File.Exists(_xmlFilePath)) {
+                    return XDocument.Load(_xmlFilePath);
+                }
+                return null;
+            });
+
+            if (xdoc == null)
+                return;
+
+            var element = xdoc.Root.Elements("Feedback")
+                    .FirstOrDefault(e => e.Attribute("Id")?.Value == feedback.Id.ToString());
+
+            if (element != null)
+                return;
+
+            xdoc.Root.Add(new XElement("Feedback",
+                new XAttribute("Id", feedback.Id),
+                new XElement("UserId", feedback.UserId),
+                new XElement("Title", feedback.Title),
+                new XElement("Description", feedback.Description),
+                new XElement("Label", feedback.Label)
+            ));
+
+            await Task.Run(() => xdoc.Save(_xmlFilePath));
+        }
+
+        private async Task RemoveFromXmlAsync(int id) {
+            var xdoc = await Task.Run(() => {
+                if (File.Exists(_xmlFilePath)) {
+                    return XDocument.Load(_xmlFilePath);
+                }
+                return null;
+            });
+
+            if (xdoc == null)
+                return;
+
+            var feedback = xdoc.Root.Elements("Feedback")
+                .FirstOrDefault(e => e.Attribute("Id")?.Value == id.ToString());
+
+            if (feedback == null)
+                return;
+
+            feedback.Remove();
+            await Task.Run(() => xdoc.Save(_xmlFilePath));
+        }
+
+        private async Task BackupToXmlAsync(DataSet feedbacks) {
+            var xdoc = await Task.Run(() => {
+                if (File.Exists(_xmlFilePath)) {
+                    return XDocument.Load(_xmlFilePath);
+                }
+                return null;
+            });
+
+            if (xdoc == null)
+                return;
+
+            foreach (DataRow row in feedbacks.Tables[0].Rows) {
+                var feedback = xdoc.Root.Elements("Feedback")
+                    .FirstOrDefault(e => e.Attribute("Id")?.Value == row["Id"].ToString());
+
+                if (feedback != null)
+                    continue;
+
+                xdoc.Root.Add(new XElement("Feedback",
+                    new XAttribute("Id", row["Id"]),
+                    new XElement("UserId", row["UserId"].ToString()),
+                    new XElement("Title", row["Title"].ToString()),
+                    new XElement("Description", row["Description"].ToString()),
+                    new XElement("Label", row["Label"])
+                ));
+            }
+
+            await Task.Run(() => xdoc.Save(_xmlFilePath));
         }
     }
 }

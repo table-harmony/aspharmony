@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Feedbacks xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Schema.xsd">
+  <Feedback Id="2005">
+    <UserId>1be61e60-db56-49d8-aeb3-948c026b1005</UserId>
+    <Title>asdasda</Title>
+    <Description>sdasdasdada</Description>
+    <Label>2</Label>
+  </Feedback>
+  <Feedback Id="2006">
+    <UserId>1be61e60-db56-49d8-aeb3-948c026b1005</UserId>
+    <Title>adas</Title>
+    <Description>dasdasdasdasdasd</Description>
+    <Label>Idea</Label>
+  </Feedback>
+</Feedbacks>

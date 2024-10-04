@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Books>
+  <Book Id="9">
+    <Title>asdasd123123123123123</Title>
+    <Description>asdasdasdasdasda</Description>
+    <ImageUrl>https://birkhauser.com/product-not-found.png</ImageUrl>
+    <Chapters>
+      <Chapter index="0">
+        <Title>asdasd</Title>
+        <Content>sdasdasdasdas</Content>
+      </Chapter>
+    </Chapters>
+  </Book>
+</Books>

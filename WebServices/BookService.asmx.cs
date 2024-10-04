@@ -2,17 +2,19 @@
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Services;
 using System.Xml.Linq;
+using System.Configuration;
+using Microsoft.Extensions.Configuration;
+using System;
 
-namespace WebServices.Books {
+namespace WebServices {
     [WebService(Namespace = "http://tempuri.org/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [System.ComponentModel.ToolboxItem(false)]
 
     public class BookService : System.Web.Services.WebService {
-        private static readonly string XmlFilePath = HttpContext.Current.Server.MapPath("/Books/Storage/Books.xml");
+        private static readonly string XmlFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\AspHarmonyDatabase\Books\Storage.xml");
 
         [WebMethod]
         public Book GetBook(int id) {
