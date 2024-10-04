@@ -30,7 +30,9 @@ namespace BusinessLogicLayer.Services {
 
         public async Task<Library> GetLibraryAsync(int id) {
             Library library = await _libraryRepository.GetLibraryAsync(id);
-
+            if (library == null)
+                throw new NotFoundException();
+                 
             foreach (LibraryBook lbBook in library.Books)
                 lbBook.Book = await _bookService.GetBookAsync(lbBook.BookId);
 

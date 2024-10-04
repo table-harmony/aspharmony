@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using DataAccessLayer.Data;
 using DataAccessLayer.Entities;
+using System.Xml.Linq;
 
 namespace DataAccessLayer.Repositories {
     public interface IFeedbackRepository {
@@ -31,10 +32,10 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task<DataSet> GetAsync(int id) {
-            string query = "SELECT * FROM Feedbacks WHERE Id = @Id";
+            string query = "GetFeedback";
             var parameters = new[] { new SqlParameter("@Id", id) };
 
-            return await ExecuteQueryAsync(query, parameters);
+            return await ExecuteQueryAsync(query, parameters, true);
         }
 
         public async Task CreateAsync(Feedback feedback) {
@@ -72,17 +73,22 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task DeleteAsync(int id) {
-            string query = "DELETE FROM Feedbacks WHERE Id = @Id";
+            string query = "DeleteFeedback";
             var parameters = new[] { new SqlParameter("@Id", id) };
 
-            await ExecuteQueryAsync(query, parameters);
+            await ExecuteQueryAsync(query, parameters, true);
         }
 
-        private async Task<DataSet> ExecuteQueryAsync(string query, SqlParameter[] parameters = null) {
+        private async Task<DataSet> ExecuteQueryAsync(string query, 
+                                                        SqlParameter[] parameters = null,
+                                                        bool isStoredProcedure = false) {
             using (var connection = new SqlConnection(_connectionString)) {
                 await connection.OpenAsync();
 
                 using (var command = new SqlCommand(query, connection)) {
+                    if (isStoredProcedure)
+                        command.CommandType = CommandType.StoredProcedure;
+
                     if (parameters != null) {
                         command.Parameters.AddRange(parameters);
                     }
