@@ -2,6 +2,11 @@
 
 <h2>All Feedbacks</h2>
 
+
+<div class="mb-3">
+    <input type="text" id="feedbackSearch" class="form-control" placeholder="Search feedbacks...">
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -12,7 +17,7 @@
             <th>Actions</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="feedbackTableBody">
         @foreach (System.Data.DataRow row in Model.Rows) {
             <tr>
                 <td>@row["Title"]</td>
@@ -28,3 +33,17 @@
         }
     </tbody>
 </table>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#feedbackSearch").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#feedbackTableBody tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+}

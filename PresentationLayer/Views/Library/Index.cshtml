@@ -7,6 +7,13 @@
     <a asp-action="Create" class="btn btn-primary">Create New Library</a>
 </p>
 
+<form asp-action="Index" method="get" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="searchString" class="form-control" placeholder="Search libraries...">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
@@ -14,9 +21,9 @@
             <th>Actions</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="libraryTableBody">
         @foreach (var library in Model) {
-            <tr>
+            <tr class="library-row">
                 <td>@library.Name</td>
                 <td>
                     @{
@@ -36,3 +43,16 @@
         }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $("#librarySearch").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#libraryTableBody tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+}

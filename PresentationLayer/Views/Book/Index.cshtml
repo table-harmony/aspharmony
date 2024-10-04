@@ -6,6 +6,13 @@
     <a asp-action="Create" class="btn btn-primary">Create New Book</a>
 </div>
 
+<form asp-action="Index" method="get" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="searchString" class="form-control" placeholder="Search books...">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
@@ -14,9 +21,9 @@
             <th>Actions</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="bookTableBody">
         @foreach (var item in Model) {
-            <tr>
+            <tr class="book-row">
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
                 </td>

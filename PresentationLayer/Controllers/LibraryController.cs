@@ -34,8 +34,11 @@ namespace PresentationLayer.Controllers
             _eventPublisher = eventPublisher;
         }
 
-        public async Task<IActionResult> Index() {
+        public async Task<IActionResult> Index(string searchString) {
             var libraries = await _libraryService.GetAllAsync();
+            if (!string.IsNullOrEmpty(searchString)) {
+                libraries = libraries.Where(l => l.Name.ToLower().Contains(searchString.ToLower()));
+            }
             return View(libraries);
         }
 

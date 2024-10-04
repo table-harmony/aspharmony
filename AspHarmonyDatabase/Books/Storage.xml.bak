@@ -1,14 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Books>
-  <Book Id="9">
-    <Title>asdasd</Title>
-    <Description>asdasdasdasdasda</Description>
-    <ImageUrl>https://birkhauser.com/product-not-found.png</ImageUrl>
-    <Chapters>
-      <Chapter index="0">
-        <Title>asdasd</Title>
-        <Content>sdasdasdasdas</Content>
-      </Chapter>
-    </Chapters>
+  <Book Id="1003">
+    <Title>asdasda</Title>
+    <Description>asdasdasda</Description>
+    <ImageUrl>https://colorless-shrimp-958.convex.cloud/api/storage/2a54c585-9ee1-49d5-9077-7bb40e8930f9</ImageUrl>
+    <Chapters />
   </Book>
 </Books>

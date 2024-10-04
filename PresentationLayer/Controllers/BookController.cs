@@ -24,11 +24,14 @@ namespace PresentationLayer.Controllers {
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index() {
+        public async Task<IActionResult> Index(string searchString) {
             var books = await _bookService.GetAllAsync();
+            if (!string.IsNullOrEmpty(searchString)) {
+                books = books.Where(book => book.Title.ToLower().Contains(searchString.ToLower()) ||
+                                                 book.Description.ToLower().Contains(searchString.ToLower()));
+            }
             return View(books);
         }
-
         public async Task<IActionResult> Details(int id) {
             var book = await _bookService.GetBookAsync(id);
             if (book == null)

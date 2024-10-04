@@ -2,6 +2,10 @@
 
 <h2>Manage Users</h2>
 
+<div class="mb-3">
+    <input type="text" id="userSearch" class="form-control" placeholder="Search users...">
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -10,7 +14,7 @@
             <th>Actions</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="userTableBody">
         @foreach (var user in Model) {
             <tr>
                 <td>@user.Email</td>
@@ -30,3 +34,16 @@
     <a asp-action="Create" asp-controller="Admin" class="btn btn-primary">Create user</a>
     <a asp-action="Index" asp-controller="Feedback" class="btn btn-info">Feedbacks</a>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#userSearch").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#userTableBody tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+}
