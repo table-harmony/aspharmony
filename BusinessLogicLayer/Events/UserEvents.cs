@@ -7,10 +7,10 @@ namespace BusinessLogicLayer.Events {
     }
 
     public static class UserEvents {
-        private static IDevHarmonyApiService _devHarmonyApiService;
+        private static IEventTracker _eventTracker;
 
-        public static void Initialize(IDevHarmonyApiService devHarmonyApiService) {
-            _devHarmonyApiService = devHarmonyApiService;
+        public static void Initialize(IEventTracker eventTracker) {
+            _eventTracker = eventTracker;
         }
 
         // Multicast delegate for user-related events
@@ -44,7 +44,7 @@ namespace BusinessLogicLayer.Events {
         }
 
         private static async Task TrackEventAsync(string eventKey) {
-            await _devHarmonyApiService.TrackEventAsync(eventKey);
+            await _eventTracker.TrackEventAsync(eventKey);
         }
     }
 }

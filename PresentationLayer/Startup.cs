@@ -73,7 +73,7 @@ namespace PresentationLayer
             services.AddScoped<ILibraryBookService, LibraryBookService>();
             services.AddScoped<IBookLoanService, BookLoanService>();
             services.AddScoped<INotificationService, NotificationService>();
-            services.AddScoped<IDevHarmonyApiService, DevHarmonyService>();
+            services.AddScoped<IEventTracker, EventTracker>();
             services.AddScoped<IEventPublisher, EventPublisher>();
             services.AddScoped<IFeedbackService, FeedbackService>();
 

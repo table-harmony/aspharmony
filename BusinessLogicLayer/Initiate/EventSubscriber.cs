@@ -21,8 +21,8 @@ namespace BusinessLogicLayer.Initiate {
         }
 
         private static void InitializeUserEvents() {
-            var devHarmonyApiService = _serviceProvider.GetRequiredService<IDevHarmonyApiService>();
-            UserEvents.Initialize(devHarmonyApiService);
+            var eventTracker = _serviceProvider.GetRequiredService<IEventTracker>();
+            UserEvents.Initialize(eventTracker);
         }
 
         private static void SubscribeUserEvents() {
