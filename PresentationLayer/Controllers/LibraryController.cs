@@ -42,7 +42,7 @@ namespace PresentationLayer.Controllers
             return View(libraries);
         }
 
-        public async Task<IActionResult> Details(int id) {
+        public async Task<IActionResult> Details(int id, string searchString) {
             Library library = await _libraryService.GetLibraryAsync(id);
             if (library == null)
                 return NotFound();
@@ -56,9 +56,17 @@ namespace PresentationLayer.Controllers
                 var allBooks = await _bookService.GetAllAsync();
                 var libraryBooks = await _libraryBookService.GetLibraryBooksAsync(library.Id);
 
-                ViewBag.AvailableBooks = allBooks
-                    .Where(book => !libraryBooks.Select(lb => lb.BookId).Contains(book.Id))
-                    .ToList();
+                var availableBooks = allBooks
+                    .Where(book => !libraryBooks.Select(lb => lb.BookId).Contains(book.Id));
+
+                if (!string.IsNullOrEmpty(searchString)) {
+                    availableBooks = availableBooks.Where(b => 
+                        b.Title.ToLower().Contains(searchString.ToLower()) || 
+                        b.Author.UserName.ToLower().Contains(searchString.ToLower()));
+                }
+
+                ViewBag.AvailableBooks = availableBooks.ToList();
+                ViewBag.SearchString = searchString;
             }
 
             return View(library);

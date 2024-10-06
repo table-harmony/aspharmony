@@ -2,7 +2,7 @@
 using BusinessLogicLayer.Services;
 using DataAccessLayer.Entities;
 
-namespace PresentationLayer.Controllers {
+namespace WebApi.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     public class LibraryController : ControllerBase {

@@ -47,6 +47,12 @@
 @if (ViewBag.Membership.Role == MembershipRole.Manager) {
     <div class="mb-4">
         <h5>Add Book to Library</h5>
+        <form asp-action="Details" method="get" class="mb-3">
+            <div class="input-group">
+                <input type="text" name="searchString" class="form-control" placeholder="Search books..." value="@ViewBag.SearchString">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
         <form asp-action="AddBook" method="post" id="addBookForm">
             <input type="hidden" name="libraryId" value="@Model.Id" />
             <div class="form-group mb-3">
@@ -99,9 +105,10 @@
     }
 </div>
 
+
 @section Scripts {
     <script>
-        document.getElementById('bookId').addEventListener('change', function() {
+        document.getElementById('bookId').addEventListener('change', function () {
             document.getElementById('addBookButton').disabled = !this.value;
         });
     </script>

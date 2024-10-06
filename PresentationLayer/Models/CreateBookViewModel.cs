@@ -15,7 +15,6 @@ namespace PresentationLayer.Models
 
         [Display(Name = "Book Image")]
         public IFormFile? Image { get; set; }
-
     }
 
     public class ChapterViewModel {

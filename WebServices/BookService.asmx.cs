@@ -4,8 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Web.Services;
 using System.Xml.Linq;
-using System.Configuration;
-using Microsoft.Extensions.Configuration;
 using System;
 
 namespace WebServices {

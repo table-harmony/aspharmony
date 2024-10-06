@@ -1,0 +1,20 @@
+@model List<string>
+
+@{
+    ViewData["Title"] = "More Jokes";
+}
+
+<h1>More Jokes</h1>
+
+<div class="list-group mt-4">
+    @foreach (var joke in Model)
+    {
+        <div class="list-group-item">
+            <p>@joke</p>
+        </div>
+    }
+</div>
+
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-primary">Back to Home</a>
+</div>
