@@ -3,10 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace DataAccessLayer.Data {
-    public class ApplicationContext : IdentityDbContext<User> {
-
-        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
-
+    public class ApplicationContext(DbContextOptions<ApplicationContext> options) : IdentityDbContext<User>(options) {
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
 

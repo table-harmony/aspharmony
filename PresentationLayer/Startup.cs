@@ -14,7 +14,9 @@ using System.ServiceModel;
 
 namespace PresentationLayer
 {
-    public class Startup  {
+    public class Startup(IConfiguration configuration) {
+        public IConfiguration Configuration { get; } = configuration;
+
         public static void Main(string[] args) {
             CreateHostBuilder(args).Build().Run();
         }
@@ -25,32 +27,27 @@ namespace PresentationLayer
                     webBuilder.UseStartup<Startup>();
                 });
 
-        public IConfiguration Configuration { get; }
-
-        public Startup(IConfiguration configuration) {
-            Configuration = configuration;
-        }
-
         public void ConfigureServices(IServiceCollection services) {
+            // Add the DbContext to the services
             services.AddDbContext<ApplicationContext>(options =>
-              options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
-                .EnableSensitiveDataLogging());
+                options.UseSqlServer(GetConnectionString())
+                    .EnableSensitiveDataLogging());
 
             // Register Identity services
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationContext>()
                 .AddDefaultTokenProviders();
 
-            // Register the SOAP client
-            services.AddScoped<BookServiceSoapClient>(_ =>
+            // Register the SOAP clients
+            services.AddScoped(_ =>
                 new BookServiceSoapClient(BookServiceSoapClient.EndpointConfiguration.BookServiceSoap));
-            services.AddScoped<AspHarmonyPortTypeClient>(_ => {
-                var binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
+            services.AddScoped(_ => {
+                BasicHttpBinding binding = new(BasicHttpSecurityMode.Transport);
                 binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
 
-                var endpoint = new EndpointAddress("https://aspharmony-production.up.railway.app/service");
+                EndpointAddress endpoint = new("https://aspharmony-production.up.railway.app/service");
 
-                var client = new AspHarmonyPortTypeClient(binding, endpoint);
+                AspHarmonyPortTypeClient client = new(binding, endpoint);
 
                 return client;
             });
@@ -116,7 +113,16 @@ namespace PresentationLayer
                 endpoints.MapRazorPages();
             });
 
-            RoleInitializer.InitializeAsync(app.ApplicationServices).Wait();
+           RoleInitializer.InitializeAsync(app.ApplicationServices).Wait();
+        }
+        
+        private string GetConnectionString() {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), 
+                "..", "Storage", "App_Data", "Database.mdf");
+            path = Path.GetFullPath(path);
+
+            string connectionString = Configuration.GetConnectionString("DefaultConnection")!;
+            return connectionString.Replace("{path}", path);
         }
     }
 }

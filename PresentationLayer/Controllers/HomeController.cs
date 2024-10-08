@@ -26,9 +26,6 @@ namespace PresentationLayer.Controllers
             string joke = response.GenerateJokeResponse.joke;
             ViewBag.Joke = joke;
 
-            // Add the URL for the More Jokes page
-            ViewBag.MoreJokesUrl = "https://aspharmony-production.up.railway.app/more-jokes?count=20";
-
             return View();
         }
 

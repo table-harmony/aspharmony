@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Books>
+  <Book Id="1">
+    <Title>harry potter </Title>
+    <Description>This is harry potter</Description>
+    <ImageUrl>https://colorless-shrimp-958.convex.cloud/api/storage/cf9e731c-8c6d-4b16-a393-871400935c2c</ImageUrl>
+    <Chapters>
+      <Chapter index="0">
+        <Title>This is first chapter</Title>
+        <Content>dkflns;ldkfnk;sndfk;lnsd;klfmas;dlkm</Content>
+      </Chapter>
+      <Chapter index="1">
+        <Title>This is second chapter</Title>
+        <Content>KNSDKFNS;DF;LKSMF;LKMSL;MFSDF</Content>
+      </Chapter>
+    </Chapters>
+  </Book>
+</Books>

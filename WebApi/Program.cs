@@ -7,13 +7,21 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddDbContext<ApplicationContext>(options =>
-              options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-                .EnableSensitiveDataLogging());
+// Update the connection string
+string path = Path.Combine(Directory.GetCurrentDirectory(), 
+    "..", "Storage", "App_Data", "Database.mdf");
+path = Path.GetFullPath(path);
 
-builder.Services.AddScoped<BookServiceSoapClient>(_ =>
-                new BookServiceSoapClient(BookServiceSoapClient.EndpointConfiguration.BookServiceSoap));
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
+connectionString = connectionString.Replace("{path}", path);
+
+// Then configure your DbContext
+builder.Services.AddDbContext<ApplicationContext>(options =>
+    options.UseSqlServer(connectionString)
+        .EnableSensitiveDataLogging());
+
+builder.Services.AddScoped(_ =>
+    new BookServiceSoapClient(BookServiceSoapClient.EndpointConfiguration.BookServiceSoap));
 
 // Register your repositories
 builder.Services.AddScoped<ILibraryRepository, LibraryRepository>();

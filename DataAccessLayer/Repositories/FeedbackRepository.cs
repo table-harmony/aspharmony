@@ -1,10 +1,10 @@
 using System.Data;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using DataAccessLayer.Data;
 using DataAccessLayer.Entities;
 using System.Xml.Linq;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Data.SqlClient;
 
 namespace DataAccessLayer.Repositories {
     public interface IFeedbackRepository {
@@ -24,7 +24,7 @@ namespace DataAccessLayer.Repositories {
             _context = context;
             _connectionString = _context.Database.GetDbConnection().ConnectionString;
 
-            _xmlFilePath = configuration["XmlPaths:Feedbacks"];
+            _xmlFilePath = configuration["XmlPaths:Feedbacks"]!;
         }
 
         public async Task<DataSet> GetAllAsync() {
@@ -32,7 +32,7 @@ namespace DataAccessLayer.Repositories {
                                 FROM Feedbacks f
                                 LEFT JOIN AspNetUsers u ON f.UserId = u.Id";
 
-            DataSet feedbacks = await ExecuteQueryAsync(query);
+            DataSet feedbacks = ExecuteQuery(query);
             await BackupToXmlAsync(feedbacks);
 
             return feedbacks;
@@ -42,7 +42,7 @@ namespace DataAccessLayer.Repositories {
             string query = "GetFeedback";
             var parameters = new[] { new SqlParameter("@Id", id) };
 
-            return await ExecuteQueryAsync(query, parameters, true);
+            return ExecuteQuery(query, parameters, true);
         }
 
         public async Task CreateAsync(Feedback feedback) {
@@ -57,9 +57,9 @@ namespace DataAccessLayer.Repositories {
                 new SqlParameter("@Label", feedback.Label)
             };
 
-            var result = await ExecuteQueryAsync(query, parameters);
+            var result = ExecuteQuery(query, parameters);
             if (result.Tables[0].Rows.Count > 0) {
-                feedback.Id = int.Parse(result.Tables[0].Rows[0][0].ToString());
+                feedback.Id = int.Parse(result.Tables[0].Rows[0][0].ToString()!);
             }
 
             await BackupToXmlAsync(feedback);
@@ -78,7 +78,7 @@ namespace DataAccessLayer.Repositories {
                 new SqlParameter("@Label", feedback.Label)
             };
 
-            await ExecuteQueryAsync(query, parameters);
+            ExecuteQuery(query, parameters);
             await BackupToXmlAsync(feedback);
         }
 
@@ -86,32 +86,29 @@ namespace DataAccessLayer.Repositories {
             string query = "DeleteFeedback";
             var parameters = new[] { new SqlParameter("@Id", id) };
 
-            await ExecuteQueryAsync(query, parameters, true);
+            ExecuteQuery(query, parameters, true);
 
             await RemoveFromXmlAsync(id);
         }
 
-        private async Task<DataSet> ExecuteQueryAsync(string query, 
-                                                        SqlParameter[] parameters = null,
-                                                        bool isStoredProcedure = false) {
-            using (var connection = new SqlConnection(_connectionString)) {
-                await connection.OpenAsync();
 
-                using (var command = new SqlCommand(query, connection)) {
-                    if (isStoredProcedure)
-                        command.CommandType = CommandType.StoredProcedure;
+        private DataSet ExecuteQuery(string query, SqlParameter[]? parameters = null, bool isStoredProcedure = false) {
+            using SqlConnection connection = new(_connectionString);
+            connection.Open();
 
-                    if (parameters != null) {
-                        command.Parameters.AddRange(parameters);
-                    }
+            using SqlCommand command = new(query, connection);
 
-                    var dataSet = new DataSet();
-                    using (var adapter = new SqlDataAdapter(command)) {
-                        await Task.Run(() => adapter.Fill(dataSet));
-                    }
-                    return dataSet;
-                }
-            }
+            if (isStoredProcedure)
+                command.CommandType = CommandType.StoredProcedure;
+
+            if (parameters != null)
+                command.Parameters.AddRange(parameters);
+
+            using SqlDataAdapter adapter = new(command);
+            DataSet dataSet = new();
+            adapter.Fill(dataSet);
+
+            return dataSet;
         }
 
         private async Task BackupToXmlAsync(Feedback feedback) {

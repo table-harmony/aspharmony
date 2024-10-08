@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebServices", "WebServices\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{28DB83AB-73BA-41B4-813D-B2A487FAEE9E}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "AspHarmonyDatabase", "AspHarmonyDatabase\AspHarmonyDatabase.sqlproj", "{1836F85D-BDD8-48FF-9533-A3551DAD8A4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage", "Storage\Storage.csproj", "{E9F13589-FE02-4510-AA0B-2B0147E79157}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,12 +47,10 @@ Global
 		{28DB83AB-73BA-41B4-813D-B2A487FAEE9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28DB83AB-73BA-41B4-813D-B2A487FAEE9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28DB83AB-73BA-41B4-813D-B2A487FAEE9E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1836F85D-BDD8-48FF-9533-A3551DAD8A4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1836F85D-BDD8-48FF-9533-A3551DAD8A4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1836F85D-BDD8-48FF-9533-A3551DAD8A4F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{1836F85D-BDD8-48FF-9533-A3551DAD8A4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1836F85D-BDD8-48FF-9533-A3551DAD8A4F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1836F85D-BDD8-48FF-9533-A3551DAD8A4F}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{E9F13589-FE02-4510-AA0B-2B0147E79157}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9F13589-FE02-4510-AA0B-2B0147E79157}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9F13589-FE02-4510-AA0B-2B0147E79157}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9F13589-FE02-4510-AA0B-2B0147E79157}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
