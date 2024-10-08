@@ -6,6 +6,6 @@ namespace PresentationLayer.Models
         public LibraryBook LibraryBook { get; set; }
         public Book Book { get; set; }
         public IEnumerable<BookLoan> PastLoans { get; set; }
-        public BookLoan CurrentLoan { get; set; }
+        public BookLoan? CurrentLoan { get; set; }
     }
 }

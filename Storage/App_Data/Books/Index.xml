@@ -1,4 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Books xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Schema.xsd">
-  
+<Books>
+  <Book Id="8">
+    <Title>12312311111</Title>
+    <Description>231231231231</Description>
+    <ImageUrl>https://birkhauser.com/product-not-found.png</ImageUrl>
+    <Chapters>
+      <Chapter index="0">
+        <Title>123123123</Title>
+        <Content>1231231231</Content>
+      </Chapter>
+    </Chapters>
+  </Book>
 </Books>

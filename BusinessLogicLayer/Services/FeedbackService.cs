@@ -1,32 +1,23 @@
 ﻿using System.Data;
-using System.Xml.Linq;
 using DataAccessLayer.Entities;
 using DataAccessLayer.Repositories;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 
 namespace BusinessLogicLayer.Services {
     public interface IFeedbackService {
         Task<DataSet> GetAllAsync();
-        Task<Feedback> GetAsync(int id);
+        Task<Feedback?> GetAsync(int id);
         Task CreateAsync(Feedback feedback);
         Task UpdateAsync(Feedback feedback);
         Task DeleteAsync(int id);
     }
 
-    public class FeedbackService : IFeedbackService {
-        private readonly IFeedbackRepository _repository;
-
-        public FeedbackService(IFeedbackRepository repository) {
-            _repository = repository;
-        }
-
+    public class FeedbackService(IFeedbackRepository repository) : IFeedbackService {
         public async Task<DataSet> GetAllAsync() {
-            return await _repository.GetAllAsync();
+            return await repository.GetAllAsync();
         }
 
-        public async Task<Feedback> GetAsync(int id) {
-            var dataSet = await _repository.GetAsync(id);
+        public async Task<Feedback?> GetAsync(int id) {
+            var dataSet = await repository.GetAsync(id);
 
             if (dataSet.Tables[0].Rows.Count == 0)
                 return null;
@@ -35,25 +26,25 @@ namespace BusinessLogicLayer.Services {
 
             Feedback feedback = new() {
                 Id = Convert.ToInt32(dataRow["Id"]),
-                UserId = dataRow["UserId"].ToString(),
-                Title = dataRow["Title"].ToString(),
-                Description = dataRow["Description"].ToString(),
-                Label = (Label)Enum.Parse(typeof(Label), dataRow["Label"].ToString())
+                UserId = dataRow["UserId"].ToString() ?? "",
+                Title = dataRow["Title"].ToString() ?? "",
+                Description = dataRow["Description"].ToString() ?? "",
+                Label = (Label)Enum.Parse(typeof(Label), dataRow["Label"].ToString() ?? "Feature")
             };
 
             return feedback;
         }
 
         public async Task CreateAsync(Feedback feedback) {
-            await _repository.CreateAsync(feedback);
+            await repository.CreateAsync(feedback);
         }
 
         public async Task UpdateAsync(Feedback feedback) {
-            await _repository.UpdateAsync(feedback);
+            await repository.UpdateAsync(feedback);
         }
 
         public async Task DeleteAsync(int id) {
-            await _repository.DeleteAsync(id);
+            await repository.DeleteAsync(id);
         }
     }
 }

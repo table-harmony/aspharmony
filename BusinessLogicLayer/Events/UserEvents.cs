@@ -3,7 +3,7 @@ using Utils.Services;
 
 namespace BusinessLogicLayer.Events {
     public class UserEventArgs : EventArgs {
-        public User User { get; set; }
+        public required User User { get; set; }
     }
 
     public static class UserEvents {

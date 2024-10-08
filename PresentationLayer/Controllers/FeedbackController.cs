@@ -7,14 +7,7 @@ using DataAccessLayer.Entities;
 
 namespace PresentationLayer.Controllers
 {
-    public class FeedbackController : Controller
-    {
-        private readonly IFeedbackService _feedbackService;
-
-        public FeedbackController(IFeedbackService feedbackService) {
-            _feedbackService = feedbackService;
-        }
-
+    public class FeedbackController(IFeedbackService feedbackService) : Controller {
         [HttpGet]
         [Authorize]
         public IActionResult Create() {
@@ -27,13 +20,13 @@ namespace PresentationLayer.Controllers
         public async Task<IActionResult> Create(CreateFeedbackViewModel model) {
             if (ModelState.IsValid) {
                 Feedback feedback = new() {
-                    UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                    UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!,
                     Title = model.Title,
                     Description = model.Description,
                     Label = model.Label,
                 };
 
-                await _feedbackService.CreateAsync(feedback);
+                await feedbackService.CreateAsync(feedback);
                 return RedirectToAction("Index", "Home");
             }
             return View(model);
@@ -42,7 +35,7 @@ namespace PresentationLayer.Controllers
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index() {
-            var feedbacks = await _feedbackService.GetAllAsync();
+            var feedbacks = await feedbackService.GetAllAsync();
             return View(feedbacks.Tables[0]);
         }
 
@@ -50,7 +43,7 @@ namespace PresentationLayer.Controllers
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id) {
-            await _feedbackService.DeleteAsync(id);
+            await feedbackService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }

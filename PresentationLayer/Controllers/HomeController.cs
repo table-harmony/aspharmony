@@ -4,24 +4,15 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics;
 using AspHarmonyServiceReference;
 using System.Xml.Linq;
-using System.Net.Http;
 
 namespace PresentationLayer.Controllers
 {
-    public class HomeController : Controller {
-        private readonly ILogger<HomeController> _logger;
-        private readonly AspHarmonyPortTypeClient _soapClient;
-        private readonly HttpClient _httpClient;
-
-        public HomeController(ILogger<HomeController> logger, AspHarmonyPortTypeClient soapClient) {
-            _logger = logger;
-            _soapClient = soapClient;
-            _httpClient = new HttpClient();
-        }
+    public class HomeController(ILogger<HomeController> logger, AspHarmonyPortTypeClient soapClient) : Controller {
+        private readonly HttpClient _httpClient = new HttpClient();
 
         public async Task<ActionResult> Index() {
             GenerateJokeRequest request = new();
-            var response = await _soapClient.GenerateJokeAsync(request);
+            var response = await soapClient.GenerateJokeAsync(request);
 
             string joke = response.GenerateJokeResponse.joke;
             ViewBag.Joke = joke;
@@ -37,7 +28,7 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         public async Task<IActionResult> Calculate(int a, int b) {
             AddNumbersRequest request = new() { a = a, b = b };
-            var response = await _soapClient.AddNumbersAsync(request);
+            var response = await soapClient.AddNumbersAsync(request);
 
             int result = response.AddNumbersResponse.result;
             

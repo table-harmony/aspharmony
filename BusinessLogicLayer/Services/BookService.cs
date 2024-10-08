@@ -14,28 +14,22 @@ namespace BusinessLogicLayer.Services {
     }
 
     public interface IBookService {
-        Task<Book> GetBookAsync(int id);
+        Task<Book?> GetBookAsync(int id);
         Task<IEnumerable<Book>> GetAllAsync();
         Task CreateAsync(Book book);
         Task UpdateAsync(Book book);
         Task DeleteAsync(int id);
     }
 
-    public class BookService : IBookService {
-        private readonly IBookRepository _bookRepository;
-        private readonly BookServiceSoapClient _soapClient;
-        private readonly string DEFAULT_IMAGE = "https://birkhauser.com/product-not-found.png";
-
-        public BookService(IBookRepository bookRepository, BookServiceSoapClient soapClient) {
-            _bookRepository = bookRepository;
-            _soapClient = soapClient;
-        }
-
-        public async Task<Book> GetBookAsync(int id) {
-            var dbBook = await _bookRepository.GetBookAsync(id);
+    public class BookService(IBookRepository bookRepository, BookServiceSoapClient soapClient) : IBookService {
+        public async Task<Book?> GetBookAsync(int id) {
+            var dbBook = await bookRepository.GetBookAsync(id);
             if (dbBook == null) return null;
 
-            var soapBook = (await _soapClient.GetBookAsync(id)).Body.GetBookResult;
+            var soapBook = (await soapClient.GetBookAsync(id)).Body.GetBookResult;
+
+            if (soapBook == null)
+                return null;
 
             Book book = new() {
                 Id = dbBook.Id,
@@ -55,10 +49,10 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task<IEnumerable<Book>> GetAllAsync() {
-            var dbBooks = await _bookRepository.GetAllAsync();
-            var soapBooks = (await _soapClient.GetAllBooksAsync()).Body.GetAllBooksResult;
+            var dbBooks = await bookRepository.GetAllAsync();
+            var soapBooks = (await soapClient.GetAllBooksAsync()).Body.GetAllBooksResult;
 
-            List<Book> books = new(); 
+            List<Book> books = []; 
 
             foreach (var dbBook in dbBooks) {
                 var soapBook = soapBooks.FirstOrDefault(b => b.Id == dbBook.Id);
@@ -83,18 +77,18 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task CreateAsync(Book book) {
-            var transaction = _bookRepository.BeginTransaction();
+            var transaction = bookRepository.BeginTransaction();
 
             try {
-                var dbBook = await _bookRepository.CreateAsync(new DbBook {
+                var dbBook = await bookRepository.CreateAsync(new DbBook {
                     AuthorId = book.AuthorId,
                 });
 
-                await _soapClient.CreateBookAsync(new SoapBook {
+                await soapClient.CreateBookAsync(new SoapBook {
                     Id = dbBook.Id,
                     Title = book.Title,
                     Description = book.Description,
-                    ImageUrl = book.ImageUrl ?? DEFAULT_IMAGE,
+                    ImageUrl = book.ImageUrl ?? "https://birkhauser.com/product-not-found.png",
                     Chapters = book.Chapters.Select((c, index) => new Chapter {
                         Index = index,
                         Title = c.Title,
@@ -109,7 +103,7 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task UpdateAsync(Book book) {
-            await _soapClient.UpdateBookAsync(new SoapBook {
+            await soapClient.UpdateBookAsync(new SoapBook {
                 Id = book.Id,
                 Title = book.Title,
                 Description = book.Description,
@@ -123,11 +117,11 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task DeleteAsync(int id) {
-            var transaction = _bookRepository.BeginTransaction();
+            var transaction = bookRepository.BeginTransaction();
 
             try {
-                await _bookRepository.DeleteAsync(id);
-                await _soapClient.DeleteBookAsync(id);
+                await bookRepository.DeleteAsync(id);
+                await soapClient.DeleteBookAsync(id);
 
                 transaction.Commit();
             } catch {

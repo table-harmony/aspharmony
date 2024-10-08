@@ -12,7 +12,7 @@ namespace WebServices {
     [System.ComponentModel.ToolboxItem(false)]
 
     public class BookService : System.Web.Services.WebService {
-        private static readonly string XmlFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\Storage\App_Data\Feedbacks\Index.xml");
+        private static readonly string XmlFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\Storage\App_Data\Books\Index.xml");
 
         [WebMethod]
         public Book GetBook(int id) {

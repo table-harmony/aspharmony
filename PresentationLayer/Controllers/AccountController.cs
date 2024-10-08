@@ -9,19 +9,9 @@ using BusinessLogicLayer.Events;
 
 namespace PresentationLayer.Controllers
 {
-    public class AccountController : Controller {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
-        private readonly INotificationService _notificationService;
-        private readonly IEventPublisher _eventPublisher;
-
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, INotificationService notificationService, IEventPublisher eventPublisher) {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _notificationService = notificationService;
-            _eventPublisher = eventPublisher;
-        }
-
+    public class AccountController(UserManager<User> userManager, SignInManager<User> signInManager, 
+                    INotificationService notificationService, IEventPublisher eventPublisher) : Controller {
+        
         [HttpGet]
         public IActionResult Register() {
             return View();
@@ -31,12 +21,12 @@ namespace PresentationLayer.Controllers
         public async Task<IActionResult> Register(RegisterViewModel model) {
             if (ModelState.IsValid) {
                 var user = new User { UserName = model.Email, Email = model.Email };
-                var result = await _userManager.CreateAsync(user, model.Password);
+                var result = await userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded) {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    await _userManager.AddToRoleAsync(user, "Member");
-                    await _eventPublisher.PublishUserRegistered(user);
+                    await signInManager.SignInAsync(user, isPersistent: false);
+                    await userManager.AddToRoleAsync(user, "Member");
+                    await eventPublisher.PublishUserRegistered(user);
                     return RedirectToAction("Index", "Home");
                 }
 
@@ -48,8 +38,7 @@ namespace PresentationLayer.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login()
-        {
+        public IActionResult Login() {
             return View();
         }
 
@@ -58,15 +47,15 @@ namespace PresentationLayer.Controllers
             if (!ModelState.IsValid) 
                 return View(model);
 
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+            var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
             if (!result.Succeeded) {
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
 
                 return View(model);
             }
             
-            var user = await _userManager.FindByEmailAsync(model.Email);
-            await _eventPublisher.PublishUserLoggedIn(user);
+            var user = await userManager.FindByEmailAsync(model.Email);
+            await eventPublisher.PublishUserLoggedIn(user);
             
             return RedirectToAction("Index", "Home");
 
@@ -75,13 +64,13 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Logout() {
-            await _signInManager.SignOutAsync();
+            await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
         public async Task<IActionResult> Index() {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await userManager.GetUserAsync(User);
             if (user == null) {
                 return NotFound();
             }
@@ -90,8 +79,8 @@ namespace PresentationLayer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Update() {
-            return View(new UpdatePasswordViewModel());
+        public Task<IActionResult> Update() {
+            return Task.FromResult<IActionResult>(View(new UpdatePasswordViewModel()));
         }
 
         [HttpPost]
@@ -101,14 +90,14 @@ namespace PresentationLayer.Controllers
             if (!ModelState.IsValid)
                 return View("Update", model);
 
-            var user = await _userManager.GetUserAsync(User);
+            var user = await userManager.GetUserAsync(User);
             if (user == null)
                 return NotFound();
 
-            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+            var result = await userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
             if (result.Succeeded) {
-                await _eventPublisher.PublishUserUpdated(user);
-                await _signInManager.RefreshSignInAsync(user);
+                await eventPublisher.PublishUserUpdated(user);
+                await signInManager.RefreshSignInAsync(user);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -121,7 +110,7 @@ namespace PresentationLayer.Controllers
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Delete() {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await userManager.GetUserAsync(User);
             if (user == null)
                 return NotFound();
 
@@ -136,14 +125,14 @@ namespace PresentationLayer.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed() {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await userManager.GetUserAsync(User);
             if (user == null)
                 return NotFound();
 
-            var result = await _userManager.DeleteAsync(user);
+            var result = await userManager.DeleteAsync(user);
             if (result.Succeeded) {
-                await _eventPublisher.PublishUserDeleted(user);
-                await _signInManager.SignOutAsync();
+                await eventPublisher.PublishUserDeleted(user);
+                await signInManager.SignOutAsync();
                 return RedirectToAction("Index", "Home");
             }
 
@@ -160,7 +149,7 @@ namespace PresentationLayer.Controllers
         [HttpGet]
         public async Task<IActionResult> Notifications() {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var notifications = await _notificationService.GetByUserAsync(userId);
+            var notifications = await notificationService.GetByUserAsync(userId);
 
             return View(notifications);
         }
@@ -168,7 +157,7 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteNotification(int id) {
-            await _notificationService.DeleteAsync(id);
+            await notificationService.DeleteAsync(id);
             return RedirectToAction(nameof(Notifications));
         }
 

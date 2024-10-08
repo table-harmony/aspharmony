@@ -13,27 +13,22 @@ using Book = BusinessLogicLayer.Services.Book;
 namespace PresentationLayer.Controllers {
 
     [Authorize]
-    public class BookController : Controller {
-        private readonly IBookService _bookService;
-        private readonly IFileUploader _fileUploader;
-        private readonly UserManager<User> _userManager;
-
-        public BookController(IBookService bookService, IFileUploader fileUploader, UserManager<User> userManager) {
-            _bookService = bookService;
-            _fileUploader = fileUploader;
-            _userManager = userManager;
-        }
+    public class BookController(IBookService bookService, IFileUploader fileUploader, 
+                                    UserManager<User> userManager) : Controller {
 
         public async Task<IActionResult> Index(string searchString) {
-            var books = await _bookService.GetAllAsync();
+            var books = await bookService.GetAllAsync();
+
             if (!string.IsNullOrEmpty(searchString)) {
-                books = books.Where(book => book.Title.ToLower().Contains(searchString.ToLower()) ||
-                                                 book.Description.ToLower().Contains(searchString.ToLower()));
+                books = books.Where(book => 
+                    book.Title.ToLower().Contains(searchString.ToLower()) ||                 
+                    book.Description.ToLower().Contains(searchString.ToLower()));
             }
+
             return View(books);
         }
         public async Task<IActionResult> Details(int id) {
-            var book = await _bookService.GetBookAsync(id);
+            var book = await bookService.GetBookAsync(id);
             if (book == null)
                 return NotFound();
             return View(book);
@@ -45,16 +40,17 @@ namespace PresentationLayer.Controllers {
         }
 
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateBookViewModel model) {
             if (ModelState.IsValid) {
                 try {
                     string imageUrl = null;
                     if (model.Image != null) {
-                        imageUrl = await _fileUploader.UploadFileAsync(model.Image);
+                        imageUrl = await fileUploader.UploadFileAsync(model.Image);
                     }
 
-                    var user = await _userManager.GetUserAsync(User);
+                    var user = await userManager.GetUserAsync(User);
                     var book = new Book {
                         Title = model.Title,
                         Description = model.Description,
@@ -70,7 +66,7 @@ namespace PresentationLayer.Controllers {
                         });
                     }
 
-                    await _bookService.CreateAsync(book);
+                    await bookService.CreateAsync(book);
                     return RedirectToAction(nameof(Index));
                 } catch (Exception ex) {
                     ModelState.AddModelError("", "An error occurred while creating the book: " + ex.Message);
@@ -80,8 +76,9 @@ namespace PresentationLayer.Controllers {
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Edit(int id) {
-            var book = await _bookService.GetBookAsync(id);
+            var book = await bookService.GetBookAsync(id);
             if (book == null)
                 return NotFound();
 
@@ -101,6 +98,7 @@ namespace PresentationLayer.Controllers {
         }
 
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, EditBookViewModel model) {
             if (id != model.Id)
@@ -110,11 +108,11 @@ namespace PresentationLayer.Controllers {
                 return View(model);
 
             try {
-                var book = await _bookService.GetBookAsync(id);
+                var book = await bookService.GetBookAsync(id);
                 if (book == null)
                     return NotFound();
 
-                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
                 if (!User.IsInRole("Admin") && book.AuthorId != userId)
                     return Forbid();
 
@@ -122,7 +120,7 @@ namespace PresentationLayer.Controllers {
                 book.Description = model.Description;
 
                 if (model.NewImage != null) {
-                    book.ImageUrl = await _fileUploader.UploadFileAsync(model.NewImage);
+                    book.ImageUrl = await fileUploader.UploadFileAsync(model.NewImage);
                 }
                 else {
                     book.ImageUrl = model.CurrentImageUrl;
@@ -134,7 +132,7 @@ namespace PresentationLayer.Controllers {
                     Content = c.Content
                 }).ToList();
 
-                await _bookService.UpdateAsync(book);
+                await bookService.UpdateAsync(book);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -145,8 +143,9 @@ namespace PresentationLayer.Controllers {
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Delete(int id) {
-            var book = await _bookService.GetBookAsync(id);
+            var book = await bookService.GetBookAsync(id);
             if (book == null)
                 return NotFound();
 
@@ -154,17 +153,18 @@ namespace PresentationLayer.Controllers {
         }
 
         [HttpPost, ActionName("Delete")]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id) {
-            var book = await _bookService.GetBookAsync(id);
+            var book = await bookService.GetBookAsync(id);
             if (book == null)
                 return NotFound();
 
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             if (!User.IsInRole("Admin") && book.AuthorId != userId)
                 return Forbid();
 
-            await _bookService.DeleteAsync(id);
+            await bookService.DeleteAsync(id);
 
             return RedirectToAction(nameof(Index));
         }

@@ -2,41 +2,24 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using DataAccessLayer.Entities;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
-using BusinessLogicLayer.Services;
 using PresentationLayer.Models;
-using System.Security.Claims;
 using BusinessLogicLayer.Events;
 
 namespace PresentationLayer.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class AdminController : Controller
-    {
-        private readonly UserManager<User> _userManager;
-        private readonly ILogger<AdminController> _logger;
-        private readonly IEventPublisher _eventPublisher;
-
-        public AdminController(UserManager<User> userManager,
-                                IEventPublisher eventPublisher,
-                                ILogger<AdminController> logger) {
-            _userManager = userManager;
-            _eventPublisher = eventPublisher;
-            _logger = logger;
-        }
-
+    public class AdminController(UserManager<User> userManager,
+                            IEventPublisher eventPublisher,
+                            ILogger<AdminController> logger) : Controller {
         [HttpGet]
         public IActionResult Index() {
-            var users = _userManager.Users.ToList();
+            var users = userManager.Users.ToList();
             return View(users);
         }
 
         [HttpGet]
         public async Task<IActionResult> Details(string id) {
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await userManager.FindByIdAsync(id);
             
             if (user == null)
                 return NotFound();
@@ -46,7 +29,7 @@ namespace PresentationLayer.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Delete(string id) {
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await userManager.FindByIdAsync(id);
 
             if (user == null)
                 return NotFound();
@@ -57,16 +40,23 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id) {
-            User existingUser = await _userManager.FindByIdAsync(id);
-            await _eventPublisher.PublishUserDeleted(existingUser);
-            await _userManager.DeleteAsync(existingUser);
+            User? existingUser = await userManager.FindByIdAsync(id);
+
+            if (existingUser == null)
+                return NotFound();
+
+            await eventPublisher.PublishUserDeleted(existingUser);
+            await userManager.DeleteAsync(existingUser);
 
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(string id) {
-            var user = await _userManager.FindByIdAsync(id);
+            User? user = await userManager.FindByIdAsync(id);
+
+            if (user == null)
+                return NotFound();
 
             EditUserViewModel model = new() {
                 Id = user.Id,
@@ -82,11 +72,11 @@ namespace PresentationLayer.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            User existingUser = await _userManager.FindByIdAsync(model.Id);
+            User existingUser = await userManager.FindByIdAsync(model.Id);
             existingUser.UserName = model.UserName;
 
-            await _eventPublisher.PublishUserUpdated(existingUser);
-            await _userManager.UpdateAsync(existingUser);
+            await eventPublisher.PublishUserUpdated(existingUser);
+            await userManager.UpdateAsync(existingUser);
 
             return RedirectToAction("Index");
         }
@@ -100,7 +90,7 @@ namespace PresentationLayer.Controllers
         public async Task<IActionResult> Create(CreateUserViewModel model) {
 
             try {
-                User existingUser = await _userManager.FindByEmailAsync(model.Email);
+                User existingUser = await userManager.FindByEmailAsync(model.Email);
 
                 if (existingUser != null)
                     throw new Exception("User already exists");
@@ -110,12 +100,12 @@ namespace PresentationLayer.Controllers
                     UserName = model.Email
                 };
                 
-                var res = await _userManager.CreateAsync(user, model.Password);
+                var res = await userManager.CreateAsync(user, model.Password);
                 
                 if (!res.Succeeded)
                     throw new Exception("An error occurred while updating");
 
-                await _userManager.AddToRoleAsync(user, "Member");
+                await userManager.AddToRoleAsync(user, "Member");
 
                 return RedirectToAction("Index");
             } catch (Exception ex) {

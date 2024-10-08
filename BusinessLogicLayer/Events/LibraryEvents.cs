@@ -1,16 +1,12 @@
-using System;
 using DataAccessLayer.Entities;
 
-using Book = BusinessLogicLayer.Services.Book;
-
-namespace BusinessLogicLayer.Events
-{
+namespace BusinessLogicLayer.Events {
     public class LibraryMembershipEventArgs : EventArgs {
-        public LibraryMembership membership { get; set; }
+        public required LibraryMembership Membership { get; set; }
     }
 
     public class LibraryBookEventArgs : EventArgs {
-        public LibraryBook libraryBook { get; set; }
+        public required LibraryBook LibraryBook { get; set; }
     }
 
     public static class LibraryEvents {
@@ -23,19 +19,19 @@ namespace BusinessLogicLayer.Events
 
         // Event raising methods
         public static void OnUserJoinedLibrary(LibraryMembership membership) {
-            UserJoinedLibrary?.Invoke(null, new LibraryMembershipEventArgs { membership = membership });
+            UserJoinedLibrary?.Invoke(null, new LibraryMembershipEventArgs { Membership = membership });
         }
 
         public static void OnUserLeftLibrary(LibraryMembership membership) {
-            UserLeftLibrary?.Invoke(null, new LibraryMembershipEventArgs { membership = membership });
+            UserLeftLibrary?.Invoke(null, new LibraryMembershipEventArgs { Membership = membership });
         }
 
         public static void OnBookAddedToLibrary(LibraryBook libraryBook) {
-            BookAddedToLibrary?.Invoke(null, new LibraryBookEventArgs { libraryBook = libraryBook });
+            BookAddedToLibrary?.Invoke(null, new LibraryBookEventArgs { LibraryBook = libraryBook });
         }
 
         public static void OnBookRemovedFromLibrary(LibraryBook libraryBook) {
-            BookRemovedFromLibrary?.Invoke(null, new LibraryBookEventArgs { libraryBook = libraryBook });
+            BookRemovedFromLibrary?.Invoke(null, new LibraryBookEventArgs { LibraryBook = libraryBook });
         }
     }
 }

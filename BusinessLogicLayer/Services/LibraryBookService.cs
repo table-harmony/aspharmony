@@ -5,49 +5,37 @@ using System;
 
 namespace BusinessLogicLayer.Services {
     public interface ILibraryBookService {
-        Task<LibraryBook> GetLibraryBookAsync(int id);
-        Task<LibraryBook> GetLibraryBookAsync(int libraryId, int bookId);
+        Task<LibraryBook?> GetLibraryBookAsync(int id);
+        Task<LibraryBook?> GetLibraryBookAsync(int libraryId, int bookId);
         Task CreateAsync(int libraryId, int bookId);
         Task<IEnumerable<LibraryBook>> GetLibraryBooksAsync(int libraryId);
         Task DeleteAsync(int id);
     }
 
-    public class LibraryBookService : ILibraryBookService {
-        private readonly ILibraryBookRepository _libraryBookRepository;
-        private readonly IBookService _bookService;
-        private readonly ILibraryRepository _libraryRepository;
-        private readonly IEventPublisher _eventPublisher;
-
-        public LibraryBookService(ILibraryBookRepository libraryBookRepository,
-                                  IBookService bookService,
-                                  ILibraryRepository libraryRepository,
-                                  IEventPublisher eventPublisher) {
-            _libraryBookRepository = libraryBookRepository;
-            _bookService = bookService;
-            _libraryRepository = libraryRepository;
-            _eventPublisher = eventPublisher;
-        }
-
-        public async Task<LibraryBook> GetLibraryBookAsync(int id) {
-            var libraryBook = await _libraryBookRepository.GetLibraryBookAsync(id);
+    public class LibraryBookService(ILibraryBookRepository libraryBookRepository,
+                              IBookService bookService,
+                              ILibraryRepository libraryRepository,
+                              IEventPublisher eventPublisher) : ILibraryBookService {
+        public async Task<LibraryBook?> GetLibraryBookAsync(int id) {
+            var libraryBook = await libraryBookRepository.GetLibraryBookAsync(id);
             if (libraryBook != null) {
-                libraryBook.Book = await _bookService.GetBookAsync(libraryBook.BookId);
+                libraryBook.Book = (await bookService.GetBookAsync(libraryBook.BookId))!;
             }
             return libraryBook;
         }
 
-        public async Task<LibraryBook> GetLibraryBookAsync(int libraryId, int bookId) {
-            var libraryBook = await _libraryBookRepository.GetLibraryBookAsync(libraryId, bookId);
+        public async Task<LibraryBook?> GetLibraryBookAsync(int libraryId, int bookId) {
+            var libraryBook = await libraryBookRepository.GetLibraryBookAsync(libraryId, bookId);
             if (libraryBook != null) {
-                libraryBook.Book = await _bookService.GetBookAsync(bookId);
+                libraryBook.Book = (await bookService.GetBookAsync(bookId))!;
             }
             return libraryBook;
         }
 
         public async Task<IEnumerable<LibraryBook>> GetLibraryBooksAsync(int libraryId) {
-            var libraryBooks = await _libraryBookRepository.GetLibraryBooksAsync(libraryId);
+            var libraryBooks = await libraryBookRepository.GetLibraryBooksAsync(libraryId);
             foreach (var libraryBook in libraryBooks) {
-                libraryBook.Book = await _bookService.GetBookAsync(libraryBook.BookId);
+                libraryBook.Book = (await bookService.GetBookAsync(libraryBook.BookId))!;
             }
             return libraryBooks;
         }
@@ -58,17 +46,17 @@ namespace BusinessLogicLayer.Services {
                 BookId = bookId,
             };
 
-            await _libraryBookRepository.CreateAsync(libraryBook);
+            await libraryBookRepository.CreateAsync(libraryBook);
 
-            libraryBook = await GetLibraryBookAsync(libraryBook.Id);
-            _eventPublisher.PublishBookAddedToLibrary(libraryBook);
+            libraryBook = (await GetLibraryBookAsync(libraryBook.Id))!;
+            eventPublisher.PublishBookAddedToLibrary(libraryBook);
         }
 
         public async Task DeleteAsync(int id) {
             var libraryBook = await GetLibraryBookAsync(id);
             if (libraryBook != null) {
-                _eventPublisher.PublishBookRemovedFromLibrary(libraryBook);
-                await _libraryBookRepository.DeleteAsync(id);
+                eventPublisher.PublishBookRemovedFromLibrary(libraryBook);
+                await libraryBookRepository.DeleteAsync(id);
             }
         }
     }
