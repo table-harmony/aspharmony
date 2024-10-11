@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BookServiceReference
+namespace BooksServiceReference
 {
     using System.Runtime.Serialization;
     
@@ -26,7 +26,7 @@ namespace BookServiceReference
         
         private string ImageUrlField;
         
-        private System.Collections.Generic.List<BookServiceReference.Chapter> ChaptersField;
+        private System.Collections.Generic.List<BooksServiceReference.Chapter> ChaptersField;
         
         [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
         public int Id
@@ -81,7 +81,7 @@ namespace BookServiceReference
         }
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
-        public System.Collections.Generic.List<BookServiceReference.Chapter> Chapters
+        public System.Collections.Generic.List<BooksServiceReference.Chapter> Chapters
         {
             get
             {
@@ -147,21 +147,21 @@ namespace BookServiceReference
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
-    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="BookServiceReference.BookServiceSoap")]
-    public interface BookServiceSoap
+    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="BooksServiceReference.BooksServiceSoap")]
+    public interface BooksServiceSoap
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/GetBook", ReplyAction="*")]
-        System.Threading.Tasks.Task<BookServiceReference.GetBookResponse> GetBookAsync(BookServiceReference.GetBookRequest request);
+        System.Threading.Tasks.Task<BooksServiceReference.GetBookResponse> GetBookAsync(BooksServiceReference.GetBookRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/GetAllBooks", ReplyAction="*")]
-        System.Threading.Tasks.Task<BookServiceReference.GetAllBooksResponse> GetAllBooksAsync(BookServiceReference.GetAllBooksRequest request);
+        System.Threading.Tasks.Task<BooksServiceReference.GetAllBooksResponse> GetAllBooksAsync(BooksServiceReference.GetAllBooksRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/CreateBook", ReplyAction="*")]
-        System.Threading.Tasks.Task<BookServiceReference.CreateBookResponse> CreateBookAsync(BookServiceReference.CreateBookRequest request);
+        System.Threading.Tasks.Task<BooksServiceReference.CreateBookResponse> CreateBookAsync(BooksServiceReference.CreateBookRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/UpdateBook", ReplyAction="*")]
-        System.Threading.Tasks.Task<BookServiceReference.UpdateBookResponse> UpdateBookAsync(BookServiceReference.UpdateBookRequest request);
+        System.Threading.Tasks.Task<BooksServiceReference.UpdateBookResponse> UpdateBookAsync(BooksServiceReference.UpdateBookRequest request);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/DeleteBook", ReplyAction="*")]
         System.Threading.Tasks.Task DeleteBookAsync(int id);
@@ -175,13 +175,13 @@ namespace BookServiceReference
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetBook", Namespace="http://tempuri.org/", Order=0)]
-        public BookServiceReference.GetBookRequestBody Body;
+        public BooksServiceReference.GetBookRequestBody Body;
         
         public GetBookRequest()
         {
         }
         
-        public GetBookRequest(BookServiceReference.GetBookRequestBody Body)
+        public GetBookRequest(BooksServiceReference.GetBookRequestBody Body)
         {
             this.Body = Body;
         }
@@ -215,13 +215,13 @@ namespace BookServiceReference
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetBookResponse", Namespace="http://tempuri.org/", Order=0)]
-        public BookServiceReference.GetBookResponseBody Body;
+        public BooksServiceReference.GetBookResponseBody Body;
         
         public GetBookResponse()
         {
         }
         
-        public GetBookResponse(BookServiceReference.GetBookResponseBody Body)
+        public GetBookResponse(BooksServiceReference.GetBookResponseBody Body)
         {
             this.Body = Body;
         }
@@ -235,13 +235,13 @@ namespace BookServiceReference
     {
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
-        public BookServiceReference.Book GetBookResult;
+        public BooksServiceReference.Book GetBookResult;
         
         public GetBookResponseBody()
         {
         }
         
-        public GetBookResponseBody(BookServiceReference.Book GetBookResult)
+        public GetBookResponseBody(BooksServiceReference.Book GetBookResult)
         {
             this.GetBookResult = GetBookResult;
         }
@@ -255,13 +255,13 @@ namespace BookServiceReference
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetAllBooks", Namespace="http://tempuri.org/", Order=0)]
-        public BookServiceReference.GetAllBooksRequestBody Body;
+        public BooksServiceReference.GetAllBooksRequestBody Body;
         
         public GetAllBooksRequest()
         {
         }
         
-        public GetAllBooksRequest(BookServiceReference.GetAllBooksRequestBody Body)
+        public GetAllBooksRequest(BooksServiceReference.GetAllBooksRequestBody Body)
         {
             this.Body = Body;
         }
@@ -287,13 +287,13 @@ namespace BookServiceReference
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetAllBooksResponse", Namespace="http://tempuri.org/", Order=0)]
-        public BookServiceReference.GetAllBooksResponseBody Body;
+        public BooksServiceReference.GetAllBooksResponseBody Body;
         
         public GetAllBooksResponse()
         {
         }
         
-        public GetAllBooksResponse(BookServiceReference.GetAllBooksResponseBody Body)
+        public GetAllBooksResponse(BooksServiceReference.GetAllBooksResponseBody Body)
         {
             this.Body = Body;
         }
@@ -307,13 +307,13 @@ namespace BookServiceReference
     {
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
-        public System.Collections.Generic.List<BookServiceReference.Book> GetAllBooksResult;
+        public System.Collections.Generic.List<BooksServiceReference.Book> GetAllBooksResult;
         
         public GetAllBooksResponseBody()
         {
         }
         
-        public GetAllBooksResponseBody(System.Collections.Generic.List<BookServiceReference.Book> GetAllBooksResult)
+        public GetAllBooksResponseBody(System.Collections.Generic.List<BooksServiceReference.Book> GetAllBooksResult)
         {
             this.GetAllBooksResult = GetAllBooksResult;
         }
@@ -327,13 +327,13 @@ namespace BookServiceReference
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="CreateBook", Namespace="http://tempuri.org/", Order=0)]
-        public BookServiceReference.CreateBookRequestBody Body;
+        public BooksServiceReference.CreateBookRequestBody Body;
         
         public CreateBookRequest()
         {
         }
         
-        public CreateBookRequest(BookServiceReference.CreateBookRequestBody Body)
+        public CreateBookRequest(BooksServiceReference.CreateBookRequestBody Body)
         {
             this.Body = Body;
         }
@@ -347,13 +347,13 @@ namespace BookServiceReference
     {
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
-        public BookServiceReference.Book newBook;
+        public BooksServiceReference.Book newBook;
         
         public CreateBookRequestBody()
         {
         }
         
-        public CreateBookRequestBody(BookServiceReference.Book newBook)
+        public CreateBookRequestBody(BooksServiceReference.Book newBook)
         {
             this.newBook = newBook;
         }
@@ -367,13 +367,13 @@ namespace BookServiceReference
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="CreateBookResponse", Namespace="http://tempuri.org/", Order=0)]
-        public BookServiceReference.CreateBookResponseBody Body;
+        public BooksServiceReference.CreateBookResponseBody Body;
         
         public CreateBookResponse()
         {
         }
         
-        public CreateBookResponse(BookServiceReference.CreateBookResponseBody Body)
+        public CreateBookResponse(BooksServiceReference.CreateBookResponseBody Body)
         {
             this.Body = Body;
         }
@@ -399,13 +399,13 @@ namespace BookServiceReference
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="UpdateBook", Namespace="http://tempuri.org/", Order=0)]
-        public BookServiceReference.UpdateBookRequestBody Body;
+        public BooksServiceReference.UpdateBookRequestBody Body;
         
         public UpdateBookRequest()
         {
         }
         
-        public UpdateBookRequest(BookServiceReference.UpdateBookRequestBody Body)
+        public UpdateBookRequest(BooksServiceReference.UpdateBookRequestBody Body)
         {
             this.Body = Body;
         }
@@ -419,13 +419,13 @@ namespace BookServiceReference
     {
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
-        public BookServiceReference.Book updatedBook;
+        public BooksServiceReference.Book updatedBook;
         
         public UpdateBookRequestBody()
         {
         }
         
-        public UpdateBookRequestBody(BookServiceReference.Book updatedBook)
+        public UpdateBookRequestBody(BooksServiceReference.Book updatedBook)
         {
             this.updatedBook = updatedBook;
         }
@@ -439,13 +439,13 @@ namespace BookServiceReference
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="UpdateBookResponse", Namespace="http://tempuri.org/", Order=0)]
-        public BookServiceReference.UpdateBookResponseBody Body;
+        public BooksServiceReference.UpdateBookResponseBody Body;
         
         public UpdateBookResponse()
         {
         }
         
-        public UpdateBookResponse(BookServiceReference.UpdateBookResponseBody Body)
+        public UpdateBookResponse(BooksServiceReference.UpdateBookResponseBody Body)
         {
             this.Body = Body;
         }
@@ -464,13 +464,13 @@ namespace BookServiceReference
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
-    public interface BookServiceSoapChannel : BookServiceReference.BookServiceSoap, System.ServiceModel.IClientChannel
+    public interface BooksServiceSoapChannel : BooksServiceReference.BooksServiceSoap, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
-    public partial class BookServiceSoapClient : System.ServiceModel.ClientBase<BookServiceReference.BookServiceSoap>, BookServiceReference.BookServiceSoap
+    public partial class BooksServiceSoapClient : System.ServiceModel.ClientBase<BooksServiceReference.BooksServiceSoap>, BooksServiceReference.BooksServiceSoap
     {
         
         /// <summary>
@@ -480,85 +480,85 @@ namespace BookServiceReference
         /// <param name="clientCredentials">The client credentials</param>
         static partial void ConfigureEndpoint(System.ServiceModel.Description.ServiceEndpoint serviceEndpoint, System.ServiceModel.Description.ClientCredentials clientCredentials);
         
-        public BookServiceSoapClient(EndpointConfiguration endpointConfiguration) : 
-                base(BookServiceSoapClient.GetBindingForEndpoint(endpointConfiguration), BookServiceSoapClient.GetEndpointAddress(endpointConfiguration))
+        public BooksServiceSoapClient(EndpointConfiguration endpointConfiguration) : 
+                base(BooksServiceSoapClient.GetBindingForEndpoint(endpointConfiguration), BooksServiceSoapClient.GetEndpointAddress(endpointConfiguration))
         {
             this.Endpoint.Name = endpointConfiguration.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
         
-        public BookServiceSoapClient(EndpointConfiguration endpointConfiguration, string remoteAddress) : 
-                base(BookServiceSoapClient.GetBindingForEndpoint(endpointConfiguration), new System.ServiceModel.EndpointAddress(remoteAddress))
+        public BooksServiceSoapClient(EndpointConfiguration endpointConfiguration, string remoteAddress) : 
+                base(BooksServiceSoapClient.GetBindingForEndpoint(endpointConfiguration), new System.ServiceModel.EndpointAddress(remoteAddress))
         {
             this.Endpoint.Name = endpointConfiguration.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
         
-        public BookServiceSoapClient(EndpointConfiguration endpointConfiguration, System.ServiceModel.EndpointAddress remoteAddress) : 
-                base(BookServiceSoapClient.GetBindingForEndpoint(endpointConfiguration), remoteAddress)
+        public BooksServiceSoapClient(EndpointConfiguration endpointConfiguration, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(BooksServiceSoapClient.GetBindingForEndpoint(endpointConfiguration), remoteAddress)
         {
             this.Endpoint.Name = endpointConfiguration.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
         
-        public BookServiceSoapClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+        public BooksServiceSoapClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(binding, remoteAddress)
         {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<BookServiceReference.GetBookResponse> BookServiceReference.BookServiceSoap.GetBookAsync(BookServiceReference.GetBookRequest request)
+        System.Threading.Tasks.Task<BooksServiceReference.GetBookResponse> BooksServiceReference.BooksServiceSoap.GetBookAsync(BooksServiceReference.GetBookRequest request)
         {
             return base.Channel.GetBookAsync(request);
         }
         
-        public System.Threading.Tasks.Task<BookServiceReference.GetBookResponse> GetBookAsync(int id)
+        public System.Threading.Tasks.Task<BooksServiceReference.GetBookResponse> GetBookAsync(int id)
         {
-            BookServiceReference.GetBookRequest inValue = new BookServiceReference.GetBookRequest();
-            inValue.Body = new BookServiceReference.GetBookRequestBody();
+            BooksServiceReference.GetBookRequest inValue = new BooksServiceReference.GetBookRequest();
+            inValue.Body = new BooksServiceReference.GetBookRequestBody();
             inValue.Body.id = id;
-            return ((BookServiceReference.BookServiceSoap)(this)).GetBookAsync(inValue);
+            return ((BooksServiceReference.BooksServiceSoap)(this)).GetBookAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<BookServiceReference.GetAllBooksResponse> BookServiceReference.BookServiceSoap.GetAllBooksAsync(BookServiceReference.GetAllBooksRequest request)
+        System.Threading.Tasks.Task<BooksServiceReference.GetAllBooksResponse> BooksServiceReference.BooksServiceSoap.GetAllBooksAsync(BooksServiceReference.GetAllBooksRequest request)
         {
             return base.Channel.GetAllBooksAsync(request);
         }
         
-        public System.Threading.Tasks.Task<BookServiceReference.GetAllBooksResponse> GetAllBooksAsync()
+        public System.Threading.Tasks.Task<BooksServiceReference.GetAllBooksResponse> GetAllBooksAsync()
         {
-            BookServiceReference.GetAllBooksRequest inValue = new BookServiceReference.GetAllBooksRequest();
-            inValue.Body = new BookServiceReference.GetAllBooksRequestBody();
-            return ((BookServiceReference.BookServiceSoap)(this)).GetAllBooksAsync(inValue);
+            BooksServiceReference.GetAllBooksRequest inValue = new BooksServiceReference.GetAllBooksRequest();
+            inValue.Body = new BooksServiceReference.GetAllBooksRequestBody();
+            return ((BooksServiceReference.BooksServiceSoap)(this)).GetAllBooksAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<BookServiceReference.CreateBookResponse> BookServiceReference.BookServiceSoap.CreateBookAsync(BookServiceReference.CreateBookRequest request)
+        System.Threading.Tasks.Task<BooksServiceReference.CreateBookResponse> BooksServiceReference.BooksServiceSoap.CreateBookAsync(BooksServiceReference.CreateBookRequest request)
         {
             return base.Channel.CreateBookAsync(request);
         }
         
-        public System.Threading.Tasks.Task<BookServiceReference.CreateBookResponse> CreateBookAsync(BookServiceReference.Book newBook)
+        public System.Threading.Tasks.Task<BooksServiceReference.CreateBookResponse> CreateBookAsync(BooksServiceReference.Book newBook)
         {
-            BookServiceReference.CreateBookRequest inValue = new BookServiceReference.CreateBookRequest();
-            inValue.Body = new BookServiceReference.CreateBookRequestBody();
+            BooksServiceReference.CreateBookRequest inValue = new BooksServiceReference.CreateBookRequest();
+            inValue.Body = new BooksServiceReference.CreateBookRequestBody();
             inValue.Body.newBook = newBook;
-            return ((BookServiceReference.BookServiceSoap)(this)).CreateBookAsync(inValue);
+            return ((BooksServiceReference.BooksServiceSoap)(this)).CreateBookAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<BookServiceReference.UpdateBookResponse> BookServiceReference.BookServiceSoap.UpdateBookAsync(BookServiceReference.UpdateBookRequest request)
+        System.Threading.Tasks.Task<BooksServiceReference.UpdateBookResponse> BooksServiceReference.BooksServiceSoap.UpdateBookAsync(BooksServiceReference.UpdateBookRequest request)
         {
             return base.Channel.UpdateBookAsync(request);
         }
         
-        public System.Threading.Tasks.Task<BookServiceReference.UpdateBookResponse> UpdateBookAsync(BookServiceReference.Book updatedBook)
+        public System.Threading.Tasks.Task<BooksServiceReference.UpdateBookResponse> UpdateBookAsync(BooksServiceReference.Book updatedBook)
         {
-            BookServiceReference.UpdateBookRequest inValue = new BookServiceReference.UpdateBookRequest();
-            inValue.Body = new BookServiceReference.UpdateBookRequestBody();
+            BooksServiceReference.UpdateBookRequest inValue = new BooksServiceReference.UpdateBookRequest();
+            inValue.Body = new BooksServiceReference.UpdateBookRequestBody();
             inValue.Body.updatedBook = updatedBook;
-            return ((BookServiceReference.BookServiceSoap)(this)).UpdateBookAsync(inValue);
+            return ((BooksServiceReference.BooksServiceSoap)(this)).UpdateBookAsync(inValue);
         }
         
         public System.Threading.Tasks.Task DeleteBookAsync(int id)
@@ -573,7 +573,7 @@ namespace BookServiceReference
         
         private static System.ServiceModel.Channels.Binding GetBindingForEndpoint(EndpointConfiguration endpointConfiguration)
         {
-            if ((endpointConfiguration == EndpointConfiguration.BookServiceSoap))
+            if ((endpointConfiguration == EndpointConfiguration.BooksServiceSoap))
             {
                 System.ServiceModel.BasicHttpBinding result = new System.ServiceModel.BasicHttpBinding();
                 result.MaxBufferSize = int.MaxValue;
@@ -583,7 +583,7 @@ namespace BookServiceReference
                 result.Security.Mode = System.ServiceModel.BasicHttpSecurityMode.Transport;
                 return result;
             }
-            if ((endpointConfiguration == EndpointConfiguration.BookServiceSoap12))
+            if ((endpointConfiguration == EndpointConfiguration.BooksServiceSoap12))
             {
                 System.ServiceModel.Channels.CustomBinding result = new System.ServiceModel.Channels.CustomBinding();
                 System.ServiceModel.Channels.TextMessageEncodingBindingElement textBindingElement = new System.ServiceModel.Channels.TextMessageEncodingBindingElement();
@@ -601,13 +601,13 @@ namespace BookServiceReference
         
         private static System.ServiceModel.EndpointAddress GetEndpointAddress(EndpointConfiguration endpointConfiguration)
         {
-            if ((endpointConfiguration == EndpointConfiguration.BookServiceSoap))
+            if ((endpointConfiguration == EndpointConfiguration.BooksServiceSoap))
             {
-                return new System.ServiceModel.EndpointAddress("https://localhost:44355/BookService.asmx");
+                return new System.ServiceModel.EndpointAddress("https://localhost:44355/BooksService.asmx");
             }
-            if ((endpointConfiguration == EndpointConfiguration.BookServiceSoap12))
+            if ((endpointConfiguration == EndpointConfiguration.BooksServiceSoap12))
             {
-                return new System.ServiceModel.EndpointAddress("https://localhost:44355/BookService.asmx");
+                return new System.ServiceModel.EndpointAddress("https://localhost:44355/BooksService.asmx");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }
@@ -615,9 +615,9 @@ namespace BookServiceReference
         public enum EndpointConfiguration
         {
             
-            BookServiceSoap,
+            BooksServiceSoap,
             
-            BookServiceSoap12,
+            BooksServiceSoap12,
         }
     }
 }

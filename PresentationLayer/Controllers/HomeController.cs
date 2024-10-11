@@ -2,21 +2,19 @@ using Microsoft.AspNetCore.Mvc;
 using PresentationLayer.Models;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics;
-using AspHarmonyServiceReference;
-using System.Xml.Linq;
+using JokesServiceReference;
 
-namespace PresentationLayer.Controllers
-{
-    public class HomeController(ILogger<HomeController> logger, AspHarmonyPortTypeClient soapClient) : Controller {
-        private readonly HttpClient _httpClient = new HttpClient();
+namespace PresentationLayer.Controllers {
+    public class HomeController(JokesServicePortTypeClient jokesService) : Controller {
+        private readonly HttpClient _httpClient = new();
 
         public async Task<ActionResult> Index() {
             GenerateJokeRequest request = new();
-            var response = await soapClient.GenerateJokeAsync(request);
+            var response = await jokesService.GenerateJokeAsync(request);
 
             string joke = response.GenerateJokeResponse.joke;
             ViewBag.Joke = joke;
-
+            
             return View();
         }
 
@@ -27,24 +25,24 @@ namespace PresentationLayer.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Calculate(int a, int b) {
-            AddNumbersRequest request = new() { a = a, b = b };
-            var response = await soapClient.AddNumbersAsync(request);
+            AddNumbersRequest request = new() {
+                a = a,
+                b = b
+            };
 
-            int result = response.AddNumbersResponse.result;
-            
+            var response = await jokesService.AddNumbersAsync(request);
+            int result = response.AddNumbersResponse.sum;
+
             ViewData["Result"] = result;
             return View("Calculator");
         }
 
         [HttpGet]
         public async Task<IActionResult> MoreJokes(int count = 5) {
-            var xmlContent = await _httpClient.GetStringAsync(
-                $"https://aspharmony-production.up.railway.app/jokes.xml?count={count}");
+            GetJokesRequest request = new() { count = count };
+            var response = await jokesService.GetJokesAsync(request);
 
-            var xdoc = XDocument.Parse(xmlContent);
-            var jokes = xdoc.Descendants("joke").Select(j => j.Value).ToList();
-
-            return View(jokes);
+            return View(response.GetJokesResponse1.ToList());
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Utils.Services;
 using DataAccessLayer.Entities;
 
-using Chapter = BookServiceReference.Chapter;
+using Chapter = BooksServiceReference.Chapter;
 using Book = BusinessLogicLayer.Services.Book;
 
 namespace PresentationLayer.Controllers {

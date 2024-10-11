@@ -8,12 +8,8 @@ namespace Utils.Services {
     }
     
     public class FileUploader : IFileUploader {
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient _httpClient = new();
         private readonly string API_URL = "https://colorless-shrimp-958.convex.site";
-
-        public FileUploader() {
-            _httpClient = new HttpClient();
-        }
 
         // Uploads a file and returns a URL
         public async Task<string> UploadFileAsync(IFormFile file) {

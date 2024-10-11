@@ -6,11 +6,10 @@ using DataAccessLayer.Entities;
 using Microsoft.AspNetCore.Identity;
 using Utils.Services;
 using BusinessLogicLayer.Initiate;
-using BookServiceReference;
 using BusinessLogicLayer.Events;
 using Utils.Encryption;
-using AspHarmonyServiceReference;
-using System.ServiceModel;
+using JokesServiceReference;
+using BooksServiceReference;
 
 namespace PresentationLayer
 {
@@ -40,17 +39,10 @@ namespace PresentationLayer
 
             // Register the SOAP clients
             services.AddScoped(_ =>
-                new BookServiceSoapClient(BookServiceSoapClient.EndpointConfiguration.BookServiceSoap));
-            services.AddScoped(_ => {
-                BasicHttpBinding binding = new(BasicHttpSecurityMode.Transport);
-                binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
-
-                EndpointAddress endpoint = new("https://aspharmony-production.up.railway.app/service");
-
-                AspHarmonyPortTypeClient client = new(binding, endpoint);
-
-                return client;
-            });
+                new BooksServiceSoapClient(BooksServiceSoapClient.EndpointConfiguration.BooksServiceSoap));
+            services.AddScoped(_ => 
+                new JokesServicePortTypeClient(JokesServicePortTypeClient.EndpointConfiguration.JokesServicePort)
+            );
 
             // Register repositories
             services.AddScoped<IUserRepository, UserRepository>();

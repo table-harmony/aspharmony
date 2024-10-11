@@ -1,16 +1,15 @@
-﻿using BookServiceReference;
+﻿using BooksServiceReference;
 using DataAccessLayer.Repositories;
 
 using DbBook = DataAccessLayer.Entities.Book;
-using SoapBook = BookServiceReference.Book;
-using Chapter = BookServiceReference.Chapter;
+using SoapBook = BooksServiceReference.Book;
 
 namespace BusinessLogicLayer.Services {
     public class Book : DbBook {
-        public new string Title { get; set; }
-        public new string Description { get; set; }
-        public new string ImageUrl { get; set; } 
-        public List<Chapter> Chapters { get; set; } = new List<Chapter>();
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string ImageUrl { get; set; }
+        public List<Chapter> Chapters { get; set; } = [];
     }
 
     public interface IBookService {
@@ -21,12 +20,12 @@ namespace BusinessLogicLayer.Services {
         Task DeleteAsync(int id);
     }
 
-    public class BookService(IBookRepository bookRepository, BookServiceSoapClient soapClient) : IBookService {
+    public class BookService(IBookRepository bookRepository, BooksServiceSoapClient booksClient) : IBookService {
         public async Task<Book?> GetBookAsync(int id) {
             var dbBook = await bookRepository.GetBookAsync(id);
             if (dbBook == null) return null;
 
-            var soapBook = (await soapClient.GetBookAsync(id)).Body.GetBookResult;
+            var soapBook = (await booksClient.GetBookAsync(id)).Body.GetBookResult;
 
             if (soapBook == null)
                 return null;
@@ -50,7 +49,7 @@ namespace BusinessLogicLayer.Services {
 
         public async Task<IEnumerable<Book>> GetAllAsync() {
             var dbBooks = await bookRepository.GetAllAsync();
-            var soapBooks = (await soapClient.GetAllBooksAsync()).Body.GetAllBooksResult;
+            var soapBooks = (await booksClient.GetAllBooksAsync()).Body.GetAllBooksResult;
 
             List<Book> books = []; 
 
@@ -84,7 +83,7 @@ namespace BusinessLogicLayer.Services {
                     AuthorId = book.AuthorId,
                 });
 
-                await soapClient.CreateBookAsync(new SoapBook {
+                await booksClient.CreateBookAsync(new SoapBook {
                     Id = dbBook.Id,
                     Title = book.Title,
                     Description = book.Description,
@@ -103,7 +102,7 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task UpdateAsync(Book book) {
-            await soapClient.UpdateBookAsync(new SoapBook {
+            await booksClient.UpdateBookAsync(new SoapBook {
                 Id = book.Id,
                 Title = book.Title,
                 Description = book.Description,
@@ -121,7 +120,7 @@ namespace BusinessLogicLayer.Services {
 
             try {
                 await bookRepository.DeleteAsync(id);
-                await soapClient.DeleteBookAsync(id);
+                await booksClient.DeleteBookAsync(id);
 
                 transaction.Commit();
             } catch {

@@ -2,14 +2,12 @@
     ViewData["Title"] = "Home Page";
 }
 
-@if (!string.IsNullOrEmpty(ViewBag.Joke)) {
-    <div class="mt-4 p-3 bg-light rounded">
-        <h3>Have Fun!!!</h3>
-        <p class="lead">@ViewBag.Joke</p>
-        <a asp-action="Calculator" class="btn btn-primary">Calculator</a>
-        <a asp-action="MoreJokes" class="btn btn-secondary">More Jokes</a>
-    </div>
-}
+<div class="mt-4 p-3 bg-light rounded">
+    <h3>Have Fun!!!</h3>
+    <p class="lead">@ViewBag.Joke</p>
+    <a asp-action="Calculator" class="btn btn-primary">Calculator</a>
+    <a asp-action="MoreJokes" class="btn btn-secondary">More Jokes</a>
+</div>
 
 <div class="text-center p-lg-5">
     <h1 class="display-4">Welcome to AspHarmony Library</h1>

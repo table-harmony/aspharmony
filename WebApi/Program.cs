@@ -1,4 +1,4 @@
-using BookServiceReference;
+using BooksServiceReference;
 using BusinessLogicLayer.Events;
 using BusinessLogicLayer.Services;
 using DataAccessLayer.Data;
@@ -21,7 +21,7 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
         .EnableSensitiveDataLogging());
 
 builder.Services.AddScoped(_ =>
-    new BookServiceSoapClient(BookServiceSoapClient.EndpointConfiguration.BookServiceSoap));
+    new BooksServiceSoapClient(BooksServiceSoapClient.EndpointConfiguration.BooksServiceSoap));
 
 // Register your repositories
 builder.Services.AddScoped<ILibraryRepository, LibraryRepository>();

@@ -7,106 +7,26 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AspHarmonyServiceReference
+namespace JokesServiceReference
 {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
-    [System.ServiceModel.ServiceContractAttribute(Namespace="https://aspharmony-production.up.railway.app/", ConfigurationName="AspHarmonyServiceReference.AspHarmonyPortType")]
-    public interface AspHarmonyPortType
+    [System.ServiceModel.ServiceContractAttribute(Namespace="https://aspharmony-production.up.railway.app/", ConfigurationName="JokesServiceReference.JokesServicePortType")]
+    public interface JokesServicePortType
     {
         
-        [System.ServiceModel.OperationContractAttribute(Action="https://aspharmony-production.up.railway.app/GetServiceInfo", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="https://aspharmony-production.up.railway.app/JokesService/AddNumbers", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<AspHarmonyServiceReference.GetServiceInfoResponse1> GetServiceInfoAsync(AspHarmonyServiceReference.GetServiceInfoRequest request);
+        System.Threading.Tasks.Task<JokesServiceReference.AddNumbersResponse1> AddNumbersAsync(JokesServiceReference.AddNumbersRequest1 request);
         
-        [System.ServiceModel.OperationContractAttribute(Action="https://aspharmony-production.up.railway.app/AddNumbers", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="https://aspharmony-production.up.railway.app/JokesService/GenerateJoke", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<AspHarmonyServiceReference.AddNumbersResponse1> AddNumbersAsync(AspHarmonyServiceReference.AddNumbersRequest1 request);
+        System.Threading.Tasks.Task<JokesServiceReference.GenerateJokeResponse1> GenerateJokeAsync(JokesServiceReference.GenerateJokeRequest1 request);
         
-        [System.ServiceModel.OperationContractAttribute(Action="https://aspharmony-production.up.railway.app/GenerateJoke", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="https://aspharmony-production.up.railway.app/JokesService/GetJokes", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<AspHarmonyServiceReference.GenerateJokeResponse1> GenerateJokeAsync(AspHarmonyServiceReference.GenerateJokeRequest1 request);
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="https://aspharmony-production.up.railway.app/")]
-    public partial class GetServiceInfoResponse
-    {
-        
-        private string serviceField;
-        
-        private string versionField;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
-        public string Service
-        {
-            get
-            {
-                return this.serviceField;
-            }
-            set
-            {
-                this.serviceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=1)]
-        public string Version
-        {
-            get
-            {
-                return this.versionField;
-            }
-            set
-            {
-                this.versionField = value;
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
-    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
-    public partial class GetServiceInfoRequest
-    {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetServiceInfoRequest", Namespace="https://aspharmony-production.up.railway.app/", Order=0)]
-        public object GetServiceInfoRequest1;
-        
-        public GetServiceInfoRequest()
-        {
-        }
-        
-        public GetServiceInfoRequest(object GetServiceInfoRequest1)
-        {
-            this.GetServiceInfoRequest1 = GetServiceInfoRequest1;
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
-    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
-    public partial class GetServiceInfoResponse1
-    {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="https://aspharmony-production.up.railway.app/", Order=0)]
-        public AspHarmonyServiceReference.GetServiceInfoResponse GetServiceInfoResponse;
-        
-        public GetServiceInfoResponse1()
-        {
-        }
-        
-        public GetServiceInfoResponse1(AspHarmonyServiceReference.GetServiceInfoResponse GetServiceInfoResponse)
-        {
-            this.GetServiceInfoResponse = GetServiceInfoResponse;
-        }
+        System.Threading.Tasks.Task<JokesServiceReference.GetJokesResponse> GetJokesAsync(JokesServiceReference.GetJokesRequest1 request);
     }
     
     /// <remarks/>
@@ -156,19 +76,19 @@ namespace AspHarmonyServiceReference
     public partial class AddNumbersResponse
     {
         
-        private int resultField;
+        private int sumField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
-        public int result
+        public int sum
         {
             get
             {
-                return this.resultField;
+                return this.sumField;
             }
             set
             {
-                this.resultField = value;
+                this.sumField = value;
             }
         }
     }
@@ -181,13 +101,13 @@ namespace AspHarmonyServiceReference
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="https://aspharmony-production.up.railway.app/", Order=0)]
-        public AspHarmonyServiceReference.AddNumbersRequest AddNumbersRequest;
+        public JokesServiceReference.AddNumbersRequest AddNumbersRequest;
         
         public AddNumbersRequest1()
         {
         }
         
-        public AddNumbersRequest1(AspHarmonyServiceReference.AddNumbersRequest AddNumbersRequest)
+        public AddNumbersRequest1(JokesServiceReference.AddNumbersRequest AddNumbersRequest)
         {
             this.AddNumbersRequest = AddNumbersRequest;
         }
@@ -201,13 +121,13 @@ namespace AspHarmonyServiceReference
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="https://aspharmony-production.up.railway.app/", Order=0)]
-        public AspHarmonyServiceReference.AddNumbersResponse AddNumbersResponse;
+        public JokesServiceReference.AddNumbersResponse AddNumbersResponse;
         
         public AddNumbersResponse1()
         {
         }
         
-        public AddNumbersResponse1(AspHarmonyServiceReference.AddNumbersResponse AddNumbersResponse)
+        public AddNumbersResponse1(JokesServiceReference.AddNumbersResponse AddNumbersResponse)
         {
             this.AddNumbersResponse = AddNumbersResponse;
         }
@@ -253,13 +173,13 @@ namespace AspHarmonyServiceReference
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="https://aspharmony-production.up.railway.app/", Order=0)]
-        public AspHarmonyServiceReference.GenerateJokeRequest GenerateJokeRequest;
+        public JokesServiceReference.GenerateJokeRequest GenerateJokeRequest;
         
         public GenerateJokeRequest1()
         {
         }
         
-        public GenerateJokeRequest1(AspHarmonyServiceReference.GenerateJokeRequest GenerateJokeRequest)
+        public GenerateJokeRequest1(JokesServiceReference.GenerateJokeRequest GenerateJokeRequest)
         {
             this.GenerateJokeRequest = GenerateJokeRequest;
         }
@@ -273,26 +193,91 @@ namespace AspHarmonyServiceReference
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="https://aspharmony-production.up.railway.app/", Order=0)]
-        public AspHarmonyServiceReference.GenerateJokeResponse GenerateJokeResponse;
+        public JokesServiceReference.GenerateJokeResponse GenerateJokeResponse;
         
         public GenerateJokeResponse1()
         {
         }
         
-        public GenerateJokeResponse1(AspHarmonyServiceReference.GenerateJokeResponse GenerateJokeResponse)
+        public GenerateJokeResponse1(JokesServiceReference.GenerateJokeResponse GenerateJokeResponse)
         {
             this.GenerateJokeResponse = GenerateJokeResponse;
         }
     }
     
+    /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
-    public interface AspHarmonyPortTypeChannel : AspHarmonyServiceReference.AspHarmonyPortType, System.ServiceModel.IClientChannel
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="https://aspharmony-production.up.railway.app/")]
+    public partial class GetJokesRequest
+    {
+        
+        private int countField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
+        public int count
+        {
+            get
+            {
+                return this.countField;
+            }
+            set
+            {
+                this.countField = value;
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    public partial class GetJokesRequest1
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="https://aspharmony-production.up.railway.app/", Order=0)]
+        public JokesServiceReference.GetJokesRequest GetJokesRequest;
+        
+        public GetJokesRequest1()
+        {
+        }
+        
+        public GetJokesRequest1(JokesServiceReference.GetJokesRequest GetJokesRequest)
+        {
+            this.GetJokesRequest = GetJokesRequest;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    public partial class GetJokesResponse
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetJokesResponse", Namespace="https://aspharmony-production.up.railway.app/", Order=0)]
+        [System.Xml.Serialization.XmlArrayItemAttribute("jokes", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
+        public string[] GetJokesResponse1;
+        
+        public GetJokesResponse()
+        {
+        }
+        
+        public GetJokesResponse(string[] GetJokesResponse1)
+        {
+            this.GetJokesResponse1 = GetJokesResponse1;
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
+    public interface JokesServicePortTypeChannel : JokesServiceReference.JokesServicePortType, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
-    public partial class AspHarmonyPortTypeClient : System.ServiceModel.ClientBase<AspHarmonyServiceReference.AspHarmonyPortType>, AspHarmonyServiceReference.AspHarmonyPortType
+    public partial class JokesServicePortTypeClient : System.ServiceModel.ClientBase<JokesServiceReference.JokesServicePortType>, JokesServiceReference.JokesServicePortType
     {
         
         /// <summary>
@@ -302,76 +287,76 @@ namespace AspHarmonyServiceReference
         /// <param name="clientCredentials">The client credentials</param>
         static partial void ConfigureEndpoint(System.ServiceModel.Description.ServiceEndpoint serviceEndpoint, System.ServiceModel.Description.ClientCredentials clientCredentials);
         
-        public AspHarmonyPortTypeClient() : 
-                base(AspHarmonyPortTypeClient.GetDefaultBinding(), AspHarmonyPortTypeClient.GetDefaultEndpointAddress())
+        public JokesServicePortTypeClient() : 
+                base(JokesServicePortTypeClient.GetDefaultBinding(), JokesServicePortTypeClient.GetDefaultEndpointAddress())
         {
-            this.Endpoint.Name = EndpointConfiguration.AspHarmonyPort.ToString();
+            this.Endpoint.Name = EndpointConfiguration.JokesServicePort.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
         
-        public AspHarmonyPortTypeClient(EndpointConfiguration endpointConfiguration) : 
-                base(AspHarmonyPortTypeClient.GetBindingForEndpoint(endpointConfiguration), AspHarmonyPortTypeClient.GetEndpointAddress(endpointConfiguration))
-        {
-            this.Endpoint.Name = endpointConfiguration.ToString();
-            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
-        }
-        
-        public AspHarmonyPortTypeClient(EndpointConfiguration endpointConfiguration, string remoteAddress) : 
-                base(AspHarmonyPortTypeClient.GetBindingForEndpoint(endpointConfiguration), new System.ServiceModel.EndpointAddress(remoteAddress))
+        public JokesServicePortTypeClient(EndpointConfiguration endpointConfiguration) : 
+                base(JokesServicePortTypeClient.GetBindingForEndpoint(endpointConfiguration), JokesServicePortTypeClient.GetEndpointAddress(endpointConfiguration))
         {
             this.Endpoint.Name = endpointConfiguration.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
         
-        public AspHarmonyPortTypeClient(EndpointConfiguration endpointConfiguration, System.ServiceModel.EndpointAddress remoteAddress) : 
-                base(AspHarmonyPortTypeClient.GetBindingForEndpoint(endpointConfiguration), remoteAddress)
+        public JokesServicePortTypeClient(EndpointConfiguration endpointConfiguration, string remoteAddress) : 
+                base(JokesServicePortTypeClient.GetBindingForEndpoint(endpointConfiguration), new System.ServiceModel.EndpointAddress(remoteAddress))
         {
             this.Endpoint.Name = endpointConfiguration.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
         
-        public AspHarmonyPortTypeClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+        public JokesServicePortTypeClient(EndpointConfiguration endpointConfiguration, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(JokesServicePortTypeClient.GetBindingForEndpoint(endpointConfiguration), remoteAddress)
+        {
+            this.Endpoint.Name = endpointConfiguration.ToString();
+            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+        }
+        
+        public JokesServicePortTypeClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(binding, remoteAddress)
         {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<AspHarmonyServiceReference.GetServiceInfoResponse1> AspHarmonyServiceReference.AspHarmonyPortType.GetServiceInfoAsync(AspHarmonyServiceReference.GetServiceInfoRequest request)
-        {
-            return base.Channel.GetServiceInfoAsync(request);
-        }
-        
-        public System.Threading.Tasks.Task<AspHarmonyServiceReference.GetServiceInfoResponse1> GetServiceInfoAsync(object GetServiceInfoRequest1)
-        {
-            AspHarmonyServiceReference.GetServiceInfoRequest inValue = new AspHarmonyServiceReference.GetServiceInfoRequest();
-            inValue.GetServiceInfoRequest1 = GetServiceInfoRequest1;
-            return ((AspHarmonyServiceReference.AspHarmonyPortType)(this)).GetServiceInfoAsync(inValue);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<AspHarmonyServiceReference.AddNumbersResponse1> AspHarmonyServiceReference.AspHarmonyPortType.AddNumbersAsync(AspHarmonyServiceReference.AddNumbersRequest1 request)
+        System.Threading.Tasks.Task<JokesServiceReference.AddNumbersResponse1> JokesServiceReference.JokesServicePortType.AddNumbersAsync(JokesServiceReference.AddNumbersRequest1 request)
         {
             return base.Channel.AddNumbersAsync(request);
         }
         
-        public System.Threading.Tasks.Task<AspHarmonyServiceReference.AddNumbersResponse1> AddNumbersAsync(AspHarmonyServiceReference.AddNumbersRequest AddNumbersRequest)
+        public System.Threading.Tasks.Task<JokesServiceReference.AddNumbersResponse1> AddNumbersAsync(JokesServiceReference.AddNumbersRequest AddNumbersRequest)
         {
-            AspHarmonyServiceReference.AddNumbersRequest1 inValue = new AspHarmonyServiceReference.AddNumbersRequest1();
+            JokesServiceReference.AddNumbersRequest1 inValue = new JokesServiceReference.AddNumbersRequest1();
             inValue.AddNumbersRequest = AddNumbersRequest;
-            return ((AspHarmonyServiceReference.AspHarmonyPortType)(this)).AddNumbersAsync(inValue);
+            return ((JokesServiceReference.JokesServicePortType)(this)).AddNumbersAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<AspHarmonyServiceReference.GenerateJokeResponse1> AspHarmonyServiceReference.AspHarmonyPortType.GenerateJokeAsync(AspHarmonyServiceReference.GenerateJokeRequest1 request)
+        System.Threading.Tasks.Task<JokesServiceReference.GenerateJokeResponse1> JokesServiceReference.JokesServicePortType.GenerateJokeAsync(JokesServiceReference.GenerateJokeRequest1 request)
         {
             return base.Channel.GenerateJokeAsync(request);
         }
         
-        public System.Threading.Tasks.Task<AspHarmonyServiceReference.GenerateJokeResponse1> GenerateJokeAsync(AspHarmonyServiceReference.GenerateJokeRequest GenerateJokeRequest)
+        public System.Threading.Tasks.Task<JokesServiceReference.GenerateJokeResponse1> GenerateJokeAsync(JokesServiceReference.GenerateJokeRequest GenerateJokeRequest)
         {
-            AspHarmonyServiceReference.GenerateJokeRequest1 inValue = new AspHarmonyServiceReference.GenerateJokeRequest1();
+            JokesServiceReference.GenerateJokeRequest1 inValue = new JokesServiceReference.GenerateJokeRequest1();
             inValue.GenerateJokeRequest = GenerateJokeRequest;
-            return ((AspHarmonyServiceReference.AspHarmonyPortType)(this)).GenerateJokeAsync(inValue);
+            return ((JokesServiceReference.JokesServicePortType)(this)).GenerateJokeAsync(inValue);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<JokesServiceReference.GetJokesResponse> JokesServiceReference.JokesServicePortType.GetJokesAsync(JokesServiceReference.GetJokesRequest1 request)
+        {
+            return base.Channel.GetJokesAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<JokesServiceReference.GetJokesResponse> GetJokesAsync(JokesServiceReference.GetJokesRequest GetJokesRequest)
+        {
+            JokesServiceReference.GetJokesRequest1 inValue = new JokesServiceReference.GetJokesRequest1();
+            inValue.GetJokesRequest = GetJokesRequest;
+            return ((JokesServiceReference.JokesServicePortType)(this)).GetJokesAsync(inValue);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()
@@ -381,7 +366,7 @@ namespace AspHarmonyServiceReference
         
         private static System.ServiceModel.Channels.Binding GetBindingForEndpoint(EndpointConfiguration endpointConfiguration)
         {
-            if ((endpointConfiguration == EndpointConfiguration.AspHarmonyPort))
+            if ((endpointConfiguration == EndpointConfiguration.JokesServicePort))
             {
                 System.ServiceModel.BasicHttpBinding result = new System.ServiceModel.BasicHttpBinding();
                 result.MaxBufferSize = int.MaxValue;
@@ -396,27 +381,27 @@ namespace AspHarmonyServiceReference
         
         private static System.ServiceModel.EndpointAddress GetEndpointAddress(EndpointConfiguration endpointConfiguration)
         {
-            if ((endpointConfiguration == EndpointConfiguration.AspHarmonyPort))
+            if ((endpointConfiguration == EndpointConfiguration.JokesServicePort))
             {
-                return new System.ServiceModel.EndpointAddress("https://aspharmony-production.up.railway.app/service");
+                return new System.ServiceModel.EndpointAddress("https://aspharmony-production.up.railway.app/JokesService");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }
         
         private static System.ServiceModel.Channels.Binding GetDefaultBinding()
         {
-            return AspHarmonyPortTypeClient.GetBindingForEndpoint(EndpointConfiguration.AspHarmonyPort);
+            return JokesServicePortTypeClient.GetBindingForEndpoint(EndpointConfiguration.JokesServicePort);
         }
         
         private static System.ServiceModel.EndpointAddress GetDefaultEndpointAddress()
         {
-            return AspHarmonyPortTypeClient.GetEndpointAddress(EndpointConfiguration.AspHarmonyPort);
+            return JokesServicePortTypeClient.GetEndpointAddress(EndpointConfiguration.JokesServicePort);
         }
         
         public enum EndpointConfiguration
         {
             
-            AspHarmonyPort,
+            JokesServicePort,
         }
     }
 }

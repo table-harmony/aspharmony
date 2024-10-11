@@ -10,9 +10,9 @@ namespace WebServices {
     [WebService(Namespace = "http://tempuri.org/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [System.ComponentModel.ToolboxItem(false)]
-
-    public class BookService : System.Web.Services.WebService {
-        private static readonly string XmlFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\Storage\App_Data\Books\Index.xml");
+    public class BooksService : WebService {
+        private static readonly string xmlFilePath = 
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\Storage\App_Data\Books\Index.xml");
 
         [WebMethod]
         public Book GetBook(int id) {
@@ -77,23 +77,23 @@ namespace WebServices {
         }
 
         private void BackupXmlFile() {
-            var backupFilePath = XmlFilePath + ".bak";
-            var xdoc = XDocument.Load(XmlFilePath);
+            var backupFilePath = xmlFilePath + ".bak";
+            var xdoc = XDocument.Load(xmlFilePath);
             xdoc.Save(backupFilePath);
         }
 
         private void RestoreXmlFile() {
-            var backupFilePath = XmlFilePath + ".bak";
+            var backupFilePath = xmlFilePath + ".bak";
             if (File.Exists(backupFilePath)) {
-                File.Copy(backupFilePath, XmlFilePath, true);
+                File.Copy(backupFilePath, xmlFilePath, true);
             }
         }
 
         private List<Book> ReadBooksFromXml() {
             var books = new List<Book>();
-            if (!File.Exists(XmlFilePath)) return books;
+            if (!File.Exists(xmlFilePath)) return books;
 
-            var xdoc = XDocument.Load(XmlFilePath);
+            var xdoc = XDocument.Load(xmlFilePath);
             books = xdoc.Descendants("Book")
                 .Select(x => new Book {
                     Id = int.Parse(x.Attribute("Id")?.Value ?? "0"),
@@ -129,7 +129,7 @@ namespace WebServices {
                     ))
                 )
             );
-            xdoc.Save(XmlFilePath);
+            xdoc.Save(xmlFilePath);
         }
 
         private void WriteBooksToXml(DataSet books) {
