@@ -2,14 +2,17 @@
 
 <h2>Book Details in Library</h2>
 
+@{
+    var book = Model.Book as BusinessLogicLayer.Services.Book; 
+}
+
 <div class="row">
-    @{ var book = Model.Book as BusinessLogicLayer.Services.Book; }
     <div class="col-md-8">
-        <h4>@book.Title</h4>
+        <h4>@book.Metadata.Title</h4>
         <hr />
         <dl class="row">
             <dt class="col-sm-3">Description</dt>
-            <dd class="col-sm-9">@book.Description</dd>
+            <dd class="col-sm-9">@book.Metadata.Description</dd>
 
             <dt class="col-sm-3">Author</dt>
             <dd class="col-sm-9">@(book.Author?.UserName ?? "Unknown")</dd>
@@ -25,7 +28,7 @@
             </dd>
             <dt class="col-sm-3">Image</dt>
             <dd class="col-sm-9">
-                <img src="@book.ImageUrl" alt="@book.Title" style="max-width: 75px; max-height: 75px;" />
+                <img src="@book.Metadata.ImageUrl" alt="@book.Metadata.Title" style="max-width: 75px; max-height: 75px;" />
             </dd>
         </dl>
     </div>

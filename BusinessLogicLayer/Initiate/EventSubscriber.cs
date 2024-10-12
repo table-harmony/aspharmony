@@ -59,13 +59,13 @@ namespace BusinessLogicLayer.Initiate {
             LibraryEvents.BookAddedToLibrary += (sender, args) => {
                 LibraryBook libraryBook = args.LibraryBook;
                 NotifyLibraryMembers(libraryBook.LibraryId,
-                    $"New book '{(libraryBook.Book as Book).Title}' has been added to the library '{libraryBook.Library.Name}'.");
+                    $"The book '${(libraryBook.Book as Book).Metadata.Title}' has been added to the library '{libraryBook.Library.Name}'.");
             };
 
             LibraryEvents.BookRemovedFromLibrary += (sender, args) => {
                 LibraryBook libraryBook = args.LibraryBook;
                 NotifyLibraryManagers(libraryBook.LibraryId,
-                    $"Book '{(libraryBook.Book as Book).Title}' has been removed from the library '{libraryBook.Library.Name}'.");
+                    $"The book '${(libraryBook.Book as Book).Metadata.Title}' has been removed from the library '{libraryBook.Library.Name}'.");
             };
         }
 

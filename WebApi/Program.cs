@@ -1,9 +1,9 @@
-using BooksServiceReference;
 using BusinessLogicLayer.Events;
 using BusinessLogicLayer.Services;
 using DataAccessLayer.Data;
 using DataAccessLayer.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Utils.Books;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,8 +20,8 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
     options.UseSqlServer(connectionString)
         .EnableSensitiveDataLogging());
 
-builder.Services.AddScoped(_ =>
-    new BooksServiceSoapClient(BooksServiceSoapClient.EndpointConfiguration.BooksServiceSoap));
+// Register web service
+builder.Services.AddScoped(_ => BooksServiceFactory.CreateService(builder.Configuration));
 
 // Register your repositories
 builder.Services.AddScoped<ILibraryRepository, LibraryRepository>();

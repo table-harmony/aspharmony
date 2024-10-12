@@ -1,15 +1,12 @@
-﻿using BooksServiceReference;
+﻿using Utils.Books;
 using DataAccessLayer.Repositories;
 
 using DbBook = DataAccessLayer.Entities.Book;
-using SoapBook = BooksServiceReference.Book;
+using WebServiceBook = Utils.Books.Book;
 
 namespace BusinessLogicLayer.Services {
     public class Book : DbBook {
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string ImageUrl { get; set; }
-        public List<Chapter> Chapters { get; set; } = [];
+        public WebServiceBook? Metadata { get; set; }
     }
 
     public interface IBookService {
@@ -20,111 +17,85 @@ namespace BusinessLogicLayer.Services {
         Task DeleteAsync(int id);
     }
 
-    public class BookService(IBookRepository bookRepository, BooksServiceSoapClient booksClient) : IBookService {
+    public class BookService(IBookRepository repository, IBooksWebService webService) : IBookService {
         public async Task<Book?> GetBookAsync(int id) {
-            var dbBook = await bookRepository.GetBookAsync(id);
+            DbBook? dbBook = await repository.GetBookAsync(id);
             if (dbBook == null) return null;
 
-            var soapBook = (await booksClient.GetBookAsync(id)).Body.GetBookResult;
+            WebServiceBook? webBook = await webService.GetBookAsync(id);
 
-            if (soapBook == null)
+            if (webBook == null)
                 return null;
 
-            Book book = new() {
+            return new Book {
                 Id = dbBook.Id,
-                Title = soapBook.Title,
-                Description = soapBook.Description,
-                ImageUrl = soapBook.ImageUrl,
-                Chapters = soapBook.Chapters.Select(c => new Chapter {
-                    Index = c.Index,
-                    Title = c.Title,
-                    Content = c.Content
-                }).ToList(),
-                AuthorId = dbBook.AuthorId,
                 Author = dbBook.Author,
+                AuthorId = dbBook.AuthorId,
+                Metadata = webBook
             };
-
-            return book;
         }
 
         public async Task<IEnumerable<Book>> GetAllAsync() {
-            var dbBooks = await bookRepository.GetAllAsync();
-            var soapBooks = (await booksClient.GetAllBooksAsync()).Body.GetAllBooksResult;
+            IEnumerable<DbBook> dbBooks = await repository.GetAllAsync();
+            List<WebServiceBook> webBooks = await webService.GetAllBooksAsync();
 
-            List<Book> books = []; 
-
-            foreach (var dbBook in dbBooks) {
-                var soapBook = soapBooks.FirstOrDefault(b => b.Id == dbBook.Id);
-                if (soapBook != null) {
-                    books.Add(new() {
-                        Id = dbBook.Id,
-                        Title = soapBook.Title,
-                        Description = soapBook.Description,
-                        ImageUrl = soapBook.ImageUrl,
-                        Chapters = soapBook.Chapters.Select(c => new Chapter {
-                            Index = c.Index,
-                            Title = c.Title,
-                            Content = c.Content
-                        }).ToList(),
-                        AuthorId = dbBook.AuthorId,
-                        Author = dbBook.Author,
-                    });
-                }
-            }
-
-            return books;
+            return dbBooks.Join(webBooks,
+                db => db.Id,
+                web => web.Id,
+                (db, web) => new Book {
+                    Id = db.Id,
+                    Author = db.Author,
+                    AuthorId = db.AuthorId,
+                    Metadata = web
+                }).ToList();
         }
 
         public async Task CreateAsync(Book book) {
-            var transaction = bookRepository.BeginTransaction();
+            var transaction = repository.BeginTransaction();
 
             try {
-                var dbBook = await bookRepository.CreateAsync(new DbBook {
+                DbBook? dbBook = await repository.CreateAsync(new DbBook {
                     AuthorId = book.AuthorId,
                 });
 
-                await booksClient.CreateBookAsync(new SoapBook {
-                    Id = dbBook.Id,
-                    Title = book.Title,
-                    Description = book.Description,
-                    ImageUrl = book.ImageUrl ?? "https://birkhauser.com/product-not-found.png",
-                    Chapters = book.Chapters.Select((c, index) => new Chapter {
-                        Index = index,
-                        Title = c.Title,
-                        Content = c.Content
-                    }).ToList()
-                });
+                if (dbBook == null)
+                    throw new Exception("Book not created");
+
+                if (book.Metadata != null) {
+                    await webService.CreateBookAsync(new WebServiceBook {
+                        Id = dbBook.Id,
+                        Title = book.Metadata.Title,
+                        Description = book.Metadata.Description,
+                        ImageUrl = book.Metadata.ImageUrl,
+                        Chapters = book.Metadata.Chapters
+                    });
+                }
 
                 transaction.Commit();
             } catch {
                 await transaction.RollbackAsync();
+                throw;
             }
         }
 
         public async Task UpdateAsync(Book book) {
-            await booksClient.UpdateBookAsync(new SoapBook {
-                Id = book.Id,
-                Title = book.Title,
-                Description = book.Description,
-                ImageUrl = book.ImageUrl,
-                Chapters = book.Chapters.Select(c => new Chapter {
-                    Index = c.Index,
-                    Title = c.Title,
-                    Content = c.Content
-                }).ToList()
-            });
+            if (book.Metadata == null)
+                return;
+
+            await webService.UpdateBookAsync(book.Metadata);
         }
 
         public async Task DeleteAsync(int id) {
-            var transaction = bookRepository.BeginTransaction();
+            var transaction = repository.BeginTransaction();
 
             try {
-                await bookRepository.DeleteAsync(id);
-                await booksClient.DeleteBookAsync(id);
+                await repository.DeleteAsync(id);
+                await webService.DeleteBookAsync(id);
 
                 transaction.Commit();
             } catch {
                 await transaction.RollbackAsync();
+                throw;
             }
         }
     }

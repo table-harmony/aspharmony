@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Identity;
 using Utils.Services;
 using DataAccessLayer.Entities;
 
-using Chapter = BooksServiceReference.Chapter;
+using WebServicesBook = Utils.Books.Book;
+
+using Chapter = Utils.Books.Chapter;
 using Book = BusinessLogicLayer.Services.Book;
 
 namespace PresentationLayer.Controllers {
@@ -21,8 +23,8 @@ namespace PresentationLayer.Controllers {
 
             if (!string.IsNullOrEmpty(searchString)) {
                 books = books.Where(book => 
-                    book.Title.ToLower().Contains(searchString.ToLower()) ||                 
-                    book.Description.ToLower().Contains(searchString.ToLower()));
+                    book.Metadata.Title.ToLower().Contains(searchString.ToLower()) ||                 
+                    book.Metadata.Description.ToLower().Contains(searchString.ToLower()));
             }
 
             return View(books);
@@ -31,6 +33,7 @@ namespace PresentationLayer.Controllers {
             var book = await bookService.GetBookAsync(id);
             if (book == null)
                 return NotFound();
+
             return View(book);
         }
 
@@ -43,35 +46,36 @@ namespace PresentationLayer.Controllers {
         [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateBookViewModel model) {
-            if (ModelState.IsValid) {
-                try {
-                    string imageUrl = null;
-                    if (model.Image != null) {
-                        imageUrl = await fileUploader.UploadFileAsync(model.Image);
-                    }
+            if (!ModelState.IsValid)
+                return View(model);
 
-                    var user = await userManager.GetUserAsync(User);
-                    var book = new Book {
+            try {
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+                
+                string imageUrl = "https://birkhauser.com/product-not-found.png";
+                if (model.Image != null)
+                    imageUrl = await fileUploader.UploadFileAsync(model.Image);
+
+                Book book = new() {
+                    AuthorId = userId,
+                    Metadata = new WebServicesBook {
                         Title = model.Title,
                         Description = model.Description,
-                        AuthorId = user.Id,
-                        ImageUrl = imageUrl
-                    };
-
-                    foreach (var chapterViewModel in model.Chapters) {
-                        book.Chapters.Add(new Chapter {
-                            Title = chapterViewModel.Title,
-                            Content = chapterViewModel.Content,
-                            Index = chapterViewModel.Index
-                        });
+                        ImageUrl = imageUrl,
+                        Chapters = model.Chapters.Select(c => new Chapter {
+                            Index = c.Index,
+                            Title = c.Title,
+                            Content = c.Content
+                        }).ToList()
                     }
+                };
+                await bookService.CreateAsync(book);
 
-                    await bookService.CreateAsync(book);
-                    return RedirectToAction(nameof(Index));
-                } catch (Exception ex) {
-                    ModelState.AddModelError("", "An error occurred while creating the book: " + ex.Message);
-                }
+                return RedirectToAction(nameof(Index));
+            } catch (Exception ex) {
+                ModelState.AddModelError("", "An error occurred while creating the book: " + ex.Message);
             }
+
             return View(model);
         }
 
@@ -82,19 +86,19 @@ namespace PresentationLayer.Controllers {
             if (book == null)
                 return NotFound();
 
-            var viewModel = new EditBookViewModel {
+            EditBookViewModel model = new() {
                 Id = book.Id,
-                Title = book.Title,
-                Description = book.Description,
-                CurrentImageUrl = book.ImageUrl,
-                Chapters = book.Chapters.Select(c => new ChapterViewModel {
+                Title = book.Metadata.Title,
+                Description = book.Metadata.Description,
+                CurrentImageUrl = book.Metadata.ImageUrl,
+                Chapters = book.Metadata.Chapters.Select(c => new ChapterViewModel {
                     Index = c.Index,
                     Title = c.Title,
                     Content = c.Content
                 }).ToList()
             };
 
-            return View(viewModel);
+            return View(model);
         }
 
         [HttpPost]
@@ -116,17 +120,14 @@ namespace PresentationLayer.Controllers {
                 if (!User.IsInRole("Admin") && book.AuthorId != userId)
                     return Forbid();
 
-                book.Title = model.Title;
-                book.Description = model.Description;
+                book.Metadata.Title = model.Title;
+                book.Metadata.Description = model.Description;
 
                 if (model.NewImage != null) {
-                    book.ImageUrl = await fileUploader.UploadFileAsync(model.NewImage);
-                }
-                else {
-                    book.ImageUrl = model.CurrentImageUrl;
+                    book.Metadata.ImageUrl = await fileUploader.UploadFileAsync(model.NewImage);
                 }
 
-                book.Chapters = model.Chapters.Select(c => new Chapter {
+                book.Metadata.Chapters = model.Chapters.Select(c => new Chapter {
                     Index = c.Index,
                     Title = c.Title,
                     Content = c.Content

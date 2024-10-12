@@ -25,7 +25,7 @@
         @foreach (var item in Model) {
             <tr class="book-row">
                 <td>
-                    @Html.DisplayFor(modelItem => item.Title)
+                    @Html.DisplayFor(modelItem => item.Metadata.Title)
                 </td>
                 <td>@(item.Author?.UserName ?? "Unknown")</td>
                 <td>

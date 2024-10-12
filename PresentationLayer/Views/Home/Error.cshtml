@@ -5,7 +5,7 @@
 }
 
 <h1 class="text-danger">Something went wrong.</h1>
-<h2>@Model.Exception.Message</h2>
+
 @if (Model.Exception is PublicException publicException) {
     <p class="text-danger">@publicException.Message</p>
 } else {

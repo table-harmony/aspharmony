@@ -9,10 +9,9 @@ using BusinessLogicLayer.Initiate;
 using BusinessLogicLayer.Events;
 using Utils.Encryption;
 using JokesServiceReference;
-using BooksServiceReference;
+using Utils.Books;
 
-namespace PresentationLayer
-{
+namespace PresentationLayer {
     public class Startup(IConfiguration configuration) {
         public IConfiguration Configuration { get; } = configuration;
 
@@ -37,12 +36,11 @@ namespace PresentationLayer
                 .AddEntityFrameworkStores<ApplicationContext>()
                 .AddDefaultTokenProviders();
 
-            // Register the SOAP clients
-            services.AddScoped(_ =>
-                new BooksServiceSoapClient(BooksServiceSoapClient.EndpointConfiguration.BooksServiceSoap));
-            services.AddScoped(_ => 
-                new JokesServicePortTypeClient(JokesServicePortTypeClient.EndpointConfiguration.JokesServicePort)
-            );
+            // Register web services
+            services.AddScoped(_ => BooksServiceFactory.CreateService(Configuration));
+            services.AddScoped(_ => new JokesServicePortTypeClient(
+                JokesServicePortTypeClient.EndpointConfiguration.JokesServicePort
+            ));
 
             // Register repositories
             services.AddScoped<IUserRepository, UserRepository>();

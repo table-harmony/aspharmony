@@ -46,7 +46,7 @@ namespace PresentationLayer.Controllers
 
                 if (!string.IsNullOrEmpty(searchString)) {
                     availableBooks = availableBooks.Where(book =>
-                        book.Title.ToLower().Contains(searchString.ToLower()) ||
+                        book.Metadata.Title.ToLower().Contains(searchString.ToLower()) ||
                         book.Author.UserName.ToLower().Contains(searchString.ToLower()));
                 }
 
@@ -162,14 +162,14 @@ namespace PresentationLayer.Controllers
             var libraryBook = await libraryBookService.GetLibraryBookAsync(libraryBookId);
             if (libraryBook == null) return NotFound();
 
-            BookDetailsViewModel viewModel = new() {
+            BookDetailsViewModel model = new() {
                 LibraryBook = libraryBook,
                 Book = libraryBook.Book,
                 CurrentLoan = await bookLoanService.GetCurrentBookLoanAsync(libraryBookId),
                 PastLoans = bookLoanService.GetBookLoans(libraryBookId),
             };
 
-            return View(viewModel);
+            return View(model);
         }
 
         [HttpPost]

@@ -1,10 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Http;
 
-namespace PresentationLayer.Models
-{
-    public class EditBookViewModel
-    {
+namespace PresentationLayer.Models {
+    public class EditBookViewModel {
         public int Id { get; set; }
 
         [Required]
@@ -14,7 +11,7 @@ namespace PresentationLayer.Models
         [Required]
         public string Description { get; set; }
 
-        public List<ChapterViewModel> Chapters { get; set; } = new List<ChapterViewModel>();
+        public List<ChapterViewModel> Chapters { get; set; } = [];
 
         public string CurrentImageUrl { get; set; }
 
