@@ -3,12 +3,13 @@ using BusinessLogicLayer.Services;
 using DataAccessLayer.Data;
 using DataAccessLayer.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Utils.Books;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Update the connection string
-string path = Path.Combine(Directory.GetCurrentDirectory(), 
+string path = Path.Combine(Directory.GetCurrentDirectory(),
     "..", "Storage", "App_Data", "Database.mdf");
 path = Path.GetFullPath(path);
 
@@ -38,13 +39,22 @@ builder.Services.AddScoped<ILibraryBookService, LibraryBookService>();
 builder.Services.AddScoped<IBookLoanService, BookLoanService>();
 builder.Services.AddScoped<IEventPublisher, EventPublisher>();
 
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-        options.JsonSerializerOptions.WriteIndented = true;
-    });
+builder.Services.AddSwaggerGen(c => {
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
 
+    c.CustomSchemaIds(type => type.FullName);
+
+    c.SchemaGeneratorOptions.SchemaIdSelector = type => {
+        if (type == typeof(DataAccessLayer.Entities.Book))
+            return "DataAccessLayer.Book";
+        if (type == typeof(Utils.Books.Book))
+            return "Utils.Book";
+        return type.FullName;
+    };
+});
+
+// Add services to the container.
+builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

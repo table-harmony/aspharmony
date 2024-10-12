@@ -2,16 +2,16 @@
 using ForeignBooksServiceReference;
 using Microsoft.Extensions.Configuration;
 
-namespace Utils.Books
-{
+namespace Utils.Books {
     public static class BooksServiceFactory {
         public static IBooksWebService CreateService(IConfiguration configuration) {
-            var environment = configuration["Environment"];
+            var bookService = configuration["BOOKS_SERVICE_TYPE"];
 
-            return environment switch {
-                "Production" => new ForeignBooksService(new BooksServicePortTypeClient(BooksServicePortTypeClient.EndpointConfiguration.BooksServicePort)),
-                "Development" => new LocalBooksService(new BooksServiceSoapClient(BooksServiceSoapClient.EndpointConfiguration.BooksServiceSoap)),
-                _ => throw new Exception("Invalid environment"),
+            return bookService switch {
+                "Api" => new ApiBooksService(),
+                "ForeignWebService" => new ForeignBooksService(new BooksServicePortTypeClient(BooksServicePortTypeClient.EndpointConfiguration.BooksServicePort)),
+                "LocalWebService" => new LocalBooksService(new BooksServiceSoapClient(BooksServiceSoapClient.EndpointConfiguration.BooksServiceSoap)),
+                _ => throw new Exception("Invalid service"),
             };
         }
     }

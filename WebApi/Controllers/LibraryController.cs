@@ -5,24 +5,19 @@ using DataAccessLayer.Entities;
 namespace WebApi.Controllers {
     [Route("api/[controller]")]
     [ApiController]
-    public class LibraryController : ControllerBase {
-        private readonly ILibraryService _libraryService;
-
-        public LibraryController(ILibraryService libraryService) {
-            _libraryService = libraryService;
-        }
+    public class LibraryController(ILibraryService libraryService) : ControllerBase {
 
         // GET: api/Library
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Library>>> GetAllLibraries() {
-            var libraries = await _libraryService.GetAllAsync();
+            var libraries = await libraryService.GetAllAsync();
             return Ok(libraries);
         }
 
         // GET: api/Library/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Library>> GetLibrary(int id) {
-            var library = await _libraryService.GetLibraryAsync(id);
+            var library = await libraryService.GetLibraryAsync(id);
             if (library == null) {
                 return NotFound();
             }
@@ -32,7 +27,7 @@ namespace WebApi.Controllers {
         // POST: api/Library
         [HttpPost]
         public async Task<ActionResult<Library>> CreateLibrary(Library library) {
-            await _libraryService.CreateAsync(library);
+            await libraryService.CreateAsync(library);
             return CreatedAtAction(nameof(GetLibrary), new { id = library.Id }, library);
         }
 
@@ -40,7 +35,7 @@ namespace WebApi.Controllers {
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateLibrary(int id, string name) {
             try {
-                await _libraryService.UpdateAsync(id, name);
+                await libraryService.UpdateAsync(id, name);
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }
@@ -51,7 +46,7 @@ namespace WebApi.Controllers {
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLibrary(int id) {
             try {
-                await _libraryService.DeleteAsync(id);
+                await libraryService.DeleteAsync(id);
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }

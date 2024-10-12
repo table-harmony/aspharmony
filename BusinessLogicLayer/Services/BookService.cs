@@ -39,15 +39,17 @@ namespace BusinessLogicLayer.Services {
             IEnumerable<DbBook> dbBooks = await repository.GetAllAsync();
             List<WebServiceBook> webBooks = await webService.GetAllBooksAsync();
 
-            return dbBooks.Join(webBooks,
+            var books = dbBooks.GroupJoin(webBooks,
                 db => db.Id,
                 web => web.Id,
-                (db, web) => new Book {
+                (db, webMatches) => new Book {
                     Id = db.Id,
                     Author = db.Author,
                     AuthorId = db.AuthorId,
-                    Metadata = web
+                    Metadata = webMatches.FirstOrDefault() ?? new WebServiceBook { Id = db.Id }
                 }).ToList();
+
+            return books;
         }
 
         public async Task CreateAsync(Book book) {
