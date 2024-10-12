@@ -41,14 +41,18 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task CreateAsync(int libraryId, int bookId) {
-            LibraryBook libraryBook = new() {
+            LibraryBook? libraryBook = new() {
                 LibraryId = libraryId,
                 BookId = bookId,
             };
 
             await libraryBookRepository.CreateAsync(libraryBook);
 
-            libraryBook = (await GetLibraryBookAsync(libraryBook.Id))!;
+            libraryBook = await GetLibraryBookAsync(libraryBook.Id);
+
+            if (libraryBook == null)
+                throw new Exception("Library book not created");
+
             eventPublisher.PublishBookAddedToLibrary(libraryBook);
         }
 

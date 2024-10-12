@@ -37,8 +37,8 @@ namespace PresentationLayer {
                 .AddDefaultTokenProviders();
 
             // Register web services
-            services.AddScoped(_ => BooksServiceFactory.CreateService(Configuration));
-            services.AddScoped(_ => new JokesServicePortTypeClient(
+            services.AddTransient(_ => BooksServiceFactory.CreateService(Configuration));
+            services.AddTransient(_ => new JokesServicePortTypeClient(
                 JokesServicePortTypeClient.EndpointConfiguration.JokesServicePort
             ));
 
@@ -65,8 +65,8 @@ namespace PresentationLayer {
             services.AddScoped<IFeedbackService, FeedbackService>();
 
             // Register utils
-            services.AddScoped<IEncryption, Sha256Encryption>();
-            services.AddScoped<IFileUploader, FileUploader>();
+            services.AddTransient<IEncryption, Sha256Encryption>();
+            services.AddTransient<IFileUploader, FileUploader>();
 
             // Add HttpClient
             services.AddHttpClient();

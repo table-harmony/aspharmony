@@ -21,7 +21,7 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
         .EnableSensitiveDataLogging());
 
 // Register web service
-builder.Services.AddScoped(_ => BooksServiceFactory.CreateService(builder.Configuration));
+builder.Services.AddTransient(_ => BooksServiceFactory.CreateService(builder.Configuration));
 
 // Register your repositories
 builder.Services.AddScoped<ILibraryRepository, LibraryRepository>();

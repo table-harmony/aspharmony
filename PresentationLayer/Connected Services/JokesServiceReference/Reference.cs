@@ -23,10 +23,6 @@ namespace JokesServiceReference
         [System.ServiceModel.OperationContractAttribute(Action="https://aspharmony-production.up.railway.app/JokesService/GenerateJoke", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<JokesServiceReference.GenerateJokeResponse1> GenerateJokeAsync(JokesServiceReference.GenerateJokeRequest1 request);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="https://aspharmony-production.up.railway.app/JokesService/GetJokes", ReplyAction="*")]
-        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<JokesServiceReference.GetJokesResponse> GetJokesAsync(JokesServiceReference.GetJokesRequest1 request);
     }
     
     /// <remarks/>
@@ -205,71 +201,6 @@ namespace JokesServiceReference
         }
     }
     
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="https://aspharmony-production.up.railway.app/")]
-    public partial class GetJokesRequest
-    {
-        
-        private int countField;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
-        public int count
-        {
-            get
-            {
-                return this.countField;
-            }
-            set
-            {
-                this.countField = value;
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
-    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
-    public partial class GetJokesRequest1
-    {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="https://aspharmony-production.up.railway.app/", Order=0)]
-        public JokesServiceReference.GetJokesRequest GetJokesRequest;
-        
-        public GetJokesRequest1()
-        {
-        }
-        
-        public GetJokesRequest1(JokesServiceReference.GetJokesRequest GetJokesRequest)
-        {
-            this.GetJokesRequest = GetJokesRequest;
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
-    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
-    public partial class GetJokesResponse
-    {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetJokesResponse", Namespace="https://aspharmony-production.up.railway.app/", Order=0)]
-        [System.Xml.Serialization.XmlArrayItemAttribute("jokes", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public string[] GetJokesResponse1;
-        
-        public GetJokesResponse()
-        {
-        }
-        
-        public GetJokesResponse(string[] GetJokesResponse1)
-        {
-            this.GetJokesResponse1 = GetJokesResponse1;
-        }
-    }
-    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.2.0-preview1.23462.5")]
     public interface JokesServicePortTypeChannel : JokesServiceReference.JokesServicePortType, System.ServiceModel.IClientChannel
     {
@@ -344,19 +275,6 @@ namespace JokesServiceReference
             JokesServiceReference.GenerateJokeRequest1 inValue = new JokesServiceReference.GenerateJokeRequest1();
             inValue.GenerateJokeRequest = GenerateJokeRequest;
             return ((JokesServiceReference.JokesServicePortType)(this)).GenerateJokeAsync(inValue);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<JokesServiceReference.GetJokesResponse> JokesServiceReference.JokesServicePortType.GetJokesAsync(JokesServiceReference.GetJokesRequest1 request)
-        {
-            return base.Channel.GetJokesAsync(request);
-        }
-        
-        public System.Threading.Tasks.Task<JokesServiceReference.GetJokesResponse> GetJokesAsync(JokesServiceReference.GetJokesRequest GetJokesRequest)
-        {
-            JokesServiceReference.GetJokesRequest1 inValue = new JokesServiceReference.GetJokesRequest1();
-            inValue.GetJokesRequest = GetJokesRequest;
-            return ((JokesServiceReference.JokesServicePortType)(this)).GetJokesAsync(inValue);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()

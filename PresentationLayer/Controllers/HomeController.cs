@@ -3,6 +3,7 @@ using PresentationLayer.Models;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics;
 using JokesServiceReference;
+using System.Xml.Linq;
 
 namespace PresentationLayer.Controllers {
     public class HomeController(JokesServicePortTypeClient jokesService) : Controller {
@@ -38,11 +39,15 @@ namespace PresentationLayer.Controllers {
         }
 
         [HttpGet]
+        [HttpGet]
         public async Task<IActionResult> MoreJokes(int count = 5) {
-            GetJokesRequest request = new() { count = count };
-            var response = await jokesService.GetJokesAsync(request);
+            var xmlContent = await _httpClient.GetStringAsync(
+                $"https://aspharmony-production.up.railway.app/jokes.xml?count={count}");
 
-            return View(response.GetJokesResponse1.ToList());
+            var xdoc = XDocument.Parse(xmlContent);
+            var jokes = xdoc.Descendants("joke").Select(j => j.Value).ToList();
+
+            return View(jokes);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
