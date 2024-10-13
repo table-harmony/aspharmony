@@ -5,7 +5,7 @@ using SoapBook = ForeignBooksServiceReference.Book;
 namespace Utils.Books {
 
     public class ForeignBooksService(BooksServicePortTypeClient client) : IBooksWebService {
-        public async Task<Book> GetBookAsync(int id) {
+        public async Task<Book?> GetBookAsync(int id) {
             var response = await client.GetBookAsync(new GetBookRequest { Id = id });
             return ConvertToBook(response.GetBookResponse.book);
         }

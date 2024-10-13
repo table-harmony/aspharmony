@@ -1,6 +1,5 @@
 using System.Net.Http.Json;
 using System.Text.Json;
-using Utils.Exceptions;
 
 namespace Utils.Books {
     public class ApiBooksService : IBooksWebService {
@@ -12,7 +11,7 @@ namespace Utils.Books {
             _jsonOptions = new() { PropertyNameCaseInsensitive = true };
         }
 
-        public async Task<Book> GetBookAsync(int id) {
+        public async Task<Book?> GetBookAsync(int id) {
             var response = await _httpClient.GetAsync($"api/Books/{id}");
             response.EnsureSuccessStatusCode();
 
@@ -22,6 +21,7 @@ namespace Utils.Books {
         public async Task<List<Book>> GetAllBooksAsync() {
             var response = await _httpClient.GetAsync("api/Books");
             response.EnsureSuccessStatusCode();
+
             return await response.Content.ReadFromJsonAsync<List<Book>>(_jsonOptions);
         }
 

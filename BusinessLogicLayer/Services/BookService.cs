@@ -18,14 +18,12 @@ namespace BusinessLogicLayer.Services {
     }
 
     public class BookService(IBookRepository repository, IBooksWebService webService) : IBookService {
+        
         public async Task<Book?> GetBookAsync(int id) {
             DbBook? dbBook = await repository.GetBookAsync(id);
             if (dbBook == null) return null;
 
             WebServiceBook? webBook = await webService.GetBookAsync(id);
-
-            if (webBook == null)
-                return null;
 
             return new Book {
                 Id = dbBook.Id,

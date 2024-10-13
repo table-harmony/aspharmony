@@ -11,6 +11,7 @@ using WebServicesBook = Utils.Books.Book;
 
 using Chapter = Utils.Books.Chapter;
 using Book = BusinessLogicLayer.Services.Book;
+using Utils.Exceptions;
 
 namespace PresentationLayer.Controllers {
 
@@ -88,14 +89,14 @@ namespace PresentationLayer.Controllers {
 
             EditBookViewModel model = new() {
                 Id = book.Id,
-                Title = book.Metadata.Title,
-                Description = book.Metadata.Description,
-                CurrentImageUrl = book.Metadata.ImageUrl,
-                Chapters = book.Metadata.Chapters.Select(c => new ChapterViewModel {
+                Title = book.Metadata?.Title ?? "Unknown",
+                Description = book.Metadata?.Description ?? "Unknown",
+                CurrentImageUrl = book.Metadata?.ImageUrl ?? "Unknown",
+                Chapters = book.Metadata?.Chapters.Select(c => new ChapterViewModel {
                     Index = c.Index,
                     Title = c.Title,
                     Content = c.Content
-                }).ToList()
+                }).ToList() ?? []
             };
 
             return View(model);
@@ -119,6 +120,9 @@ namespace PresentationLayer.Controllers {
                 string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
                 if (!User.IsInRole("Admin") && book.AuthorId != userId)
                     return Forbid();
+
+                if (book.Metadata == null)
+                    throw new PublicException("Metadata not found");
 
                 book.Metadata.Title = model.Title;
                 book.Metadata.Description = model.Description;

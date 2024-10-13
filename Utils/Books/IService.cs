@@ -1,7 +1,7 @@
 ﻿namespace Utils.Books {
 
     public interface IBooksWebService {
-        Task<Book> GetBookAsync(int id);
+        Task<Book?> GetBookAsync(int id);
         Task<List<Book>> GetAllBooksAsync();
         Task CreateBookAsync(Book newBook);
         Task UpdateBookAsync(Book updatedBook);

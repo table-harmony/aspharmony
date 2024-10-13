@@ -4,24 +4,26 @@
 
 <div class="card mb-4">
     <div class="card-body d-flex gap-4 pb-2">
-        <img src="@Model.Metadata.ImageUrl" alt="@Model.Metadata.Title" style="max-width: 75px; max-height: 75px;" />
+        <img src="@Model.Metadata?.ImageUrl" alt="@Model.Metadata?.Title" style="max-width: 75px; max-height: 75px;" />
         <div>
-            <h4 class="card-title">@Model.Metadata.Title</h4>
-            <p class="card-text">@Model.Metadata.Description</p>
+            <h4 class="card-title">@Model.Metadata?.Title</h4>
+            <p class="card-text">@Model.Metadata?.Description</p>
         </div>
     </div>
 </div>
 
 <h5 class="mb-3">Chapters</h5>
-@foreach (var chapter in Model.Metadata.Chapters) {
-    <div class="card mb-3">
-        <div class="card-header">
-            <h6 class="my-2">@chapter.Title</h6>
+@if (Model.Metadata?.Chapters != null) {
+    @foreach (var chapter in Model.Metadata.Chapters) {
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="my-2">@chapter.Title</h6>
+            </div>
+            <div class="card-body">
+                <p>@chapter.Content</p>
+            </div>
         </div>
-        <div class="card-body">
-            <p>@chapter.Content</p>
-        </div>
-    </div>
+    }
 }
 
 <div class="d-flex gap-2 mt-4">

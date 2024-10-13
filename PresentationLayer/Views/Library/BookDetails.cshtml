@@ -12,7 +12,7 @@
         <hr />
         <dl class="row">
             <dt class="col-sm-3">Description</dt>
-            <dd class="col-sm-9">@book.Metadata.Description</dd>
+            <dd class="col-sm-9">@book.Metadata?.Description</dd>
 
             <dt class="col-sm-3">Author</dt>
             <dd class="col-sm-9">@(book.Author?.UserName ?? "Unknown")</dd>

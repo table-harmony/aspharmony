@@ -25,8 +25,8 @@
                 <tr>
                     @{ var book = (libraryBook.Book as BusinessLogicLayer.Services.Book); }
 
-                    <td>@book.Metadata.Title</td>
-                    <td>@book.Metadata.Description</td>
+                    <td>@book.Metadata?.Title</td>
+                    <td>@book.Metadata?.Description</td>
                     <td>@(book.Author?.UserName ?? "Unknown")</td>
                     <td>
                         <a asp-action="BookDetails" asp-route-libraryBookId="@libraryBook.Id" class="btn btn-info btn-sm">Details</a>
@@ -60,7 +60,7 @@
                 <select name="bookId" id="bookId" class="form-select">
                     <option value="">-- Select a book --</option>
                     @foreach (var book in ViewBag.AvailableBooks) {
-                        <option value="@book.Id">@book.Metadata.Title by @book.Author.UserName</option>
+                        <option value="@book.Id">@book.Metadata.Title by @book.Author?.UserName</option>
                     }
                 </select>
             </div>

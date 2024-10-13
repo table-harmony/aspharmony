@@ -5,7 +5,7 @@ using SoapBook = LocalBooksServiceReference.Book;
 namespace Utils.Books {
 
     public class LocalBooksService(BooksServiceSoapClient client) : IBooksWebService {
-        public async Task<Book> GetBookAsync(int id) {
+        public async Task<Book?> GetBookAsync(int id) {
             var response = await client.GetBookAsync(id);
             return ConvertToBook(response.Body.GetBookResult);
         }
