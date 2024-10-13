@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="yes"?>
-<NewDataSet>
-  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+<DataSet>
+  <xs:schema id="DataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="DataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
       <xs:complexType>
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="Books">
@@ -26,26 +26,6 @@
           </xs:element>
         </xs:choice>
       </xs:complexType>
-      <xs:unique name="Constraint1">
-        <xs:selector xpath=".//Books" />
-        <xs:field xpath="Id" />
-      </xs:unique>
-      <xs:keyref name="BookChapters" refer="Constraint1">
-        <xs:selector xpath=".//Chapters" />
-        <xs:field xpath="BookId" />
-      </xs:keyref>
     </xs:element>
   </xs:schema>
-  <Books>
-    <Id>28</Id>
-    <Title>asdasd123123123</Title>
-    <Description>asdasdasdad</Description>
-    <ImageUrl>https://birkhauser.com/product-not-found.png</ImageUrl>
-  </Books>
-  <Chapters>
-    <BookId>28</BookId>
-    <Index>0</Index>
-    <Title>1231231</Title>
-    <Content>231231</Content>
-  </Chapters>
-</NewDataSet>
+</DataSet>

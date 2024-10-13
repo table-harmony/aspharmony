@@ -1,10 +1,10 @@
 using BusinessLogicLayer.Events;
+using BusinessLogicLayer.Servers.Books;
 using BusinessLogicLayer.Services;
 using DataAccessLayer.Data;
 using DataAccessLayer.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Utils.Books;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +22,7 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
         .EnableSensitiveDataLogging());
 
 // Register web service
-builder.Services.AddTransient(_ => BooksServiceFactory.CreateService(builder.Configuration));
+builder.Services.AddTransient(sp => BooksServerFactory.CreateService(builder.Configuration, sp));
 
 // Register your repositories
 builder.Services.AddScoped<ILibraryRepository, LibraryRepository>();
@@ -30,6 +30,8 @@ builder.Services.AddScoped<ILibraryMembershipRepository, LibraryMembershipReposi
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<ILibraryBookRepository, LibraryBookRepository>();
 builder.Services.AddScoped<IBookLoanRepository, BookLoanRepository>();
+builder.Services.AddScoped<IBookMetadataRepository, BookMetadataRepository>();
+builder.Services.AddScoped<IBookChapterRepository, BookChapterRepository>();
 
 // Register your services
 builder.Services.AddScoped<ILibraryService, LibraryService>();
@@ -38,6 +40,8 @@ builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<ILibraryBookService, LibraryBookService>();
 builder.Services.AddScoped<IBookLoanService, BookLoanService>();
 builder.Services.AddScoped<IEventPublisher, EventPublisher>();
+builder.Services.AddScoped<IBookMetadataService, BookMetadataService>();
+builder.Services.AddScoped<IBookChapterService, BookChapterService>();
 
 builder.Services.AddSwaggerGen(c => {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
@@ -47,8 +51,8 @@ builder.Services.AddSwaggerGen(c => {
     c.SchemaGeneratorOptions.SchemaIdSelector = type => {
         if (type == typeof(DataAccessLayer.Entities.Book))
             return "DataAccessLayer.Book";
-        if (type == typeof(Utils.Books.Book))
-            return "Utils.Book";
+        if (type == typeof(BusinessLogicLayer.Servers.Books.Book))
+            return "BusinessLogicLayer.Servers.Books.Book";
         return type.FullName;
     };
 });

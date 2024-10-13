@@ -1,10 +1,6 @@
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
 
-namespace Utils.Services {
+namespace Utils {
     public interface IEventTracker {
         Task<List<Event>> GetEventsAsync();
         Task<bool> TrackEventAsync(string key);
@@ -29,7 +25,8 @@ namespace Utils.Services {
 
                     List<Event> events = new List<Event>();
 
-                    foreach (var eventItem in apiResponse.events) {
+                    foreach (var eventItem in apiResponse.events)
+                    {
                         DateTime creationTime = DateTimeOffset.FromUnixTimeMilliseconds((long)eventItem._creationTime).DateTime;
                         string key = eventItem.key;
 
@@ -38,11 +35,12 @@ namespace Utils.Services {
 
                     return events;
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 Console.WriteLine($"Error in GetEventsAsync: {ex.Message}");
             }
 
-            return new List<Event>();
+            return [];
         }
 
         public async Task<bool> TrackEventAsync(string key) {
@@ -58,7 +56,9 @@ namespace Utils.Services {
                 HttpResponseMessage response = await _httpClient.PostAsync(apiUrl, content);
 
                 return response.IsSuccessStatusCode;
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine($"Error in TrackEventAsync: {ex.Message}");
                 return false;
             }

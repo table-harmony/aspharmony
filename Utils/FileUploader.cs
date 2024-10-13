@@ -2,11 +2,11 @@
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 
-namespace Utils.Services {
+namespace Utils {
     public interface IFileUploader {
         Task<string> UploadFileAsync(IFormFile file);
     }
-    
+
     public class FileUploader : IFileUploader {
         private readonly HttpClient _httpClient = new();
         private readonly string API_URL = "https://colorless-shrimp-958.convex.site";
@@ -55,7 +55,7 @@ namespace Utils.Services {
             if (result?.fileUrl == null) {
                 throw new InvalidOperationException($"File URL not found in the response. Response: {responseContent}");
             }
-            
+
             return result.fileUrl;
         }
     }

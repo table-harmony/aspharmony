@@ -1,6 +1,5 @@
-﻿namespace Utils.Books {
-
-    public interface IBooksWebService {
+﻿namespace BusinessLogicLayer.Servers.Books {
+    public interface IBookServer {
         Task<Book?> GetBookAsync(int id);
         Task<List<Book>> GetAllBooksAsync();
         Task CreateBookAsync(Book newBook);

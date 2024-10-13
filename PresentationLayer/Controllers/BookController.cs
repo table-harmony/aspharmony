@@ -4,14 +4,13 @@ using PresentationLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
-using Utils.Services;
 using DataAccessLayer.Entities;
-
-using WebServicesBook = Utils.Books.Book;
-
-using Chapter = Utils.Books.Chapter;
-using Book = BusinessLogicLayer.Services.Book;
 using Utils.Exceptions;
+using Utils;
+
+using ServerBook = BusinessLogicLayer.Servers.Books.Book;
+using Chapter = BusinessLogicLayer.Servers.Books.Chapter;
+using Book = BusinessLogicLayer.Services.Book;
 
 namespace PresentationLayer.Controllers {
 
@@ -59,7 +58,7 @@ namespace PresentationLayer.Controllers {
 
                 Book book = new() {
                     AuthorId = userId,
-                    Metadata = new WebServicesBook {
+                    Metadata = new ServerBook {
                         Title = model.Title,
                         Description = model.Description,
                         ImageUrl = imageUrl,

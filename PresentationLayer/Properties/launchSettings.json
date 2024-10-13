@@ -16,7 +16,7 @@
       "applicationUrl": "http://localhost:5210",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production",
-        "BOOKS_SERVICE_TYPE": "Api"
+        "BOOKS_SERVER": "Nimbus"
       }
     },
     "https": {
@@ -26,7 +26,7 @@
       "applicationUrl": "https://localhost:7089;http://localhost:5210",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production",
-        "BOOKS_SERVICE_TYPE": "Api"
+        "BOOKS_SERVER": "Nimbus"
       }
     },
     "IIS Express": {
@@ -34,7 +34,7 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production",
-        "BOOKS_SERVICE_TYPE": "Api"
+        "BOOKS_SERVER": "Nimbus"
       }
     }
   }

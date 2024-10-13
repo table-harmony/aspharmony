@@ -2,9 +2,8 @@
 
 using SoapBook = ForeignBooksServiceReference.Book;
 
-namespace Utils.Books {
-
-    public class ForeignBooksService(BooksServicePortTypeClient client) : IBooksWebService {
+namespace BusinessLogicLayer.Servers.Books {
+    public class AetherServer(BooksServicePortTypeClient client) : IBookServer {
         public async Task<Book?> GetBookAsync(int id) {
             var response = await client.GetBookAsync(new GetBookRequest { Id = id });
             return ConvertToBook(response.GetBookResponse.book);
@@ -16,14 +15,14 @@ namespace Utils.Books {
         }
 
         public async Task CreateBookAsync(Book newBook) {
-            await client.CreateBookAsync(new CreateBookRequest() { 
-                book = ConvertToSoapBook(newBook) 
+            await client.CreateBookAsync(new CreateBookRequest() {
+                book = ConvertToSoapBook(newBook)
             });
         }
 
         public async Task UpdateBookAsync(Book updatedBook) {
-            await client.UpdateBookAsync(new UpdateBookRequest() { 
-                book = ConvertToSoapBook(updatedBook) 
+            await client.UpdateBookAsync(new UpdateBookRequest() {
+                book = ConvertToSoapBook(updatedBook)
             });
         }
 

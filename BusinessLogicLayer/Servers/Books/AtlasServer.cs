@@ -1,12 +1,12 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 
-namespace Utils.Books {
-    public class ApiBooksService : IBooksWebService {
+namespace BusinessLogicLayer.Servers.Books {
+    public class AtlasServer : IBookServer {
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _jsonOptions;
 
-        public ApiBooksService() {
+        public AtlasServer() {
             _httpClient = new() { BaseAddress = new Uri("https://localhost:7137/") };
             _jsonOptions = new() { PropertyNameCaseInsensitive = true };
         }

@@ -1,7 +1,8 @@
 ﻿using DataAccessLayer.Entities;
-using Utils.Services;
+using Utils;
 
-namespace BusinessLogicLayer.Events {
+namespace BusinessLogicLayer.Events
+{
     public class UserEventArgs : EventArgs {
         public required User User { get; set; }
     }

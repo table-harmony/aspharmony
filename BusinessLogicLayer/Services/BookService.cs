@@ -1,12 +1,12 @@
-﻿using Utils.Books;
-using DataAccessLayer.Repositories;
+﻿using DataAccessLayer.Repositories;
+using BusinessLogicLayer.Servers.Books;
 
 using DbBook = DataAccessLayer.Entities.Book;
-using WebServiceBook = Utils.Books.Book;
+using ServerBook = BusinessLogicLayer.Servers.Books.Book;
 
 namespace BusinessLogicLayer.Services {
     public class Book : DbBook {
-        public WebServiceBook? Metadata { get; set; }
+        public ServerBook? Metadata { get; set; }
     }
 
     public interface IBookService {
@@ -17,13 +17,13 @@ namespace BusinessLogicLayer.Services {
         Task DeleteAsync(int id);
     }
 
-    public class BookService(IBookRepository repository, IBooksWebService webService) : IBookService {
+    public class BookService(IBookRepository repository, IBookServer server) : IBookService {
         
         public async Task<Book?> GetBookAsync(int id) {
             DbBook? dbBook = await repository.GetBookAsync(id);
             if (dbBook == null) return null;
 
-            WebServiceBook? webBook = await webService.GetBookAsync(id);
+            ServerBook? webBook = await server.GetBookAsync(id);
 
             return new Book {
                 Id = dbBook.Id,
@@ -35,7 +35,7 @@ namespace BusinessLogicLayer.Services {
 
         public async Task<IEnumerable<Book>> GetAllAsync() {
             IEnumerable<DbBook> dbBooks = await repository.GetAllAsync();
-            List<WebServiceBook> webBooks = await webService.GetAllBooksAsync();
+            List<ServerBook> webBooks = await server.GetAllBooksAsync();
 
             var books = dbBooks.GroupJoin(webBooks,
                 db => db.Id,
@@ -44,7 +44,7 @@ namespace BusinessLogicLayer.Services {
                     Id = db.Id,
                     Author = db.Author,
                     AuthorId = db.AuthorId,
-                    Metadata = webMatches.FirstOrDefault() ?? new WebServiceBook { Id = db.Id }
+                    Metadata = webMatches.FirstOrDefault() ?? new ServerBook { Id = db.Id }
                 }).ToList();
 
             return books;
@@ -62,7 +62,7 @@ namespace BusinessLogicLayer.Services {
                     throw new Exception("Book not created");
 
                 if (book.Metadata != null) {
-                    await webService.CreateBookAsync(new WebServiceBook {
+                    await server.CreateBookAsync(new ServerBook {
                         Id = dbBook.Id,
                         Title = book.Metadata.Title,
                         Description = book.Metadata.Description,
@@ -82,7 +82,7 @@ namespace BusinessLogicLayer.Services {
             if (book.Metadata == null)
                 return;
 
-            await webService.UpdateBookAsync(book.Metadata);
+            await server.UpdateBookAsync(book.Metadata);
         }
 
         public async Task DeleteAsync(int id) {
@@ -90,7 +90,7 @@ namespace BusinessLogicLayer.Services {
 
             try {
                 await repository.DeleteAsync(id);
-                await webService.DeleteBookAsync(id);
+                await server.DeleteBookAsync(id);
 
                 transaction.Commit();
             } catch {

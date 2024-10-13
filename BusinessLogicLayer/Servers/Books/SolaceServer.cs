@@ -1,11 +1,10 @@
-﻿
-using Xceed.Words.NET;
+﻿using Xceed.Words.NET;
 
-namespace Utils.Books {
-    public class DummyBooksService : IBooksWebService, IDisposable {
-        private static readonly List<Book> books = []; 
+namespace BusinessLogicLayer.Servers.Books {
+    public class SolaceServer : IBookServer, IDisposable {
+        private static readonly List<Book> books = [];
         private static readonly string filePath = Path.Combine(Directory.GetCurrentDirectory(),
-            "..", "Storage", "App_Data", "Books", "Dummy.docx");
+            "..", "Storage", "App_Data", "Books", "Solace.docx");
 
         public void Dispose() {
             SaveData();
@@ -74,7 +73,7 @@ namespace Utils.Books {
 
             if (book != null)
                 books.Remove(book);
-            
+
             return Task.CompletedTask;
         }
     }

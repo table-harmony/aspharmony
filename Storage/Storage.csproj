@@ -67,8 +67,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\Books\InMemory.xml" />
-    <Content Include="App_Data\Books\LocalService.xml" />
+    <Content Include="App_Data\Books\Echo.xml" />
+    <Content Include="App_Data\Books\Orion.xml" />
     <Content Include="App_Data\Database.mdf" />
     <Content Include="App_Data\Database_log.ldf">
       <DependentUpon>Database.mdf</DependentUpon>
@@ -80,15 +80,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\Books\LocalService.xml.bak" />
+    <Content Include="App_Data\Books\Orion.xml.bak" />
     <None Include="App_Data\Books\Schema.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="App_Data\Feedbacks\Schema.xsd">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="App_Data\Books\Api.json" />
-    <Content Include="App_Data\Books\Dummy.docx" />
+    <Content Include="App_Data\Books\Atlas.json" />
+    <Content Include="App_Data\Books\Solace.docx" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

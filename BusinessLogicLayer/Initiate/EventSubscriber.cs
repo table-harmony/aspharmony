@@ -2,11 +2,11 @@ using BusinessLogicLayer.Events;
 using BusinessLogicLayer.Services;
 using DataAccessLayer.Entities;
 using Microsoft.Extensions.DependencyInjection;
-using Utils.Services;
-
+using Utils;
 using Book = BusinessLogicLayer.Services.Book;
 
-namespace BusinessLogicLayer.Initiate {
+namespace BusinessLogicLayer.Initiate
+{
 
     public static class EventSubscriber {
         private static IServiceProvider _serviceProvider;

@@ -4,12 +4,12 @@ using DataAccessLayer.Repositories;
 using BusinessLogicLayer.Services;
 using DataAccessLayer.Entities;
 using Microsoft.AspNetCore.Identity;
-using Utils.Services;
 using BusinessLogicLayer.Initiate;
 using BusinessLogicLayer.Events;
 using Utils.Encryption;
 using JokesServiceReference;
-using Utils.Books;
+using BusinessLogicLayer.Servers.Books;
+using Utils;
 
 namespace PresentationLayer {
     public class Startup(IConfiguration configuration) {
@@ -36,12 +36,6 @@ namespace PresentationLayer {
                 .AddEntityFrameworkStores<ApplicationContext>()
                 .AddDefaultTokenProviders();
 
-            // Register web services
-            services.AddTransient(_ => BooksServiceFactory.CreateService(Configuration));
-            services.AddTransient(_ => new JokesServicePortTypeClient(
-                JokesServicePortTypeClient.EndpointConfiguration.JokesServicePort
-            ));
-
             // Register repositories
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ILibraryRepository, LibraryRepository>();
@@ -51,6 +45,8 @@ namespace PresentationLayer {
             services.AddScoped<IBookLoanRepository, BookLoanRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+            services.AddScoped<IBookMetadataRepository, BookMetadataRepository>();
+            services.AddScoped<IBookChapterRepository, BookChapterRepository>();
 
             // Register services
             services.AddScoped<IUserService, UserService>();
@@ -63,10 +59,18 @@ namespace PresentationLayer {
             services.AddScoped<IEventTracker, EventTracker>();
             services.AddScoped<IEventPublisher, EventPublisher>();
             services.AddScoped<IFeedbackService, FeedbackService>();
+            services.AddScoped<IBookMetadataService, BookMetadataService>();
+            services.AddScoped<IBookChapterService, BookChapterService>();
 
             // Register utils
             services.AddTransient<IEncryption, Sha256Encryption>();
             services.AddTransient<IFileUploader, FileUploader>();
+
+            // Register web services
+            services.AddTransient(sp => BooksServerFactory.CreateService(configuration, sp));
+            services.AddTransient(_ => new JokesServicePortTypeClient(
+                JokesServicePortTypeClient.EndpointConfiguration.JokesServicePort
+            ));
 
             // Add HttpClient
             services.AddHttpClient();

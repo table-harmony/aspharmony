@@ -1,10 +1,9 @@
 ﻿using LocalBooksServiceReference;
-
 using SoapBook = LocalBooksServiceReference.Book;
 
-namespace Utils.Books {
+namespace BusinessLogicLayer.Servers.Books {
 
-    public class LocalBooksService(BooksServiceSoapClient client) : IBooksWebService {
+    public class OrionServer(BooksServiceSoapClient client) : IBookServer {
         public async Task<Book?> GetBookAsync(int id) {
             var response = await client.GetBookAsync(id);
             return ConvertToBook(response.Body.GetBookResult);
@@ -44,7 +43,7 @@ namespace Utils.Books {
         private static SoapBook ConvertToSoapBook(Book book) {
             return new SoapBook {
                 Id = book.Id,
-                Title =  book.Title,
+                Title = book.Title,
                 Description = book.Description,
                 ImageUrl = book.ImageUrl,
                 Chapters = book.Chapters.Select(c => new LocalBooksServiceReference.Chapter {
