@@ -58,6 +58,7 @@ namespace PresentationLayer.Controllers {
 
                 Book book = new() {
                     AuthorId = userId,
+                    ServerId = 7,
                     Metadata = new ServerBook {
                         Title = model.Title,
                         Description = model.Description,

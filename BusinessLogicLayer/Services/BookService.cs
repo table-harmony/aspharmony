@@ -17,11 +17,15 @@ namespace BusinessLogicLayer.Services {
         Task DeleteAsync(int id);
     }
 
-    public class BookService(IBookRepository repository, IBookServer server) : IBookService {
-        
+    public class BookService(IBookRepository repository, Func<int, Task<IBookServer>> serverFactory) : IBookService {
+
+        private async Task<IBookServer> GetServerAsync(int serverId) => await serverFactory(serverId);
+
         public async Task<Book?> GetBookAsync(int id) {
             DbBook? dbBook = await repository.GetBookAsync(id);
             if (dbBook == null) return null;
+
+            IBookServer server = await GetServerAsync(dbBook.ServerId);
 
             ServerBook? webBook = await server.GetBookAsync(id);
 
@@ -35,6 +39,12 @@ namespace BusinessLogicLayer.Services {
 
         public async Task<IEnumerable<Book>> GetAllAsync() {
             IEnumerable<DbBook> dbBooks = await repository.GetAllAsync();
+
+            if (!dbBooks.Any())
+                return [];
+
+            var server = await GetServerAsync(dbBooks.First().ServerId);
+
             List<ServerBook> webBooks = await server.GetAllBooksAsync();
 
             var books = dbBooks.GroupJoin(webBooks,
@@ -42,6 +52,8 @@ namespace BusinessLogicLayer.Services {
                 web => web.Id,
                 (db, webMatches) => new Book {
                     Id = db.Id,
+                    Server = db.Server,
+                    ServerId = db.ServerId,
                     Author = db.Author,
                     AuthorId = db.AuthorId,
                     Metadata = webMatches.FirstOrDefault() ?? new ServerBook { Id = db.Id }
@@ -54,14 +66,14 @@ namespace BusinessLogicLayer.Services {
             var transaction = repository.BeginTransaction();
 
             try {
-                DbBook? dbBook = await repository.CreateAsync(new DbBook {
+                DbBook dbBook = await repository.CreateAsync(new DbBook {
                     AuthorId = book.AuthorId,
-                });
-
-                if (dbBook == null)
-                    throw new Exception("Book not created");
+                    ServerId = book.ServerId,
+                }) ?? throw new Exception("Book not created");
 
                 if (book.Metadata != null) {
+                    var server = await GetServerAsync(dbBook.ServerId);
+
                     await server.CreateBookAsync(new ServerBook {
                         Id = dbBook.Id,
                         Title = book.Metadata.Title,
@@ -82,6 +94,7 @@ namespace BusinessLogicLayer.Services {
             if (book.Metadata == null)
                 return;
 
+            var server = await GetServerAsync(book.ServerId);
             await server.UpdateBookAsync(book.Metadata);
         }
 
@@ -89,7 +102,14 @@ namespace BusinessLogicLayer.Services {
             var transaction = repository.BeginTransaction();
 
             try {
+                var book = await repository.GetBookAsync(id);
+
+                if (book == null)
+                    return;
+
                 await repository.DeleteAsync(id);
+
+                var server = await GetServerAsync(book.ServerId);
                 await server.DeleteBookAsync(id);
 
                 transaction.Commit();

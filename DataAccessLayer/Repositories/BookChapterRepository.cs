@@ -1,37 +1,83 @@
 ﻿using DataAccessLayer.Data;
 using DataAccessLayer.Entities;
+using Microsoft.Data.SqlClient;
+using System.Data;
+using Utils;
 
 namespace DataAccessLayer.Repositories {
     public interface IBookChapterRepository {
-        IEnumerable<BookChapter> GetChapters(int bookId);
+        Task<IEnumerable<BookChapter>> GetChaptersAsync(int bookId);
         Task CreateAsync(BookChapter chapter);
         Task UpdateAsync(BookChapter chapter);
-        Task DeleteAsync(int bookId);
+        Task DeleteAsync(int chapterId);
     }
 
-    public class BookChapterRepository(ApplicationContext context) : IBookChapterRepository {
+    public class BookChapterRepository : IBookChapterRepository {
+        private readonly AdoContext _context;
 
-        public IEnumerable<BookChapter> GetChapters(int bookId) {
-            return context.BookChapters.Where(c => c.BookId == bookId);
+        public BookChapterRepository() {
+            string connectionString = ConnectionStringBuilder.GenerateConnectionString("Nimbus.mdf");
+            _context = new AdoContext(connectionString);
+        }
+
+        public async Task<IEnumerable<BookChapter>> GetChaptersAsync(int bookId) {
+            string query = "GetBookChapters";
+            var parameters = new[] { new SqlParameter("@BookId", bookId) };
+
+            DataSet data = await _context.ExecuteQueryAsync(query, parameters, true);
+
+            return data.Tables[0].Rows.Cast<DataRow>()
+                .Select(MapToChapter)
+                .ToList();
         }
 
         public async Task CreateAsync(BookChapter chapter) {
-            await context.BookChapters.AddAsync(chapter);
-            await context.SaveChangesAsync();
+            string query = @"INSERT INTO BookChapters 
+                             (BookId, [Index], Title, Content) 
+                             VALUES (@BookId, @Index, @Title, @Content)";
+
+            var parameters = new[] {
+                new SqlParameter("@BookId", chapter.BookId),
+                new SqlParameter("@Index", chapter.Index),
+                new SqlParameter("@Title", chapter.Title),
+                new SqlParameter("@Content", chapter.Content)
+            };
+
+            await _context.ExecuteQueryAsync(query, parameters);
         }
 
         public async Task UpdateAsync(BookChapter chapter) {
-            context.BookChapters.Update(chapter);
-            await context.SaveChangesAsync();
+            string query = @"UPDATE BookChapters
+                             SET [Index] = @Index, Title = @Title, Content = @Content
+                             WHERE Id = @Id";
+
+            var parameters = new[] {
+                new SqlParameter("@Id", chapter.Id),
+                new SqlParameter("@Index", chapter.Index),
+                new SqlParameter("@Title", chapter.Title),
+                new SqlParameter("@Content", chapter.Content)
+            };
+
+            await _context.ExecuteQueryAsync(query, parameters);
+        }
+        
+        public async Task DeleteAsync(int chapterId) {
+            string query = "DeleteChapter";
+            var parameters = new[] {
+                new SqlParameter("@Id", chapterId)
+            };
+
+            await _context.ExecuteQueryAsync(query, parameters, true);
         }
 
-        public async Task DeleteAsync(int bookId) {
-            var chapters = GetChapters(bookId);
-
-            if (chapters.Any()) {
-                context.BookChapters.RemoveRange(chapters);
-                await context.SaveChangesAsync();
-            }
+        private static BookChapter MapToChapter(DataRow row) {
+            return new BookChapter {
+                Id = row.Field<int>("Id"),
+                BookId = row.Field<int>("BookId"),
+                Index = row.Field<int>("Index"),
+                Title = row.Field<string>("Title") ?? "",
+                Content = row.Field<string>("Content") ?? ""
+            };
         }
     }
 }

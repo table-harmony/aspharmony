@@ -28,7 +28,7 @@ namespace PresentationLayer {
         public void ConfigureServices(IServiceCollection services) {
             // Add the DbContext to the services
             services.AddDbContext<ApplicationContext>(options =>
-                options.UseSqlServer(GetConnectionString())
+                options.UseSqlServer(ConnectionStringBuilder.GenerateConnectionString("Main.mdf"))
                     .EnableSensitiveDataLogging());
 
             // Register Identity services
@@ -47,6 +47,7 @@ namespace PresentationLayer {
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             services.AddScoped<IBookMetadataRepository, BookMetadataRepository>();
             services.AddScoped<IBookChapterRepository, BookChapterRepository>();
+            services.AddScoped<IServerRepository, ServerRepository>();  
 
             // Register services
             services.AddScoped<IUserService, UserService>();
@@ -61,13 +62,15 @@ namespace PresentationLayer {
             services.AddScoped<IFeedbackService, FeedbackService>();
             services.AddScoped<IBookMetadataService, BookMetadataService>();
             services.AddScoped<IBookChapterService, BookChapterService>();
+            services.AddScoped<IServerService, ServerService>();
 
             // Register utils
             services.AddTransient<IEncryption, Sha256Encryption>();
             services.AddTransient<IFileUploader, FileUploader>();
 
             // Register web services
-            services.AddTransient(sp => BooksServerFactory.CreateService(configuration, sp));
+            services.AddScoped(serviceProvider =>
+                BooksServerFactory.CreateServer(serviceProvider));
             services.AddTransient(_ => new JokesServicePortTypeClient(
                 JokesServicePortTypeClient.EndpointConfiguration.JokesServicePort
             ));
@@ -109,14 +112,6 @@ namespace PresentationLayer {
 
            RoleInitializer.InitializeAsync(app.ApplicationServices).Wait();
         }
-        
-        private string GetConnectionString() {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), 
-                "..", "Storage", "App_Data", "Database.mdf");
-            path = Path.GetFullPath(path);
-
-            string connectionString = Configuration.GetConnectionString("DefaultConnection")!;
-            return connectionString.Replace("{path}", path);
-        }
+       
     }
 }

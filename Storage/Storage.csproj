@@ -69,11 +69,15 @@
   <ItemGroup>
     <Content Include="App_Data\Books\Echo.xml" />
     <Content Include="App_Data\Books\Orion.xml" />
-    <Content Include="App_Data\Database.mdf" />
-    <Content Include="App_Data\Database_log.ldf">
-      <DependentUpon>Database.mdf</DependentUpon>
+    <Content Include="App_Data\Main.mdf" />
+    <Content Include="App_Data\Main_log.ldf">
+      <DependentUpon>Main.mdf</DependentUpon>
     </Content>
     <Content Include="App_Data\Feedbacks\Index.xml" />
+    <Content Include="App_Data\Nimbus.mdf" />
+    <Content Include="App_Data\Nimbus_log.ldf">
+      <DependentUpon>Nimbus.mdf</DependentUpon>
+    </Content>
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

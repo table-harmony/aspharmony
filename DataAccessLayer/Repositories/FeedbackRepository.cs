@@ -16,15 +16,15 @@ namespace DataAccessLayer.Repositories {
     }
 
     public class FeedbackRepository : IFeedbackRepository {
-        private readonly ApplicationContext _context;
+        private readonly AdoContext _context;
         private readonly string _connectionString;
         private readonly string _xmlFilePath;
 
         public FeedbackRepository(ApplicationContext context, IConfiguration configuration) {
-            _context = context;
-            _connectionString = _context.Database.GetDbConnection().ConnectionString;
-
+            _connectionString = context.Database.GetDbConnection().ConnectionString;
             _xmlFilePath = configuration["XmlPaths:Feedbacks"]!;
+
+            _context = new AdoContext(_connectionString);
         }
 
         public async Task<DataSet> GetAllAsync() {
@@ -32,7 +32,7 @@ namespace DataAccessLayer.Repositories {
                                 FROM Feedbacks f
                                 LEFT JOIN AspNetUsers u ON f.UserId = u.Id";
 
-            DataSet feedbacks = ExecuteQuery(query);
+            DataSet feedbacks = _context.ExecuteQuery(query);
             await BackupToXmlAsync(feedbacks);
 
             return feedbacks;
@@ -42,7 +42,7 @@ namespace DataAccessLayer.Repositories {
             string query = "GetFeedback";
             var parameters = new[] { new SqlParameter("@Id", id) };
 
-            return ExecuteQuery(query, parameters, true);
+            return _context.ExecuteQuery(query, parameters, true);
         }
 
         public async Task CreateAsync(Feedback feedback) {
@@ -57,7 +57,7 @@ namespace DataAccessLayer.Repositories {
                 new SqlParameter("@Label", feedback.Label)
             };
 
-            var result = ExecuteQuery(query, parameters);
+            var result = _context.ExecuteQuery(query, parameters);
             if (result.Tables[0].Rows.Count > 0) {
                 feedback.Id = int.Parse(result.Tables[0].Rows[0][0].ToString()!);
             }
@@ -78,7 +78,7 @@ namespace DataAccessLayer.Repositories {
                 new SqlParameter("@Label", feedback.Label)
             };
 
-            ExecuteQuery(query, parameters);
+            _context.ExecuteQuery(query, parameters);
             await BackupToXmlAsync(feedback);
         }
 
@@ -86,30 +86,11 @@ namespace DataAccessLayer.Repositories {
             string query = "DeleteFeedback";
             var parameters = new[] { new SqlParameter("@Id", id) };
 
-            ExecuteQuery(query, parameters, true);
+            _context.ExecuteQuery(query, parameters, true);
 
             await RemoveFromXmlAsync(id);
         }
 
-
-        private DataSet ExecuteQuery(string query, SqlParameter[]? parameters = null, bool isStoredProcedure = false) {
-            using SqlConnection connection = new(_connectionString);
-            connection.Open();
-
-            using SqlCommand command = new(query, connection);
-
-            if (isStoredProcedure)
-                command.CommandType = CommandType.StoredProcedure;
-
-            if (parameters != null)
-                command.Parameters.AddRange(parameters);
-
-            using SqlDataAdapter adapter = new(command);
-            DataSet dataSet = new();
-            adapter.Fill(dataSet);
-
-            return dataSet;
-        }
 
         private async Task BackupToXmlAsync(Feedback feedback) {
             var xdoc = await Task.Run(() => {

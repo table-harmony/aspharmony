@@ -12,7 +12,7 @@ namespace BusinessLogicLayer.Servers.Books {
             if (metadata == null)
                 return null;
 
-            var chapters = chapterService.GetChapters(id);
+            var chapters = await chapterService.GetChaptersAsync(id);
 
             return new Book {
                 Id = metadata.BookId,

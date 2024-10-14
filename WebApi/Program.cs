@@ -5,24 +5,18 @@ using DataAccessLayer.Data;
 using DataAccessLayer.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Update the connection string
-string path = Path.Combine(Directory.GetCurrentDirectory(),
-    "..", "Storage", "App_Data", "Database.mdf");
-path = Path.GetFullPath(path);
-
-string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
-connectionString = connectionString.Replace("{path}", path);
-
 // Then configure your DbContext
 builder.Services.AddDbContext<ApplicationContext>(options =>
-    options.UseSqlServer(connectionString)
+    options.UseSqlServer(ConnectionStringBuilder.GenerateConnectionString("Main.mdf"))
         .EnableSensitiveDataLogging());
 
 // Register web service
-builder.Services.AddTransient(sp => BooksServerFactory.CreateService(builder.Configuration, sp));
+builder.Services.AddSingleton(serviceProvider =>
+    BooksServerFactory.CreateServer(serviceProvider));
 
 // Register your repositories
 builder.Services.AddScoped<ILibraryRepository, LibraryRepository>();

@@ -3,7 +3,7 @@ using DataAccessLayer.Repositories;
 
 namespace BusinessLogicLayer.Services {
     public interface IBookChapterService {
-        IEnumerable<BookChapter> GetChapters(int bookId);
+        Task<IEnumerable<BookChapter>> GetChaptersAsync(int bookId);
         Task CreateAsync(BookChapter chapter);
         Task UpdateAsync(BookChapter chapter);
         Task DeleteAsync(int bookId);
@@ -22,8 +22,8 @@ namespace BusinessLogicLayer.Services {
             await repository.DeleteAsync(bookId);
         }
 
-        public IEnumerable<BookChapter> GetChapters(int bookId) {
-            return repository.GetChapters(bookId);
+        public async Task<IEnumerable<BookChapter>> GetChaptersAsync(int bookId) {
+            return await repository.GetChaptersAsync(bookId);
         }
     }
 }

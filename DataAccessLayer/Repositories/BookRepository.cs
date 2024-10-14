@@ -16,15 +16,17 @@ namespace DataAccessLayer.Repositories {
     public class BookRepository(ApplicationContext context) : IBookRepository {
         public async Task<Book?> GetBookAsync(int id) {
             return await context.Books
+                .Include(book => book.Author)
+                .Include(book => book.Server)
                 .AsNoTracking()
-                .Include(b => b.Author)
-                .FirstOrDefaultAsync(b => b.Id == id);
+                .FirstOrDefaultAsync(book => book.Id == id);
         }
 
         public async Task<IEnumerable<Book>> GetAllAsync() {
             return await context.Books
+                .Include(book => book.Author)
+                .Include(book => book.Server)
                 .AsNoTracking()
-                .Include(b => b.Author)
                 .ToListAsync();
         }
 
@@ -36,10 +38,7 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task DeleteAsync(int id) {
-            Book? book = await GetBookAsync(id);
-
-            if (book == null)
-                throw new NotFoundException();
+            Book book = await GetBookAsync(id) ?? throw new NotFoundException();
 
             context.Books.Remove(book);
             await context.SaveChangesAsync();

@@ -1,17 +1,13 @@
 ﻿using System.Data;
 
 namespace BusinessLogicLayer.Servers.Books {
-    public class EchoServer : IBookServer, IDisposable {
+    public class EchoServer : IBookServer {
         private readonly DataSet data = new();
         private static readonly string xmlFilePath = Path.Combine(Directory.GetCurrentDirectory(),
             "..", "Storage", "App_Data", "Books", "Echo.xml");
 
         public EchoServer() {
             ReadData();
-        }
-
-        public void Dispose() {
-            SaveData();
         }
 
         private void ReadData() {
@@ -77,6 +73,8 @@ namespace BusinessLogicLayer.Servers.Books {
                 chapters.Rows.Add(newChapterRow);
             }
 
+            SaveData();
+
             return Task.CompletedTask;
         }
 
@@ -105,6 +103,8 @@ namespace BusinessLogicLayer.Servers.Books {
                 chapters.Rows.Add(newChapterRow);
             }
 
+            SaveData();
+
             return Task.CompletedTask;
         }
 
@@ -126,6 +126,9 @@ namespace BusinessLogicLayer.Servers.Books {
             chapters.AsEnumerable()
                 .Where(row => row.Field<int>("BookId") == id)
                 .ToList().ForEach(row => row.Delete());
+
+
+            SaveData();
 
             return Task.CompletedTask;
         }
