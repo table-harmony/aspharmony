@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace PresentationLayer.Models
 {
@@ -15,6 +16,12 @@ namespace PresentationLayer.Models
 
         [Display(Name = "Book Image")]
         public IFormFile? Image { get; set; }
+
+        [Required]
+        [Display(Name = "Server")]
+        public int ServerId { get; set; }
+
+        public List<SelectListItem> Servers { get; set; } = [];
     }
 
     public class ChapterViewModel {

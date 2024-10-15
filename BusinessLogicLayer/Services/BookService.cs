@@ -1,10 +1,11 @@
 ﻿using DataAccessLayer.Repositories;
-using BusinessLogicLayer.Servers.Books;
 
 using DbBook = DataAccessLayer.Entities.Book;
 using ServerBook = BusinessLogicLayer.Servers.Books.Book;
+using BusinessLogicLayer.Servers.Books;
 
-namespace BusinessLogicLayer.Services {
+namespace BusinessLogicLayer.Services
+{
     public class Book : DbBook {
         public ServerBook? Metadata { get; set; }
     }
@@ -12,6 +13,7 @@ namespace BusinessLogicLayer.Services {
     public interface IBookService {
         Task<Book?> GetBookAsync(int id);
         Task<IEnumerable<Book>> GetAllAsync();
+        Task<IEnumerable<Book>> GetAllAsync(int serverId);
         Task CreateAsync(Book book);
         Task UpdateAsync(Book book);
         Task DeleteAsync(int id);
@@ -31,6 +33,8 @@ namespace BusinessLogicLayer.Services {
 
             return new Book {
                 Id = dbBook.Id,
+                Server = dbBook.Server,
+                ServerId = dbBook.ServerId,
                 Author = dbBook.Author,
                 AuthorId = dbBook.AuthorId,
                 Metadata = webBook
@@ -38,28 +42,47 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task<IEnumerable<Book>> GetAllAsync() {
-            IEnumerable<DbBook> dbBooks = await repository.GetAllAsync();
+            var dbBooks = await repository.GetAllAsync();
+            List<Book> books = [];
 
-            if (!dbBooks.Any())
-                return [];
+            foreach (var dbBook in dbBooks) {
+                var server = await GetServerAsync(dbBook.ServerId);
+                var webBook = await server.GetBookAsync(dbBook.Id);
 
-            var server = await GetServerAsync(dbBooks.First().ServerId);
-
-            List<ServerBook> webBooks = await server.GetAllBooksAsync();
-
-            var books = dbBooks.GroupJoin(webBooks,
-                db => db.Id,
-                web => web.Id,
-                (db, webMatches) => new Book {
-                    Id = db.Id,
-                    Server = db.Server,
-                    ServerId = db.ServerId,
-                    Author = db.Author,
-                    AuthorId = db.AuthorId,
-                    Metadata = webMatches.FirstOrDefault() ?? new ServerBook { Id = db.Id }
-                }).ToList();
+                books.Add(new Book {
+                    Id = dbBook.Id,
+                    Server = dbBook.Server,
+                    ServerId = dbBook.ServerId,
+                    Author = dbBook.Author,
+                    AuthorId = dbBook.AuthorId,
+                    Metadata = webBook
+                });
+            }
 
             return books;
+        }
+
+        public async Task<IEnumerable<Book>> GetAllAsync(int serverId) {
+            var dbBooks = await repository.GetAllAsync(serverId);
+
+            var server = await GetServerAsync(serverId);
+            var webBooks = await server.GetAllBooksAsync();
+
+            var books = dbBooks.Join(
+                webBooks,
+                db => db.Id,
+                web => web.Id,
+                (dbBook, webBook) => new Book {
+                    Id = dbBook.Id,
+                    Server = dbBook.Server,
+                    ServerId = dbBook.ServerId,
+                    Author = dbBook.Author,
+                    AuthorId = dbBook.AuthorId,
+                    Metadata = webBook
+                }
+            );
+
+            return books.ToList();
         }
 
         public async Task CreateAsync(Book book) {
@@ -71,17 +94,20 @@ namespace BusinessLogicLayer.Services {
                     ServerId = book.ServerId,
                 }) ?? throw new Exception("Book not created");
 
-                if (book.Metadata != null) {
-                    var server = await GetServerAsync(dbBook.ServerId);
-
-                    await server.CreateBookAsync(new ServerBook {
-                        Id = dbBook.Id,
-                        Title = book.Metadata.Title,
-                        Description = book.Metadata.Description,
-                        ImageUrl = book.Metadata.ImageUrl,
-                        Chapters = book.Metadata.Chapters
-                    });
+                if (book.Metadata == null) {
+                    transaction.Commit();
+                    return;
                 }
+
+                var server = await GetServerAsync(dbBook.ServerId);
+
+                await server.CreateBookAsync(new ServerBook {
+                    Id = dbBook.Id,
+                    Title = book.Metadata.Title,
+                    Description = book.Metadata.Description,
+                    ImageUrl = book.Metadata.ImageUrl,
+                    Chapters = book.Metadata.Chapters
+                });
 
                 transaction.Commit();
             } catch {

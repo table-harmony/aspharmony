@@ -19,7 +19,8 @@ namespace BusinessLogicLayer.Servers.Books {
                 Title = metadata?.Title ?? "",
                 Description = metadata?.Description ?? "",
                 ImageUrl = metadata?.ImageUrl ?? "",
-                Chapters = chapters.Select(chapter => new Chapter() {
+                Chapters = chapters.Select(chapter => new Chapter()
+                {
                     Index = chapter.Index,
                     Title = chapter.Title,
                     Content = chapter.Content,

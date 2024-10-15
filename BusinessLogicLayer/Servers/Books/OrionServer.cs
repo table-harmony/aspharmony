@@ -2,7 +2,6 @@
 using SoapBook = LocalBooksServiceReference.Book;
 
 namespace BusinessLogicLayer.Servers.Books {
-
     public class OrionServer(BooksServiceSoapClient client) : IBookServer {
         public async Task<Book?> GetBookAsync(int id) {
             var response = await client.GetBookAsync(id);
@@ -11,7 +10,7 @@ namespace BusinessLogicLayer.Servers.Books {
 
         public async Task<List<Book>> GetAllBooksAsync() {
             var response = await client.GetAllBooksAsync();
-            return response.Body.GetAllBooksResult.Select(ConvertToBook).ToList();
+            return response.Body.GetAllBooksResult.Select(book => ConvertToBook(book)!).ToList();
         }
 
         public async Task CreateBookAsync(Book newBook) {
@@ -26,17 +25,20 @@ namespace BusinessLogicLayer.Servers.Books {
             await client.DeleteBookAsync(id);
         }
 
-        private static Book ConvertToBook(SoapBook soapBook) {
+        private static Book? ConvertToBook(SoapBook soapBook) {
+            if (soapBook == null)
+                return null;
+
             return new Book {
                 Id = soapBook.Id,
                 Title = soapBook.Title,
                 Description = soapBook.Description,
                 ImageUrl = soapBook.ImageUrl,
-                Chapters = soapBook.Chapters.Select(c => new Chapter {
+                Chapters = soapBook.Chapters?.Select(c => new Chapter {
                     Index = c.Index,
                     Title = c.Title,
                     Content = c.Content
-                }).ToList()
+                }).ToList() ?? []
             };
         }
 

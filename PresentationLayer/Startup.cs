@@ -4,14 +4,14 @@ using DataAccessLayer.Repositories;
 using BusinessLogicLayer.Services;
 using DataAccessLayer.Entities;
 using Microsoft.AspNetCore.Identity;
-using BusinessLogicLayer.Initiate;
 using BusinessLogicLayer.Events;
 using Utils.Encryption;
 using JokesServiceReference;
-using BusinessLogicLayer.Servers.Books;
 using Utils;
+using BusinessLogicLayer.Servers.Books;
 
-namespace PresentationLayer {
+namespace PresentationLayer
+{
     public class Startup(IConfiguration configuration) {
         public IConfiguration Configuration { get; } = configuration;
 
@@ -109,8 +109,6 @@ namespace PresentationLayer {
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
-
-           RoleInitializer.InitializeAsync(app.ApplicationServices).Wait();
         }
        
     }

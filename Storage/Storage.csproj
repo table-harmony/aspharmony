@@ -94,6 +94,8 @@
     <Content Include="App_Data\Books\Atlas.json" />
     <Content Include="App_Data\Books\Solace.docx" />
     <None Include="packages.config" />
+    <Content Include="App_Data\Books\Solace.pptx" />
+    <Content Include="App_Data\Books\Solace.xlsx" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

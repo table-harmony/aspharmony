@@ -11,18 +11,19 @@ namespace BusinessLogicLayer.Servers.Books {
 
         public async Task<List<Book>> GetAllBooksAsync() {
             var response = await client.GetAllBooksAsync(new GetAllBooksRequest());
-            return response.GetAllBooksResponse1.Select(ConvertToBook).ToList();
+            return response.GetAllBooksResponse1.Select(book => ConvertToBook(book)!)
+                .ToList();
         }
 
         public async Task CreateBookAsync(Book newBook) {
             await client.CreateBookAsync(new CreateBookRequest() {
-                book = ConvertToSoapBook(newBook)
+                book = ConvertToBook(newBook)
             });
         }
 
         public async Task UpdateBookAsync(Book updatedBook) {
             await client.UpdateBookAsync(new UpdateBookRequest() {
-                book = ConvertToSoapBook(updatedBook)
+                book = ConvertToBook(updatedBook)
             });
         }
 
@@ -30,21 +31,24 @@ namespace BusinessLogicLayer.Servers.Books {
             await client.DeleteBookAsync(new DeleteBookRequest { Id = id });
         }
 
-        private static Book ConvertToBook(SoapBook foreignBook) {
+        private static Book? ConvertToBook(SoapBook? foreignBook) {
+            if (foreignBook == null)
+                return null;
+
             return new Book {
                 Id = foreignBook.Id,
                 Title = foreignBook.Title,
                 Description = foreignBook.Description,
                 ImageUrl = foreignBook.ImageUrl,
-                Chapters = foreignBook.Chapters.Select(c => new Chapter {
+                Chapters = foreignBook.Chapters?.Select(c => new Chapter {
                     Index = c.Index,
                     Title = c.Title,
                     Content = c.Content
-                }).ToList()
+                }).ToList() ?? []
             };
         }
 
-        private static SoapBook ConvertToSoapBook(Book book) {
+        private static SoapBook ConvertToBook(Book book) {
             return new SoapBook {
                 Id = book.Id,
                 Title = book.Title,

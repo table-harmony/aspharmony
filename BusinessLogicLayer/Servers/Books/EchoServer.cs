@@ -1,6 +1,7 @@
 ﻿using System.Data;
 
-namespace BusinessLogicLayer.Servers.Books {
+namespace BusinessLogicLayer.Servers.Books
+{
     public class EchoServer : IBookServer {
         private readonly DataSet data = new();
         private static readonly string xmlFilePath = Path.Combine(Directory.GetCurrentDirectory(),

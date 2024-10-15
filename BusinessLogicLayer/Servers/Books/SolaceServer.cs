@@ -1,49 +1,27 @@
-﻿using Xceed.Words.NET;
+﻿using BusinessLogicLayer.Servers.Books.Documents;
 
 namespace BusinessLogicLayer.Servers.Books {
-    public class SolaceServer : IBookServer, IDisposable {
-        private static readonly List<Book> books = [];
-        private static readonly string filePath = Path.Combine(Directory.GetCurrentDirectory(),
-            "..", "Storage", "App_Data", "Books", "Solace.docx");
+    public class SolaceServer : IBookServer {
+        private readonly IDocumentStorage storage;
+        private readonly List<Book> books = [];
 
-        public void Dispose() {
-            SaveData();
+        public SolaceServer() {
+            storage = DocumentFactory.CreateDocumentStorage("word");
+            LoadData();
         }
 
-        private static void SaveData() {
-            using DocX doc = DocX.Load(filePath);
+        private void LoadData() {
+            books.Clear();
+            books.AddRange(storage.Load());
+        }
 
-            doc.InsertParagraph("Books List")
-                .FontSize(18)
-                .Bold();
-
-            foreach (var book in books) {
-                doc.InsertParagraph($"Book ID: {book.Id}")
-                    .FontSize(14).Bold();
-                doc.InsertParagraph($"Title: {book.Title}")
-                    .FontSize(12);
-                doc.InsertParagraph($"Description: {book.Description}")
-                    .FontSize(12);
-                doc.InsertParagraph($"Image URL: {book.ImageUrl}")
-                    .FontSize(12);
-
-                if (book.Chapters != null && book.Chapters.Any()) {
-                    doc.InsertParagraph("Chapters:").Bold();
-                    foreach (var chapter in book.Chapters) {
-                        doc.InsertParagraph($"  Chapter {chapter.Index}: {chapter.Title}")
-                            .FontSize(12).Italic();
-                        doc.InsertParagraph($"  Content: {chapter.Content}")
-                            .FontSize(12);
-                    }
-                }
-                doc.InsertParagraph();
-            }
-
-            doc.Save();
+        private void SaveData() {
+            storage.Save(books);
         }
 
         public Task<Book?> GetBookAsync(int id) {
-            return Task.FromResult(books.FirstOrDefault(book => book.Id == id));
+            var book = books.FirstOrDefault(b => b.Id == id);
+            return Task.FromResult(book);
         }
 
         public Task<List<Book>> GetAllBooksAsync() {
@@ -52,27 +30,33 @@ namespace BusinessLogicLayer.Servers.Books {
 
         public Task CreateBookAsync(Book newBook) {
             books.Add(newBook);
+            SaveData();
 
             return Task.CompletedTask;
         }
 
         public Task UpdateBookAsync(Book updatedBook) {
-            Book? book = books.FirstOrDefault(book => book.Id == updatedBook.Id);
+            var book = books.FirstOrDefault(b => b.Id == updatedBook.Id);
 
-            if (book != null) {
-                book.Title = updatedBook.Title;
-                book.Description = updatedBook.Description;
-                book.Chapters = updatedBook.Chapters;
-            }
+            if (book == null)
+                return Task.CompletedTask;
 
+            book.Title = updatedBook.Title;
+            book.Description = updatedBook.Description;
+            book.Chapters = updatedBook.Chapters;
+
+            SaveData();
             return Task.CompletedTask;
         }
 
         public Task DeleteBookAsync(int id) {
-            Book? book = books.FirstOrDefault(book => book.Id == id);
+            var book = books.FirstOrDefault(b => b.Id == id);
 
-            if (book != null)
-                books.Remove(book);
+            if (book == null)
+                return Task.CompletedTask;
+
+            books.Remove(book);
+            SaveData();
 
             return Task.CompletedTask;
         }

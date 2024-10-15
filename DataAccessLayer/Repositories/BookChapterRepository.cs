@@ -64,7 +64,7 @@ namespace DataAccessLayer.Repositories {
         public async Task DeleteAsync(int chapterId) {
             string query = "DeleteChapter";
             var parameters = new[] {
-                new SqlParameter("@Id", chapterId)
+                new SqlParameter("@BookId", chapterId)
             };
 
             await _context.ExecuteQueryAsync(query, parameters, true);

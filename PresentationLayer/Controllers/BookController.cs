@@ -11,24 +11,36 @@ using Utils;
 using ServerBook = BusinessLogicLayer.Servers.Books.Book;
 using Chapter = BusinessLogicLayer.Servers.Books.Chapter;
 using Book = BusinessLogicLayer.Services.Book;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace PresentationLayer.Controllers {
+namespace PresentationLayer.Controllers
+{
 
     [Authorize]
-    public class BookController(IBookService bookService, IFileUploader fileUploader, 
+    public class BookController(IBookService bookService,
+                                    IServerService serverService,
+                                    IFileUploader fileUploader, 
                                     UserManager<User> userManager) : Controller {
 
-        public async Task<IActionResult> Index(string searchString) {
-            var books = await bookService.GetAllAsync();
+        [HttpGet]
+        public async Task<IActionResult> Index(int? serverId) {
+            IEnumerable<Book> books;
+            if (serverId != null)
+                books = await bookService.GetAllAsync((int)serverId);
+            else
+                books = await bookService.GetAllAsync();
 
-            if (!string.IsNullOrEmpty(searchString)) {
-                books = books.Where(book => 
-                    book.Metadata.Title.ToLower().Contains(searchString.ToLower()) ||                 
-                    book.Metadata.Description.ToLower().Contains(searchString.ToLower()));
-            }
+            var servers = await serverService.GetAllAsync();
 
-            return View(books);
+            var viewModel = new BookIndexViewModel {
+                Books = books,
+                Servers = servers,
+                SelectedServerId = serverId,
+            };
+
+            return View(viewModel);
         }
+
         public async Task<IActionResult> Details(int id) {
             var book = await bookService.GetBookAsync(id);
             if (book == null)
@@ -38,9 +50,14 @@ namespace PresentationLayer.Controllers {
         }
 
         [HttpGet]
-        public IActionResult Create() {
-            return View();
+        public async Task<IActionResult> Create() {
+            var servers = await serverService.GetAllAsync();
+            var viewModel = new CreateBookViewModel {
+                Servers = servers.Select(s => new SelectListItem { Value = s.Id.ToString(), Text = s.Name }).ToList()
+            };
+            return View(viewModel);
         }
+
 
         [HttpPost]
         [Authorize]
@@ -51,14 +68,17 @@ namespace PresentationLayer.Controllers {
 
             try {
                 string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-                
+
                 string imageUrl = "https://birkhauser.com/product-not-found.png";
                 if (model.Image != null)
                     imageUrl = await fileUploader.UploadFileAsync(model.Image);
 
+                var server = await serverService.GetAsync(model.ServerId) 
+                    ?? throw new Exception("Invalid server selected");
+
                 Book book = new() {
                     AuthorId = userId,
-                    ServerId = 7,
+                    ServerId = model.ServerId,
                     Metadata = new ServerBook {
                         Title = model.Title,
                         Description = model.Description,
@@ -70,14 +90,13 @@ namespace PresentationLayer.Controllers {
                         }).ToList()
                     }
                 };
+
                 await bookService.CreateAsync(book);
-
                 return RedirectToAction(nameof(Index));
-            } catch (Exception ex) {
-                ModelState.AddModelError("", "An error occurred while creating the book: " + ex.Message);
+            } catch {
+                throw;
+                return RedirectToAction(nameof(Create));
             }
-
-            return View(model);
         }
 
         [HttpGet]
