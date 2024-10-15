@@ -1,5 +1,7 @@
-﻿namespace DataAccessLayer.Entities {
-    public class BookChapter {
+﻿namespace DataAccessLayer.Entities.Nimbus
+{
+    public class BookChapter
+    {
 
         public int Id { get; set; }  // Primary key
 

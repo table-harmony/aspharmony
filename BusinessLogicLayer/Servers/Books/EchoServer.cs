@@ -1,22 +1,22 @@
 ﻿using System.Data;
+using Utils;
 
 namespace BusinessLogicLayer.Servers.Books
 {
     public class EchoServer : IBookServer {
         private readonly DataSet data = new();
-        private static readonly string xmlFilePath = Path.Combine(Directory.GetCurrentDirectory(),
-            "..", "Storage", "App_Data", "Books", "Echo.xml");
+        private static readonly string filePath = PathManager.GetFilePath(FolderType.Books, "Echo.xml");
 
         public EchoServer() {
             ReadData();
         }
 
         private void ReadData() {
-            data.ReadXml(xmlFilePath, XmlReadMode.ReadSchema);
+            data.ReadXml(filePath, XmlReadMode.ReadSchema);
         }
 
         private void SaveData() {
-            data.WriteXml(xmlFilePath, XmlWriteMode.WriteSchema);
+            data.WriteXml(filePath, XmlWriteMode.WriteSchema);
         }
 
         private bool IsDataSetInitialized() {

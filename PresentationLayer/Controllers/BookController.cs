@@ -18,27 +18,37 @@ namespace PresentationLayer.Controllers
 
     [Authorize]
     public class BookController(IBookService bookService,
-                                    IServerService serverService,
-                                    IFileUploader fileUploader, 
-                                    UserManager<User> userManager) : Controller {
+                                    IFileUploader fileUploader) : Controller {
 
-        [HttpGet]
-        public async Task<IActionResult> Index(int? serverId) {
-            IEnumerable<Book> books;
-            if (serverId != null)
-                books = await bookService.GetAllAsync((int)serverId);
-            else
-                books = await bookService.GetAllAsync();
+        public async Task<IActionResult> Index(string searchString = "") {
+            var books = await bookService.GetAllAsync();
 
-            var servers = await serverService.GetAllAsync();
+            if (!string.IsNullOrEmpty(searchString)) {
+                books = books.Where(book =>
+                    book.Metadata?.Title.Contains(searchString, StringComparison.CurrentCultureIgnoreCase) == true ||
+                    book.Metadata?.Description.Contains(searchString, StringComparison.CurrentCultureIgnoreCase) == true);
+            }
 
-            var viewModel = new BookIndexViewModel {
+            BookIndexViewModel viewModel = new() {
                 Books = books,
-                Servers = servers,
-                SelectedServerId = serverId,
+                SearchString = searchString
             };
 
             return View(viewModel);
+        }
+
+        [HttpGet]
+        public IActionResult Create() {
+            ViewBag.Servers = Enum.GetValues(typeof(ServerType))
+                .Cast<ServerType>()
+                .Select(e => new SelectListItem {
+                    Value = ((int)e).ToString(),
+                    Text = e.ToString(),
+                    Selected = e == ServerType.Nimbus
+                })
+                .ToList();
+
+            return View(new CreateBookViewModel { Server = ServerType.Nimbus });
         }
 
         public async Task<IActionResult> Details(int id) {
@@ -48,16 +58,6 @@ namespace PresentationLayer.Controllers
 
             return View(book);
         }
-
-        [HttpGet]
-        public async Task<IActionResult> Create() {
-            var servers = await serverService.GetAllAsync();
-            var viewModel = new CreateBookViewModel {
-                Servers = servers.Select(s => new SelectListItem { Value = s.Id.ToString(), Text = s.Name }).ToList()
-            };
-            return View(viewModel);
-        }
-
 
         [HttpPost]
         [Authorize]
@@ -73,12 +73,9 @@ namespace PresentationLayer.Controllers
                 if (model.Image != null)
                     imageUrl = await fileUploader.UploadFileAsync(model.Image);
 
-                var server = await serverService.GetAsync(model.ServerId) 
-                    ?? throw new Exception("Invalid server selected");
-
                 Book book = new() {
                     AuthorId = userId,
-                    ServerId = model.ServerId,
+                    Server = model.Server,
                     Metadata = new ServerBook {
                         Title = model.Title,
                         Description = model.Description,
@@ -94,7 +91,6 @@ namespace PresentationLayer.Controllers
                 await bookService.CreateAsync(book);
                 return RedirectToAction(nameof(Index));
             } catch {
-                throw;
                 return RedirectToAction(nameof(Create));
             }
         }

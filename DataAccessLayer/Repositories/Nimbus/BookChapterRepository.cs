@@ -1,10 +1,11 @@
 ﻿using DataAccessLayer.Data;
-using DataAccessLayer.Entities;
+using DataAccessLayer.Entities.Nimbus;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using Utils;
 
-namespace DataAccessLayer.Repositories {
+namespace DataAccessLayer.Repositories.Nimbus
+{
     public interface IBookChapterRepository {
         Task<IEnumerable<BookChapter>> GetChaptersAsync(int bookId);
         Task CreateAsync(BookChapter chapter);
@@ -16,7 +17,7 @@ namespace DataAccessLayer.Repositories {
         private readonly AdoContext _context;
 
         public BookChapterRepository() {
-            string connectionString = ConnectionStringBuilder.GenerateConnectionString("Nimbus.mdf");
+            string connectionString = PathManager.GenerateConnectionString("Nimbus.mdf");
             _context = new AdoContext(connectionString);
         }
 
@@ -60,7 +61,7 @@ namespace DataAccessLayer.Repositories {
 
             await _context.ExecuteQueryAsync(query, parameters);
         }
-        
+
         public async Task DeleteAsync(int chapterId) {
             string query = "DeleteChapter";
             var parameters = new[] {

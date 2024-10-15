@@ -1,27 +1,36 @@
-﻿namespace BusinessLogicLayer.Servers.Books.Documents {
-    public class DocumentFactory {
-        public static IDocumentStorage CreateDocumentStorage(string format) {
-            string filePath = GetFilePath(format);
+﻿using Utils;
 
-            return format.ToLower() switch {
-                "word" => new WordDocumentStorage(filePath),
-                "excel" => new ExcelDocumentStorage(filePath),
-                "ppt" => new PowerPointDocumentSaver(filePath),
-                _ => throw new ArgumentException("Unsupported document format.")
-            };
-        }
-
-        public static string GetFilePath(string format) {
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(),
-                "..", "Storage", "App_Data", "Books", "Solace");
-
-            return format.ToLower() switch {
-                "word" => filePath + ".docx",
-                "excel" => filePath + ".xlsx",
-                "ppt" => filePath + ".pptx",
-                _ => throw new ArgumentException("Unsupported document format.")
-            };
-        }
+namespace BusinessLogicLayer.Servers.Books.Documents {
+    public enum DocumentType {
+        Word,
+        Excel,
+        PowerPoint,
     }
 
+    public class DocumentFactory {
+        private static readonly Dictionary<DocumentType, string> DocumentSuffixes = new() {
+            { DocumentType.Word, "docx" },
+            { DocumentType.Excel, "xlsx" },
+            { DocumentType.PowerPoint, "pptx" }
+        };
+
+        public static IDocumentStorage CreateDocumentStorage(DocumentType documentType) {
+            string suffix = GetSuffix(documentType);
+            string filePath = PathManager.GetFilePath(FolderType.Books, $"Solace.{suffix}");
+
+            return documentType switch {
+                DocumentType.Word => new WordDocumentStorage(filePath),
+                DocumentType.Excel => new ExcelDocumentStorage(filePath),
+                DocumentType.PowerPoint => new PowerPointStorage(filePath),
+                _ => throw new ArgumentException("Unsupported document format.")
+            };
+        }
+
+        public static string GetSuffix(DocumentType documentType) {
+            if (!DocumentSuffixes.TryGetValue(documentType, out var suffix))
+                throw new ArgumentException("Unsupported document format.");
+
+            return suffix;
+        }
+    }
 }

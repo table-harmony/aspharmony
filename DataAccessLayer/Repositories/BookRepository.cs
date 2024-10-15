@@ -8,7 +8,7 @@ namespace DataAccessLayer.Repositories {
     public interface IBookRepository {
         Task<Book?> GetBookAsync(int id);
         Task<IEnumerable<Book>> GetAllAsync();
-        Task<IEnumerable<Book>> GetAllAsync(int serverId);
+        Task<IEnumerable<Book>> GetAllAsync(ServerType serverType);
         Task<Book> CreateAsync(Book book);
         Task DeleteAsync(int id);
         IDbContextTransaction BeginTransaction();
@@ -18,7 +18,6 @@ namespace DataAccessLayer.Repositories {
         public async Task<Book?> GetBookAsync(int id) {
             return await context.Books
                 .Include(book => book.Author)
-                .Include(book => book.Server)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(book => book.Id == id);
         }
@@ -26,16 +25,14 @@ namespace DataAccessLayer.Repositories {
         public async Task<IEnumerable<Book>> GetAllAsync() {
             return await context.Books
                 .Include(book => book.Author)
-                .Include(book => book.Server)
                 .AsNoTracking()
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Book>> GetAllAsync(int serverId) {
+        public async Task<IEnumerable<Book>> GetAllAsync(ServerType serverType) {
             return await context.Books
-                .Where(book => book.ServerId == serverId)
+                .Where(book => book.Server == serverType)
                 .Include(book => book.Author)
-                .Include(book => book.Server)
                 .AsNoTracking()
                 .ToListAsync();
         }

@@ -3,6 +3,7 @@
 using DbBook = DataAccessLayer.Entities.Book;
 using ServerBook = BusinessLogicLayer.Servers.Books.Book;
 using BusinessLogicLayer.Servers.Books;
+using DataAccessLayer.Entities;
 
 namespace BusinessLogicLayer.Services
 {
@@ -13,28 +14,27 @@ namespace BusinessLogicLayer.Services
     public interface IBookService {
         Task<Book?> GetBookAsync(int id);
         Task<IEnumerable<Book>> GetAllAsync();
-        Task<IEnumerable<Book>> GetAllAsync(int serverId);
+        Task<IEnumerable<Book>> GetAllAsync(ServerType serverType);
         Task CreateAsync(Book book);
         Task UpdateAsync(Book book);
         Task DeleteAsync(int id);
     }
 
-    public class BookService(IBookRepository repository, Func<int, Task<IBookServer>> serverFactory) : IBookService {
+    public class BookService(IBookRepository repository, Func<ServerType, IBookServer> serverFactory) : IBookService {
 
-        private async Task<IBookServer> GetServerAsync(int serverId) => await serverFactory(serverId);
+        private IBookServer GetServer(ServerType serverType) => serverFactory(serverType);
 
         public async Task<Book?> GetBookAsync(int id) {
             DbBook? dbBook = await repository.GetBookAsync(id);
             if (dbBook == null) return null;
 
-            IBookServer server = await GetServerAsync(dbBook.ServerId);
+            var server = GetServer(dbBook.Server);
 
             ServerBook? webBook = await server.GetBookAsync(id);
 
             return new Book {
                 Id = dbBook.Id,
                 Server = dbBook.Server,
-                ServerId = dbBook.ServerId,
                 Author = dbBook.Author,
                 AuthorId = dbBook.AuthorId,
                 Metadata = webBook
@@ -46,13 +46,12 @@ namespace BusinessLogicLayer.Services
             List<Book> books = [];
 
             foreach (var dbBook in dbBooks) {
-                var server = await GetServerAsync(dbBook.ServerId);
+                var server = GetServer(dbBook.Server);
                 var webBook = await server.GetBookAsync(dbBook.Id);
 
                 books.Add(new Book {
                     Id = dbBook.Id,
                     Server = dbBook.Server,
-                    ServerId = dbBook.ServerId,
                     Author = dbBook.Author,
                     AuthorId = dbBook.AuthorId,
                     Metadata = webBook
@@ -62,10 +61,10 @@ namespace BusinessLogicLayer.Services
             return books;
         }
 
-        public async Task<IEnumerable<Book>> GetAllAsync(int serverId) {
-            var dbBooks = await repository.GetAllAsync(serverId);
+        public async Task<IEnumerable<Book>> GetAllAsync(ServerType serverType) {
+            var dbBooks = await repository.GetAllAsync(serverType);
 
-            var server = await GetServerAsync(serverId);
+            var server = GetServer(serverType);
             var webBooks = await server.GetAllBooksAsync();
 
             var books = dbBooks.Join(
@@ -75,7 +74,6 @@ namespace BusinessLogicLayer.Services
                 (dbBook, webBook) => new Book {
                     Id = dbBook.Id,
                     Server = dbBook.Server,
-                    ServerId = dbBook.ServerId,
                     Author = dbBook.Author,
                     AuthorId = dbBook.AuthorId,
                     Metadata = webBook
@@ -91,7 +89,7 @@ namespace BusinessLogicLayer.Services
             try {
                 DbBook dbBook = await repository.CreateAsync(new DbBook {
                     AuthorId = book.AuthorId,
-                    ServerId = book.ServerId,
+                    Server = book.Server,
                 }) ?? throw new Exception("Book not created");
 
                 if (book.Metadata == null) {
@@ -99,7 +97,7 @@ namespace BusinessLogicLayer.Services
                     return;
                 }
 
-                var server = await GetServerAsync(dbBook.ServerId);
+                var server = GetServer(dbBook.Server);
 
                 await server.CreateBookAsync(new ServerBook {
                     Id = dbBook.Id,
@@ -120,7 +118,7 @@ namespace BusinessLogicLayer.Services
             if (book.Metadata == null)
                 return;
 
-            var server = await GetServerAsync(book.ServerId);
+            var server = GetServer(book.Server);
             await server.UpdateBookAsync(book.Metadata);
         }
 
@@ -135,7 +133,7 @@ namespace BusinessLogicLayer.Services
 
                 await repository.DeleteAsync(id);
 
-                var server = await GetServerAsync(book.ServerId);
+                var server = GetServer(book.Server);
                 await server.DeleteBookAsync(id);
 
                 transaction.Commit();

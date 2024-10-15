@@ -6,7 +6,7 @@ namespace BusinessLogicLayer.Servers.Books {
         private readonly List<Book> books = [];
 
         public SolaceServer() {
-            storage = DocumentFactory.CreateDocumentStorage("word");
+            storage = DocumentFactory.CreateDocumentStorage(DocumentType.Word);
             LoadData();
         }
 

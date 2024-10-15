@@ -1,10 +1,11 @@
 ﻿using DataAccessLayer.Data;
-using DataAccessLayer.Entities;
+using DataAccessLayer.Entities.Nimbus;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using Utils;
 
-namespace DataAccessLayer.Repositories {
+namespace DataAccessLayer.Repositories.Nimbus
+{
     public interface IBookMetadataRepository {
         Task<IEnumerable<BookMetadata>> GetAllAsync();
         Task<BookMetadata?> GetAsync(int bookId);
@@ -17,7 +18,7 @@ namespace DataAccessLayer.Repositories {
         private readonly AdoContext _context;
 
         public BookMetadataRepository() {
-            string connectionString = ConnectionStringBuilder.GenerateConnectionString("Nimbus.mdf");
+            string connectionString = PathManager.GenerateConnectionString("Nimbus.mdf");
             _context = new AdoContext(connectionString);
         }
 

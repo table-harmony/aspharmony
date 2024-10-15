@@ -1,6 +1,8 @@
-﻿namespace DataAccessLayer.Entities {
-    public class BookMetadata {
-        
+﻿namespace DataAccessLayer.Entities.Nimbus
+{
+    public class BookMetadata
+    {
+
         public int Id { get; set; }  // Primary key
 
         public int BookId { get; set; }  // Foreign key

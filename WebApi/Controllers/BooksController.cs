@@ -1,17 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using Utils;
 
 using FileIO = System.IO.File;
 using BusinessLogicLayer.Servers.Books;
 
-namespace WebApi.Controllers
-{
+namespace WebApi.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     public class BooksController() : ControllerBase {
-        private readonly string filePath = Path.Combine(Directory.GetCurrentDirectory(),
-            "..", "Storage", "App_Data", "Books", "Atlas.json");
-
+        private readonly string filePath = PathManager.GetFilePath(FolderType.Books, "Atlas.json");
+            
         [HttpGet("{id}")]
         public async Task<ActionResult<Book>> GetBook(int id) {
             List<Book> books = await ReadFileAsync();

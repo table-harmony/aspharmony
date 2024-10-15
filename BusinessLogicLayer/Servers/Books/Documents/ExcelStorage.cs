@@ -12,69 +12,50 @@ namespace BusinessLogicLayer.Servers.Books.Documents {
         }
 
         public void Save(List<Book> books) {
-            using var package = new ExcelPackage();
+            using ExcelPackage package = new();
             var worksheet = package.Workbook.Worksheets.Add("Books");
 
             int row = 1;
             foreach (var book in books) {
-                worksheet.Cells[row, 1].Value = "Book ID";
-                worksheet.Cells[row, 2].Value = book.Id;
-                worksheet.Cells[++row, 1].Value = "Title";
-                worksheet.Cells[row, 2].Value = book.Title;
-                worksheet.Cells[++row, 1].Value = "Description";
-                worksheet.Cells[row, 2].Value = book.Description;
-                worksheet.Cells[++row, 1].Value = "Image URL";
-                worksheet.Cells[row, 2].Value = book.ImageUrl;
-
-                if (book.Chapters != null && book.Chapters.Any()) {
-                    worksheet.Cells[++row, 1].Value = "Chapters";
-                    foreach (var chapter in book.Chapters) {
-                        worksheet.Cells[++row, 1].Value = $"Chapter {chapter.Index}: {chapter.Title}";
-                        worksheet.Cells[row, 2].Value = chapter.Content;
-                    }
-                }
-
-                row += 2; // Add space between books
+                SaveBookToWorksheet(worksheet, ref row, book);
+                row += 2;
             }
 
             package.SaveAs(new FileInfo(filePath));
         }
 
+        private static void SaveBookToWorksheet(ExcelWorksheet worksheet, ref int row, Book book) {
+            AddCell(worksheet, row, 1, "Book ID", book.Id);
+            AddCell(worksheet, ++row, 1, "Title", book.Title);
+            AddCell(worksheet, ++row, 1, "Description", book.Description);
+            AddCell(worksheet, ++row, 1, "Image URL", book.ImageUrl);
+
+            if (book.Chapters != null && book.Chapters.Count != 0) {
+                worksheet.Cells[++row, 1].Value = "Chapters";
+                foreach (var chapter in book.Chapters) {
+                    AddCell(worksheet, ++row, 1, $"Chapter {chapter.Index}: {chapter.Title}", chapter.Content);
+                }
+            }
+        }
+
+        private static void AddCell(ExcelWorksheet worksheet, int row, int col, string label, object value) {
+            worksheet.Cells[row, col].Value = label;
+            worksheet.Cells[row, col + 1].Value = value;
+        }
+
         public List<Book> Load() {
-            var books = new List<Book>();
+            List<Book> books = [];
 
             if (!File.Exists(filePath)) return books;
 
             using var package = new ExcelPackage(new FileInfo(filePath));
             var worksheet = package.Workbook.Worksheets[0];
+
             int row = 1;
             Book? currentBook = null;
 
-            while (worksheet.Cells[row, 1].Text != "") {
-                if (worksheet.Cells[row, 1].Text == "Book ID") {
-                    if (currentBook != null) books.Add(currentBook);
-
-                    currentBook = new Book {
-                        Id = SafeParseInt(worksheet.Cells[row, 2].Text),
-                        Chapters = new List<Chapter>()
-                    };
-                } else if (worksheet.Cells[row, 1].Text == "Title") {
-                    currentBook!.Title = worksheet.Cells[row, 2].Text;
-                } else if (worksheet.Cells[row, 1].Text == "Description") {
-                    currentBook!.Description = worksheet.Cells[row, 2].Text;
-                } else if (worksheet.Cells[row, 1].Text == "Image URL") {
-                    currentBook!.ImageUrl = worksheet.Cells[row, 2].Text;
-                } else if (worksheet.Cells[row, 1].Text.StartsWith("Chapter")) {
-                    var chapterParts = worksheet.Cells[row, 1].Text.Split(":");
-                    var chapterIndex = SafeParseInt(Regex.Match(chapterParts[0], @"\d+").Value);
-                    var chapter = new Chapter {
-                        Index = chapterIndex,
-                        Title = chapterParts.Length > 1 ? chapterParts[1].Trim() : "",
-                        Content = worksheet.Cells[row, 2].Text
-                    };
-                    currentBook!.Chapters!.Add(chapter);
-                }
-
+            while (!string.IsNullOrEmpty(worksheet.Cells[row, 1].Text)) {
+                ProcessRow(worksheet, row, ref currentBook, books);
                 row++;
             }
 
@@ -83,15 +64,49 @@ namespace BusinessLogicLayer.Servers.Books.Documents {
             return books;
         }
 
-        // Helper method to safely parse integers, returning 0 if invalid
-        private int SafeParseInt(string? text) {
-            if (int.TryParse(text, out var result)) {
-                return result;
-            }
+        private static void ProcessRow(ExcelWorksheet worksheet, int row, ref Book? currentBook, List<Book> books) {
+            string cell = worksheet.Cells[row, 1].Text;
+            string value = worksheet.Cells[row, 2].Text;
 
-            // Default value or handle the invalid case here
-            return 0;
+            switch (cell) {
+                case "Book ID":
+                    if (currentBook != null) books.Add(currentBook);
+                    currentBook = new Book {
+                        Id = SafeParseInt(value),
+                        Chapters = []
+                    };
+                    break;
+                case "Title":
+                    if (currentBook != null) currentBook.Title = value;
+                    break;
+                case "Description":
+                    if (currentBook != null) currentBook.Description = value;
+                    break;
+                case "Image URL":
+                    if (currentBook != null) currentBook.ImageUrl = value;
+                    break;
+                case string s when s.StartsWith("Chapter"):
+                    if (currentBook != null && !string.IsNullOrWhiteSpace(value))
+                        AddChapterToBook(currentBook, cell, value);
+                    break;
+            }
+        }
+
+        private static void AddChapterToBook(Book book, string chapterInfo, string content) {
+            var chapterParts = chapterInfo.Split(":");
+            int chapterIndex = SafeParseInt(Regex.Match(chapterParts[0], @"\d+").Value);
+
+            Chapter chapter = new() {
+                Index = chapterIndex,
+                Title = chapterParts.Length > 1 ? chapterParts[1].Trim() : "",
+                Content = content
+            };
+
+            book.Chapters?.Add(chapter);
+        }
+
+        private static int SafeParseInt(string? text) {
+            return int.TryParse(text, out var result) ? result : 0;
         }
     }
-
 }

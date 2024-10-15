@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using DataAccessLayer.Data;
 using DataAccessLayer.Entities;
 using System.Xml.Linq;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Data.SqlClient;
+using Utils;
 
 namespace DataAccessLayer.Repositories {
     public interface IFeedbackRepository {
@@ -15,17 +15,9 @@ namespace DataAccessLayer.Repositories {
         Task DeleteAsync(int id);
     }
 
-    public class FeedbackRepository : IFeedbackRepository {
-        private readonly AdoContext _context;
-        private readonly string _connectionString;
-        private readonly string _xmlFilePath;
-
-        public FeedbackRepository(ApplicationContext context, IConfiguration configuration) {
-            _connectionString = context.Database.GetDbConnection().ConnectionString;
-            _xmlFilePath = configuration["XmlPaths:Feedbacks"]!;
-
-            _context = new AdoContext(_connectionString);
-        }
+    public class FeedbackRepository(ApplicationContext context) : IFeedbackRepository {
+        private readonly AdoContext _context = new(context.Database.GetDbConnection().ConnectionString);
+        private readonly string _filePath = PathManager.GetFilePath(FolderType.Feedbacks, "Index.xml");
 
         public async Task<DataSet> GetAllAsync() {
             string query =  @"SELECT f.Id, f.Title, f.Description, f.Label, f.UserId, u.UserName 
@@ -38,11 +30,11 @@ namespace DataAccessLayer.Repositories {
             return feedbacks;
         }
 
-        public async Task<DataSet> GetAsync(int id) {
+        public Task<DataSet> GetAsync(int id) {
             string query = "GetFeedback";
             var parameters = new[] { new SqlParameter("@Id", id) };
 
-            return _context.ExecuteQuery(query, parameters, true);
+            return Task.FromResult(_context.ExecuteQuery(query, parameters, true));
         }
 
         public async Task CreateAsync(Feedback feedback) {
@@ -94,8 +86,8 @@ namespace DataAccessLayer.Repositories {
 
         private async Task BackupToXmlAsync(Feedback feedback) {
             var xdoc = await Task.Run(() => {
-                if (File.Exists(_xmlFilePath)) {
-                    return XDocument.Load(_xmlFilePath);
+                if (File.Exists(_filePath)) {
+                    return XDocument.Load(_filePath);
                 }
                 return null;
             });
@@ -117,13 +109,13 @@ namespace DataAccessLayer.Repositories {
                 new XElement("Label", feedback.Label)
             ));
 
-            await Task.Run(() => xdoc.Save(_xmlFilePath));
+            await Task.Run(() => xdoc.Save(_filePath));
         }
 
         private async Task RemoveFromXmlAsync(int id) {
             var xdoc = await Task.Run(() => {
-                if (File.Exists(_xmlFilePath)) {
-                    return XDocument.Load(_xmlFilePath);
+                if (File.Exists(_filePath)) {
+                    return XDocument.Load(_filePath);
                 }
                 return null;
             });
@@ -138,13 +130,13 @@ namespace DataAccessLayer.Repositories {
                 return;
 
             feedback.Remove();
-            await Task.Run(() => xdoc.Save(_xmlFilePath));
+            await Task.Run(() => xdoc.Save(_filePath));
         }
 
         private async Task BackupToXmlAsync(DataSet feedbacks) {
             var xdoc = await Task.Run(() => {
-                if (File.Exists(_xmlFilePath)) {
-                    return XDocument.Load(_xmlFilePath);
+                if (File.Exists(_filePath)) {
+                    return XDocument.Load(_filePath);
                 }
                 return null;
             });
@@ -168,7 +160,7 @@ namespace DataAccessLayer.Repositories {
                 ));
             }
 
-            await Task.Run(() => xdoc.Save(_xmlFilePath));
+            await Task.Run(() => xdoc.Save(_filePath));
         }
     }
 }

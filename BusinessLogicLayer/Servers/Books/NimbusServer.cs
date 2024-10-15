@@ -1,9 +1,9 @@
-﻿using BusinessLogicLayer.Services;
+﻿using BusinessLogicLayer.Services.Nimbus;
+using DbChapter = DataAccessLayer.Entities.Nimbus.BookChapter;
+using DbMetadata = DataAccessLayer.Entities.Nimbus.BookMetadata;
 
-using DbChapter = DataAccessLayer.Entities.BookChapter;
-using DbMetadata = DataAccessLayer.Entities.BookMetadata;
-
-namespace BusinessLogicLayer.Servers.Books {
+namespace BusinessLogicLayer.Servers.Books
+{
     public class NimbusServer(IBookMetadataService metadataService,
                                 IBookChapterService chapterService) : IBookServer {
         public async Task<Book?> GetBookAsync(int id) {

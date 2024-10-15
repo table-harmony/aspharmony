@@ -9,6 +9,8 @@ using Utils.Encryption;
 using JokesServiceReference;
 using Utils;
 using BusinessLogicLayer.Servers.Books;
+using DataAccessLayer.Repositories.Nimbus;
+using BusinessLogicLayer.Services.Nimbus;
 
 namespace PresentationLayer
 {
@@ -28,7 +30,7 @@ namespace PresentationLayer
         public void ConfigureServices(IServiceCollection services) {
             // Add the DbContext to the services
             services.AddDbContext<ApplicationContext>(options =>
-                options.UseSqlServer(ConnectionStringBuilder.GenerateConnectionString("Main.mdf"))
+                options.UseSqlServer(PathManager.GenerateConnectionString("Main.mdf"))
                     .EnableSensitiveDataLogging());
 
             // Register Identity services
@@ -47,7 +49,6 @@ namespace PresentationLayer
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             services.AddScoped<IBookMetadataRepository, BookMetadataRepository>();
             services.AddScoped<IBookChapterRepository, BookChapterRepository>();
-            services.AddScoped<IServerRepository, ServerRepository>();  
 
             // Register services
             services.AddScoped<IUserService, UserService>();
@@ -62,7 +63,6 @@ namespace PresentationLayer
             services.AddScoped<IFeedbackService, FeedbackService>();
             services.AddScoped<IBookMetadataService, BookMetadataService>();
             services.AddScoped<IBookChapterService, BookChapterService>();
-            services.AddScoped<IServerService, ServerService>();
 
             // Register utils
             services.AddTransient<IEncryption, Sha256Encryption>();

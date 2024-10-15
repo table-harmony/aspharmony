@@ -1,17 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Web.Services;
 using System.Xml.Linq;
-using System;
 
 namespace WebServices {
     [WebService(Namespace = "http://tempuri.org/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [System.ComponentModel.ToolboxItem(false)]
     public class BooksService : WebService {
-        private static readonly string xmlFilePath = 
+        private static readonly string xmlFilePath =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\Storage\App_Data\Books\Orion.xml");
 
         [WebMethod]

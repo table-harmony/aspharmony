@@ -1,8 +1,10 @@
 using BusinessLogicLayer.Events;
 using BusinessLogicLayer.Servers.Books;
 using BusinessLogicLayer.Services;
+using BusinessLogicLayer.Services.Nimbus;
 using DataAccessLayer.Data;
 using DataAccessLayer.Repositories;
+using DataAccessLayer.Repositories.Nimbus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Utils;
@@ -11,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Then configure your DbContext
 builder.Services.AddDbContext<ApplicationContext>(options =>
-    options.UseSqlServer(ConnectionStringBuilder.GenerateConnectionString("Main.mdf"))
+    options.UseSqlServer(PathManager.GenerateConnectionString("Main.mdf"))
         .EnableSensitiveDataLogging());
 
 // Register web service
