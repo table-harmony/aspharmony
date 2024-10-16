@@ -1,183 +1,83 @@
-﻿using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Presentation;
-using System.Text.RegularExpressions;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using Syncfusion.Presentation;
+using Presentation = Syncfusion.Presentation.Presentation;
 
 namespace BusinessLogicLayer.Servers.Books.Documents {
-
     public class PowerPointStorage(string filePath) : IDocumentStorage {
-
-        // Create or open the PowerPoint presentation file
-        private PresentationDocument CreateOrOpenPresentation() {
-            if (!File.Exists(filePath) || new FileInfo(filePath).Length == 0) {
-                return PresentationDocument.Create(filePath, PresentationDocumentType.Presentation);
-            }
-            return PresentationDocument.Open(filePath, true);
-        }
-
-        // Ensure slide master and layout are present
-        private static void EnsureSlideMasterAndLayout(PresentationPart presentationPart) {
-            if (presentationPart.SlideMasterParts.Count() == 0) {
-                var slideMasterPart = presentationPart.AddNewPart<SlideMasterPart>();
-                var slideMaster = new SlideMaster(new CommonSlideData(new ShapeTree()));
-                slideMaster.Save(slideMasterPart);
-
-                var slideLayoutPart = slideMasterPart.AddNewPart<SlideLayoutPart>();
-                var slideLayout = new SlideLayout(new CommonSlideData(new ShapeTree()));
-                slideLayout.Save(slideLayoutPart);
-
-                if (presentationPart.Presentation.SlideMasterIdList == null) {
-                    presentationPart.Presentation.SlideMasterIdList = new SlideMasterIdList(
-                        new SlideMasterId() {
-                            Id = 2147483648U,
-                            RelationshipId = presentationPart.GetIdOfPart(slideMasterPart)
-                        }
-                    );
-                }
-            }
-        }
-
-        // Save book data to a PowerPoint file
-        public void Save(List<Book> books) {
-            using var presentation = CreateOrOpenPresentation();
-            var presentationPart = presentation.PresentationPart ?? presentation.AddPresentationPart();
-
-            presentationPart.Presentation ??= new Presentation();
-
-            EnsureSlideMasterAndLayout(presentationPart);
-
-            // Remove existing slides to prevent duplicates
-            if (presentationPart.Presentation.SlideIdList != null) {
-                presentationPart.Presentation.SlideIdList.RemoveAllChildren();
-            }
-
-            uint slideId = 256;
-            foreach (var book in books) {
-                AddBookSlide(presentationPart, book, ref slideId);
-            }
-
-            // Save the entire presentation after modifications
-            presentationPart.Presentation.Save();
-        }
-
-        // Add book details to a slide
-        private void AddBookSlide(PresentationPart presentationPart, Book book, ref uint slideId) {
-            var slidePart = presentationPart.AddNewPart<SlidePart>();
-            var slide = new Slide(new CommonSlideData(new ShapeTree()));
-            slide.Save(slidePart);
-
-            if (presentationPart.Presentation.SlideIdList == null) {
-                presentationPart.Presentation.SlideIdList = new SlideIdList();
-            }
-
-            presentationPart.Presentation.SlideIdList.Append(new SlideId() {
-                Id = slideId,
-                RelationshipId = presentationPart.GetIdOfPart(slidePart)
-            });
-
-            AddTextToSlide(slidePart, $"Book ID: {book.Id}", 0);
-            AddTextToSlide(slidePart, $"Title: {book.Title}", 1);
-            AddTextToSlide(slidePart, $"Description: {book.Description}", 2);
-            AddTextToSlide(slidePart, $"Image URL: {book.ImageUrl}", 3);
-
-            if (book.Chapters != null && book.Chapters.Any()) {
-                AddTextToSlide(slidePart, "Chapters:", 4);
-                int index = 5;
-                foreach (var chapter in book.Chapters) {
-                    AddTextToSlide(slidePart, $"Chapter {chapter.Index}: {chapter.Title}", index++);
-                    AddTextToSlide(slidePart, $"Content: {chapter.Content}", index++);
-                }
-            }
-
-            // Save the slide content back to the slide part
-            slide.Save(slidePart);
-            slideId++;
-        }
-
-        // Load book data from a PowerPoint file
         public List<Book> Load() {
-            var books = new List<Book>();
+            List<Book> books = [];
 
-            if (!File.Exists(filePath) || new FileInfo(filePath).Length == 0) {
+            if (!File.Exists(filePath)) {
                 return books;
             }
 
-            using var presentation = PresentationDocument.Open(filePath, false);
-            var presentationPart = presentation.PresentationPart;
-            if (presentationPart == null) return books;
+            using FileStream fileStream = new(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using IPresentation pptxDoc = Presentation.Open(fileStream);
 
-            foreach (var slidePart in presentationPart.SlideParts) {
-                var book = ParseSlideToBook(slidePart);
-                if (book != null) {
-                    books.Add(book);
+            foreach (ISlide slide in pptxDoc.Slides) { 
+                    Book book = new();
+
+                foreach (IShape shape in slide.Shapes.Cast<IShape>()) {
+                    var textBody = shape.TextBody;
+
+                    if (textBody == null)
+                        continue;
+
+                    string text = textBody.Text;
+
+                    if (text.StartsWith("Title: "))
+                        book.Title = text[7..];
+                    if (text.StartsWith("Id: "))
+                        book.Id = int.Parse(text[4..]);
+                    else if (text.StartsWith("Description: "))
+                        book.Description = text[13..];
+                    else if (text.StartsWith("ImageUrl: "))
+                        book.ImageUrl = text[10..];
+                    else if (text.StartsWith("Chapter: ")) {
+                        string[] parts = text[9..].Split('|');
+                        if (parts.Length == 3) {
+                            book.Chapters.Add(new Chapter {
+                                Index = int.Parse(parts[0]),
+                                Title = parts[1],
+                                Content = parts[2]
+                            });
+                        }
+                    }
                 }
+
+                books.Add(book);
             }
 
             return books;
         }
 
-        // Parse a slide back to a Book object
-        private Book? ParseSlideToBook(SlidePart slidePart) {
-            var book = new Book { Chapters = new List<Chapter>() };
+        public void Save(List<Book> books) {
+            using IPresentation pptxDoc = Presentation.Create();
+            foreach (Book book in books) {
+                ISlide slide = pptxDoc.Slides.Add(SlideLayoutType.Blank);
 
-            foreach (var paragraph in slidePart.Slide.Descendants<DocumentFormat.OpenXml.Drawing.Paragraph>()) {
-                var text = paragraph.InnerText;
-                if (text.StartsWith("Book ID:")) {
-                    book.Id = SafeParseInt(Regex.Match(text, @"\d+").Value);
-                } else if (text.StartsWith("Title:")) {
-                    book.Title = text.Replace("Title:", "").Trim();
-                } else if (text.StartsWith("Description:")) {
-                    book.Description = text.Replace("Description:", "").Trim();
-                } else if (text.StartsWith("Image URL:")) {
-                    book.ImageUrl = text.Replace("Image URL:", "").Trim();
-                } else if (text.StartsWith("Chapter")) {
-                    var chapterIndex = SafeParseInt(Regex.Match(text, @"\d+").Value);
-                    var chapterTitle = text.Split(":").Length > 1 ? text.Split(":")[1].Trim() : "";
-                    var chapter = new Chapter {
-                        Index = chapterIndex,
-                        Title = chapterTitle
-                    };
-                    book.Chapters.Add(chapter);
-                } else if (text.StartsWith("Content:")) {
-                    book.Chapters.LastOrDefault()!.Content = text.Replace("Content:", "").Trim();
+                AddTextShape(slide, $"Id: {book.Id}", 50, 50);
+                AddTextShape(slide, $"Title: {book.Title}", 50, 100);
+                AddTextShape(slide, $"Description: {book.Description}", 50, 150);
+                AddTextShape(slide, $"ImageUrl: {book.ImageUrl}", 50, 200);
+
+                float y = 250;
+                foreach (Chapter chapter in book.Chapters) {
+                    AddTextShape(slide, $"Chapter: {chapter.Index}|{chapter.Title}|{chapter.Content}", 50, y);
+                    y += 50;
                 }
             }
 
-            return book.Chapters.Count > 0 ? book : null;
+            using FileStream fileStream = new(filePath, FileMode.Create, FileAccess.Write);
+            pptxDoc.Save(fileStream);
         }
 
-        // Helper method to add text to a slide
-        private static void AddTextToSlide(SlidePart slidePart, string text, int position) {
-            var slide = slidePart.Slide;
-            var shapeTree = slide.CommonSlideData.ShapeTree;
-
-            // Create a new shape (text box)
-            var shape = new Shape();
-            shape.Append(new NonVisualShapeProperties(
-                new NonVisualDrawingProperties() { Id = (UInt32Value)(uint)(position + 1), Name = $"TextBox {position}" },
-                new NonVisualShapeDrawingProperties(new DocumentFormat.OpenXml.Drawing.ShapeLocks() { NoGrouping = true }),
-                new ApplicationNonVisualDrawingProperties()
-            ));
-
-            shape.Append(new ShapeProperties());
-
-            // Create the text body for the shape
-            var textBody = new TextBody(new DocumentFormat.OpenXml.Drawing.BodyProperties(), new DocumentFormat.OpenXml.Drawing.ListStyle());
-
-            var paragraph = new DocumentFormat.OpenXml.Drawing.Paragraph();
-            var run = new DocumentFormat.OpenXml.Drawing.Run();
-            run.Append(new DocumentFormat.OpenXml.Drawing.Text(text));
-
-            paragraph.Append(run);
-            textBody.Append(paragraph);
-
-            shape.Append(textBody);
-            shapeTree.Append(shape);
-        }
-
-        // Helper method to safely parse integers, returning 0 if invalid
-        private static int SafeParseInt(string? text) {
-            return int.TryParse(text, out var result) ? result : 0;
+        private static void AddTextShape(ISlide slide, string text, float x, float y) {
+            IShape shape = slide.AddTextBox(x, y, 500, 50);
+            ITextBody textBody = shape.TextBody;
+            IParagraph paragraph = textBody.AddParagraph();
+            ITextPart textPart = paragraph.AddTextPart(text);
+            textPart.Font.FontSize = 12;
         }
     }
 }

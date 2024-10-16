@@ -3,7 +3,6 @@ using BusinessLogicLayer.Services;
 using PresentationLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Identity;
 using DataAccessLayer.Entities;
 using Utils.Exceptions;
 using Utils;
@@ -91,7 +90,9 @@ namespace PresentationLayer.Controllers
                 await bookService.CreateAsync(book);
                 return RedirectToAction(nameof(Index));
             } catch {
-                return RedirectToAction(nameof(Create));
+                throw;
+                ModelState.AddModelError("", "An error occurred while updating the book.");
+                return View(model);
             }
         }
 

@@ -15,8 +15,8 @@ namespace DataAccessLayer.Repositories {
         Task DeleteAsync(int id);
     }
 
-    public class FeedbackRepository(ApplicationContext context) : IFeedbackRepository {
-        private readonly AdoContext _context = new(context.Database.GetDbConnection().ConnectionString);
+    public class FeedbackRepository : IFeedbackRepository {
+        private readonly AdoContext _context = new(PathManager.GenerateConnectionString("Main.mdf"));
         private readonly string _filePath = PathManager.GetFilePath(FolderType.Feedbacks, "Index.xml");
 
         public async Task<DataSet> GetAllAsync() {

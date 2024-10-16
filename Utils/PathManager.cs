@@ -20,11 +20,10 @@
         }
 
         public static string GetFilePath(FolderType folder, string fileName) {
-            if (!folderPaths.TryGetValue(folder, out string? folderPath)) {
-                throw new ArgumentException($"Folder '{folder}' is not recognized.");
-            }
+            string folderPath = folderPaths.TryGetValue(folder, out var path) ? path
+                : throw new ArgumentException($"Folder '{folder}' is not recognized.");
 
-            string? fullPath = Path.Combine(folderPath, fileName);
+            string fullPath = Path.Combine(folderPath, fileName);
 
             if (!File.Exists(fullPath)) {
                 throw new FileNotFoundException($"File '{fileName}' not found in the specified storage.");
