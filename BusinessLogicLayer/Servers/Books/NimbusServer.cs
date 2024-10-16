@@ -1,9 +1,9 @@
 ﻿using BusinessLogicLayer.Services.Nimbus;
+
 using DbChapter = DataAccessLayer.Entities.Nimbus.BookChapter;
 using DbMetadata = DataAccessLayer.Entities.Nimbus.BookMetadata;
 
-namespace BusinessLogicLayer.Servers.Books
-{
+namespace BusinessLogicLayer.Servers.Books {
     public class NimbusServer(IBookMetadataService metadataService,
                                 IBookChapterService chapterService) : IBookServer {
         public async Task<Book?> GetBookAsync(int id) {
@@ -19,8 +19,7 @@ namespace BusinessLogicLayer.Servers.Books
                 Title = metadata?.Title ?? "",
                 Description = metadata?.Description ?? "",
                 ImageUrl = metadata?.ImageUrl ?? "",
-                Chapters = chapters.Select(chapter => new Chapter()
-                {
+                Chapters = chapters.Select(chapter => new Chapter() {
                     Index = chapter.Index,
                     Title = chapter.Title,
                     Content = chapter.Content,

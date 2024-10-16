@@ -1,9 +1,16 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-using Syncfusion.Presentation;
-using Presentation = Syncfusion.Presentation.Presentation;
+﻿using Syncfusion.Presentation;
+using System.Drawing;
 
 namespace BusinessLogicLayer.Servers.Books.Documents {
+
+    public enum SlideType {
+        Book,
+        Chapter,
+        Unknown
+    }
+
     public class PowerPointStorage(string filePath) : IDocumentStorage {
+
         public List<Book> Load() {
             List<Book> books = [];
 
@@ -11,73 +18,222 @@ namespace BusinessLogicLayer.Servers.Books.Documents {
                 return books;
             }
 
-            using FileStream fileStream = new(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            using IPresentation pptxDoc = Presentation.Open(fileStream);
+            using IPresentation presentation = Presentation.Open(filePath);
 
-            foreach (ISlide slide in pptxDoc.Slides) { 
-                    Book book = new();
+            foreach (ISlide slide in presentation.Slides) {
+                SlideType slideType = GetType(slide);
 
-                foreach (IShape shape in slide.Shapes.Cast<IShape>()) {
-                    var textBody = shape.TextBody;
-
-                    if (textBody == null)
-                        continue;
-
-                    string text = textBody.Text;
-
-                    if (text.StartsWith("Title: "))
-                        book.Title = text[7..];
-                    if (text.StartsWith("Id: "))
-                        book.Id = int.Parse(text[4..]);
-                    else if (text.StartsWith("Description: "))
-                        book.Description = text[13..];
-                    else if (text.StartsWith("ImageUrl: "))
-                        book.ImageUrl = text[10..];
-                    else if (text.StartsWith("Chapter: ")) {
-                        string[] parts = text[9..].Split('|');
-                        if (parts.Length == 3) {
-                            book.Chapters.Add(new Chapter {
-                                Index = int.Parse(parts[0]),
-                                Title = parts[1],
-                                Content = parts[2]
-                            });
-                        }
-                    }
+                switch (slideType) {
+                    case SlideType.Book:
+                        books.Add(ExtractBook(slide)!);
+                        break;
+                    case SlideType.Chapter:
+                        PresentationChapter chapter = ExtractChapter(slide)!;
+                        Book? book = books.FirstOrDefault(book => book.Id == chapter.BookId);
+                        book?.Chapters.Add(chapter);
+                        break;
                 }
-
-                books.Add(book);
             }
 
             return books;
         }
 
         public void Save(List<Book> books) {
-            using IPresentation pptxDoc = Presentation.Create();
+            using IPresentation presentation = Presentation.Create();
+
             foreach (Book book in books) {
-                ISlide slide = pptxDoc.Slides.Add(SlideLayoutType.Blank);
+                CreateSlide(presentation, book);
 
-                AddTextShape(slide, $"Id: {book.Id}", 50, 50);
-                AddTextShape(slide, $"Title: {book.Title}", 50, 100);
-                AddTextShape(slide, $"Description: {book.Description}", 50, 150);
-                AddTextShape(slide, $"ImageUrl: {book.ImageUrl}", 50, 200);
+                book.Chapters?.ForEach(chapter =>
+                    CreateSlide(presentation, new PresentationChapter() {
+                        BookId = book.Id,
+                        Index = chapter.Index,
+                        Title = chapter.Title,
+                        Content = chapter.Content,
+                    })
+                );
+            }
 
-                float y = 250;
-                foreach (Chapter chapter in book.Chapters) {
-                    AddTextShape(slide, $"Chapter: {chapter.Index}|{chapter.Title}|{chapter.Content}", 50, y);
-                    y += 50;
+            presentation.Save(filePath);
+        }
+
+
+        private static SlideType GetType(ISlide slide) {
+            if (slide.Shapes.Count > 0 && slide.Shapes[0] is IShape shape && shape.TextBody != null) {
+                string text = shape.TextBody.Text;
+            
+                if (text.StartsWith("Book")) return SlideType.Book;
+                if (text.StartsWith("Chapter")) return SlideType.Chapter;
+            }
+
+            return SlideType.Unknown;
+        }
+
+        private static Book? ExtractBook(ISlide slide) {
+            SlideType slideType = GetType(slide);
+
+            if (slideType != SlideType.Book)
+                return null;
+
+            Book book = new() {
+                Chapters = []
+            };
+
+            foreach (IShape shape in slide.Shapes.Cast<IShape>()) {
+                if (shape.TextBody == null)
+                    continue;
+
+                string[] parts = shape.TextBody.Text.Split(':', 2);
+
+                if (parts.Length != 2)
+                    continue;
+
+                string key = parts[0].Trim();
+                string value = parts[1].Trim();
+
+                switch (key) {
+                    case "Id": book.Id = int.Parse(value); break;
+                    case "Title": book.Title = value; break;
+                    case "Description": book.Description = value; break;
+                    case "ImageUrl": book.ImageUrl = value; break;
                 }
             }
 
-            using FileStream fileStream = new(filePath, FileMode.Create, FileAccess.Write);
-            pptxDoc.Save(fileStream);
+            return book;
         }
 
-        private static void AddTextShape(ISlide slide, string text, float x, float y) {
-            IShape shape = slide.AddTextBox(x, y, 500, 50);
+        private static PresentationChapter? ExtractChapter(ISlide slide) {
+            SlideType slideType = GetType(slide);
+
+            if (slideType != SlideType.Chapter)
+                return null;
+
+            PresentationChapter chapter = new();
+
+            foreach (IShape shape in slide.Shapes.Cast<IShape>()) {
+                if (shape.TextBody == null)
+                    continue;
+
+                string[] parts = shape.TextBody.Text.Split(':', 2);
+
+                if (parts.Length != 2)
+                    continue;
+
+                string key = parts[0].Trim();
+                string value = parts[1].Trim();
+
+                switch (key) {
+                    case "Book Id": chapter.BookId = int.Parse(value); break;
+                    case "Index": chapter.Index = int.Parse(value); break;
+                    case "Title": chapter.Title = value; break;
+                    case "Content": chapter.Content = value; break;
+                }
+            }
+
+            return chapter;
+        }
+
+
+        private static void CreateSlide(IPresentation presentation, Book book) {
+            ISlide slide = presentation.Slides.Add(SlideLayoutType.Blank);
+
+            CreateShape(slide, new TextConfiguration {
+                Text = "Book",
+                Style = new TextStyle { FontSize = 28, Bold = true },
+                Position = (50, 50)
+            });
+            CreateShape(slide, new TextConfiguration {
+                Text = $"Id: {book.Id}",
+                Style = new TextStyle { FontColor = GenerateColor(book.Id) },
+                Position = (50, 100)
+            });
+            CreateShape(slide, new TextConfiguration {
+                Text = $"Title: {book.Title}",
+                Style = new TextStyle { FontSize = 24, Bold = true },
+                Position = (50, 150)
+            });
+            CreateShape(slide, new TextConfiguration {
+                Text = $"Description: {book.Description}",
+                Position = (50, 200)
+            });
+            CreateShape(slide, new TextConfiguration {
+                Text = $"ImageUrl: {book.ImageUrl}",
+                Style = new TextStyle { Hyperlink = book.ImageUrl },
+                Position = (50, 250)
+            });
+        }
+
+        private static void CreateSlide(IPresentation presentation, PresentationChapter chapter) {
+            ISlide slide = presentation.Slides.Add(SlideLayoutType.Blank);
+
+            CreateShape(slide, new TextConfiguration {
+                Text = $"Chapter: {chapter.Index}",
+                Style = new TextStyle { FontSize = 28, Bold = true },
+                Position = (50, 50)
+            });
+            CreateShape(slide, new TextConfiguration {
+                Text = $"Book Id: {chapter.BookId}",
+                Style = new TextStyle { FontColor = GenerateColor(chapter.BookId) },
+                Position = (50, 100)
+            });
+            CreateShape(slide, new TextConfiguration {
+                Text = $"Title: {chapter.Title}",
+                Style = new TextStyle { FontSize = 24, Bold = true },
+                Position = (50, 150)
+            });
+            CreateShape(slide, new TextConfiguration {
+                Text = $"Content: {chapter.Content}",
+                Position = (50, 200)
+            });
+        }
+
+        private static void CreateShape(ISlide slide, TextConfiguration configuration) {
+            (double x, double y) = configuration.Position;
+            (double width, double height) = configuration.Dimensions;
+
+            IShape shape = slide.AddTextBox(x, y, width, height);
+
             ITextBody textBody = shape.TextBody;
             IParagraph paragraph = textBody.AddParagraph();
-            ITextPart textPart = paragraph.AddTextPart(text);
-            textPart.Font.FontSize = 12;
+
+            var text = paragraph.AddTextPart(configuration.Text);
+
+            text.Font.FontSize = configuration.Style.FontSize;
+            text.Font.Bold = configuration.Style.Bold;
+            text.Font.Italic = configuration.Style.Italic;
+            text.Font.Color = ColorObject.FromArgb(configuration.Style.FontColor.R, configuration.Style.FontColor.G, configuration.Style.FontColor.B);
+
+            if (!string.IsNullOrEmpty(configuration.Style.Hyperlink)) {
+                text.SetHyperlink(configuration.Style.Hyperlink);
+            }
         }
+
+        private static Color GenerateColor(int number) {
+            byte[] hash = BitConverter.GetBytes(number);
+            int red = (hash[0] * 31) % 256;
+            int green = (hash[1] * 31) % 256;
+            int blue = (hash[2] * 31) % 256;
+
+            return Color.FromArgb(red, green, blue); 
+        }
+    }
+
+    class PresentationChapter : Chapter {
+        public int BookId { get; set; }
+    }
+
+    public class TextStyle {
+        public int FontSize { get; set; } = 18;
+        public bool Bold { get; set; } = false;
+        public bool Italic { get; set; } = false;
+        public Color FontColor { get; set; } = Color.Black;
+        public string? Hyperlink { get; set; } = null;
+    }
+
+    public class TextConfiguration {
+        public TextStyle Style { get; set; } = new TextStyle();
+        public string Text { get; set; } = "";
+        public (double, double) Dimensions { get; set; } = (500, 50);
+        public (double, double) Position { get; set; }
     }
 }

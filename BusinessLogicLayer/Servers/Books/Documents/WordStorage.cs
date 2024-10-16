@@ -1,5 +1,4 @@
 ﻿using Xceed.Words.NET;
-using Xceed.Document.NET;
 
 namespace BusinessLogicLayer.Servers.Books.Documents {
     public partial class WordDocumentStorage(string filePath) : IDocumentStorage {
