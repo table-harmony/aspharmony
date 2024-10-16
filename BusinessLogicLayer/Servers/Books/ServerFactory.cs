@@ -1,13 +1,10 @@
 ﻿using LocalBooksServiceReference;
 using ForeignBooksServiceReference;
-using BusinessLogicLayer.Services;
 using Microsoft.Extensions.DependencyInjection;
 using BusinessLogicLayer.Services.Nimbus;
 using DataAccessLayer.Entities;
 
-namespace BusinessLogicLayer.Servers.Books
-{
-
+namespace BusinessLogicLayer.Servers.Books {
     public static class BooksServerFactory {
         public static Func<ServerType, IBookServer> CreateServer(IServiceProvider serviceProvider) {
             return (serverType) => {

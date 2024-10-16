@@ -40,6 +40,28 @@ namespace DataAccessLayer.Data {
 
             return dataSet;
         }
-    }
 
+        public DataSet ExecuteFunction(string functionName, SqlParameter[]? parameters = null) {
+            string parmetersString = "";
+            if (parameters != null && parameters.Length != 0) {
+                parmetersString = string.Join(", ", parameters.Select(p => p.Value == null ? "NULL" : p.ParameterName));
+            }
+
+            string sql = $"SELECT * FROM dbo.{functionName}({parmetersString})";
+
+            using SqlConnection connection = new(connectionString);
+            connection.Open();
+
+            using SqlCommand command = new(sql, connection);
+
+            if (parameters != null)
+                command.Parameters.AddRange(parameters);
+
+            using SqlDataAdapter adapter = new(command);
+            DataSet dataSet = new();
+            adapter.Fill(dataSet);
+
+            return dataSet;
+        }
+    }
 }

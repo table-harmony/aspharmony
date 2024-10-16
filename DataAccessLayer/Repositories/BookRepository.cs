@@ -22,6 +22,12 @@ namespace DataAccessLayer.Repositories {
                 .FirstOrDefaultAsync(book => book.Id == id);
         }
 
+        public async Task<IEnumerable<Book>> GetUserBooksAsync(string userId) {
+            return await context.Books
+                .FromSqlRaw("SELECT * FROM dbo.GetBooksByUser({0})", userId)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Book>> GetAllAsync() {
             return await context.Books
                 .Include(book => book.Author)

@@ -1,5 +1,4 @@
 ﻿namespace Utils {
-
     public enum FolderType {
         Books,
         Feedbacks,

@@ -1,8 +1,8 @@
 ﻿using Syncfusion.Presentation;
 using System.Drawing;
+using System.Security.Cryptography;
 
 namespace BusinessLogicLayer.Servers.Books.Documents {
-
     public enum SlideType {
         Book,
         Chapter,
@@ -209,12 +209,13 @@ namespace BusinessLogicLayer.Servers.Books.Documents {
         }
 
         private static Color GenerateColor(int number) {
-            byte[] hash = BitConverter.GetBytes(number);
-            int red = (hash[0] * 31) % 256;
-            int green = (hash[1] * 31) % 256;
-            int blue = (hash[2] * 31) % 256;
+            byte[] hash = SHA256.HashData(BitConverter.GetBytes(number));
 
-            return Color.FromArgb(red, green, blue); 
+            int r = hash[0];    
+            int g = hash[8];   
+            int b = hash[16];
+
+            return Color.FromArgb(r, g, b); 
         }
     }
 

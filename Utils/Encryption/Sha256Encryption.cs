@@ -1,9 +1,7 @@
-using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Utils.Encryption 
-{ 
+namespace Utils.Encryption {  
     public class Sha256Encryption : IEncryption {
         private const int SaltSize = 16; // 128 bits
 
@@ -25,21 +23,19 @@ namespace Utils.Encryption
             return computedHash == storedHash;
         }
 
-        private string GenerateSalt() {
-            using (var rng = new RNGCryptoServiceProvider()) {
-                byte[] saltBytes = new byte[SaltSize];
-                rng.GetBytes(saltBytes);
-                return Convert.ToBase64String(saltBytes);
-            }
+        private static string GenerateSalt() {
+            using RNGCryptoServiceProvider rng = new();
+
+            byte[] saltBytes = new byte[SaltSize];
+            rng.GetBytes(saltBytes);
+            return Convert.ToBase64String(saltBytes);
         }
 
-        private string ComputeHash(string input, string salt) {
-            using (var sha256 = SHA256.Create()) {
-                string inputWithSalt = input + salt;
-                byte[] inputBytes = Encoding.UTF8.GetBytes(inputWithSalt);
-                byte[] hashBytes = sha256.ComputeHash(inputBytes);
-                return Convert.ToBase64String(hashBytes);
-            }
+        private static string ComputeHash(string input, string salt) {
+            string inputWithSalt = input + salt;
+            byte[] inputBytes = Encoding.UTF8.GetBytes(inputWithSalt);
+            byte[] hashBytes = SHA256.HashData(inputBytes);
+            return Convert.ToBase64String(hashBytes);
         }
     }
 }

@@ -11,6 +11,7 @@ using Utils;
 using BusinessLogicLayer.Servers.Books;
 using DataAccessLayer.Repositories.Nimbus;
 using BusinessLogicLayer.Services.Nimbus;
+using Syncfusion.Licensing;
 
 namespace PresentationLayer
 {
@@ -28,12 +29,10 @@ namespace PresentationLayer
                 });
 
         public void ConfigureServices(IServiceCollection services) {
-            // Add the DbContext to the services
             services.AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(PathManager.GenerateConnectionString("Main.mdf"))
                     .EnableSensitiveDataLogging());
 
-            // Register Identity services
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationContext>()
                 .AddDefaultTokenProviders();
@@ -75,20 +74,22 @@ namespace PresentationLayer
                 JokesServicePortTypeClient.EndpointConfiguration.JokesServicePort
             ));
 
-            // Add HttpClient
             services.AddHttpClient();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+
 
             services.ConfigureApplicationCookie(options => {
                 options.AccessDeniedPath = "/Account/AccessDenied";
             });
 
             EventSubscriber.Subscribe(services.BuildServiceProvider());
+
+            SyncfusionLicenseProvider.RegisterLicense(Configuration["SYNCFUSION_LICENSE_KEY"]);
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider) {
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             } else {

@@ -90,7 +90,15 @@ namespace PresentationLayer.Controllers
                 await bookService.CreateAsync(book);
                 return RedirectToAction(nameof(Index));
             } catch {
-                throw;
+                ViewBag.Servers = Enum.GetValues(typeof(ServerType))
+                    .Cast<ServerType>()
+                    .Select(e => new SelectListItem {
+                        Value = ((int)e).ToString(),
+                        Text = e.ToString(),
+                        Selected = e == ServerType.Nimbus
+                    })
+                    .ToList();
+
                 ModelState.AddModelError("", "An error occurred while updating the book.");
                 return View(model);
             }
