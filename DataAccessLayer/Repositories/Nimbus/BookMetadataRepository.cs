@@ -15,12 +15,7 @@ namespace DataAccessLayer.Repositories.Nimbus
     }
 
     public class BookMetadataRepository : IBookMetadataRepository {
-        private readonly AdoContext _context;
-
-        public BookMetadataRepository() {
-            string connectionString = PathManager.GenerateConnectionString("Nimbus.mdf");
-            _context = new AdoContext(connectionString);
-        }
+        private readonly AdoContext _context = new(PathManager.GenerateConnectionString("Nimbus.mdf"));
 
         public async Task<IEnumerable<BookMetadata>> GetAllAsync() {
             string query = "GetAllBooksMetadata";

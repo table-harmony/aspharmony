@@ -1,4 +1,5 @@
-﻿using Syncfusion.Presentation;
+﻿using Syncfusion.Licensing;
+using Syncfusion.Presentation;
 using System.Drawing;
 using System.Security.Cryptography;
 
@@ -191,9 +192,10 @@ namespace BusinessLogicLayer.Servers.Books.Documents {
             (double x, double y) = configuration.Position;
             (double width, double height) = configuration.Dimensions;
 
-            IShape shape = slide.AddTextBox(x, y, width, height);
 
+            IShape shape = slide.AddTextBox(x, y, width, height);
             ITextBody textBody = shape.TextBody;
+            
             IParagraph paragraph = textBody.AddParagraph();
 
             var text = paragraph.AddTextPart(configuration.Text);
@@ -234,7 +236,7 @@ namespace BusinessLogicLayer.Servers.Books.Documents {
     public class TextConfiguration {
         public TextStyle Style { get; set; } = new TextStyle();
         public string Text { get; set; } = "";
-        public (double, double) Dimensions { get; set; } = (500, 50);
+        public (double, double) Dimensions { get; set; } = (1000, 50);
         public (double, double) Position { get; set; }
     }
 }

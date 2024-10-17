@@ -16,8 +16,7 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
     options.UseSqlServer(PathManager.GenerateConnectionString("Main.mdf"))
         .EnableSensitiveDataLogging());
 
-// Register web service
-builder.Services.AddSingleton(serviceProvider =>
+builder.Services.AddScoped(serviceProvider =>
     BooksServerFactory.CreateServer(serviceProvider));
 
 // Register your repositories

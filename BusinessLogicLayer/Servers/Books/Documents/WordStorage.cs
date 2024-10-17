@@ -1,4 +1,5 @@
 ﻿using Xceed.Words.NET;
+using HyperLink = Xceed.Document.NET.Hyperlink;
 
 namespace BusinessLogicLayer.Servers.Books.Documents {
     public partial class WordDocumentStorage(string filePath) : IDocumentStorage {
@@ -10,7 +11,9 @@ namespace BusinessLogicLayer.Servers.Books.Documents {
                 doc.InsertParagraph($"Book ID: {book.Id}").FontSize(14).Bold();
                 doc.InsertParagraph($"Title: {book.Title}").FontSize(12);
                 doc.InsertParagraph($"Description: {book.Description}").FontSize(12);
-                doc.InsertParagraph($"Image URL: {book.ImageUrl}").FontSize(12);
+
+                HyperLink link = doc.AddHyperlink(book.ImageUrl, new Uri(book.ImageUrl));
+                doc.InsertParagraph($"Image URL: ").AppendHyperlink(link).FontSize(12);
 
                 if (book.Chapters != null && book.Chapters.Count != 0) {
                     doc.InsertParagraph("Chapters:").Bold();

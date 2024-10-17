@@ -13,8 +13,7 @@ using DataAccessLayer.Repositories.Nimbus;
 using BusinessLogicLayer.Services.Nimbus;
 using Syncfusion.Licensing;
 
-namespace PresentationLayer
-{
+namespace PresentationLayer {
     public class Startup(IConfiguration configuration) {
         public IConfiguration Configuration { get; } = configuration;
 
@@ -24,9 +23,13 @@ namespace PresentationLayer
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((context, config) => {
+                    config.AddUserSecrets<Startup>();
+                })
                 .ConfigureWebHostDefaults(webBuilder => {
                     webBuilder.UseStartup<Startup>();
                 });
+
 
         public void ConfigureServices(IServiceCollection services) {
             services.AddDbContext<ApplicationContext>(options =>

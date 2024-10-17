@@ -14,12 +14,7 @@ namespace DataAccessLayer.Repositories.Nimbus
     }
 
     public class BookChapterRepository : IBookChapterRepository {
-        private readonly AdoContext _context;
-
-        public BookChapterRepository() {
-            string connectionString = PathManager.GenerateConnectionString("Nimbus.mdf");
-            _context = new AdoContext(connectionString);
-        }
+        private readonly AdoContext _context = new(PathManager.GenerateConnectionString("Nimbus.mdf"));
 
         public async Task<IEnumerable<BookChapter>> GetChaptersAsync(int bookId) {
             string query = "GetBookChapters";

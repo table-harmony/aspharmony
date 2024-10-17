@@ -10,6 +10,7 @@ namespace DataAccessLayer.Repositories {
         Task<IEnumerable<Book>> GetAllAsync();
         Task<IEnumerable<Book>> GetAllAsync(ServerType serverType);
         Task<Book> CreateAsync(Book book);
+        Task UpdateAsync(Book book);
         Task DeleteAsync(int id);
         IDbContextTransaction BeginTransaction();
     }
@@ -41,6 +42,12 @@ namespace DataAccessLayer.Repositories {
                 .Include(book => book.Author)
                 .AsNoTracking()
                 .ToListAsync();
+        }
+
+
+        public async Task UpdateAsync(Book book) {
+            context.Books.Update(book);
+            await context.SaveChangesAsync();
         }
 
         public async Task<Book> CreateAsync(Book book) {

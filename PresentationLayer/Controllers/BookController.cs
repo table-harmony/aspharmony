@@ -38,14 +38,7 @@ namespace PresentationLayer.Controllers
 
         [HttpGet]
         public IActionResult Create() {
-            ViewBag.Servers = Enum.GetValues(typeof(ServerType))
-                .Cast<ServerType>()
-                .Select(e => new SelectListItem {
-                    Value = ((int)e).ToString(),
-                    Text = e.ToString(),
-                    Selected = e == ServerType.Nimbus
-                })
-                .ToList();
+            GetServers();
 
             return View(new CreateBookViewModel { Server = ServerType.Nimbus });
         }
@@ -89,17 +82,12 @@ namespace PresentationLayer.Controllers
 
                 await bookService.CreateAsync(book);
                 return RedirectToAction(nameof(Index));
-            } catch {
-                ViewBag.Servers = Enum.GetValues(typeof(ServerType))
-                    .Cast<ServerType>()
-                    .Select(e => new SelectListItem {
-                        Value = ((int)e).ToString(),
-                        Text = e.ToString(),
-                        Selected = e == ServerType.Nimbus
-                    })
-                    .ToList();
+            } catch (Exception ex) {
+                GetServers(model.Server);
 
-                ModelState.AddModelError("", "An error occurred while updating the book.");
+                string message = ex is PublicException ? ex.Message : "An error occurred while creating the book.";
+                ModelState.AddModelError("", message);
+
                 return View(model);
             }
         }
@@ -111,8 +99,11 @@ namespace PresentationLayer.Controllers
             if (book == null)
                 return NotFound();
 
+            GetServers(book.Server);
+
             EditBookViewModel model = new() {
                 Id = book.Id,
+                Server = book.Server,
                 Title = book.Metadata?.Title ?? "Unknown",
                 Description = book.Metadata?.Description ?? "Unknown",
                 CurrentImageUrl = book.Metadata?.ImageUrl ?? "Unknown",
@@ -136,14 +127,17 @@ namespace PresentationLayer.Controllers
             if (!ModelState.IsValid) 
                 return View(model);
 
-            try {
-                var book = await bookService.GetBookAsync(id);
-                if (book == null)
-                    return NotFound();
+            var book = await bookService.GetBookAsync(id);
 
+            if (book == null)
+                return NotFound();
+
+            try {
                 string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
                 if (!User.IsInRole("Admin") && book.AuthorId != userId)
                     return Forbid();
+
+                book.Server = model.Server;
 
                 if (book.Metadata == null)
                     throw new PublicException("Metadata not found");
@@ -166,7 +160,11 @@ namespace PresentationLayer.Controllers
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex) {
-                ModelState.AddModelError("", "An error occurred while updating the book.");
+                GetServers(book.Server);
+
+                string message = ex is PublicException ? ex.Message : "An error occurred while updating the book.";
+                ModelState.AddModelError("", message);
+
                 return View(model);
             }
         }
@@ -196,6 +194,17 @@ namespace PresentationLayer.Controllers
             await bookService.DeleteAsync(id);
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private void GetServers(ServerType selectedServer = ServerType.Nimbus) {
+            ViewBag.Servers = Enum.GetValues(typeof(ServerType))
+                .Cast<ServerType>()
+                .Select(e => new SelectListItem {
+                    Value = ((int)e).ToString(),
+                    Text = e.ToString(),
+                    Selected = e == selectedServer
+                })
+                .ToList();
         }
     }
 }

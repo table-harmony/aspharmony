@@ -97,7 +97,7 @@ namespace BusinessLogicLayer.Services
                     return;
                 }
 
-                var server = GetServer(dbBook.Server);
+                var server = GetServer(book.Server);
 
                 await server.CreateBookAsync(new ServerBook {
                     Id = dbBook.Id,
@@ -115,11 +115,48 @@ namespace BusinessLogicLayer.Services
         }
 
         public async Task UpdateAsync(Book book) {
+            DbBook? dbBook = await repository.GetBookAsync(book.Id);
+
+            if (dbBook == null)
+                return;
+
+            var transaction = repository.BeginTransaction();
+
+            try {
+                bool isServerUpdated = dbBook.Server != book.Server;
+
+                if (isServerUpdated) {
+                    await SwitchServerAsync(book);
+                } else {
+                    var server = GetServer(book.Server);
+                    await server.UpdateBookAsync(book.Metadata!);
+                }
+
+                transaction.Commit();
+            } catch {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
+        private async Task SwitchServerAsync(Book book) {
+            var dbBook = await repository.GetBookAsync(book.Id);
+
+            if (dbBook == null)
+                return;
+
+            var oldServer = GetServer(dbBook.Server);
+            await oldServer.DeleteBookAsync(dbBook.Id);
+
             if (book.Metadata == null)
                 return;
 
-            var server = GetServer(book.Server);
-            await server.UpdateBookAsync(book.Metadata);
+            var newServer = GetServer(book.Server);
+            await newServer.CreateBookAsync(book.Metadata);
+
+            dbBook.Server = book.Server;
+
+            await repository.UpdateAsync(dbBook);
         }
 
         public async Task DeleteAsync(int id) {
@@ -142,5 +179,6 @@ namespace BusinessLogicLayer.Services
                 throw;
             }
         }
+      
     }
 }

@@ -1,3 +1,4 @@
+using DataAccessLayer.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace PresentationLayer.Models {
@@ -17,5 +18,7 @@ namespace PresentationLayer.Models {
 
         [Display(Name = "New Book Image")]
         public IFormFile? NewImage { get; set; }
+
+        public ServerType Server {  get; set; }
     }
 }

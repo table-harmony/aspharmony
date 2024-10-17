@@ -22,7 +22,7 @@ namespace BusinessLogicLayer.Servers.Books {
             var response = await _httpClient.GetAsync("api/Books");
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadFromJsonAsync<List<Book>>(_jsonOptions);
+            return await response.Content.ReadFromJsonAsync<List<Book>>(_jsonOptions) ?? [];
         }
 
         public async Task CreateBookAsync(Book newBook) {
