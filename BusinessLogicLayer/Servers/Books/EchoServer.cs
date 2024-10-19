@@ -5,7 +5,7 @@ namespace BusinessLogicLayer.Servers.Books
 {
     public class EchoServer : IBookServer {
         private readonly DataSet data = new();
-        private static readonly string filePath = PathManager.GetFilePath(FolderType.Books, "Echo.xml");
+        private static readonly string filePath = PathManager.GetPath(FolderType.Books, "Echo.xml");
 
         public EchoServer() {
             ReadData();

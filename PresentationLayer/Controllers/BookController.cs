@@ -84,6 +84,7 @@ namespace PresentationLayer.Controllers
                 return RedirectToAction(nameof(Index));
             } catch (Exception ex) {
                 GetServers(model.Server);
+
                 string message = ex is PublicException ? ex.Message : "An error occurred while creating the book.";
                 ModelState.AddModelError("", message);
 

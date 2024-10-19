@@ -9,6 +9,7 @@
         Nimbus,
         Orion,
         Solace,
+        Stegan,
     }
 
     public class Book {

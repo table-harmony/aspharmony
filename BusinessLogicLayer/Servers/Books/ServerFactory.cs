@@ -26,10 +26,11 @@ namespace BusinessLogicLayer.Servers.Books {
                     ServerType.Atlas => new ApiServer("https://localhost:7137", new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }),
                     ServerType.Dummy => new DummyServer(),
                     ServerType.Echo => new EchoServer(),
-                    ServerType.Harmony => new ApiServer("http://localhost:8000"),
+                    ServerType.Harmony => new ApiServer($"http://{configuration["MINECRAFT_SERVICE_IP_ADDRESS"]}:8000"),
                     ServerType.Nimbus => new NimbusServer(serviceProvider.GetRequiredService<IBookMetadataService>(),
                                                     serviceProvider.GetRequiredService<IBookChapterService>()),
                     ServerType.Orion => new OrionServer(new BooksServiceSoapClient(BooksServiceSoapClient.EndpointConfiguration.BooksServiceSoap)),
+                    ServerType.Stegan => new SteganographyServer(),
                     ServerType.Solace => new SolaceServer(),
                     _ => throw new InvalidOperationException($"Invalid server type: {serverType}"),
                 };

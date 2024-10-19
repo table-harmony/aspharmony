@@ -2,11 +2,10 @@
 
 namespace BusinessLogicLayer.Servers.Books {
     public class SolaceServer : IBookServer {
-        private readonly IDocumentStorage storage;
+        private readonly IDocumentStorage storage = DocumentFactory.CreateDocumentStorage(DocumentType.PowerPoint);
         private readonly List<Book> books = [];
 
         public SolaceServer() {
-            storage = DocumentFactory.CreateDocumentStorage(DocumentType.PowerPoint);
             LoadData();
         }
 

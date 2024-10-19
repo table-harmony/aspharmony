@@ -2,14 +2,14 @@
     public class DummyServer : IBookServer {
 
         public async Task<Book?> GetBookAsync(int id) {
-            return await Task.FromResult(GenerateDummyBook(id));
+            return GenerateDummyBook(id);
         }
 
         public async Task<List<Book>> GetAllBooksAsync() {
             List<Book> books = [];
             books.Add(GenerateDummyBook(0));
 
-            return await Task.FromResult(books);
+            return books;
         }
 
         public async Task CreateBookAsync(Book newBook) {

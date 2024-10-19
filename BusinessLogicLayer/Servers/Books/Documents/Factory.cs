@@ -16,7 +16,7 @@ namespace BusinessLogicLayer.Servers.Books.Documents {
 
         public static IDocumentStorage CreateDocumentStorage(DocumentType documentType) {
             string suffix = GetSuffix(documentType);
-            string filePath = PathManager.GetFilePath(FolderType.Books, $"Solace.{suffix}");
+            string filePath = PathManager.GetPath(FolderType.Books, $"Solace.{suffix}");
 
             return documentType switch {
                 DocumentType.Word => new WordDocumentStorage(filePath),

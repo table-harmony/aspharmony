@@ -18,21 +18,21 @@
             };
         }
 
-        public static string GetFilePath(FolderType folder, string fileName) {
+        public static string GetPath(FolderType folder, string fileName) {
             string folderPath = folderPaths.TryGetValue(folder, out var path) ? path
                 : throw new ArgumentException($"Folder '{folder}' is not recognized.");
 
             string fullPath = Path.Combine(folderPath, fileName);
 
-            if (!File.Exists(fullPath)) {
-                throw new FileNotFoundException($"File '{fileName}' not found in the specified storage.");
+            if (!File.Exists(fullPath) && !Directory.Exists(fullPath)) {
+                throw new FileNotFoundException($"'{fileName}' not found in the specified storage.");
             }
 
             return fullPath;
         }
 
         public static string GenerateConnectionString(string fileName) {
-            string path = Path.GetFullPath(GetFilePath(FolderType.Databases, fileName));
+            string path = Path.GetFullPath(GetPath(FolderType.Databases, fileName));
             return $@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename={path};Integrated Security=True";
         }
     }

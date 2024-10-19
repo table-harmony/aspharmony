@@ -9,7 +9,7 @@ namespace WebApi.Controllers {
     [Route("api/books")]
     [ApiController]
     public class BooksController() : ControllerBase {
-        private readonly string filePath = PathManager.GetFilePath(FolderType.Books, "Atlas.json");
+        private readonly string filePath = PathManager.GetPath(FolderType.Books, "Atlas.json");
             
         [HttpGet("{id}")]
         public async Task<ActionResult<Book>> GetBook(int id) {

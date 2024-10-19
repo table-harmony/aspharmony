@@ -17,7 +17,7 @@ namespace DataAccessLayer.Repositories {
 
     public class FeedbackRepository : IFeedbackRepository {
         private readonly AdoContext _context = new(PathManager.GenerateConnectionString("Main.mdf"));
-        private readonly string _filePath = PathManager.GetFilePath(FolderType.Feedbacks, "Index.xml");
+        private readonly string _filePath = PathManager.GetPath(FolderType.Feedbacks, "Index.xml");
 
         public async Task<DataSet> GetAllAsync() {
             string query =  @"SELECT f.Id, f.Title, f.Description, f.Label, f.UserId, u.UserName 
