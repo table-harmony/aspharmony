@@ -3,7 +3,9 @@
     public enum ServerType {
         Aether,
         Atlas,
+        Dummy,
         Echo,
+        Harmony,
         Nimbus,
         Orion,
         Solace,

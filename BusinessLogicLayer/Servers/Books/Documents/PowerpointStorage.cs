@@ -14,6 +14,7 @@ namespace BusinessLogicLayer.Servers.Books.Documents {
 
         public List<Book> Load() {
             List<Book> books = [];
+            List<PresentationChapter> chapters = [];
 
             if (!File.Exists(filePath)) {
                 return books;
@@ -29,14 +30,18 @@ namespace BusinessLogicLayer.Servers.Books.Documents {
                         books.Add(ExtractBook(slide)!);
                         break;
                     case SlideType.Chapter:
-                        PresentationChapter chapter = ExtractChapter(slide)!;
-                        Book? book = books.FirstOrDefault(book => book.Id == chapter.BookId);
-                        book?.Chapters.Add(chapter);
+                        chapters.Add(ExtractChapter(slide)!);
                         break;
                 }
             }
 
-            return books;
+            return books.GroupJoin(chapters,
+                book => book.Id,
+                chapter => chapter.BookId,
+                (book, chapters) => {
+                    book.Chapters.AddRange(chapters);
+                    return book;
+                }).ToList();
         }
 
         public void Save(List<Book> books) {
@@ -236,7 +241,7 @@ namespace BusinessLogicLayer.Servers.Books.Documents {
     public class TextConfiguration {
         public TextStyle Style { get; set; } = new TextStyle();
         public string Text { get; set; } = "";
-        public (double, double) Dimensions { get; set; } = (1000, 50);
+        public (double, double) Dimensions { get; set; } = (600, 50);
         public (double, double) Position { get; set; }
     }
 }

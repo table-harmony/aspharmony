@@ -6,7 +6,7 @@ using FileIO = System.IO.File;
 using BusinessLogicLayer.Servers.Books;
 
 namespace WebApi.Controllers {
-    [Route("api/[controller]")]
+    [Route("api/books")]
     [ApiController]
     public class BooksController() : ControllerBase {
         private readonly string filePath = PathManager.GetFilePath(FolderType.Books, "Atlas.json");
@@ -37,11 +37,11 @@ namespace WebApi.Controllers {
             return CreatedAtAction(nameof(GetBook), new { id = newBook.Id }, newBook);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBook(int id, [FromBody] Book updatedBook) {
+        [HttpPut]
+        public async Task<IActionResult> UpdateBook([FromBody] Book updatedBook) {
             List<Book> books = await ReadFileAsync();
 
-            Book? book = books.FirstOrDefault(b => b.Id == id);
+            Book? book = books.FirstOrDefault(b => b.Id == updatedBook.Id);
             if (book == null) return NotFound();
 
             book.Title = updatedBook.Title;
