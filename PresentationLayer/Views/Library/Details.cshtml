@@ -9,7 +9,7 @@
     <hr />
 </div>
 
-<div class="mb-4">
+<div class="my-lg-4">
     <h5>Books in this Library</h5>
     <table class="table">
         <thead>
@@ -45,7 +45,7 @@
 </div>
 
 @if (ViewBag.Membership.Role == MembershipRole.Manager) {
-    <div class="mb-4">
+    <div class="my-lg-4">
         <h5>Add Book to Library</h5>
         <form asp-action="Details" method="get" class="mb-3">
             <div class="input-group">
@@ -97,7 +97,7 @@
     </div>
 }
 
-<div class="my-4">
+<div class="my-lg-4">
     <a asp-action="Index" class="btn btn-secondary">Back to List</a>
     @if (ViewBag.Membership.Role == MembershipRole.Manager || User.IsInRole("Admin")) {
         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>

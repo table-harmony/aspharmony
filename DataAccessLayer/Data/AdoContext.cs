@@ -3,8 +3,13 @@ using System.Data;
 
 namespace DataAccessLayer.Data {
     public class AdoContext(string connectionString) {
+
+        public SqlConnection GetConnection() {
+            return new SqlConnection(connectionString);
+        }
+
         public DataSet ExecuteQuery(string query, SqlParameter[]? parameters = null, bool isStoredProcedure = false) {
-            using SqlConnection connection = new(connectionString);
+            using SqlConnection connection = GetConnection();
             connection.Open();
 
             using SqlCommand command = new(query, connection);
@@ -23,7 +28,7 @@ namespace DataAccessLayer.Data {
         }
 
         public async Task<DataSet> ExecuteQueryAsync(string query, SqlParameter[]? parameters = null, bool isStoredProcedure = false) {
-            using SqlConnection connection = new(connectionString);
+            using SqlConnection connection = GetConnection();
             await connection.OpenAsync();
 
             using SqlCommand command = new(query, connection);

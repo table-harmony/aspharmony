@@ -13,15 +13,12 @@
         }
 
         public async Task CreateBookAsync(Book newBook) {
-            await Task.CompletedTask;
         }
 
         public async Task UpdateBookAsync(Book updatedBook) {
-            await Task.CompletedTask;
         }
 
         public async Task DeleteBookAsync(int id) {
-            await Task.CompletedTask;
         }
 
         public static Book GenerateDummyBook(int id) {

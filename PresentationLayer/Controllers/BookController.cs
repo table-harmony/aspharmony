@@ -106,8 +106,8 @@ namespace PresentationLayer.Controllers
                 Server = book.Server,
                 Title = book.Metadata?.Title ?? "Unknown",
                 Description = book.Metadata?.Description ?? "Unknown",
-                CurrentImageUrl = book.Metadata?.ImageUrl ?? "Unknown",
-                Chapters = book.Metadata?.Chapters.Select(c => new ChapterViewModel {
+                CurrentImageUrl = book.Metadata?.ImageUrl ?? "https://birkhauser.com/product-not-found.png",
+                Chapters = book.Metadata?.Chapters?.Select(c => new ChapterViewModel {
                     Index = c.Index,
                     Title = c.Title,
                     Content = c.Content
@@ -139,16 +139,16 @@ namespace PresentationLayer.Controllers
 
                 book.Server = model.Server;
 
-                if (book.Metadata == null)
-                    throw new PublicException("Metadata not found");
+                book.Metadata ??= new ServerBook() { Id = book.Id };
 
                 book.Metadata.Title = model.Title;
                 book.Metadata.Description = model.Description;
+                book.Metadata.ImageUrl = model.CurrentImageUrl;
 
                 if (model.NewImage != null) {
                     book.Metadata.ImageUrl = await fileUploader.UploadFileAsync(model.NewImage);
                 }
-
+                
                 book.Metadata.Chapters = model.Chapters.Select(c => new Chapter {
                     Index = c.Index,
                     Title = c.Title,
