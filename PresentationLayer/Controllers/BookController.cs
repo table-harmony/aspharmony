@@ -17,6 +17,7 @@ namespace PresentationLayer.Controllers
 
     [Authorize]
     public class BookController(IBookService bookService,
+                                    IEventTracker eventTracker,
                                     IFileUploader fileUploader) : Controller {
 
         public async Task<IActionResult> Index(string searchString = "") {
@@ -81,6 +82,7 @@ namespace PresentationLayer.Controllers
                 };
 
                 await bookService.CreateAsync(book);
+                await eventTracker.TrackEventAsync("Book created");
                 return RedirectToAction(nameof(Index));
             } catch (Exception ex) {
                 GetServers(model.Server);
@@ -156,6 +158,7 @@ namespace PresentationLayer.Controllers
                 }).ToList();
 
                 await bookService.UpdateAsync(book);
+                await eventTracker.TrackEventAsync("Book edited");
 
                 return RedirectToAction(nameof(Index));
             }
@@ -192,6 +195,7 @@ namespace PresentationLayer.Controllers
                 return Forbid();
 
             await bookService.DeleteAsync(id);
+            await eventTracker.TrackEventAsync("Book deleted");
 
             return RedirectToAction(nameof(Index));
         }

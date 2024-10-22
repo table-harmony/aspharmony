@@ -3,73 +3,90 @@ using Newtonsoft.Json;
 namespace Utils {
     public interface IEventTracker {
         Task<List<Event>> GetEventsAsync();
-        Task<bool> TrackEventAsync(string key);
+        Task TrackEventAsync(string key);
     }
 
-    /// <summary>
-    /// Provides functionality to track events and retrieve event data from a remote API.
-    /// </summary>
     public class EventTracker : IEventTracker {
-        private static readonly HttpClient _httpClient = new HttpClient();
-        private const string BaseUrl = "https://www.devharmony.io/api/";
-        private const string SchoolId = "j974jktgez2xkhmm8x5resd9m1710q15";
+        private static readonly HttpClient _httpClient = new();
+        private const string API_URL = "https://www.devharmony.io/api/";
+        private const string SCHOOL_ID = "j974jktgez2xkhmm8x5resd9m1710q15";
 
+        /// <summary>
+        /// Fetches a list of events from the API and converts them to a list of Event objects.
+        /// </summary>
         public async Task<List<Event>> GetEventsAsync() {
+
             try {
-                string apiUrl = $"{BaseUrl}schools/{SchoolId}";
-                HttpResponseMessage response = await _httpClient.GetAsync(apiUrl);
+                List<Event> events = [];
 
-                if (response.IsSuccessStatusCode) {
-                    string jsonResponse = await response.Content.ReadAsStringAsync();
-                    dynamic apiResponse = JsonConvert.DeserializeObject(jsonResponse);
+                var response = await _httpClient.GetAsync($"{API_URL}schools/{SCHOOL_ID}");
 
-                    List<Event> events = new List<Event>();
+                string content = await response.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<ApiResponse>(content) ?? 
+                    throw new InvalidOperationException("Failed to deserialize API response.");
 
-                    foreach (var eventItem in apiResponse.events)
-                    {
-                        DateTime creationTime = DateTimeOffset.FromUnixTimeMilliseconds((long)eventItem._creationTime).DateTime;
-                        string key = eventItem.key;
-
-                        events.Add(new Event() { CreationTime = creationTime, Key = key });
-                    }
-
-                    return events;
+                foreach (var eventItem in data.Events) {
+                    events.Add(new Event {
+                        CreationTime = DateTimeOffset.FromUnixTimeMilliseconds((long)eventItem.CreationTime).DateTime,
+                        Key = eventItem.Key
+                    });
                 }
-            }
-            catch (Exception ex) {
-                Console.WriteLine($"Error in GetEventsAsync: {ex.Message}");
-            }
 
-            return [];
-        }
+                return events;
+            } catch {
+                return [];
+            }
+          }
 
-        public async Task<bool> TrackEventAsync(string key) {
+        /// <summary>
+        /// Sends a POST request to track an event.
+        /// </summary>
+        public async Task TrackEventAsync(string key) {
             var eventPayload = new {
                 key,
-                objectId = SchoolId
+                objectId = SCHOOL_ID
             };
 
-            try {
-                string apiUrl = $"{BaseUrl}schools/{SchoolId}/events";
-                var content = new StringContent(JsonConvert.SerializeObject(eventPayload), System.Text.Encoding.UTF8, "application/json");
+            StringContent content = new(JsonConvert.SerializeObject(eventPayload),
+                System.Text.Encoding.UTF8, "application/json");
 
-                HttpResponseMessage response = await _httpClient.PostAsync(apiUrl, content);
-
-                return response.IsSuccessStatusCode;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in TrackEventAsync: {ex.Message}");
-                return false;
-            }
+            await _httpClient.PostAsync($"{API_URL}/events", content);
         }
     }
 
     /// <summary>
-    /// Represents an event with its creation time and key.
+    /// Represents the response structure from the API.
+    /// </summary>
+    public class ApiResponse {
+        [JsonProperty("school")]
+        public required School School { get; set; }
+
+        [JsonProperty("events")]
+        public List<ApiEvent> Events { get; set; } = [];
+    }
+
+    /// <summary>
+    /// Represents an event from the API.
+    /// </summary>
+    public class ApiEvent {
+        [JsonProperty("_creationTime")]
+        public double CreationTime { get; set; }
+
+        [JsonProperty("key")]
+        public required string Key { get; set; }
+    }
+
+    public class School {
+        public required string Name { get; set; }
+        public required string Description { get; set; }
+        public bool IsPublic { get; set; }
+    }
+
+    /// <summary>
+    /// Represents the Event class for internal use in tracking.
     /// </summary>
     public class Event {
         public DateTime CreationTime { get; set; }
-        public string Key { get; set; }
+        public required string Key { get; set; }
     }
 }
