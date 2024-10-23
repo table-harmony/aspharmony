@@ -78,6 +78,10 @@
     <Content Include="App_Data\Nimbus_log.ldf">
       <DependentUpon>Nimbus.mdf</DependentUpon>
     </Content>
+    <Content Include="App_Data\Stegan.mdf" />
+    <Content Include="App_Data\Stegan_log.ldf">
+      <DependentUpon>Stegan.mdf</DependentUpon>
+    </Content>
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -103,9 +107,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\Books\Stegan\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

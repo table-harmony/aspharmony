@@ -83,8 +83,10 @@ namespace PresentationLayer.Controllers
 
                 await bookService.CreateAsync(book);
                 await eventTracker.TrackEventAsync("Book created");
+
                 return RedirectToAction(nameof(Index));
             } catch (Exception ex) {
+                throw;
                 GetServers(model.Server);
 
                 string message = ex is PublicException ? ex.Message : "An error occurred while creating the book.";

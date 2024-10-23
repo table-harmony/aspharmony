@@ -6,6 +6,9 @@ using DataAccessLayer.Entities;
 using Microsoft.Extensions.Configuration;
 using System.Text.Json;
 using Utils.Exceptions;
+using Utils;
+
+using SteganMetadata = BusinessLogicLayer.Services.Stegan.IBookMetadataService;
 
 namespace BusinessLogicLayer.Servers.Books {
     public static class BooksServerFactory {
@@ -30,7 +33,8 @@ namespace BusinessLogicLayer.Servers.Books {
                     ServerType.Nimbus => new NimbusServer(serviceProvider.GetRequiredService<IBookMetadataService>(),
                                                     serviceProvider.GetRequiredService<IBookChapterService>()),
                     ServerType.Orion => new OrionServer(new BooksServiceSoapClient(BooksServiceSoapClient.EndpointConfiguration.BooksServiceSoap)),
-                    ServerType.Stegan => new SteganographyServer(),
+                    ServerType.Stegan => new SteganServer(serviceProvider.GetRequiredService<SteganMetadata>(),
+                                                    serviceProvider.GetRequiredService<IFileUploader>()),
                     ServerType.Solace => new SolaceServer(),
                     _ => throw new InvalidOperationException($"Invalid server type: {serverType}"),
                 };

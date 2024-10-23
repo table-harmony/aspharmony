@@ -12,7 +12,8 @@ using BusinessLogicLayer.Servers.Books;
 using DataAccessLayer.Repositories.Nimbus;
 using BusinessLogicLayer.Services.Nimbus;
 using Syncfusion.Licensing;
-using Utils.Senders;
+using SteganServices = BusinessLogicLayer.Services.Stegan;
+using SteganRepositories = DataAccessLayer.Repositories.Stegan;
 
 namespace PresentationLayer {
     public class Startup(IConfiguration configuration) {
@@ -54,6 +55,7 @@ namespace PresentationLayer {
             services.AddScoped<IBookChapterRepository, BookChapterRepository>();
             services.AddScoped<IUserSenderRepository, UserSenderRepository>();
             services.AddScoped<ISenderRepository, SenderRepository>();
+            services.AddScoped<SteganRepositories.IBookMetadataRepository, SteganRepositories.BookMetadataRepository>();
 
             // Register services
             services.AddScoped<IUserService, UserService>();
@@ -70,6 +72,7 @@ namespace PresentationLayer {
             services.AddScoped<IBookChapterService, BookChapterService>();
             services.AddScoped<IUserSenderService, UserSenderService>();
             services.AddScoped<ISenderService, SenderService>();
+            services.AddScoped<SteganServices.IBookMetadataService, SteganServices.BookMetadataService>();
 
             // Register utils
             services.AddTransient<IEncryption, Sha256Encryption>();

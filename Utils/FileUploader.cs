@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 
 namespace Utils {
     public interface IFileUploader {
+        Task<string> UploadFileAsync(Stream fileStream);
         Task<string> UploadFileAsync(IFormFile file);
     }
 
@@ -12,6 +13,14 @@ namespace Utils {
         private readonly string API_URL = "https://colorless-shrimp-958.convex.site";
 
         // Uploads a file and returns a URL
+        public async Task<string> UploadFileAsync(Stream fileStream) {
+            string uploadUrl = await GenerateUploadUrlAsync();
+            string storageId = await UploadToUrlAsync(uploadUrl, fileStream);
+            string fileUrl = await GetFileUrlAsync(storageId);
+
+            return fileUrl;
+        }
+
         public async Task<string> UploadFileAsync(IFormFile file) {
             string uploadUrl = await GenerateUploadUrlAsync();
             string storageId = await UploadToUrlAsync(uploadUrl, file);
@@ -31,6 +40,19 @@ namespace Utils {
         }
 
         // Uploading file to an upload url
+        private async Task<string> UploadToUrlAsync(string uploadUrl, Stream fileStream) {
+            using var content = new StreamContent(fileStream);
+            content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+
+            var response = await _httpClient.PostAsync(uploadUrl, content);
+            response.EnsureSuccessStatusCode();
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            dynamic result = JsonConvert.DeserializeObject(responseContent);
+            return result.storageId;
+        }
+
         private async Task<string> UploadToUrlAsync(string uploadUrl, IFormFile file) {
             using var content = new StreamContent(file.OpenReadStream());
             content.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
