@@ -12,6 +12,7 @@ using BusinessLogicLayer.Servers.Books;
 using DataAccessLayer.Repositories.Nimbus;
 using BusinessLogicLayer.Services.Nimbus;
 using Syncfusion.Licensing;
+using Utils.Senders;
 
 namespace PresentationLayer {
     public class Startup(IConfiguration configuration) {
@@ -51,6 +52,8 @@ namespace PresentationLayer {
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             services.AddScoped<IBookMetadataRepository, BookMetadataRepository>();
             services.AddScoped<IBookChapterRepository, BookChapterRepository>();
+            services.AddScoped<IUserSenderRepository, UserSenderRepository>();
+            services.AddScoped<ISenderRepository, SenderRepository>();
 
             // Register services
             services.AddScoped<IUserService, UserService>();
@@ -65,10 +68,13 @@ namespace PresentationLayer {
             services.AddScoped<IFeedbackService, FeedbackService>();
             services.AddScoped<IBookMetadataService, BookMetadataService>();
             services.AddScoped<IBookChapterService, BookChapterService>();
+            services.AddScoped<IUserSenderService, UserSenderService>();
+            services.AddScoped<ISenderService, SenderService>();
 
             // Register utils
             services.AddTransient<IEncryption, Sha256Encryption>();
             services.AddTransient<IFileUploader, FileUploader>();
+            services.AddTransient<ISenderFactory, SenderFactory>();
 
             // Register web services
             services.AddScoped(serviceProvider =>

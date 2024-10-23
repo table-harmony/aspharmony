@@ -1,16 +1,33 @@
-@model DataAccessLayer.Entities.User
+@model PresentationLayer.Models.AccountViewModel
 
 <h2>Account Details</h2>
 
 <div>
     <dl class="row">
         <dt class="col-sm-2">Email</dt>
-        <dd class="col-sm-10">@Model.Email</dd>
+        <dd class="col-sm-10">@Model.User.Email</dd>
 
         <dt class="col-sm-2">User Name</dt>
-        <dd class="col-sm-10">@Model.UserName</dd>
+        <dd class="col-sm-10">@Model.User.UserName</dd>
     </dl>
 </div>
+
+<h3>Notification Senders</h3>
+<div class="mb-3">
+    @foreach (var senderOption in Model.SenderOptions)
+    {
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="sender-@senderOption.Id" 
+                   @(senderOption.IsEnabled ? "checked" : "") 
+                   data-sender-id="@senderOption.Id"
+                   onchange="toggleSender(this)">
+            <label class="form-check-label" for="sender-@senderOption.Id">
+                @senderOption.Name
+            </label>
+        </div>
+    }
+</div>
+
 <div>
     <a asp-action="Update" class="btn btn-primary">Update Password</a>
     <a asp-action="Delete" class="btn btn-danger">Delete Account</a>
@@ -18,7 +35,24 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <script>
+        function toggleSender(checkbox) {
+            var senderId = checkbox.dataset.senderId;
+            var isEnabled = checkbox.checked;
+
+            fetch('/Account/ToggleSender', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: `senderId=${senderId}&isEnabled=${isEnabled}`
+            }).then(response => {
+                if (!response.ok) {
+                    checkbox.checked = !isEnabled;
+                    alert('Failed to update sender preference');
+                }
+            });
+        }
+    </script>
 }

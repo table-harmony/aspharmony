@@ -19,6 +19,11 @@
         <input asp-for="ConfirmPassword" class="form-control" type="password" />
         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
     </div>
+    <div class="form-group mb-4">
+        <label asp-for="PhoneNumber"></label>
+        <input asp-for="PhoneNumber" class="form-control" />
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+    </div>
     <button type="submit" class="btn btn-primary">Register</button>
 </form>
 

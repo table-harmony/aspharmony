@@ -10,7 +10,8 @@ using BusinessLogicLayer.Events;
 namespace PresentationLayer.Controllers
 {
     public class AccountController(UserManager<User> userManager, SignInManager<User> signInManager, 
-                    INotificationService notificationService, IEventPublisher eventPublisher) : Controller {
+                    INotificationService notificationService, IEventPublisher eventPublisher, 
+                    ISenderService senderService, IUserSenderService userSenderService) : Controller {
         
         [HttpGet]
         public IActionResult Register() {
@@ -20,11 +21,10 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model) {
             if (ModelState.IsValid) {
-                var user = new User { UserName = model.Email, Email = model.Email };
+                var user = new User { UserName = model.Email, Email = model.Email, PhoneNumber = model.PhoneNumber };
                 var result = await userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded) {
-                    await signInManager.SignInAsync(user, isPersistent: false);
                     await userManager.AddToRoleAsync(user, "Member");
                     await eventPublisher.PublishUserRegistered(user);
                     return RedirectToAction("Index", "Home");
@@ -47,14 +47,19 @@ namespace PresentationLayer.Controllers
             if (!ModelState.IsValid) 
                 return View(model);
 
-            var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+            User? user = await userManager.FindByEmailAsync(model.Email);
+
+            if (user == null || user.UserName == null) {
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return View(model);
+            }
+
+            var result = await signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
             if (!result.Succeeded) {
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-
                 return View(model);
             }
             
-            var user = await userManager.FindByEmailAsync(model.Email);
             await eventPublisher.PublishUserLoggedIn(user);
             
             return RedirectToAction("Index", "Home");
@@ -75,7 +80,22 @@ namespace PresentationLayer.Controllers
                 return NotFound();
             }
 
-            return View(user);
+            var allSenders = await senderService.GetAllAsync();
+            var userSenders = await userSenderService.GetByUserIdAsync(user.Id);
+
+            var senderOptions = allSenders.Select(s => new SenderOptionViewModel {
+                Id = s.Id,
+                Name = s.Name,
+                IsEnabled = userSenders.Any(us => us.SenderId == s.Id)
+            }).ToList();
+
+            var viewModel = new AccountViewModel
+            {
+                User = user,
+                SenderOptions = senderOptions
+            };
+
+            return View(viewModel);
         }
 
         [HttpGet]
@@ -159,6 +179,27 @@ namespace PresentationLayer.Controllers
         public async Task<IActionResult> DeleteNotification(int id) {
             await notificationService.DeleteAsync(id);
             return RedirectToAction(nameof(Notifications));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleSender(int senderId, bool isEnabled) {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null) {
+                return NotFound();
+            }
+
+            if (isEnabled) {
+                await userSenderService.CreateAsync(new UserSender { 
+                    UserId = user.Id, 
+                    SenderId = senderId 
+                });
+            }
+            else {
+                await userSenderService.DeleteAsync(user.Id, senderId);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
     }

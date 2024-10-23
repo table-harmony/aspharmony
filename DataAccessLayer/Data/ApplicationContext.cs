@@ -20,6 +20,19 @@ namespace DataAccessLayer.Data {
                 .HasForeignKey(membership => membership.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // User senders
+            modelBuilder.Entity<UserSender>()
+                .HasOne(us => us.User)
+                .WithMany(u => u.Senders)
+                .HasForeignKey(us => us.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserSender>()
+                .HasOne(us => us.Sender)
+                .WithMany(s => s.Users)
+                .HasForeignKey(us => us.SenderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Book
             modelBuilder.Entity<Book>()
                 .HasOne(b => b.Author)
@@ -97,6 +110,8 @@ namespace DataAccessLayer.Data {
                 .OnDelete(DeleteBehavior.Cascade);
         }
 
+        public DbSet<Sender> Senders { get; set; }
+        public DbSet<UserSender> UserSenders { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<Library> Libraries { get; set; }

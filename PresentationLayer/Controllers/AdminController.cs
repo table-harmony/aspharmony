@@ -88,7 +88,6 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateUserViewModel model) {
-
             try {
                 User existingUser = await userManager.FindByEmailAsync(model.Email);
 
@@ -97,7 +96,8 @@ namespace PresentationLayer.Controllers
 
                 User user = new() {
                     Email = model.Email,
-                    UserName = model.Email
+                    UserName = model.UserName,
+                    PhoneNumber = model.PhoneNumber
                 };
                 
                 var res = await userManager.CreateAsync(user, model.Password);
