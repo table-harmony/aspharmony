@@ -9,6 +9,7 @@ using Utils.Exceptions;
 using Utils;
 
 using SteganMetadata = BusinessLogicLayer.Services.Stegan.IBookMetadataService;
+using DataAccessLayer.Repositories.Nimbus;
 
 namespace BusinessLogicLayer.Servers.Books {
     public static class BooksServerFactory {
@@ -16,12 +17,12 @@ namespace BusinessLogicLayer.Servers.Books {
             var configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
             var serverSettings = configuration.GetSection("ServerSettings");
-            var enabledServers = new HashSet<ServerType>(
-                serverSettings.GetSection("EnabledServers").Get<List<ServerType>>() ?? []);
+            var disabledServers = new HashSet<ServerType>(
+                serverSettings.GetSection("DisabledServers").Get<List<ServerType>>() ?? []);
 
             return (serverType) => {
-                if (!enabledServers.Contains(serverType)) {
-                    throw new PublicException($"The server '{serverType}' is not enabled");
+                if (disabledServers.Contains(serverType)) {
+                    throw new PublicException($"The server '{serverType}' is disabled");
                 }
 
                 return serverType switch {
@@ -30,15 +31,27 @@ namespace BusinessLogicLayer.Servers.Books {
                     ServerType.Dummy => new DummyServer(),
                     ServerType.Echo => new EchoServer(),
                     ServerType.Harmony => new ApiServer($"http://{configuration["MINECRAFT_SERVICE_IP_ADDRESS"]}:8000"),
-                    ServerType.Nimbus => new NimbusServer(serviceProvider.GetRequiredService<IBookMetadataService>(),
-                                                    serviceProvider.GetRequiredService<IBookChapterService>()),
+                    ServerType.Nimbus1 => CreateNimbusServer(serviceProvider, ServerType.Nimbus1),
+                    ServerType.Nimbus2 => CreateNimbusServer(serviceProvider, ServerType.Nimbus2),
                     ServerType.Orion => new OrionServer(new BooksServiceSoapClient(BooksServiceSoapClient.EndpointConfiguration.BooksServiceSoap)),
-                    ServerType.Stegan => new SteganServer(serviceProvider.GetRequiredService<SteganMetadata>(),
-                                                    serviceProvider.GetRequiredService<IFileUploader>()),
                     ServerType.Solace => new SolaceServer(),
+                    ServerType.Stegan1 => new Stegan1Server(),
+                    ServerType.Stegan2 => new Stegan2Server(serviceProvider.GetRequiredService<SteganMetadata>(),
+                                                               serviceProvider.GetRequiredService<IFileUploader>()),
                     _ => throw new InvalidOperationException($"Invalid server type: {serverType}"),
                 };
             };
+        }
+
+        private static NimbusServer CreateNimbusServer(IServiceProvider serviceProvider, ServerType serverType) {
+            var nimbusFactory = serviceProvider.GetRequiredService<INimbusFactory>();
+
+            (var metadataRepository, var chaptersRepository) = nimbusFactory.Create(serverType);
+
+            var metadataService = new BookMetadataService(metadataRepository);
+            var chaptersService = new BookChapterService(chaptersRepository);
+
+            return new NimbusServer(metadataService, chaptersService);
         }
     }
 }

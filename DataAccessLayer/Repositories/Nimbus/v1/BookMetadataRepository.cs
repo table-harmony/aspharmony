@@ -4,16 +4,7 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using Utils;
 
-namespace DataAccessLayer.Repositories.Nimbus
-{
-    public interface IBookMetadataRepository {
-        Task<IEnumerable<BookMetadata>> GetAllAsync();
-        Task<BookMetadata?> GetAsync(int bookId);
-        Task UpdateAsync(BookMetadata metadata);
-        Task CreateAsync(BookMetadata metadata);
-        Task DeleteAsync(int bookId);
-    }
-
+namespace DataAccessLayer.Repositories.Nimbus.v1 {
     public class BookMetadataRepository : IBookMetadataRepository {
         private readonly AdoContext _context = new(PathManager.GenerateConnectionString("Nimbus.mdf"));
 
@@ -55,11 +46,10 @@ namespace DataAccessLayer.Repositories.Nimbus
 
         public async Task UpdateAsync(BookMetadata metadata) {
             string query = @"UPDATE BooksMetadata
-                SET BookId = @BookId, Title = @Title, Description = @Description, @ImageUrl = ImageUrl
-                WHERE Id = @Id";
+                SET Title = @Title, Description = @Description, @ImageUrl = ImageUrl
+                WHERE BookId = @BookId";
 
             var parameters = new[] {
-                new SqlParameter("@Id", metadata.Id),
                 new SqlParameter("@BookId", metadata.BookId),
                 new SqlParameter("@Title", metadata.Title),
                 new SqlParameter("@Description", metadata.Description),
@@ -80,7 +70,6 @@ namespace DataAccessLayer.Repositories.Nimbus
 
         private static BookMetadata MapToMetadata(DataRow row) {
             return new BookMetadata() {
-                Id = row.Field<int>("Id"),
                 BookId = row.Field<int>("BookId"),
                 Title = row.Field<string>("Title") ?? "",
                 Description = row.Field<string>("Description") ?? "",

@@ -1,5 +1,7 @@
 @model PresentationLayer.Models.CreateBookViewModel
 
+@using Utils
+
 <h2 class="mb-4">Create Book</h2>
 
 <form asp-action="Create" method="post" enctype="multipart/form-data">
@@ -23,8 +25,7 @@
 
     <div class="form-group mb-3">
         <label asp-for="Server" class="control-label"></label>
-        <select asp-for="Server" asp-items="ViewBag.Servers" class="form-control">
-        </select>
+        <select asp-for="Server" asp-items="ViewBag.Servers" class="form-control"></select>
         <span asp-validation-for="Server" class="text-danger"></span>
     </div>
 

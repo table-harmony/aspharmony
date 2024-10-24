@@ -1,5 +1,7 @@
 @model PresentationLayer.Models.EditBookViewModel
 
+@using Utils
+
 <h2 class="mb-4">Edit Book</h2>
 
 <form asp-action="Edit" enctype="multipart/form-data">
@@ -28,10 +30,9 @@
         <span asp-validation-for="NewImage" class="text-danger"></span>
     </div>
 
-    <div class="form-group mb-3">
+    <div class="form-group">
         <label asp-for="Server" class="control-label"></label>
-        <select asp-for="Server" asp-items="ViewBag.Servers" class="form-control">
-        </select>
+        <select asp-for="Server" asp-items="ViewBag.Servers" class="form-control"></select>
         <span asp-validation-for="Server" class="text-danger"></span>
     </div>
     

@@ -164,7 +164,7 @@ namespace BusinessLogicLayer.Servers.Books.Documents {
             });
             CreateShape(slide, new TextConfiguration {
                 Text = $"ImageUrl: {book.ImageUrl}",
-                Style = new TextStyle { Hyperlink = book.ImageUrl },
+                Style = new TextStyle() { Hyperlink = book.ImageUrl },
                 Position = (50, 250)
             });
         }
@@ -230,7 +230,7 @@ namespace BusinessLogicLayer.Servers.Books.Documents {
         public int BookId { get; set; }
     }
 
-    public class TextStyle {
+    class TextStyle {
         public int FontSize { get; set; } = 18;
         public bool Bold { get; set; } = false;
         public bool Italic { get; set; } = false;
@@ -238,7 +238,7 @@ namespace BusinessLogicLayer.Servers.Books.Documents {
         public string? Hyperlink { get; set; } = null;
     }
 
-    public class TextConfiguration {
+    class TextConfiguration {
         public TextStyle Style { get; set; } = new TextStyle();
         public string Text { get; set; } = "";
         public (double, double) Dimensions { get; set; } = (600, 50);

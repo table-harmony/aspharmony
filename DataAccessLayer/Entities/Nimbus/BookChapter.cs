@@ -1,11 +1,14 @@
-﻿namespace DataAccessLayer.Entities.Nimbus
-{
-    public class BookChapter
-    {
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
 
-        public int Id { get; set; }  // Primary key
+namespace DataAccessLayer.Entities.Nimbus {
+    public class BookChapter {
 
-        public int BookId { get; set; }  // Foreign key
+        [BsonId(IdGenerator = typeof(ObjectIdGenerator))]
+        public ObjectId? Id { get; set; }
+
+        public int BookId { get; set; } 
 
         public int Index { get; set; }
         public string Title { get; set; }

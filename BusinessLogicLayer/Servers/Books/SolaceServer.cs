@@ -43,6 +43,7 @@ namespace BusinessLogicLayer.Servers.Books {
             book.Title = updatedBook.Title;
             book.Description = updatedBook.Description;
             book.Chapters = updatedBook.Chapters;
+            book.ImageUrl = updatedBook.ImageUrl;
 
             SaveData();
             return Task.CompletedTask;

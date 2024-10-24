@@ -9,11 +9,14 @@ using Utils.Encryption;
 using JokesServiceReference;
 using Utils;
 using BusinessLogicLayer.Servers.Books;
-using DataAccessLayer.Repositories.Nimbus;
-using BusinessLogicLayer.Services.Nimbus;
 using Syncfusion.Licensing;
+
 using SteganServices = BusinessLogicLayer.Services.Stegan;
 using SteganRepositories = DataAccessLayer.Repositories.Stegan;
+
+using NimbusV1 = DataAccessLayer.Repositories.Nimbus.v1;
+using NimbusV2 = DataAccessLayer.Repositories.Nimbus.v2;
+using DataAccessLayer.Repositories.Nimbus;
 
 namespace PresentationLayer {
     public class Startup(IConfiguration configuration) {
@@ -51,11 +54,16 @@ namespace PresentationLayer {
             services.AddScoped<IBookLoanRepository, BookLoanRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
-            services.AddScoped<IBookMetadataRepository, BookMetadataRepository>();
-            services.AddScoped<IBookChapterRepository, BookChapterRepository>();
             services.AddScoped<IUserSenderRepository, UserSenderRepository>();
             services.AddScoped<ISenderRepository, SenderRepository>();
             services.AddScoped<SteganRepositories.IBookMetadataRepository, SteganRepositories.BookMetadataRepository>();
+
+            // Nimbus repositories
+            services.AddScoped<NimbusV1.BookMetadataRepository>();
+            services.AddScoped<NimbusV2.BookMetadataRepository>();
+            services.AddScoped<NimbusV1.BookChapterRepository>();
+            services.AddScoped<NimbusV2.BookChapterRepository>();
+            services.AddScoped<INimbusFactory, NimbusFactory>();
 
             // Register services
             services.AddScoped<IUserService, UserService>();
@@ -68,8 +76,6 @@ namespace PresentationLayer {
             services.AddScoped<IEventTracker, EventTracker>();
             services.AddScoped<IEventPublisher, EventPublisher>();
             services.AddScoped<IFeedbackService, FeedbackService>();
-            services.AddScoped<IBookMetadataService, BookMetadataService>();
-            services.AddScoped<IBookChapterService, BookChapterService>();
             services.AddScoped<IUserSenderService, UserSenderService>();
             services.AddScoped<ISenderService, SenderService>();
             services.AddScoped<SteganServices.IBookMetadataService, SteganServices.BookMetadataService>();

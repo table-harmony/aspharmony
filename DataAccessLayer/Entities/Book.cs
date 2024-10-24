@@ -1,4 +1,6 @@
-﻿namespace DataAccessLayer.Entities {
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DataAccessLayer.Entities {
 
     public enum ServerType {
         Aether,
@@ -6,10 +8,16 @@
         Dummy,
         Echo,
         Harmony,
-        Nimbus,
+        [Display(Name = "Nimbus 1.0")]
+        Nimbus1,
+        [Display(Name = "Nimbus 2.0")]
+        Nimbus2,
         Orion,
         Solace,
-        Stegan,
+        [Display(Name = "Stegan 1.0")]
+        Stegan1,
+        [Display(Name = "Stegan 2.0")]
+        Stegan2
     }
 
     public class Book {

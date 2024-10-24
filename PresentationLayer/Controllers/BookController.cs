@@ -19,7 +19,6 @@ namespace PresentationLayer.Controllers
     public class BookController(IBookService bookService,
                                     IEventTracker eventTracker,
                                     IFileUploader fileUploader) : Controller {
-
         public async Task<IActionResult> Index(string searchString = "") {
             var books = await bookService.GetAllAsync();
 
@@ -41,7 +40,7 @@ namespace PresentationLayer.Controllers
         public IActionResult Create() {
             GetServers();
 
-            return View(new CreateBookViewModel { Server = ServerType.Nimbus });
+            return View(new CreateBookViewModel { Server = ServerType.Nimbus1 });
         }
 
         public async Task<IActionResult> Details(int id) {
@@ -86,7 +85,6 @@ namespace PresentationLayer.Controllers
 
                 return RedirectToAction(nameof(Index));
             } catch (Exception ex) {
-                throw;
                 GetServers(model.Server);
 
                 string message = ex is PublicException ? ex.Message : "An error occurred while creating the book.";
@@ -202,12 +200,12 @@ namespace PresentationLayer.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private void GetServers(ServerType selectedServer = ServerType.Nimbus) {
+        private void GetServers(ServerType selectedServer = ServerType.Nimbus1) {
             ViewBag.Servers = Enum.GetValues(typeof(ServerType))
                 .Cast<ServerType>()
                 .Select(e => new SelectListItem {
                     Value = ((int)e).ToString(),
-                    Text = e.ToString(),
+                    Text = e.GetDisplayName(),
                     Selected = e == selectedServer
                 })
                 .ToList();

@@ -1,9 +1,12 @@
-﻿namespace DataAccessLayer.Entities.Nimbus
-{
-    public class BookMetadata
-    {
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
 
-        public int Id { get; set; }  // Primary key
+namespace DataAccessLayer.Entities.Nimbus {
+    public class BookMetadata {
+
+        [BsonId(IdGenerator = typeof(ObjectIdGenerator))]
+        public ObjectId? Id { get; set; }
 
         public int BookId { get; set; }  // Foreign key
 

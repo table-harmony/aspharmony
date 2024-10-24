@@ -1,13 +1,18 @@
 using BusinessLogicLayer.Events;
 using BusinessLogicLayer.Servers.Books;
 using BusinessLogicLayer.Services;
-using BusinessLogicLayer.Services.Nimbus;
 using DataAccessLayer.Data;
 using DataAccessLayer.Repositories;
 using DataAccessLayer.Repositories.Nimbus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Utils;
+
+using SteganServices = BusinessLogicLayer.Services.Stegan;
+using SteganRepositories = DataAccessLayer.Repositories.Stegan;
+
+using NimbusV1 = DataAccessLayer.Repositories.Nimbus.v1;
+using NimbusV2 = DataAccessLayer.Repositories.Nimbus.v2;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,24 +24,29 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 builder.Services.AddScoped(serviceProvider =>
     BooksServerFactory.CreateServer(serviceProvider));
 
-// Register your repositories
+// Register repositories
 builder.Services.AddScoped<ILibraryRepository, LibraryRepository>();
 builder.Services.AddScoped<ILibraryMembershipRepository, LibraryMembershipRepository>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<ILibraryBookRepository, LibraryBookRepository>();
 builder.Services.AddScoped<IBookLoanRepository, BookLoanRepository>();
-builder.Services.AddScoped<IBookMetadataRepository, BookMetadataRepository>();
-builder.Services.AddScoped<IBookChapterRepository, BookChapterRepository>();
 
-// Register your services
+// Book services
+builder.Services.AddScoped<NimbusV1.BookMetadataRepository>();
+builder.Services.AddScoped<NimbusV2.BookMetadataRepository>();
+builder.Services.AddScoped<NimbusV1.BookChapterRepository>();
+builder.Services.AddScoped<NimbusV2.BookChapterRepository>();
+builder.Services.AddScoped<INimbusFactory, NimbusFactory>();
+builder.Services.AddScoped<SteganServices.IBookMetadataService, SteganServices.BookMetadataService>();
+builder.Services.AddScoped<SteganRepositories.IBookMetadataRepository, SteganRepositories.BookMetadataRepository>();
+
+// Register services
 builder.Services.AddScoped<ILibraryService, LibraryService>();
 builder.Services.AddScoped<ILibraryMembershipService, LibraryMembershipService>();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<ILibraryBookService, LibraryBookService>();
 builder.Services.AddScoped<IBookLoanService, BookLoanService>();
 builder.Services.AddScoped<IEventPublisher, EventPublisher>();
-builder.Services.AddScoped<IBookMetadataService, BookMetadataService>();
-builder.Services.AddScoped<IBookChapterService, BookChapterService>();
 
 builder.Services.AddSwaggerGen(c => {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });

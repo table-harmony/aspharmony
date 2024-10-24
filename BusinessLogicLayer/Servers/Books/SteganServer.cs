@@ -4,13 +4,87 @@ using Utils.Encryption;
 using Utils;
 using BusinessLogicLayer.Services.Stegan;
 using DataAccessLayer.Entities.Stegan;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
-
 
 namespace BusinessLogicLayer.Servers.Books {
-    public class SteganServer(IBookMetadataService metadataService, IFileUploader fileUploader) : IBookServer {
-        private readonly HttpClient _httpClient = new HttpClient();
+    public class Stegan1Server : IBookServer {
+        private readonly string folderPath = PathManager.GetPath(FolderType.Books, "Stegan");
+        private readonly HttpClient httpClient = new();
+
+        public async Task<Book?> GetBookAsync(int id) {
+            string imagePath = Path.Combine(folderPath, $"{id}.png");
+            if (!File.Exists(imagePath)) return null;
+
+            using Bitmap image = new(imagePath);
+            string data = Steganography.Decode(image);
+
+            Book? book = DeserializeBook(data);
+            return book;
+        }
+
+        public async Task<List<Book>> GetAllBooksAsync() {
+            List<Book> books = [];
+
+            string[] files = Directory.GetFiles(folderPath, "*.png");
+
+            foreach (string imagePath in files) {
+                using Bitmap image = new(imagePath);
+                string bookData = Steganography.Decode(image);
+
+                Book? book = DeserializeBook(bookData);
+                if (book != null) books.Add(book);
+            }
+
+            return books;
+        }
+
+        public async Task CreateBookAsync(Book newBook) {
+            string data = SerializeBook(newBook);
+
+            using Bitmap image = await GetRandomImageAsync(800, 600);
+            Steganography.Encode(data, image);
+
+            string imagePath = Path.Combine(folderPath, $"{newBook.Id}.png");
+            image.Save(imagePath, System.Drawing.Imaging.ImageFormat.Png);
+        }
+
+        public async Task UpdateBookAsync(Book updatedBook) {
+            await DeleteBookAsync(updatedBook.Id);
+            await CreateBookAsync(updatedBook);
+        }
+
+        public async Task DeleteBookAsync(int id) {
+            string imagePath = Path.Combine(folderPath, $"{id}.png");
+
+            if (File.Exists(imagePath)) {
+                File.Delete(imagePath);
+            }
+        }
+
+        private async Task<Bitmap> GetRandomImageAsync(int width, int height) {
+            var response = await httpClient.GetAsync($"https://picsum.photos/{width}/{height}");
+            response.EnsureSuccessStatusCode();
+
+            using var stream = await response.Content.ReadAsStreamAsync();
+            Bitmap bitmap = new(stream);
+
+            return bitmap;
+        }
+
+        private static string SerializeBook(Book book) {
+            return JsonSerializer.Serialize(book);
+        }
+
+        private static Book? DeserializeBook(string data) {
+            try {
+                return JsonSerializer.Deserialize<Book>(data);
+            } catch (JsonException) {
+                return null;
+            }
+        }
+    }
+
+    public class Stegan2Server(IBookMetadataService metadataService, IFileUploader fileUploader) : IBookServer {
+        private readonly HttpClient _httpClient = new();
 
         public async Task<Book?> GetBookAsync(int id) {
             var metadata = await metadataService.GetAsync(id);
@@ -25,7 +99,7 @@ namespace BusinessLogicLayer.Servers.Books {
 
         public async Task<List<Book>> GetAllBooksAsync() {
             var allMetadata = await metadataService.GetAllAsync();
-            List<Book> books = [];  
+            List<Book> books = [];
 
             foreach (var metadata in allMetadata) {
                 using var imageStream = await _httpClient.GetStreamAsync(metadata.Url);

@@ -1,9 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Books>
-  <Book Id="114">
-    <Title>sfsd</Title>
-    <Description>fsfsdfsdfsdf</Description>
+  <Book Id="417">
+    <Title>Testing book</Title>
+    <Description>This is testing book</Description>
     <ImageUrl>https://birkhauser.com/product-not-found.png</ImageUrl>
-    <Chapters />
+    <Chapters>
+      <Chapter index="0">
+        <Title>sdadsas</Title>
+        <Content>dasdasdasdasdasd</Content>
+      </Chapter>
+    </Chapters>
   </Book>
 </Books>

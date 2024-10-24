@@ -1,18 +1,11 @@
 ﻿using DataAccessLayer.Data;
 using DataAccessLayer.Entities.Nimbus;
 using Microsoft.Data.SqlClient;
+using MongoDB.Bson;
 using System.Data;
 using Utils;
 
-namespace DataAccessLayer.Repositories.Nimbus
-{
-    public interface IBookChapterRepository {
-        Task<IEnumerable<BookChapter>> GetChaptersAsync(int bookId);
-        Task CreateAsync(BookChapter chapter);
-        Task UpdateAsync(BookChapter chapter);
-        Task DeleteAsync(int chapterId);
-    }
-
+namespace DataAccessLayer.Repositories.Nimbus.v1 {
     public class BookChapterRepository : IBookChapterRepository {
         private readonly AdoContext _context = new(PathManager.GenerateConnectionString("Nimbus.mdf"));
 
@@ -44,11 +37,10 @@ namespace DataAccessLayer.Repositories.Nimbus
 
         public async Task UpdateAsync(BookChapter chapter) {
             string query = @"UPDATE BookChapters
-                             SET [Index] = @Index, Title = @Title, Content = @Content
-                             WHERE Id = @Id";
+                             SET Title = @Title, Content = @Content
+                             WHERE BookId = @Id AND [Index] = @Index";
 
             var parameters = new[] {
-                new SqlParameter("@Id", chapter.Id),
                 new SqlParameter("@Index", chapter.Index),
                 new SqlParameter("@Title", chapter.Title),
                 new SqlParameter("@Content", chapter.Content)
@@ -57,10 +49,10 @@ namespace DataAccessLayer.Repositories.Nimbus
             await _context.ExecuteQueryAsync(query, parameters);
         }
 
-        public async Task DeleteAsync(int chapterId) {
+        public async Task DeleteAsync(int bookId) {
             string query = "DeleteChapter";
             var parameters = new[] {
-                new SqlParameter("@BookId", chapterId)
+                new SqlParameter("@BookId", bookId)
             };
 
             await _context.ExecuteQueryAsync(query, parameters, true);
@@ -68,7 +60,6 @@ namespace DataAccessLayer.Repositories.Nimbus
 
         private static BookChapter MapToChapter(DataRow row) {
             return new BookChapter {
-                Id = row.Field<int>("Id"),
                 BookId = row.Field<int>("BookId"),
                 Index = row.Field<int>("Index"),
                 Title = row.Field<string>("Title") ?? "",
