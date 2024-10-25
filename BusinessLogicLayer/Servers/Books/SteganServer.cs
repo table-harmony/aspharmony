@@ -10,18 +10,18 @@ namespace BusinessLogicLayer.Servers.Books {
         private readonly string folderPath = PathManager.GetPath(FolderType.Books, "Stegan");
         private readonly HttpClient httpClient = new();
 
-        public async Task<Book?> GetBookAsync(int id) {
+        public Task<Book?> GetBookAsync(int id) {
             string imagePath = Path.Combine(folderPath, $"{id}.png");
-            if (!File.Exists(imagePath)) return null;
+            if (!File.Exists(imagePath)) return Task.FromResult<Book?>(null);
 
             using Bitmap image = new(imagePath);
             string data = Steganography.Decode(image);
 
             Book? book = DeserializeBook(data);
-            return book;
+            return Task.FromResult(book);
         }
 
-        public async Task<List<Book>> GetAllBooksAsync() {
+        public Task<List<Book>> GetAllBooksAsync() {
             List<Book> books = [];
 
             string[] files = Directory.GetFiles(folderPath, "*.png");
@@ -34,7 +34,7 @@ namespace BusinessLogicLayer.Servers.Books {
                 if (book != null) books.Add(book);
             }
 
-            return books;
+            return Task.FromResult(books);
         }
 
         public async Task CreateBookAsync(Book newBook) {
@@ -52,12 +52,14 @@ namespace BusinessLogicLayer.Servers.Books {
             await CreateBookAsync(updatedBook);
         }
 
-        public async Task DeleteBookAsync(int id) {
+        public Task DeleteBookAsync(int id) {
             string imagePath = Path.Combine(folderPath, $"{id}.png");
 
             if (File.Exists(imagePath)) {
                 File.Delete(imagePath);
             }
+
+            return Task.CompletedTask;
         }
 
         private async Task<Bitmap> GetRandomImageAsync(int width, int height) {

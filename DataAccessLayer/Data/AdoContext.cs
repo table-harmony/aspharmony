@@ -41,7 +41,6 @@ namespace DataAccessLayer.Data {
             return dataSet;
         }
 
-
         public DataSet ExecuteFunction(string functionName, SqlParameter[]? parameters = null) {
             string parmetersString = "";
             if (parameters != null && parameters.Length != 0) {
