@@ -1,5 +1,4 @@
 ﻿namespace Utils.Exceptions {
-    public class PublicException : Exception {
-        public PublicException(string message) : base(message) { }
+    public class PublicException(string message) : Exception(message) {
     }
 }

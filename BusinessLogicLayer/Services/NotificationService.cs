@@ -1,13 +1,6 @@
-using BusinessLogicLayer.Servers.Books;
-using BusinessLogicLayer.Services.Nimbus;
 using DataAccessLayer.Entities;
 using DataAccessLayer.Repositories;
-using ForeignBooksServiceReference;
-using LocalBooksServiceReference;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using System.Text.Json;
-using Utils.Exceptions;
 using Utils.Senders;
 
 namespace BusinessLogicLayer.Services
@@ -46,16 +39,17 @@ namespace BusinessLogicLayer.Services
             await notificationRepository.CreateAsync(notification);
 
             var senders = await userSenderService.GetByUserIdAsync(user.Id);
-            senders.ToList()
-                .ForEach(dbSender => {
-                    var sender = senderFactory.CreateSender(dbSender.Sender.Name);
 
-                    string to = user.PhoneNumber!;
-                    if (sender is EmailSender)
-                        to = user.Email!;
+            foreach (UserSender dbSender in senders) {
+                SenderType type = (SenderType)Enum.Parse(typeof(SenderType), dbSender.Sender.Name.ToLower());
+                var sender = senderFactory.CreateSender(type);
 
-                    sender.Send(message, to);
-                });
+                string to = user.PhoneNumber!;
+                if (sender is EmailSender)
+                    to = user.Email!;
+
+                sender.Send(message, to);
+            }
         }
 
         public async Task DeleteAsync(int id) {
@@ -63,21 +57,6 @@ namespace BusinessLogicLayer.Services
             if (notification != null) {
                 await notificationRepository.DeleteAsync(id);
             }
-        }
-    }
-
-    public interface ISenderFactory {
-        public ISender CreateSender(string senderName);
-    }
-
-    public class SenderFactory(IConfiguration configuration) : ISenderFactory {
-        public ISender CreateSender(string senderName) {
-            return senderName switch {
-                "SMS" => new SMSSender(configuration),
-                "WhatsApp" => new WhatsAppSender(configuration),
-                "Email" => new EmailSender(configuration),
-                _ => throw new InvalidOperationException($"Invalid sender: {senderName}"),
-            };
         }
     }
 }

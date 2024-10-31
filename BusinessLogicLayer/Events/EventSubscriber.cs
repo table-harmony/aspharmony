@@ -71,13 +71,17 @@ namespace BusinessLogicLayer.Events {
         }
 
         private static void CreateNotification(string userId, string message) {
-            if (_serviceProvider == null)
-                return;
+            try {
+                if (_serviceProvider == null)
+                    return;
 
-            using var scope = _serviceProvider.CreateScope();
-            var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+                using var scope = _serviceProvider.CreateScope();
+                var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
 
-            notificationService.CreateAsync(userId, message).Wait();
+                notificationService.CreateAsync(userId, message).Wait();
+            } catch {
+                throw;
+            }
         }
 
         private static void NotifyLibraryMembers(int libraryId, string message) {
@@ -86,12 +90,12 @@ namespace BusinessLogicLayer.Events {
 
             using var scope = _serviceProvider.CreateScope();
             var libraryMembershipService = scope.ServiceProvider.GetRequiredService<ILibraryMembershipService>();
-            var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
 
             libraryMembershipService.GetLibraryMembers(libraryId)
                 .ToList()
-                .ForEach(member =>
-                    notificationService.CreateAsync(member.UserId, message).Wait());
+                .ForEach(member => {
+                    CreateNotification(member.User.Id, message);
+                });
         }
     }
 }

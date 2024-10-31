@@ -142,21 +142,19 @@ namespace BusinessLogicLayer.Services
         private async Task SwitchServerAsync(Book book) {
             var dbBook = await repository.GetBookAsync(book.Id);
 
-            if (dbBook == null)
+            if (dbBook == null || book.Metadata == null)
                 return;
 
             var oldServer = GetServer(dbBook.Server);
-            await oldServer.DeleteBookAsync(dbBook.Id);
-
-            if (book.Metadata == null)
-                return;
-
             var newServer = GetServer(book.Server);
-            await newServer.CreateBookAsync(book.Metadata);
 
             dbBook.Server = book.Server;
 
-            await repository.UpdateAsync(dbBook);
+            Task.WaitAll([
+                newServer.CreateBookAsync(book.Metadata),
+                oldServer.DeleteBookAsync(dbBook.Id),
+                repository.UpdateAsync(dbBook)
+            ]);
         }
 
         public async Task DeleteAsync(int id) {

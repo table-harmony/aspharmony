@@ -10,7 +10,7 @@ namespace Utils {
 
     public class FileUploader : IFileUploader {
         private readonly HttpClient _httpClient = new();
-        private readonly string API_URL = "https://colorless-shrimp-958.convex.site";
+        private readonly string API_URL = "https://hearty-sardine-346.convex.site";
 
         // Uploads a file and returns a URL
         public async Task<string> UploadFileAsync(Stream fileStream) {

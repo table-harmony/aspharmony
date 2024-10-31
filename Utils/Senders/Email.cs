@@ -1,31 +1,46 @@
 ﻿using System.Net;
 using System.Net.Mail;
 using Microsoft.Extensions.Configuration;
+using Utils.Exceptions;
+using Utils.Senders.Configuration;
 
 namespace Utils.Senders {
-    public class EmailSender(IConfiguration configuration) : ISender {
+    public class EmailSender : ISender {
+        private readonly EmailConfig _config;
+
+        public EmailSender(IConfiguration configuration) {
+            _config = new EmailConfig {
+                From = configuration["Email:From"]!,
+                Username = configuration["Email:Username"]!,
+                Password = configuration["Email:Password"]!,
+                Host = configuration["Email:Host"]!,
+                Port = int.Parse(configuration["Email:Port"]!)
+            };
+        }
+
         public void Send(string message, string to) {
-            var username = configuration["Email:SmtpUsername"];
-            var password = configuration["Email:SmtpPassword"];
-            var smtpHost = configuration["Email:SmtpHost"];
-            var smtpPort = int.Parse(configuration["Email:SmtpPort"]!);
+            try {
+                MailMessage mail = new() {
+                    From = new MailAddress(_config.From, "AspHarmony"),
+                    Subject = "Message from AspHarmony",
+                    Body = message,
+                    IsBodyHtml = false
+                };
 
-            MailMessage mail = new() {
-                From = new MailAddress(username, "AspHarmony"),
-                Subject = "AspHarmony",
-                Body = message,
-                IsBodyHtml = false
-            };
+                mail.To.Add(to);
 
-            mail.To.Add(to);
+                using SmtpClient client = new() {
+                    Host = _config.Host,
+                    Port = _config.Port,
+                    Credentials = new NetworkCredential(_config.Username, _config.Password),
+                    EnableSsl = true
+                };
 
-            using SmtpClient client = new(smtpHost) {
-                Port = smtpPort,
-                Credentials = new NetworkCredential(username, password),
-                EnableSsl = true
-            };
-
-            client.Send(mail);
+                client.Send(mail);
+            } catch { 
+                throw;
+                throw new SenderException();
+            }
         }
     }
 }

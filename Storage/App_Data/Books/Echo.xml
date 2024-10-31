@@ -29,15 +29,15 @@
     </xs:element>
   </xs:schema>
   <Books>
-    <Id>416</Id>
+    <Id>433</Id>
     <Title>Harry potter</Title>
     <Description>This is harry potter</Description>
     <ImageUrl>https://birkhauser.com/product-not-found.png</ImageUrl>
   </Books>
   <Chapters>
-    <BookId>416</BookId>
+    <BookId>433</BookId>
     <Index>0</Index>
-    <Title>First chapter of harry potter</Title>
-    <Content>This is the content of the first chapter of harry potter</Content>
+    <Title>This is the first chapter in harry potter</Title>
+    <Content>This is the content of harry potter</Content>
   </Chapters>
 </DataSet>
