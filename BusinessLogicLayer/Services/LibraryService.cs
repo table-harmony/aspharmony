@@ -7,7 +7,7 @@ namespace BusinessLogicLayer.Services {
         Task<IEnumerable<Library>> GetAllAsync();
         Task<Library?> GetLibraryAsync(int id);
         Task CreateAsync(Library library);
-        Task UpdateAsync(int id, string name);
+        Task UpdateAsync(Library library);
         Task DeleteAsync(int id);
     }
 
@@ -33,12 +33,7 @@ namespace BusinessLogicLayer.Services {
             await libraryRepository.CreateAsync(library);
         }
 
-        public async Task UpdateAsync(int id, string name) {
-            var library = await libraryRepository.GetLibraryAsync(id);
-            if (library == null)
-                throw new NotFoundException();
-         
-            library.Name = name;
+        public async Task UpdateAsync(Library library) {
             await libraryRepository.UpdateAsync(library);
         }
 

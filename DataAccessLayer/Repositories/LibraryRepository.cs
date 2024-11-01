@@ -33,7 +33,17 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task UpdateAsync(Library library) {
-            context.Libraries.Update(library);
+            Library? existingLibrary = await context.Libraries
+                .Include(l => l.Books)
+                .Include(l => l.Memberships)
+                .FirstOrDefaultAsync(l => l.Id == library.Id);
+
+            if (existingLibrary == null)
+                return;
+
+            existingLibrary.Name = library.Name;
+            existingLibrary.AllowCopies = library.AllowCopies;
+
             await context.SaveChangesAsync();
         }
 

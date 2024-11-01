@@ -38,7 +38,6 @@ namespace Utils.Senders {
 
                 client.Send(mail);
             } catch { 
-                throw;
                 throw new SenderException();
             }
         }

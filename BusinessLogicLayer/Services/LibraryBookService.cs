@@ -1,6 +1,7 @@
 ﻿using BusinessLogicLayer.Events;
 using DataAccessLayer.Repositories;
 using DataAccessLayer.Entities;
+using Utils.Exceptions;
 
 namespace BusinessLogicLayer.Services {
 
@@ -41,19 +42,28 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task CreateAsync(int libraryId, int bookId) {
-            LibraryBook? libraryBook = new() {
+            Library? library = await libraryRepository.GetLibraryAsync(libraryId);
+
+            if (library == null)
+                return;
+
+            LibraryBook? existingBook = await libraryBookRepository.GetLibraryBookAsync(libraryId, bookId);
+
+            if (existingBook != null && !library.AllowCopies)
+                return;
+
+            LibraryBook? newBook = new() {
                 LibraryId = libraryId,
                 BookId = bookId,
             };
 
-            await libraryBookRepository.CreateAsync(libraryBook);
+            await libraryBookRepository.CreateAsync(newBook);
+            newBook = await GetLibraryBookAsync(newBook.Id);
 
-            libraryBook = await GetLibraryBookAsync(libraryBook.Id);
+            if (newBook == null)
+                throw new PublicException("Library book not created");
 
-            if (libraryBook == null)
-                throw new Exception("Library book not created");
-
-            eventPublisher.PublishBookAddedToLibrary(libraryBook);
+            eventPublisher.PublishBookAddedToLibrary(newBook);
         }
 
         public async Task DeleteAsync(int id) {

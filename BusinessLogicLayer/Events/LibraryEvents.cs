@@ -11,13 +11,11 @@ namespace BusinessLogicLayer.Events {
 
     public static class LibraryEvents {
 
-        // Events
-        public static event EventHandler<LibraryMembershipEventArgs> UserJoinedLibrary;
-        public static event EventHandler<LibraryMembershipEventArgs> UserLeftLibrary;
-        public static event EventHandler<LibraryBookEventArgs> BookAddedToLibrary;
-        public static event EventHandler<LibraryBookEventArgs> BookRemovedFromLibrary;
+        public static event EventHandler<LibraryMembershipEventArgs>? UserJoinedLibrary;
+        public static event EventHandler<LibraryMembershipEventArgs>? UserLeftLibrary;
+        public static event EventHandler<LibraryBookEventArgs>? BookAddedToLibrary;
+        public static event EventHandler<LibraryBookEventArgs>? BookRemovedFromLibrary;
 
-        // Event raising methods
         public static void OnUserJoinedLibrary(LibraryMembership membership) {
             UserJoinedLibrary?.Invoke(null, new LibraryMembershipEventArgs { Membership = membership });
         }

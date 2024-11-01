@@ -41,13 +41,17 @@ namespace PresentationLayer.Controllers
                 var allBooks = await bookService.GetAllAsync();
                 var libraryBooks = await libraryBookService.GetLibraryBooksAsync(library.Id);
 
-                var availableBooks = allBooks
-                    .Where(book => !libraryBooks.Select(lb => lb.BookId).Contains(book.Id));
+                var availableBooks = allBooks;
 
                 if (!string.IsNullOrEmpty(searchString)) {
                     availableBooks = availableBooks.Where(book =>
-                        book.Metadata.Title.ToLower().Contains(searchString.ToLower()) ||
-                        book.Author.UserName.ToLower().Contains(searchString.ToLower()));
+                        book.Metadata.Title.Contains(searchString, StringComparison.CurrentCultureIgnoreCase) ||
+                        book.Author.UserName.Contains(searchString, StringComparison.CurrentCultureIgnoreCase));
+                }
+
+                if (!library.AllowCopies) {
+                    availableBooks = allBooks
+                        .Where(book => !libraryBooks.Select(lb => lb.BookId).Contains(book.Id));
                 }
 
                 ViewBag.AvailableBooks = availableBooks.ToList();
@@ -209,7 +213,8 @@ namespace PresentationLayer.Controllers
 
             LibraryViewModel viewModel = new() {
                 Id = library.Id,
-                Name = library.Name
+                Name = library.Name,
+                AllowCopies = library.AllowCopies,
             };
 
             return View(viewModel);
@@ -221,7 +226,14 @@ namespace PresentationLayer.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            await libraryService.UpdateAsync(model.Id, model.Name);
+            Library? library = await libraryService.GetLibraryAsync(model.Id);
+            if (library == null)
+                return NotFound();
+
+            library.Name = model.Name;
+            library.AllowCopies = model.AllowCopies;
+
+            await libraryService.UpdateAsync(library);
             return RedirectToAction(nameof(Details), new { id = model.Id });
         }
 
@@ -240,5 +252,6 @@ namespace PresentationLayer.Controllers
             await libraryService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
+
     }
 }

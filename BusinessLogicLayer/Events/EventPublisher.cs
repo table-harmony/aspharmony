@@ -1,9 +1,6 @@
 using DataAccessLayer.Entities;
 
-using Book = BusinessLogicLayer.Services.Book;
-
-namespace BusinessLogicLayer.Events
-{
+namespace BusinessLogicLayer.Events {
     public interface IEventPublisher {
         // User events
         Task PublishUserRegistered(User user);

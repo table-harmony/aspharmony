@@ -33,9 +33,9 @@ namespace WebApi.Controllers {
 
         // PUT: api/Library/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateLibrary(int id, string name) {
+        public async Task<IActionResult> UpdateLibrary(Library library) {
             try {
-                await libraryService.UpdateAsync(id, name);
+                await libraryService.UpdateAsync(library);
             } catch (Exception ex) {
                 return BadRequest(ex.Message);
             }
