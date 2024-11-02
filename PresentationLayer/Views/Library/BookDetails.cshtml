@@ -1,78 +1,188 @@
-@model PresentationLayer.Models.BookDetailsViewModel
-
-<h2>Book Details in Library</h2>
+@model BookDetailsViewModel
+@inject BusinessLogicLayer.Services.IBookLoanService bookLoanService
 
 @{
-    var book = Model.Book as BusinessLogicLayer.Services.Book; 
+    var book = Model.Book as BusinessLogicLayer.Services.Book;
+    ViewData["Title"] = $"{book.Metadata?.Title} - Library Book Details";
 }
 
-<div class="row">
-    <div class="col-md-8">
-        <h4>@book.Metadata.Title</h4>
-        <hr />
-        <dl class="row">
-            <dt class="col-sm-3">Description</dt>
-            <dd class="col-sm-9">@book.Metadata?.Description</dd>
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.LibraryBook.LibraryId">Library</a></li>
+        <li class="breadcrumb-item active">Book Details</li>
+    </ol>
+</nav>
 
-            <dt class="col-sm-3">Author</dt>
-            <dd class="col-sm-9">@(book.Author?.UserName ?? "Unknown")</dd>
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-8">
+                <h2 class="card-title mb-4">@book.Metadata?.Title</h2>
+                <div class="mt-3">
+                    <p><strong>Author:</strong> @(book.Author?.UserName ?? "Unknown")</p>
+                    <p><strong>Description:</strong> @book.Metadata?.Description</p>
+                    <p><strong>Status:</strong> 
+                        @if (Model.CurrentLoan != null) {
+                            <span class="badge bg-warning">On Loan</span>
+                        } else {
+                            <span class="badge bg-success">Available</span>
+                        }
+                    </p>
+                    @if (Model.CurrentLoan != null) {
+                        <p><strong>Borrowed By:</strong> @Model.CurrentLoan.LibraryMembership.User.UserName</p>
+                        <p><strong>Due Date:</strong> @Model.CurrentLoan.DueDate.ToShortDateString()</p>
+                    }
+                </div>
 
-            <dt class="col-sm-3">Status</dt>
-            <dd class="col-sm-9">
-                @if (Model.CurrentLoan != null) {
-                    <span>Currently on loan to @Model.CurrentLoan.LibraryMembership.User.UserName until @Model.CurrentLoan.DueDate.ToShortDateString()</span>
-                }
-                else {
-                    <span>Available</span>
-                }
-            </dd>
-            <dt class="col-sm-3">Image</dt>
-            <dd class="col-sm-9">
-                <img src="@book.Metadata.ImageUrl" alt="@book.Metadata.Title" style="max-width: 75px; max-height: 75px;" />
-            </dd>
-        </dl>
+                <div class="mt-4">
+                    @if (Model.CurrentLoan == null) {
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#borrowModal">
+                            Borrow
+                        </button>
+                    } else if (Model.CurrentLoan.LibraryMembership.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) {
+                        <form asp-action="ReturnBook" method="post" class="d-inline-block">
+                            <input type="hidden" name="bookLoanId" value="@Model.CurrentLoan.Id" />
+                            <button type="submit" class="btn btn-success">Return</button>
+                        </form>
+                    }
+                    @if (ViewBag.Membership.Role == MembershipRole.Manager) {
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#removeModal">
+                            Remove
+                        </button>
+                    }
+                </div>
+            </div>
+            <div class="col-md-4 d-flex align-items-center justify-content-center">
+                <div style="height: 300px; width: 100%; overflow: hidden;">
+                    <img src="@book.Metadata?.ImageUrl" alt="@book.Metadata?.Title" 
+                         class="img-fluid rounded" 
+                         style="width: 100%; height: 100%; object-fit: cover;" />
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-@if (Model.CurrentLoan == null) {
-    <form asp-action="BorrowBook" asp-route-libraryBookId="@Model.LibraryBook.Id" method="post">
-        <input type="hidden" name="libraryBookId" value="@Model.LibraryBook.Id" />
-        <div class="form-group mb-4">
-            <label for="dueDate">Due Date:</label>
-            <input type="date" name="dueDate" class="form-control" required min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="mb-0">Loan History</h3>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Borrower</th>
+                        <th>Borrowed Date</th>
+                        <th>Due Date</th>
+                        <th>Return Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var loan in Model.PastLoans.OrderByDescending(l => l.LoanDate)) {
+                        <tr>
+                            <td>@loan.LibraryMembership.User.UserName</td>
+                            <td>@loan.LoanDate.ToShortDateString()</td>
+                            <td>@loan.DueDate.ToShortDateString()</td>
+                            <td>@(loan.ReturnDate?.ToShortDateString() ?? "-")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
-        <button type="submit" class="btn btn-primary">Borrow Book</button>
-    </form>
-}
-else if (Model.CurrentLoan.LibraryMembership.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) {
-    <form asp-action="ReturnBook" method="post">
-        <input type="hidden" name="bookLoanId" value="@Model.CurrentLoan.Id" />
-        <button type="submit" class="btn btn-success">Return Book</button>
-    </form>
+    </div>
+</div>
+
+@if (Model.OtherCopies.Any()) {
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3 class="mb-0">Other Copies</h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Copy ID</th>
+                            <th>Status</th>
+                            <th>Current Borrower</th>
+                            <th>Due Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var copy in Model.OtherCopies) {
+                            var currentLoan = await bookLoanService.GetCurrentBookLoanAsync(copy.Id);
+                            <tr>
+                                <td>#@copy.Id</td>
+                                <td>
+                                    @if (currentLoan == null) {
+                                        <span class="badge bg-success">Available</span>
+                                    } else {
+                                        <span class="badge bg-warning">On Loan</span>
+                                    }
+                                </td>
+                                <td>@(currentLoan?.LibraryMembership.User.UserName ?? "-")</td>
+                                <td>@(currentLoan?.DueDate.ToShortDateString() ?? "-")</td>
+                                <td>
+                                    <a asp-action="BookDetails" asp-route-libraryBookId="@copy.Id" class="btn btn-info btn-sm">View</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 }
 
-<h3>Loan History</h3>
-<table class="table">
-    <thead>
-        <tr>
-            <th>User</th>
-            <th>Loan Date</th>
-            <th>Return Date</th>
-            <th>Due Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var loan in Model.PastLoans) {
-            <tr>
-                <td>@loan.LibraryMembership.User.UserName</td>
-                <td>@loan.LoanDate.ToShortDateString()</td>
-                <td>@(loan.ReturnDate?.ToShortDateString() ?? "Not returned")</td>
-                <td>@loan.DueDate.ToShortDateString()</td>
-            </tr>
-        }
-    </tbody>
-</table>
+<!-- Borrow Modal -->
+<div class="modal fade" id="borrowModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Borrow "@book.Metadata?.Title"</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-action="BorrowBook" method="post">
+                <div class="modal-body">
+                    <input type="hidden" name="libraryBookId" value="@Model.LibraryBook.Id" />
+                    <div class="mb-3">
+                        <label for="dueDate" class="form-label">Due Date</label>
+                        <input type="date" class="form-control" id="dueDate" name="dueDate" required 
+                               min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" 
+                               value="@DateTime.Today.AddDays(14).ToString("yyyy-MM-dd")" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Borrow</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-<div class="my-4">
-    <a asp-action="Details" asp-route-id="@Model.LibraryBook.LibraryId" class="btn btn-secondary">Back to Library</a>
+<!-- Remove Modal -->
+<div class="modal fade" id="removeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Remove Book from Library</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to remove "@book.Metadata?.Title" from this library? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form asp-action="RemoveBook" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="libraryId" value="@Model.LibraryBook.LibraryId" />
+                    <input type="hidden" name="libraryBookId" value="@Model.LibraryBook.Id" />
+                    <button type="submit" class="btn btn-danger">Remove</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

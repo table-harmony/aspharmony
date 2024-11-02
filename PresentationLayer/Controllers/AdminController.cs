@@ -5,16 +5,32 @@ using DataAccessLayer.Entities;
 using PresentationLayer.Models;
 using BusinessLogicLayer.Events;
 
-namespace PresentationLayer.Controllers
-{
+namespace PresentationLayer.Controllers {
     [Authorize(Roles = "Admin")]
     public class AdminController(UserManager<User> userManager,
                             IEventPublisher eventPublisher,
                             ILogger<AdminController> logger) : Controller {
         [HttpGet]
-        public IActionResult Index() {
-            var users = userManager.Users.ToList();
-            return View(users);
+        public async Task<IActionResult> Index(string searchString, int pageSize = 10, int pageIndex = 1) {
+            var query = userManager.Users.AsQueryable();
+            
+            if (!string.IsNullOrEmpty(searchString)) {
+                query = query.Where(u => 
+                    u.UserName.Contains(searchString) || 
+                    u.Email.Contains(searchString) ||
+                    u.PhoneNumber.Contains(searchString));
+            }
+
+            ViewBag.SearchString = searchString;
+            ViewBag.PageSize = pageSize;
+
+            var paginatedUsers = PaginatedList<User>.Create(
+                query.OrderBy(u => u.UserName),
+                pageIndex,
+                pageSize
+            );
+
+            return View(paginatedUsers);
         }
 
         [HttpGet]
@@ -60,7 +76,8 @@ namespace PresentationLayer.Controllers
 
             EditUserViewModel model = new() {
                 Id = user.Id,
-                UserName = user.UserName
+                UserName = user.UserName,
+                PhoneNumber = user.PhoneNumber
             };
 
             return View(model);

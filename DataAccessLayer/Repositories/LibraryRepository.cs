@@ -51,7 +51,7 @@ namespace DataAccessLayer.Repositories {
             Library? library = await GetLibraryAsync(id);
 
             if (library == null)
-                throw new NotFoundException();
+                return;
 
             context.Libraries.Remove(library);
             await context.SaveChangesAsync();

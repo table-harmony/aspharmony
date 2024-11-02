@@ -76,26 +76,15 @@ namespace PresentationLayer.Controllers
         [HttpGet]
         public async Task<IActionResult> Index() {
             var user = await userManager.GetUserAsync(User);
-            if (user == null) {
+            if (user == null)
                 return NotFound();
-            }
 
-            var allSenders = await senderService.GetAllAsync();
-            var userSenders = await userSenderService.GetByUserIdAsync(user.Id);
-
-            var senderOptions = allSenders.Select(s => new SenderOptionViewModel {
-                Id = s.Id,
-                Name = s.Name,
-                IsEnabled = userSenders.Any(us => us.SenderId == s.Id)
-            }).ToList();
-
-            var viewModel = new AccountViewModel
-            {
+            var model = new AccountViewModel {
                 User = user,
-                SenderOptions = senderOptions
+                UnreadNotificationsCount = await notificationService.GetUnreadCountAsync(user.Id),
             };
 
-            return View(viewModel);
+            return View(model);
         }
 
         [HttpGet]
@@ -167,16 +156,43 @@ namespace PresentationLayer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Notifications() {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var notifications = await notificationService.GetByUserAsync(userId);
+        [Authorize]
+        public async Task<IActionResult> Notifications(int pageIndex = 1, int pageSize = 10, bool unreadOnly = false)
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+                return NotFound();
 
-            return View(notifications);
+            var notifications = unreadOnly 
+                ? await notificationService.GetUnreadByUserAsync(user.Id)
+                : await notificationService.GetByUserAsync(user.Id);
+                
+            var senders = await senderService.GetAllAsync();
+            var userSenders = await userSenderService.GetByUserIdAsync(user.Id);
+
+            var model = new NotificationsViewModel {
+                Notifications = PaginatedList<Notification>.Create(
+                    notifications.OrderBy(n => n.CreatedAt),
+                    pageIndex,
+                    pageSize
+                ),
+                SenderOptions = senders.Select(s => new SenderOptionViewModel {
+                    Id = s.Id,
+                    Name = s.Name,
+                    IsEnabled = userSenders.Any(us => us.SenderId == s.Id)
+                }).ToList(),
+                PageSize = pageSize,
+                UnreadOnly = unreadOnly
+            };
+
+            return View(model);
         }
 
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteNotification(int id) {
+        public async Task<IActionResult> DeleteNotification(int id)
+        {
             await notificationService.DeleteAsync(id);
             return RedirectToAction(nameof(Notifications));
         }
@@ -200,6 +216,68 @@ namespace PresentationLayer.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile(AccountViewModel model) {
+            if (!ModelState.IsValid) {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+                return NotFound();
+            
+            user.Email = model.User.Email;
+            user.UserName = model.User.UserName;
+            user.PhoneNumber = model.User.PhoneNumber;
+
+            await userManager.UpdateAsync(user);
+            await eventPublisher.PublishUserUpdated(user);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkAsRead(int id) {
+            await notificationService.MarkAsReadAsync(id);
+            return RedirectToAction(nameof(Notifications));
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkAllAsRead() {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+                return NotFound();
+
+            await notificationService.MarkAllAsReadAsync(user.Id);
+            return RedirectToAction(nameof(Notifications));
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAll() {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+                return NotFound();
+
+            await notificationService.DeleteAsync(user.Id);
+            return RedirectToAction(nameof(Notifications));
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkAsUnread(int id) {
+            await notificationService.MarkAsUnReadAsync(id);
+            return RedirectToAction(nameof(Notifications));
         }
 
     }

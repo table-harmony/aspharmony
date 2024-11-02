@@ -1,20 +1,46 @@
 @model DataAccessLayer.Entities.User
 
-<h2>User Details</h2>
+<div class="card">
+    <div class="card-header">
+        <h2 class="mb-0">
+            <i class="bi bi-person-badge"></i> User Details
+        </h2>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">
+                <i class="bi bi-envelope"></i> Email
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Email)
+            </dd>
 
-<div>
-    <h4>User</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-info">Edit</a>
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            <dt class="col-sm-3">
+                <i class="bi bi-person"></i> Username
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.UserName)
+            </dd>
+
+            <dt class="col-sm-3">
+                <i class="bi bi-telephone"></i> Phone Number
+            </dt>
+            <dd class="col-sm-9">
+                @(string.IsNullOrEmpty(Model.PhoneNumber) ? "Not provided" : Model.PhoneNumber)
+            </dd>
+
+            <dt class="col-sm-3">
+                <i class="bi bi-calendar"></i> Created At
+            </dt>
+        </dl>
+
+        <div class="d-flex gap-2 mt-4">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Edit
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
 </div>

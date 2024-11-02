@@ -1,56 +1,74 @@
-@model PresentationLayer.Models.BookIndexViewModel
-
+@model BookIndexViewModel
 @using Utils
 
-<h2>All Books</h2>
+<div class="card mb-4">
+    <div class="card-header">
+        <h2 class="mb-0">All Books</h2>
+    </div>
+    <div class="card-body">
+        <p class="text-muted">Browse all available books or create your own to share with others.</p>
 
-<div class="d-flex mb-3">
-    <a asp-action="Create" class="btn btn-primary">Create New Book</a>
+        <div class="mb-3">
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Create New Book
+            </a>
+        </div>
+
+        <form asp-action="Index" method="get" class="mb-3">
+            <div class="input-group">
+                <input type="text" name="searchString" class="form-control" placeholder="Search books..." value="@Model.SearchString">
+                <input type="number" name="pageSize" class="form-control" style="max-width: 100px;" placeholder="Page size" value="@Model.PageSize" min="1" max="100">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Server</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Books.Items) {
+                        <tr>
+                            <td class="align-middle">
+                                <div class="d-flex align-items-center gap-2">
+                                    <img src="@item.Metadata?.ImageUrl" alt="@item.Metadata?.Title"
+                                         class="rounded" style="width: 50px; height: 70px; object-fit: cover;" />
+                                    <span>@(item.Metadata?.Title ?? "Unknown")</span>
+                                </div>
+                            </td>
+                            <td class="align-middle">@(item.Author?.UserName ?? "Unknown")</td>
+                            <td class="align-middle">@item.Server.GetDisplayName()</td>
+                            <td class="align-middle">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">
+                                    <i class="bi bi-info-circle"></i> Details
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <partial name="_PaginationPartial" model='new PaginationViewModel { PageIndex = Model.Books.PageIndex, TotalPages = Model.Books.TotalPages, PageSize = Model.PageSize }' />
+    </div>
 </div>
-
-<div class="mb-3">
-    <input type="text" id="bookSearch" class="form-control" placeholder="Search books...">
-</div>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Server</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody id="bookTableBody">
-        @foreach (var item in Model.Books) {
-            <tr class="book-row">
-                <td>
-                    @(item.Metadata?.Title ?? "Unknown")
-                </td>
-                <td>@(item.Author?.UserName ?? "Unknown")</td>
-                <td>@item.Server.GetDisplayName()</td>
-                <td>
-                    <div class="d-flex gap-2">
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
-                        @if (User.IsInRole("Admin") || User.FindFirstValue(ClaimTypes.NameIdentifier) == item.AuthorId) {
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
-                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
-                        }
-                    </div>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
 
 @section Scripts {
     <script>
         $(document).ready(function () {
             $("#bookSearch").on("keyup", function () {
                 var value = $(this).val().toLowerCase();
-                $("#bookTableBody tr").filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                $("table tbody tr").each(function () {
+                    var text = $(this).find("td:not(:last-child)").text().toLowerCase();
+                    $(this).toggle(text.indexOf(value) > -1);
                 });
             });
         });

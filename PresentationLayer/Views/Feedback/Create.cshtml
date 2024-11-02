@@ -1,31 +1,69 @@
 @model PresentationLayer.Models.CreateFeedbackViewModel
 
-<h2>Create Feedback</h2>
+<div class="card">
+    <div class="card-header">
+        <h2 class="mb-0">
+            <i class="bi bi-chat-right-quote"></i> Create Feedback
+        </h2>
+    </div>
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+            
+            <div class="mb-4">
+                <label asp-for="Title" class="form-label">
+                    <i class="bi bi-type"></i> Title
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-pencil"></i>
+                    </span>
+                    <input asp-for="Title" class="form-control" placeholder="Enter a descriptive title" />
+                </div>
+                <span asp-validation-for="Title" class="text-danger"></span>
+                <div class="form-text">Title should be between 3 and 100 characters.</div>
+            </div>
 
-<form asp-action="Create">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group mb-3">
-        <label asp-for="Title" class="control-label"></label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
-    </div>
-    <div class="form-group mb-3">
-        <label asp-for="Description" class="control-label"></label>
-        <textarea asp-for="Description" class="form-control" rows="5"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-    <div class="form-group mb-3">
-        <label asp-for="Label" class="control-label"></label>
-        <select asp-for="Label" asp-items="Html.GetEnumSelectList<DataAccessLayer.Entities.Label>()" class="form-control"></select>
-        <span asp-validation-for="Label" class="text-danger"></span>
-    </div>
-    <div class="form-group mb-3">
-        <input type="submit" value="Create" class="btn btn-primary" />
-    </div>
-</form>
+            <div class="mb-4">
+                <label asp-for="Description" class="form-label">
+                    <i class="bi bi-text-paragraph"></i> Description
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-card-text"></i>
+                    </span>
+                    <textarea asp-for="Description" class="form-control" rows="5" 
+                              placeholder="Provide detailed feedback..."></textarea>
+                </div>
+                <span asp-validation-for="Description" class="text-danger"></span>
+                <div class="form-text">Description should be between 10 and 1000 characters.</div>
+            </div>
 
-<div>
-    <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">Back to Home</a>
+            <div class="mb-4">
+                <label asp-for="Label" class="form-label">
+                    <i class="bi bi-tag"></i> Category
+                </label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-bookmark"></i>
+                    </span>
+                    <select asp-for="Label" asp-items="Html.GetEnumSelectList<DataAccessLayer.Entities.Label>()" 
+                            class="form-select"></select>
+                </div>
+                <span asp-validation-for="Label" class="text-danger"></span>
+                <div class="form-text">Select the category that best matches your feedback.</div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-send"></i> Submit Feedback
+                </button>
+                <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Home
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
 
 @section Scripts {

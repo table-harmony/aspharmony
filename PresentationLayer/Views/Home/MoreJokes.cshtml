@@ -4,20 +4,37 @@
     ViewData["Title"] = "More Jokes";
 }
 
-<h1>More Jokes</h1>
-
-<form asp-action="MoreJokes" method="get" class="mb-4">
-    <div class="input-group">
-        <label for="count" class="input-group-text">Number of jokes:</label>
-        <input type="number" id="count" name="count" class="form-control" value="@ViewBag.Count" min="1" max="50">
-        <button type="submit" class="btn btn-primary">Get Jokes</button>
+<div class="card">
+    <div class="card-header">
+        <h2 class="mb-0">
+            <i class="bi bi-emoji-laughing"></i> Jokes
+        </h2>
     </div>
-</form>
+    <div class="card-body">
+        <form asp-action="MoreJokes" method="get" class="mb-4">
+            <div class="mb-3">
+                <label for="count" class="form-label">Number of Jokes</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-123"></i>
+                    </span>
+                    <input type="number" id="count" name="count" class="form-control" 
+                           value="@ViewBag.Count" min="1" max="50" placeholder="Enter number of jokes">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Get Jokes
+                    </button>
+                </div>
+                <div class="form-text">Choose a number between 1 and 50 jokes.</div>
+            </div>
+        </form>
 
-<div class="list-group my-4">
-    @foreach (var joke in Model) {
-        <div class="list-group-item">
-            <p>@joke</p>
+        <div class="list-group">
+            @foreach (var joke in Model) {
+                <div class="list-group-item">
+                    <i class="bi bi-chat-right-quote text-primary me-2"></i>
+                    <span>@joke</span>
+                </div>
+            }
         </div>
-    }
+    </div>
 </div>

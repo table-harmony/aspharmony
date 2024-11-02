@@ -2,80 +2,97 @@
 
 @using Utils
 
-<h2 class="mb-4">Edit Book</h2>
+<div class="card mb-4">
+    <div class="card-header">
+        <h2 class="mb-0">Edit Book</h2>
+    </div>
+    <div class="card-body">
+        <form asp-action="Edit" asp-controller="Book" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Server" />
+            
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label"></label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-book"></i></span>
+                    <input asp-for="Title" class="form-control" />
+                </div>
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
 
-<form asp-action="Edit" enctype="multipart/form-data">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="Id" />
-    <div class="form-group mb-3">
-        <label asp-for="Title" class="control-label"></label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
-    </div>
-    <div class="form-group mb-3">
-        <label asp-for="Description" class="control-label"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-    
-    <div class="form-group mb-3">
-        <label class="control-label">Current Image</label>
-        <img src="@Model.CurrentImageUrl" alt="@Model.Title" style="max-width: 75px; max-height: 75px;" class="d-block mb-2" />
-        <input type="hidden" asp-for="CurrentImageUrl" />
-    </div>
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label"></label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-file-text"></i></span>
+                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                </div>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
 
-    <div class="form-group mb-3">
-        <label asp-for="NewImage" class="control-label"></label>
-        <input asp-for="NewImage" class="form-control" type="file" accept="image/*" />
-        <span asp-validation-for="NewImage" class="text-danger"></span>
-    </div>
+            <div class="mb-3">
+                <label asp-for="NewImage" class="form-label"></label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-image"></i></span>
+                    <input asp-for="NewImage" class="form-control" type="file" accept="image/*" />
+                </div>
+                <span asp-validation-for="NewImage" class="text-danger"></span>
+                <small class="text-muted">Maximum file size: 5MB. Supported formats: .jpg, .jpeg, .png</small>
+            </div>
 
-    <div class="form-group">
-        <label asp-for="Server" class="control-label"></label>
-        <select asp-for="Server" asp-items="ViewBag.Servers" class="form-control"></select>
-        <span asp-validation-for="Server" class="text-danger"></span>
-    </div>
-    
-    <h4 class="mt-4 mb-3">Chapters</h4>
-    <div id="chapters" class="row">
-        @for (int i = 0; i < Model.Chapters.Count; i++) {
-            <div class="col-md-4 mb-3 chapter-card" data-index="@i">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Chapter @(i + 1)</h5>
-                        <button type="button" class="btn btn-danger btn-sm delete-chapter">Delete</button>
-                    </div>
-                    <div class="card-body">
-                        <input type="hidden" asp-for="Chapters[i].Index" />
-                        <div class="form-group mb-4">
-                            <label asp-for="Chapters[i].Title" class="control-label">Title</label>
-                            <input asp-for="Chapters[i].Title" class="form-control" />
-                            <span asp-validation-for="Chapters[i].Title" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Chapters[i].Content" class="control-label">Content</label>
-                            <textarea asp-for="Chapters[i].Content" class="form-control" rows="3"></textarea>
-                            <span asp-validation-for="Chapters[i].Content" class="text-danger"></span>
-                        </div>
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Chapters</h4>
+                    <button type="button" class="btn btn-success btn-sm" id="addChapter">
+                        <i class="bi bi-plus-circle"></i> Add Chapter
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div id="chapters" class="row">
+                        @foreach (var chapter in Model.Chapters) {
+                            <div class="col-md-4 mb-3 chapter-card" data-index="@chapter.Index">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">Chapter @(chapter.Index + 1)</h5>
+                                        <button type="button" class="btn btn-danger btn-sm delete-chapter">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <input type="hidden" name="Chapters[@chapter.Index].Index" value="@chapter.Index" />
+                                        <div class="form-group mb-4">
+                                            <label class="control-label">Title</label>
+                                            <input name="Chapters[@chapter.Index].Title" class="form-control" value="@chapter.Title" required />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">Content</label>
+                                            <textarea name="Chapters[@chapter.Index].Content" class="form-control" rows="3" required>@chapter.Content</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
-        }
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> Save Changes
+                </button>
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </a>
+            </div>
+        </form>
     </div>
-    
-    <button type="button" id="addChapter" class="btn btn-secondary mb-3">Add Chapter</button>
-    
-    <div class="d-flex gap-2 my-4">
-        <button type="submit" class="btn btn-primary">Save</button>
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-    </div>
-</form>
+</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $(document).ready(function() {
-            let chapterCount = @Model.Chapters.Count;
+            let chapterCount = @Model.Chapters.Count
             
             $("#addChapter").click(function() {
                 const chapterHtml = `

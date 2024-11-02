@@ -1,0 +1,145 @@
+@model AddBookViewModel
+
+@{
+    ViewData["Title"] = $"Add Books to {Model.Library.Name}";
+}
+
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Libraries</a></li>
+        <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.Library.Id">@Model.Library.Name</a></li>
+        <li class="breadcrumb-item active">Add Books</li>
+    </ol>
+</nav>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h2 class="mb-0">Available Books</h2>
+    </div>
+    <div class="card-body">
+        <p class="text-muted mb-4">Select books to add to @Model.Library.Name. You can add multiple copies if allowed by the library settings.</p>
+
+        <form asp-action="AddBook" method="get" class="mb-3">
+            <input type="hidden" name="id" value="@Model.Library.Id" />
+            <div class="input-group">
+                <input type="text" name="searchString" class="form-control" placeholder="Search available books..." value="@ViewBag.SearchString">
+                <input type="number" name="pageSize" class="form-control" style="max-width: 100px;" placeholder="Page size" value="@ViewBag.PageSize" min="1" max="100">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var book in Model.AvailableBooks) {
+                        <tr>
+                            <td class="align-middle">
+                                <div class="d-flex align-items-center gap-2">
+                                    <img src="@book.Metadata?.ImageUrl" alt="@book.Metadata?.Title" 
+                                         class="rounded" style="width: 50px; height: 70px; object-fit: cover;" />
+                                    <span>@book.Metadata?.Title</span>
+                                </div>
+                            </td>
+                            <td class="align-middle">@(book.Author?.UserName ?? "Unknown")</td>
+                            <td class="align-middle">
+                                @if (!string.IsNullOrEmpty(book.Metadata?.Description)) {
+                                    @(book.Metadata.Description.Length > 100 
+                                        ? book.Metadata.Description[..100] + "..." 
+                                        : book.Metadata.Description)
+                                }
+                            </td>
+                            <td class="align-middle">
+                                <button type="button" class="btn btn-primary btn-sm"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#addBookModal"
+                                        data-book-id="@book.Id"
+                                        data-book-title="@book.Metadata?.Title">
+                                    <i class="bi bi-plus-circle"></i> Add to Library
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <partial name="_PaginationPartial" model='new PaginationViewModel { PageIndex = ViewBag.PageIndex, TotalPages = ViewBag.TotalPages, PageSize = ViewBag.PageSize }' />
+    </div>
+</div>
+
+<!-- Add Book Modal -->
+<div class="modal fade" id="addBookModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Book to Library</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-action="AddBook" method="post">
+                <div class="modal-body">
+                    <input type="hidden" name="libraryId" value="@Model.Library.Id" />
+                    <input type="hidden" id="selectedBookId" name="BookId" />
+                    
+                    <p>Add "<span id="selectedBookTitle"></span>" to @Model.Library.Name?</p>
+
+                    @if (Model.Library.AllowCopies) {
+                        <div class="mb-3">
+                            <label for="copies" class="form-label">Number of Copies</label>
+                            <input type="number" class="form-control" id="copies" name="Copies"
+                                   min="1" max="100" value="1" required />
+                            <div class="form-text">Maximum 100 copies allowed</div>
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add to Library</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a asp-action="Manage" asp-route-id="@Model.Library.Id" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Management
+    </a>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#bookSearch").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#bookTableBody tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            $('#addBookModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var bookId = button.data('book-id');
+                var bookTitle = button.data('book-title');
+                
+                $('#selectedBookId').val(bookId);
+                $('#selectedBookTitle').text(bookTitle);
+            });
+
+            $("#copies").on('input', function() {
+                var value = parseInt($(this).val());
+                if (value < 1) $(this).val(1);
+                if (value > 100) $(this).val(100);
+            });
+        });
+    </script>
+} 

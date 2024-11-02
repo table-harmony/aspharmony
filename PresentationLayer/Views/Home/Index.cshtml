@@ -1,37 +1,126 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="mt-4 p-3 bg-light rounded">
-    <h3>Have Fun!!!</h3>
-    <p class="lead">@ViewBag.Joke</p>
-    <a asp-action="Calculator" class="btn btn-primary">Calculator</a>
-    <a asp-action="MoreJokes" class="btn btn-secondary">More Jokes</a>
+<div class="hero-section mb-5 position-relative">
+    <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10"></div>
+    <div class="container py-5 position-relative">
+        <div class="row align-items-center">
+            <div class="col-lg-6 text-start">
+                <h1 class="display-3 fw-bold mb-4">
+                    <span class="text-primary">Asp</span>Harmony
+                </h1>
+                <p class="lead mb-4">
+                    Experience a modern approach to digital library management. 
+                </p>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <div class="hero-image">
+                    <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Background Circle -->
+                        <circle cx="100" cy="100" r="95" fill="white" stroke="black" stroke-width="5" />
+
+                        <!-- Book Cover -->
+                        <rect x="60" y="50" width="80" height="100" rx="5" fill="#0077cc" stroke="black" stroke-width="3" />
+
+                        <!-- Pages Lines -->
+                        <line x1="63" y1="55" x2="135" y2="55" stroke="white" stroke-width="2" />
+                        <line x1="63" y1="65" x2="135" y2="65" stroke="white" stroke-width="2" />
+                        <line x1="63" y1="75" x2="135" y2="75" stroke="white" stroke-width="2" />
+                        <line x1="63" y1="85" x2="135" y2="85" stroke="white" stroke-width="2" />
+
+                        <!-- Bookmark Ribbon -->
+                        <polygon points="90,50 105,50 100,90" fill="#ffcc00" stroke="black" stroke-width="2" />
+
+                        <!-- Smiley Face -->
+                        <circle cx="90" cy="115" r="3" fill="black" />
+                        <circle cx="110" cy="115" r="3" fill="black" />
+                        <path d="M85,130 Q100,140 115,130" stroke="black" stroke-width="2" fill="none" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="text-center p-lg-5">
-    <h1 class="display-4">Welcome to AspHarmony Library</h1>
-    <p class="lead">Your digital gateway to a world of books and knowledge.</p>
-    
-    <div class="my-5 text-center">
-        <img src="https://images.theconversation.com/files/45159/original/rptgtpxd-1396254731.jpg?ixlib=rb-4.1.0&q=45&auto=format&w=754&h=502&fit=crop&dpr=1" alt="AspHarmony Library" class="img-fluid rounded shadow" />
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-collection display-4 text-primary mb-3"></i>
+                        <h3>Explore Libraries</h3>
+                        <p class="text-muted">Discover our vast collection of digital libraries.</p>
+                        <a asp-controller="Library" asp-action="Index" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-right"></i> Browse Libraries
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-search display-4 text-primary mb-3"></i>
+                        <h3>Find Books</h3>
+                        <p class="text-muted">Search through books across various genres.</p>
+                        <a asp-controller="Book" asp-action="Index" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-right"></i> Explore Books
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-people display-4 text-primary mb-3"></i>
+                        <h3>Join Community</h3>
+                        <p class="text-muted">Become a part of our growing community.</p>
+                        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-right"></i> Sign Up
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="row mt-4 p-lg-3 mb-5">
-    <div class="col-md-4 text-center">
-        <h3>Explore Libraries</h3>
-        <p>Discover our vast collection of digital libraries.</p>
-        <a asp-controller="Library" asp-action="Index" class="btn btn-primary">Browse Libraries</a>
-    </div>
-    <div class="col-md-4 text-center">
-        <h3>Find Books</h3>
-        <p>Search through books across various genres.</p>
-        <a asp-controller="Book" asp-action="Index" class="btn btn-primary">Explore Books</a>
-    </div>
-    <div class="col-md-4 text-center">
-        <h3>Join the Community</h3>
-        <p>Become a part of our growing community.</p>
-        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-primary">Sign Up</a>
+<div class="card">
+    <div class="card-body">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center d-flex flex-column">
+                        <div class="flex-grow-1">
+                            <i class="bi bi-calculator display-4 text-success mb-3"></i>
+                            <h3>Calculator</h3>
+                            <p class="text-muted">Try our simple calculator tool.</p>
+                        </div>
+                        <div>
+                            <a asp-action="Calculator" class="btn btn-outline-success">
+                                <i class="bi bi-arrow-right"></i> Open Calculator
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center d-flex flex-column">
+                        <div class="flex-grow-1">
+                            <i class="bi bi-chat-square-quote display-4 text-info mb-3"></i>
+                            <h3>Daily Joke</h3>
+                            <p class="lead text-muted">@ViewBag.Joke</p>
+                        </div>
+                        <div>
+                            <a asp-action="MoreJokes" class="btn btn-outline-info">
+                                <i class="bi bi-arrow-right"></i> More Jokes
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

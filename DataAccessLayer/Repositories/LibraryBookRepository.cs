@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore;
 namespace DataAccessLayer.Repositories {
     public interface ILibraryBookRepository {
         Task<LibraryBook?> GetLibraryBookAsync(int id);
-        Task<LibraryBook?> GetLibraryBookAsync(int libraryId, int bookId);
         Task CreateAsync(LibraryBook book);
+        Task<IEnumerable<LibraryBook?>> GetLibraryBooksAsync(int libraryId, int bookId);
         Task<IEnumerable<LibraryBook>> GetLibraryBooksAsync(int libraryId);
         Task DeleteAsync(int id);
     }
@@ -20,12 +20,13 @@ namespace DataAccessLayer.Repositories {
                 .FirstOrDefaultAsync(lb => lb.Id == id);
         }
 
-        public async Task<LibraryBook?> GetLibraryBookAsync(int libraryId, int bookId) {
+        public async Task<IEnumerable<LibraryBook?>> GetLibraryBooksAsync(int libraryId, int bookId) {
             return await context.LibraryBooks
                 .AsNoTracking()
                 .Include(lb => lb.Library)
                 .Include(lb => lb.Book)
-                .FirstOrDefaultAsync(lb => lb.LibraryId == libraryId && lb.BookId == bookId);
+                .Where(lb => lb.LibraryId == libraryId && lb.BookId == bookId)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<LibraryBook>> GetLibraryBooksAsync(int libraryId) {

@@ -1,21 +1,163 @@
-﻿@model IEnumerable<DataAccessLayer.Entities.Notification>
+﻿@using Humanizer
+@model NotificationsViewModel
 
-<h3>Notifications</h3>
-@if (Model.Any()) {
-    <ul class="list-group">
-        @foreach (var notification in Model) {
-            <li class="list-group-item">
-                <span>@notification.Message</span>
-                <small class="text-muted">(@notification.CreatedAt.ToString())</small>
-                <form asp-action="DeleteNotification">
-                    <input type="hidden" value="@notification.Id" name="id" />
-                    <input type="submit" value="Delete" class="btn btn-danger" />
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="mb-0">
+            <i class="bi bi-bell-fill"></i> Notifications
+        </h3>
+        <div class="btn-group">
+            @if (Model.Notifications.Items.Any()) {
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAllModal">
+                    <i class="bi bi-trash"></i> Delete All
+                </button>
+            }
+            @if (Model.Notifications.Items.Any(n => !n.IsRead)) {
+                <form asp-action="MarkAllAsRead" method="post" class="d-inline ms-2">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-all"></i> Mark All as Read
+                    </button>
                 </form>
-            </li>
+            }
+            <a asp-action="Notifications" asp-route-unreadOnly="@(!Model.UnreadOnly)" class="btn btn-outline-primary ms-2">
+                <i class="bi bi-filter"></i> @(Model.UnreadOnly ? "Show All" : "Show Unread")
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        @if (!Model.Notifications.Items.Any()) {
+            <div class="text-center text-muted">
+                <i class="bi bi-bell-slash display-4"></i>
+                <p class="mt-3">No notifications @(Model.UnreadOnly ? "unread" : "")</p>
+            </div>
         }
-    </ul>
-} else {
-    <p>No notifications.</p>
-}
+        else {
+            <div class="list-group">
+                @foreach (var notification in Model.Notifications.Items) {
+                    <div class="list-group-item list-group-item-action @(!notification.IsRead ? "bg-light" : "")">
+                        <div class="d-flex w-100 justify-content-between align-items-center">
+                            <h6 class="mb-1">
+                                <i class="bi bi-envelope@(!notification.IsRead ? "-fill" : "")"></i>
+                                @notification.Message
+                            </h6>
+                            <small class="text-muted">@notification.CreatedAt.Humanize()</small>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <div>
+                                @if (!notification.IsRead) {
+                                    <form asp-action="MarkAsRead" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@notification.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-check"></i> Mark as Read
+                                        </button>
+                                    </form>
+                                } else {
+                                    <form asp-action="MarkAsUnread" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@notification.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                            <i class="bi bi-envelope"></i> Mark as Unread
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                            <form asp-action="DeleteNotification" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@notification.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
 
-<a asp-action="Index" asp-controller="Account" class="btn btn-secondary mt-4">Back</a>
+            <div class="mt-4">
+                <partial name="_PaginationPartial" model='new PaginationViewModel { PageIndex = Model.Notifications.PageIndex, TotalPages = Model.Notifications.TotalPages, PageSize = Model.PageSize }' />
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Delete All Confirmation Modal -->
+<div class="modal fade" id="deleteAllModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle-fill text-danger"></i> Delete All Notifications
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete all notifications? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x"></i> Cancel
+                </button>
+                <form asp-action="DeleteAll" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Delete All
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="mb-0">
+            <i class="bi bi-gear-fill"></i> Preferences
+        </h3>
+    </div>
+    <div class="card-body">
+        <div class="mb-3">
+            <p class="text-muted">Choose how you want to receive notifications:</p>
+        </div>
+        @foreach (var senderOption in Model.SenderOptions) {
+            <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="sender-@senderOption.Id"
+                @(senderOption.IsEnabled ? "checked" : "")
+                       data-sender-id="@senderOption.Id"
+                       onchange="toggleSender(this)">
+                <label class="form-check-label" for="sender-@senderOption.Id">
+                    <i class="bi bi-@(senderOption.Name.ToLower() switch {
+                        "email" => "envelope",
+                        "sms" => "chat-dots",
+                        "whatsapp" => "whatsapp",
+                        _ => "bell"
+                    })"></i>
+                    @senderOption.Name
+                </label>
+                <div class="form-text">Receive notifications through @senderOption.Name</div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function toggleSender(element) {
+            const senderId = element.dataset.senderId;
+            const isEnabled = element.checked;
+
+            fetch(`/Account/ToggleSender?senderId=${senderId}&isEnabled=${isEnabled}`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                }
+            }).then(response => {
+                if (!response.ok) {
+                    element.checked = !isEnabled;
+                    alert('Failed to update notification preferences');
+                }
+            });
+        }
+    </script>
+}

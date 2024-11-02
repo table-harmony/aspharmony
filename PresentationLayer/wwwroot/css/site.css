@@ -24,3 +24,86 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.hero-section {
+  overflow: hidden;
+}
+
+.hero-image {
+  position: relative;
+  text-align: center;
+  animation: float 6s ease-in-out infinite;
+}
+
+.hero-image img {
+  max-width: 90%;
+  height: auto;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 3rem 1rem;
+    text-align: center;
+  }
+
+  .hero-section h1 {
+    font-size: 2.5rem;
+  }
+
+  .hero-section .display-6 {
+    font-size: 1.5rem;
+  }
+
+  .hero-section .d-flex {
+    justify-content: center;
+  }
+}
+
+.opacity-10 {
+  opacity: 0.1;
+}
+
+.navbar {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 1rem 0;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+}
+
+.nav-link {
+  font-weight: 500;
+  padding: 0.5rem 1rem !important;
+  transition: color 0.2s ease-in-out;
+}
+
+.nav-link:hover {
+  color: var(--bs-primary) !important;
+}
+
+.footer {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+.footer a {
+  transition: color 0.2s ease-in-out;
+}
+
+.footer a:hover {
+  color: var(--bs-primary) !important;
+}

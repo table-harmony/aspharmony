@@ -1,115 +1,153 @@
-@model DataAccessLayer.Entities.Library
-@inject BusinessLogicLayer.Services.ILibraryMembershipService LibraryMembershipService
-@inject BusinessLogicLayer.Services.IBookService BookService
+@model LibraryDetailsViewModel
 
-<h2>Library Details</h2>
-
-<div class="mb-4">
-    <h4>@Model.Name</h4>
-    <hr />
-</div>
-
-<div class="my-lg-4">
-    <h5>Books in this Library</h5>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Author</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var libraryBook in Model.Books) {
-                <tr>
-                    @{ var book = (libraryBook.Book as BusinessLogicLayer.Services.Book); }
-
-                    <td>@book.Metadata?.Title</td>
-                    <td>@book.Metadata?.Description</td>
-                    <td>@(book.Author?.UserName ?? "Unknown")</td>
-                    <td>
-                        <a asp-action="BookDetails" asp-route-libraryBookId="@libraryBook.Id" class="btn btn-info btn-sm">Details</a>
-                        @if (ViewBag.Membership.Role == MembershipRole.Manager) {
-                            <form asp-action="RemoveBook" method="post" class="d-inline">
-                                <input type="hidden" name="libraryId" value="@Model.Id" />
-                                <input type="hidden" name="libraryBookId" value="@libraryBook.Id" />
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to remove this book from the library?');">Remove</button>
-                            </form>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
-
-@if (ViewBag.Membership.Role == MembershipRole.Manager) {
-    <div class="my-lg-4">
-        <h5>Add Book to Library</h5>
-        <form asp-action="Details" method="get" class="mb-3">
-            <div class="input-group">
-                <input type="text" name="searchString" class="form-control" placeholder="Search books..." value="@ViewBag.SearchString">
-                <button type="submit" class="btn btn-primary">Search</button>
-            </div>
-        </form>
-        <form asp-action="AddBook" method="post" id="addBookForm">
-            <input type="hidden" name="libraryId" value="@Model.Id" />
-            <div class="form-group mb-3">
-                <label for="bookId" class="form-label">Select a Book:</label>
-                <select name="bookId" id="bookId" class="form-select">
-                    <option value="">-- Select a book --</option>
-                    @foreach (var book in ViewBag.AvailableBooks) {
-                        <option value="@book.Id">@book.Metadata.Title by @book.Author?.UserName</option>
-                    }
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary" id="addBookButton" disabled>Add Book</button>
-        </form>
-    </div>
-
-    <div class="mb-4">
-        <h5>Members</h5>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>User Name</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var member in ViewBag.Members) {
-                    <tr>
-                        <td>@member.User.UserName</td>
-                        <td>
-                            <form asp-action="RemoveMember" method="post" class="d-inline">
-                                <input type="hidden" name="libraryId" value="@Model.Id" />
-                                <input type="hidden" name="userId" value="@member.UserId" />
-                                @if (member.User.Id != ViewBag.Membership.User.Id) {
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to remove this member from the library?');">Remove</button>
-                                }
-                            </form>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+@{
+    ViewData["Title"] = $"{Model.Library.Name} - Library Details";
 }
 
-<div class="my-lg-4">
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-    @if (ViewBag.Membership.Role == MembershipRole.Manager || User.IsInRole("Admin")) {
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
-        <a asp-action="Delete" asp-route-id="@Model.Id" asp-controller="Library" class="btn btn-danger">Delete</a>
-    }
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Libraries</a></li>
+        <li class="breadcrumb-item active">@Model.Library.Name Details</li>
+    </ol>
+</nav>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h2 class="mb-0">@Model.Library.Name</h2>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Multiple Copies Allowed:</strong> @(Model.Library.AllowCopies ? "Yes" : "No")</p>
+                <p><strong>Total Books:</strong> @Model.Library.Books.Count()</p>
+                <p><strong>Your Role:</strong> <span class="badge bg-primary">@ViewBag.Membership.Role</span></p>
+            </div>
+        </div>
+        
+        <div class="mt-3">
+            @if (ViewBag.Membership.Role == MembershipRole.Manager) {
+                <a asp-action="Manage" asp-route-id="@Model.Library.Id" class="btn btn-primary">
+                    <i class="bi bi-gear"></i> Manage
+                </a>
+            }
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#leaveModal">
+                <i class="bi bi-box-arrow-right"></i> Leave
+            </button>
+        </div>
+    </div>
 </div>
 
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="mb-0">Books</h3>
+    </div>
+    <div class="card-body">
+        <form asp-action="Details" method="get" class="mb-3">
+            <input type="hidden" name="id" value="@Model.Library.Id" />
+            <div class="input-group">
+                <input type="text" name="searchString" class="form-control" placeholder="Search books..." value="@ViewBag.SearchString">
+                <input type="number" name="pageSize" class="form-control" style="max-width: 100px;" placeholder="Page size" value="@ViewBag.PageSize" min="1" max="100">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Author</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var libraryBook in Model.Books.Items) {
+                        var book = (libraryBook.Book as BusinessLogicLayer.Services.Book);
+                        <tr>
+                            <td class="align-middle">
+                                <div class="d-flex align-items-center gap-2">
+                                    <img src="@book.Metadata?.ImageUrl" alt="@book.Metadata?.Title" 
+                                         class="rounded" style="width: 50px; height: 70px; object-fit: cover;" />
+                                    <span>@book.Metadata?.Title</span>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                @if (!string.IsNullOrEmpty(book.Metadata?.Description)) {
+                                    @(book.Metadata.Description.Length > 100 
+                                        ? book.Metadata.Description[..100] + "..." 
+                                        : book.Metadata.Description)
+                                }
+                            </td>
+                            <td class="align-middle">@(book.Author?.UserName ?? "Unknown")</td>
+                            <td class="align-middle">
+                                <a asp-action="BookDetails" asp-route-libraryBookId="@libraryBook.Id" class="btn btn-info btn-sm">
+                                    <i class="bi bi-info-circle"></i> Details
+                                </a>
+                                @if (ViewBag.Membership.Role == MembershipRole.Manager) {
+                                    <form asp-action="RemoveBook" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="libraryId" value="@Model.Library.Id" />
+                                        <input type="hidden" name="libraryBookId" value="@libraryBook.Id" />
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">
+                                            <i class="bi bi-trash"></i> Remove
+                                        </button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <partial name="_PaginationPartial" model='new PaginationViewModel { PageIndex = Model.Books.PageIndex, TotalPages = Model.Books.TotalPages, PageSize = ViewBag.PageSize }' />
+    </div>
+</div>
+
+<div class="modal fade" id="leaveModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Leave Library</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to leave "@Model.Library.Name"? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form asp-action="RemoveMember" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="libraryId" value="@Model.Library.Id" />
+                    <input type="hidden" name="userId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" />
+                    <button type="submit" class="btn btn-danger">Leave Library</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script>
-        document.getElementById('bookId').addEventListener('change', function () {
-            document.getElementById('addBookButton').disabled = !this.value;
+        $(document).ready(function () {
+            $("#bookId").on('change', function () {
+                document.getElementById('addBookButton').disabled = !this.value;
+            });
+
+            $("#copies").on('input', function() {
+                var value = parseInt($(this).val());
+                if (value < 1) $(this).val(1);
+                if (value > 100) $(this).val(100);
+            });
+
+            $("#bookSearch").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#bookTableBody tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
         });
     </script>
 }

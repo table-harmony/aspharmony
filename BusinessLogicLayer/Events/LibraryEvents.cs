@@ -32,4 +32,18 @@ namespace BusinessLogicLayer.Events {
             BookRemovedFromLibrary?.Invoke(null, new LibraryBookEventArgs { LibraryBook = libraryBook });
         }
     }
+
+    public class MemberPromotedEvent
+    {
+        public int LibraryId { get; set; }
+        public string UserId { get; set; }
+        public string PromotedBy { get; set; }
+    }
+
+    public class MemberDemotedEvent
+    {
+        public int LibraryId { get; set; }
+        public string UserId { get; set; }
+        public string DemotedBy { get; set; }
+    }
 }

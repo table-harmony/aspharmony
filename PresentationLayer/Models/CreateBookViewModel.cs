@@ -5,28 +5,41 @@ namespace PresentationLayer.Models {
     public class CreateBookViewModel {
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 1)]
-        public string Title { get; set; } = "";
+        [StringLength(100)]
+        public string Title { get; set; }
 
         [Required]
-        public string Description { get; set; } = "";
-        
-        public List<ChapterViewModel> Chapters { get; set; } = [];
+        public string Description { get; set; }
 
-        [Display(Name = "Book Image")]
+        [Display(Name = "Cover Image")]
+        [MaxFileSize(5 * 1024 * 1024)] // 5MB max
         public IFormFile? Image { get; set; }
 
-        [Required]
         public ServerType Server { get; set; }
+
+        [Display(Name = "Chapters")]
+        public List<ChapterViewModel> Chapters { get; set; } = new();
     }
 
     public class ChapterViewModel {
         public int Index { get; set; }
 
         [Required]
+        [StringLength(100)]
         public string Title { get; set; } = "";
 
         [Required]
         public string Content { get; set; } = "";
+    }
+
+    public class MaxFileSizeAttribute(int maxFileSize) : ValidationAttribute {
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext) {
+            if (value is IFormFile file) {
+                if (file.Length > maxFileSize) {
+                    return new ValidationResult($"File size cannot exceed {maxFileSize / 1024 / 1024}MB");
+                }
+            }
+            return ValidationResult.Success;
+        }
     }
 }

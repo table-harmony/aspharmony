@@ -9,6 +9,7 @@ namespace BusinessLogicLayer.Services
         IEnumerable<LibraryMembership> GetLibraryMembers(int libraryId);
         Task DeleteAsync(int libraryId, string userId);
         Task DeleteAsync(int id);
+        Task UpdateAsync(LibraryMembership membership);
         Task<LibraryMembership?> GetMembershipAsync(int libraryId, string userId);
         Task<LibraryMembership?> GetMembershipAsync(int id);
     }
@@ -50,6 +51,10 @@ namespace BusinessLogicLayer.Services
 
         public async Task<LibraryMembership?> GetMembershipAsync(int id) {
             return await membershipRepository.GetMembershipAsync(id);
+        }
+
+        public async Task UpdateAsync(LibraryMembership membership) {
+            await membershipRepository.UpdateAsync(membership);
         }
     }
 }

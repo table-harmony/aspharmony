@@ -1,48 +1,74 @@
-@model IEnumerable<DataAccessLayer.Entities.Library>
+@model PaginatedList<DataAccessLayer.Entities.Library>
 @inject BusinessLogicLayer.Services.ILibraryMembershipService LibraryMembershipService
+@inject BusinessLogicLayer.Services.ILibraryBookService LibraryBookService
 
-<h2>All Libraries</h2>
-
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New Library</a>
-</p>
-
-<form asp-action="Index" method="get" class="mb-3">
-    <div class="input-group">
-        <input type="text" name="searchString" class="form-control" placeholder="Search libraries...">
-        <button type="submit" class="btn btn-primary">Search</button>
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h2 class="mb-0">Libraries</h2>
+        <a asp-action="Create" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Create New Library
+        </a>
     </div>
-</form>
+    <div class="card-body">
+        <form asp-action="Index" method="get" class="mb-3">
+            <div class="input-group">
+                <input type="text" name="searchString" class="form-control" placeholder="Search libraries..." value="@ViewBag.SearchString">
+                <input type="number" name="pageSize" class="form-control" style="max-width: 100px;" placeholder="Page size" value="@ViewBag.PageSize" min="1" max="100">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+        </form>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody id="libraryTableBody">
-        @foreach (var library in Model) {
-            <tr class="library-row">
-                <td>@library.Name</td>
-                <td>
-                    @{
-                        string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                        LibraryMembership membership = await LibraryMembershipService.GetMembershipAsync(library.Id, userId);
-                        if (membership != null) {
-                            <a asp-action="Details" asp-route-id="@library.Id" class="btn btn-info btn-sm">Details</a>
-                        } else {
-                            <form asp-action="Join" asp-route-id="@library.Id" asp-controller="Library" method="post" style="display: inline;">
-                                <input type="hidden" name="libraryId" value="@library.Id" />
-                                <button type="submit" class="btn btn-primary btn-sm">Join</button>
-                            </form>
-                        }
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Multiple Copies</th>
+                        <th>Total Books</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var library in Model.Items) {
+                        <tr>
+                            <td>@library.Name</td>
+                            <td>@(library.AllowCopies ? "Yes" : "No")</td>
+                            <td>@((await LibraryBookService.GetLibraryBooksAsync(library.Id)).Count())</td>
+                            <td>
+                                @{
+                                    string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                                    var membership = await LibraryMembershipService.GetMembershipAsync(library.Id, userId);
+                                    if (membership != null) {
+                                        <a asp-action="Details" asp-route-id="@library.Id" class="btn btn-info btn-sm">
+                                            <i class="bi bi-info-circle"></i> Details
+                                        </a>
+                                        @if (membership.Role == MembershipRole.Manager) {
+                                            <a asp-action="Manage" asp-route-id="@library.Id" class="btn btn-primary btn-sm">
+                                                <i class="bi bi-gear"></i> Manage
+                                            </a>
+                                        }
+                                    } else {
+                                        <form asp-action="Join" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="libraryId" value="@library.Id" />
+                                            <button type="submit" class="btn btn-success btn-sm">
+                                                <i class="bi bi-person-plus"></i> Join
+                                            </button>
+                                        </form>
+                                    }
+                                }
+                            </td>
+                        </tr>
                     }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                </tbody>
+            </table>
+        </div>
+        
+        <partial name="_PaginationPartial" model='new PaginationViewModel { PageIndex = Model.PageIndex, TotalPages = Model.TotalPages, PageSize = ViewBag.PageSize }' />
+    </div>
+</div>
 
 @section Scripts {
     <script>

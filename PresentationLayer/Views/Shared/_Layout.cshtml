@@ -5,59 +5,120 @@
 @inject UserManager<User> UserManager
 
 <!DOCTYPE html>
-<html lang="en" class="h-100">
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - AspHarmony</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/AspHarmony.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .dropdown-menu {
+            z-index: 9999 !important;
+        }
+        
+        .navbar {
+            z-index: 1030;
+        }
+
+        .dropdown {
+            position: relative !important;
+        }
+
+        .navbar-nav .dropdown-menu {
+            position: absolute !important;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1 0 auto;
+        }
+
+        .footer {
+            flex-shrink: 0;
+            position: relative;
+            width: 100%;
+            bottom: 0;
+            margin-top: auto;
+        }
+    </style>
 </head>
-<body class="d-flex flex-column h-100">
-    <header class="footer">
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AspHarmony</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+<body class="d-flex flex-column min-vh-100 mb-0">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-book text-primary me-2"></i>
+                    <span class="fw-bold"><span class="text-primary">Asp</span>Harmony</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        @if (SignInManager.IsSignedIn(User)) {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Library" asp-action="Index">Libraries</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Book" asp-action="Index">Books</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Feedback" asp-action="Create">Feedback</a>
-                            </li>
-                        }
-                        @if (User.IsInRole("Admin")) {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
-                            </li>
-                        }
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Book" asp-action="Index">
+                                <i class="bi bi-book"></i> Books
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Library" asp-action="Index">
+                                <i class="bi bi-collection"></i> Libraries
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Feedback" asp-action="Create">
+                                <i class="bi bi-chat-dots"></i> Feedback
+                            </a>
+                        </li>
                     </ul>
                     <ul class="navbar-nav">
-                        @if (SignInManager.IsSignedIn(User)) {
+                        @if (User.Identity?.IsAuthenticated ?? false) {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-person-circle"></i> Account
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Account" asp-action="Index">
+                                            <i class="bi bi-person"></i> Profile
+                                        </a>
+                                    </li>
+                                    @if (User.IsInRole("Admin")) {
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Admin" asp-action="Index">
+                                                <i class="bi bi-shield-lock"></i> Admin
+                                            </a>
+                                        </li>
+                                    }
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form asp-controller="Account" asp-action="Logout" method="post">
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="bi bi-box-arrow-right"></i> Logout
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
                             <li class="nav-item">
-                                <a id="manage" class="nav-link text-dark" asp-controller="Account" asp-action="Index" title="Manage">Account</a>
+                                <a class="nav-link" asp-controller="Account" asp-action="Register">
+                                    <i class="bi bi-person-plus"></i> Register
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <form id="logoutForm" class="form-inline" asp-controller="Account" asp-action="Logout">
-                                    <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
-                                </form>
-                            </li>
-                        } else {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" id="register" asp-controller="Account" asp-action="Register">Register</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" id="login" asp-controller="Account" asp-action="Login">Login</a>
+                                <a class="nav-link" asp-controller="Account" asp-action="Login">
+                                    <i class="bi bi-box-arrow-in-right"></i> Login
+                                </a>
                             </li>
                         }
                     </ul>
@@ -65,15 +126,27 @@
             </div>
         </nav>
     </header>
+
     <main class="flex-shrink-0">
-        <div class="container">
+        <div class="container mb-5">
             @RenderBody()
         </div>
     </main>
 
-    <footer class="footer mt-auto py-3 bg-light mt-4">
+    <footer class="footer mt-auto py-4 bg-light border-top">
         <div class="container">
-            <span class="text-muted">&copy; 2023 - AspHarmony</span>
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <span class="text-muted">
+                        &copy; @DateTime.Now.Year - AspHarmony - All rights reserved
+                    </span>
+                </div>
+                <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+                    <a href="https://github.com/table-harmony/aspharmony" class="text-muted text-decoration-none me-3">
+                        <i class="bi bi-github"></i> GitHub
+                    </a>
+                </div>
+            </div>
         </div>
     </footer>
 

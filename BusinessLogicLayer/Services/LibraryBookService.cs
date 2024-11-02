@@ -7,8 +7,8 @@ namespace BusinessLogicLayer.Services {
 
     public interface ILibraryBookService {
         Task<LibraryBook?> GetLibraryBookAsync(int id);
-        Task<LibraryBook?> GetLibraryBookAsync(int libraryId, int bookId);
         Task CreateAsync(int libraryId, int bookId);
+        Task<IEnumerable<LibraryBook?>> GetLibraryBooksAsync(int libraryId, int bookId);
         Task<IEnumerable<LibraryBook>> GetLibraryBooksAsync(int libraryId);
         Task DeleteAsync(int id);
     }
@@ -25,12 +25,8 @@ namespace BusinessLogicLayer.Services {
             return libraryBook;
         }
 
-        public async Task<LibraryBook?> GetLibraryBookAsync(int libraryId, int bookId) {
-            var libraryBook = await libraryBookRepository.GetLibraryBookAsync(libraryId, bookId);
-            if (libraryBook != null) {
-                libraryBook.Book = await bookService.GetBookAsync(bookId);
-            }
-            return libraryBook;
+        public async Task<IEnumerable<LibraryBook?>> GetLibraryBooksAsync(int libraryId, int bookId) {
+            return await libraryBookRepository.GetLibraryBooksAsync(libraryId, bookId);
         }
 
         public async Task<IEnumerable<LibraryBook>> GetLibraryBooksAsync(int libraryId) {
@@ -47,9 +43,9 @@ namespace BusinessLogicLayer.Services {
             if (library == null)
                 return;
 
-            LibraryBook? existingBook = await libraryBookRepository.GetLibraryBookAsync(libraryId, bookId);
+            var existingBooks = await libraryBookRepository.GetLibraryBooksAsync(libraryId, bookId);
 
-            if (existingBook != null && !library.AllowCopies)
+            if (existingBooks.Any() && !library.AllowCopies)
                 return;
 
             LibraryBook? newBook = new() {

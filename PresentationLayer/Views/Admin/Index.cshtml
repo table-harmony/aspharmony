@@ -1,49 +1,92 @@
-﻿@model IEnumerable<DataAccessLayer.Entities.User>
+﻿@model PaginatedList<DataAccessLayer.Entities.User>
 
-<h2>Manage Users</h2>
+<div class="card">
+    <div class="card-header">
+        <h2 class="mb-0">
+            <i class="bi bi-shield-lock"></i> Admin Dashboard
+        </h2>
+    </div>
+    <div class="card-body">
+        <div class="d-flex gap-3 flex-wrap mb-4">
+            <a asp-controller="Admin" asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-person-plus"></i> Create User
+            </a>
+            <a asp-controller="Feedback" asp-action="Index" class="btn btn-success">
+                <i class="bi bi-chat-right-text"></i> View Feedbacks
+            </a>
+        </div>
+        
+        <form asp-action="Index" method="get" class="mb-3">
+            <div class="input-group">
+                <input type="text" name="searchString" class="form-control" placeholder="Search users..." value="@ViewBag.SearchString">
+                <input type="number" name="pageSize" class="form-control" style="max-width: 100px;" placeholder="Page size" value="@ViewBag.PageSize" min="1" max="100">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+        </form>
 
-<div class="mb-3">
-    <input type="text" id="userSearch" class="form-control" placeholder="Search users...">
-</div>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Username</th>
+                        <th>Phone</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.Items) {
+                        <tr>
+                            <td>@user.Email</td>
+                            <td>@user.UserName</td>
+                            <td>@(string.IsNullOrEmpty(user.PhoneNumber) ? "-" : user.PhoneNumber)</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-warning btn-sm">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@user.Id" class="btn btn-info btn-sm">
+                                        <i class="bi bi-info-circle"></i> Details
+                                    </a>
+                                    <button type="button" class="btn btn-danger btn-sm" 
+                                            onclick="confirmDelete('@user.Id', '@user.UserName')">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Email</th>
-            <th>User Name</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody id="userTableBody">
-        @foreach (var user in Model) {
-            <tr>
-                <td>@user.Email</td>
-                <td>@user.UserName</td>
-                <td>
-                    <a asp-action="Details" asp-controller="Admin" asp-route-id="@user.Id" class="btn btn-primary">Details</a>
-                    <a asp-action="Edit" asp-controller="Admin" asp-route-id="@user.Id" class="btn btn-info">Edit</a>
-                    <a asp-action="Delete" asp-controller="Admin" asp-route-id="@user.Id" class="btn btn-danger">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+        <partial name="_PaginationPartial" model='new PaginationViewModel { 
+            PageIndex = Model.PageIndex, 
+            TotalPages = Model.TotalPages, 
+            PageSize = ViewBag.PageSize 
+        }' />
 
-
-<div>
-    <a asp-action="Create" asp-controller="Admin" class="btn btn-primary">Create user</a>
-    <a asp-action="Index" asp-controller="Feedback" class="btn btn-info">Feedbacks</a>
+        <partial name="_DeleteModalPartial" model='new DeleteModalViewModel { 
+            ItemType = "user",
+            DeleteAction = "DeleteConfirmed",
+            DeleteController = "Admin"
+        }' />
+    </div>
 </div>
 
 @section Scripts {
     <script>
-        $(document).ready(function () {
-            $("#userSearch").on("keyup", function () {
-                var value = $(this).val().toLowerCase();
-                $("#userTableBody tr").filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-            });
-        });
+        function confirmDelete(id, username) {
+            const modal = document.getElementById('deleteModal');
+            const form = modal.querySelector('#deleteForm');
+            const itemName = modal.querySelector('#deleteItemName');
+            
+            form.action = `/Admin/DeleteConfirmed/${id}`;
+            itemName.textContent = `user "${username}"`;
+            
+            new bootstrap.Modal(modal).show();
+        }
     </script>
 }

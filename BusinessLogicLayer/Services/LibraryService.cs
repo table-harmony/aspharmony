@@ -40,9 +40,9 @@ namespace BusinessLogicLayer.Services {
         public async Task DeleteAsync(int id) {
             var library = await libraryRepository.GetLibraryAsync(id);
             if (library == null)
-                throw new NotFoundException();
+                return;
 
-            await libraryRepository.DeleteAsync(library.Id);
+            await libraryRepository.DeleteAsync(id);
         }
 
     }

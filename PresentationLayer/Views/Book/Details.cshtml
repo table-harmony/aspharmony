@@ -1,32 +1,72 @@
 @model BusinessLogicLayer.Services.Book
 @using Utils
 
-<h2 class="mb-4">Book Details</h2>
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Books</a></li>
+        <li class="breadcrumb-item active">@(Model.Metadata?.Title ?? "Unknown") Details</li>
+    </ol>
+</nav>
 
 <div class="card mb-4">
-    <div class="card-body d-flex gap-4 pb-2">
-        <img src="@Model.Metadata?.ImageUrl" alt="@Model.Metadata?.Title" style="max-width: 75px; max-height: 75px;" />
-        <div>
-            <h4 class="card-title">@Model.Metadata?.Title</h4>
-            <p class="card-text">@Model.Metadata?.Description</p>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-8">
+                <h2 class="card-title mb-4">@Model.Metadata?.Title</h2>
+                <div class="mt-3">
+                    <p><strong>Author:</strong> @(Model.Author?.UserName ?? "Unknown")</p>
+                    <p><strong>Description:</strong> @Model.Metadata?.Description</p>
+                    <p><strong>Total Chapters:</strong> @(Model.Metadata?.Chapters?.Count ?? 0)</p>
+                </div>
+                
+                <div class="mt-4">
+                    @{
+                        string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+                        if (Model.AuthorId == userId) {
+                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="col-md-4">
+                <img src="@Model.Metadata?.ImageUrl" alt="@Model.Metadata?.Title" class="img-fluid rounded" style="max-height: 300px; width: 100%; object-fit: contain;" />
+            </div>
         </div>
     </div>
 </div>
 
-<h5 class="mb-3">Chapters</h5>
-@if (Model.Metadata?.Chapters != null) {
-    @foreach (var chapter in Model.Metadata.Chapters) {
-        <div class="card mb-3">
-            <div class="card-header">
-                <h6 class="my-2">@chapter.Title</h6>
-            </div>
-            <div class="card-body">
-                <p>@chapter.Content</p>
+@if (Model.Metadata?.Chapters != null && Model.Metadata.Chapters.Any()) {
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3 class="mb-0">Book Content</h3>
+        </div>
+        <div class="card-body">
+            <div class="accordion" id="chaptersAccordion">
+                @foreach (var chapter in Model.Metadata.Chapters.OrderBy(c => c.Index)) {
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                    data-bs-target="#chapter@(chapter.Index)">
+                                @chapter.Title
+                            </button>
+                        </h2>
+                        <div id="chapter@(chapter.Index)" class="accordion-collapse collapse" data-bs-parent="#chaptersAccordion">
+                            <div class="accordion-body">
+                                <p class="mb-0">@chapter.Content</p>
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
-    }
+    </div>
+} else {
+    <div class="alert alert-info">
+        <p class="mb-0">No chapters available for this book.</p>
+    </div>
 }
-
-<div class="d-flex gap-2 my-4">
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-</div>

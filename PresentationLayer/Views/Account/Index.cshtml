@@ -1,58 +1,219 @@
 @model PresentationLayer.Models.AccountViewModel
 
-<h2>Account Details</h2>
+<div class="row g-4">
+    <!-- Profile Information -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-person-badge"></i> Information
+                </h2>
+            </div>
+            <div class="card-body">
+                <form asp-action="UpdateProfile" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
-<div>
-    <dl class="row">
-        <dt class="col-sm-2">Email</dt>
-        <dd class="col-sm-10">@Model.User.Email</dd>
+                    <div class="mb-3">
+                        <label asp-for="User.UserName" class="form-label">
+                            <i class="bi bi-person"></i> Username
+                        </label>
+                        <input asp-for="User.UserName" class="form-control" />
+                        <span asp-validation-for="User.UserName" class="text-danger"></span>
+                    </div>
 
-        <dt class="col-sm-2">User Name</dt>
-        <dd class="col-sm-10">@Model.User.UserName</dd>
-    </dl>
-</div>
+                    <div class="mb-3">
+                        <label asp-for="User.Email" class="form-label">
+                            <i class="bi bi-envelope"></i> Email Address
+                        </label>
+                        <input asp-for="User.Email" class="form-control" placeholder="user@example.com" />
+                        <span asp-validation-for="User.Email" class="text-danger"></span>
+                        <div class="form-text">Used for notifications and account recovery.</div>
+                    </div>
 
-<h3>Notification Senders</h3>
-<div class="mb-3">
-    @foreach (var senderOption in Model.SenderOptions)
-    {
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="sender-@senderOption.Id" 
-                   @(senderOption.IsEnabled ? "checked" : "") 
-                   data-sender-id="@senderOption.Id"
-                   onchange="toggleSender(this)">
-            <label class="form-check-label" for="sender-@senderOption.Id">
-                @senderOption.Name
-            </label>
+                    <div class="mb-4">
+                        <label asp-for="User.PhoneNumber" class="form-label">
+                            <i class="bi bi-phone"></i> Phone Number
+                        </label>
+                        <input asp-for="User.PhoneNumber" class="form-control" placeholder="+1234567890" />
+                        <span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
+                        <div class="form-text">For SMS notifications (optional).</div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Save Changes
+                        </button>
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                            <i class="bi bi-key"></i> Change Password
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-    }
+    </div>
+
+    <!-- Notifications Section -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h3 class="mb-0">
+                    <i class="bi bi-bell"></i> Notifications
+                    @if (Model.UnreadNotificationsCount > 0) {
+                        <span class="badge bg-danger float-end">@Model.UnreadNotificationsCount</span>
+                    }
+                </h3>
+            </div>
+            <div class="card-body">
+                <p class="mb-3">
+                    You currently have <strong>
+                        @Model.UnreadNotificationsCount unread
+                        @(Model.UnreadNotificationsCount == 1 ? "notification" : "notifications")
+                    </strong>.
+                </p>
+                <a asp-action="Notifications" class="btn btn-info">
+                    <i class="bi bi-bell"></i> View Notifications
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="col-12">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h3 class="mb-0">
+                    <i class="bi bi-exclamation-triangle"></i> Danger Zone
+                </h3>
+            </div>
+            <div class="card-body">
+                <p class="mb-3">
+                    You can delete your account if you're done with it
+                </p>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                    <i class="bi bi-trash"></i> Delete Account
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div>
-    <a asp-action="Update" class="btn btn-primary">Update Password</a>
-    <a asp-action="Delete" class="btn btn-danger">Delete Account</a>
-    <a asp-action="Notifications" class="btn btn-info">Notifications</a>
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">
+                    <i class="bi bi-shield-lock"></i> Change Password
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="UpdatePassword" method="post">
+                    <div class="mb-3">
+                        <label for="currentPassword" class="form-label">
+                            <i class="bi bi-lock"></i> Current Password
+                        </label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="currentPassword" name="CurrentPassword" required>
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('currentPassword')">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-text">Enter your current password to verify your identity.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">
+                            <i class="bi bi-key"></i> New Password
+                        </label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="newPassword" name="NewPassword" required>
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('newPassword')">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-text">Password must be at least 6 characters long and contain letters, numbers, and special characters.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="confirmPassword" class="form-label">
+                            <i class="bi bi-key-fill"></i> Confirm New Password
+                        </label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="confirmPassword" name="ConfirmPassword" required>
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('confirmPassword')">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-text">Re-enter your new password to confirm.</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </button>
+                <button type="submit" form="updatePasswordForm" class="btn btn-warning">
+                    <i class="bi bi-shield-check"></i> Update Password
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Delete Account Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle-fill text-danger"></i> Delete Account
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-circle"></i> Warning: This action cannot be undone!
+                </div>
+                <p>Are you sure you want to permanently delete your account? This will:</p>
+                <ul>
+                    <li>Remove all your personal information</li>
+                    <li>Delete all your notifications</li>
+                    <li>Remove your notification preferences</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </button>
+                <form asp-action="DeleteConfirmed" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Delete Account
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
     <script>
-        function toggleSender(checkbox) {
-            var senderId = checkbox.dataset.senderId;
-            var isEnabled = checkbox.checked;
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.nextElementSibling;
+            const icon = button.querySelector('i');
 
-            fetch('/Account/ToggleSender', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                },
-                body: `senderId=${senderId}&isEnabled=${isEnabled}`
-            }).then(response => {
-                if (!response.ok) {
-                    checkbox.checked = !isEnabled;
-                    alert('Failed to update sender preference');
-                }
-            });
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
         }
     </script>
 }

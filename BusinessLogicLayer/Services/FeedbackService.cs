@@ -4,7 +4,7 @@ using DataAccessLayer.Repositories;
 
 namespace BusinessLogicLayer.Services {
     public interface IFeedbackService {
-        Task<DataSet> GetAllAsync();
+        Task<IEnumerable<Feedback>?> GetAllAsync();
         Task<Feedback?> GetAsync(int id);
         Task CreateAsync(Feedback feedback);
         Task UpdateAsync(Feedback feedback);
@@ -12,8 +12,29 @@ namespace BusinessLogicLayer.Services {
     }
 
     public class FeedbackService(IFeedbackRepository repository) : IFeedbackService {
-        public async Task<DataSet> GetAllAsync() {
-            return await repository.GetAllAsync();
+        public async Task<IEnumerable<Feedback>?> GetAllAsync() {
+            var dataSet = await repository.GetAllAsync();
+
+            if (dataSet.Tables[0].Rows.Count == 0)
+                return null;
+
+            List<Feedback> feedbacks = [];
+
+            foreach (DataRow row in dataSet.Tables[0].Rows) {
+                feedbacks.Add(new() {
+                    Id = Convert.ToInt32(row["Id"]),
+                    UserId = row["UserId"].ToString() ?? "",
+                    Title = row["Title"].ToString() ?? "",
+                    Description = row["Description"].ToString() ?? "",
+                    Label = (Label)Enum.Parse(typeof(Label), row["Label"].ToString() ?? "Feature"),
+                    User = new User {
+                        Id = row["UserId"].ToString() ?? "",
+                        UserName = row["UserName"].ToString() ?? "Unknown"
+                    }
+                });
+            }
+
+            return feedbacks;
         }
 
         public async Task<Feedback?> GetAsync(int id) {

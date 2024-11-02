@@ -14,9 +14,8 @@ namespace PresentationLayer.Models {
 
         public List<ChapterViewModel> Chapters { get; set; } = [];
 
-        public string CurrentImageUrl { get; set; }
-
-        [Display(Name = "New Book Image")]
+        [Display(Name = "Cover Image")]
+        [MaxFileSize(5 * 1024 * 1024)] // 5MB max
         public IFormFile? NewImage { get; set; }
 
         public ServerType Server {  get; set; }

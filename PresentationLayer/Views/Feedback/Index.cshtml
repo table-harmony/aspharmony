@@ -1,49 +1,88 @@
-@model System.Data.DataTable
+@model FeedbackIndexViewModel
 
-<h2>All Feedbacks</h2>
+<div class="card">
+    <div class="card-header">
+        <h2 class="mb-0">
+            <i class="bi bi-chat-right-text"></i> Feedbacks
+        </h2>
+    </div>
+    <div class="card-body">
+        <form asp-action="Index" method="get" class="mb-3">
+            <div class="input-group">
+                <input type="text" name="searchString" class="form-control" placeholder="Search feedbacks..." value="@Model.SearchString">
+                <input type="number" name="pageSize" class="form-control" style="max-width: 100px;" placeholder="Page size" value="@Model.PageSize" min="1" max="100">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+        </form>
 
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Label</th>
+                        <th>User</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var feedback in Model.Feedbacks.Items) {
+                        <tr>
+                            <td>@feedback.Title</td>
+                            <td>@feedback.Description</td>
+                            <td>
+                                <span class="badge bg-@(feedback.Label switch {
+                                    Label.Idea => "primary",
+                                    Label.Feature => "info",
+                                    Label.Complaint => "warning",
+                                    Label.Issue => "danger",
+                                    Label.Other => "secondary",
+                                    _ => "secondary"
+                                })">
+                                    @feedback.Label
+                                </span>
+                            </td>
+                            <td>@(feedback.User?.UserName ?? "Unknown")</td>
+                            <td>
+                                <button type="button" class="btn btn-danger btn-sm" 
+                                        onclick="confirmDelete(@feedback.Id, '@feedback.Title')">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
 
-<div class="mb-3">
-    <input type="text" id="feedbackSearch" class="form-control" placeholder="Search feedbacks...">
+        <partial name="_PaginationPartial" model='new PaginationViewModel { 
+            PageIndex = Model.Feedbacks.PageIndex, 
+            TotalPages = Model.Feedbacks.TotalPages, 
+            PageSize = Model.PageSize 
+        }' />
+    </div>
 </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Label</th>
-            <th>User</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody id="feedbackTableBody">
-        @foreach (System.Data.DataRow row in Model.Rows) {
-            <tr>
-                <td>@row["Title"]</td>
-                <td>@row["Description"]</td>
-                <td>@((DataAccessLayer.Entities.Label)row["Label"])</td>
-                <td>@row["UserName"]</td>
-                <td>
-                    <form asp-action="Delete" asp-route-id="@row["Id"]" method="post">
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this feedback?');">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
+<partial name="_DeleteModalPartial" model='new DeleteModalViewModel { 
+    ItemType = "feedback",
+    DeleteAction = "Delete",
+    DeleteController = "Feedback"
+}' />
 
 @section Scripts {
     <script>
-        $(document).ready(function () {
-            $("#feedbackSearch").on("keyup", function () {
-                var value = $(this).val().toLowerCase();
-                $("#feedbackTableBody tr").filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-            });
-        });
+        function confirmDelete(id, title) {
+            const modal = document.getElementById('deleteModal');
+            const form = modal.querySelector('#deleteForm');
+            const itemName = modal.querySelector('#deleteItemName');
+            
+            form.action = `/Feedback/Delete/${id}`;
+            itemName.textContent = `feedback "${title}"`;
+            
+            new bootstrap.Modal(modal).show();
+        }
     </script>
 }

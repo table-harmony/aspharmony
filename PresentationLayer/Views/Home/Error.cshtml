@@ -4,18 +4,46 @@
     ViewData["Title"] = "Error";
 }
 
-<h1 class="text-danger">Something went wrong.</h1>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Something went wrong
+                    </h4>
+                </div>
+                <div class="card-body">
+                    @if (Model.Exception is PublicException publicException)
+                    {
+                        <div class="alert alert-danger mb-4">
+                            @publicException.Message
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-danger mb-4">
+                            An error occurred while processing your request.
+                        </div>
+                    }
 
-@if (Model.Exception is PublicException publicException) {
-    <p class="text-danger">@publicException.Message</p>
-} else {
-    <p class="text-danger">An error occurred while processing your request.</p>
-}
+                    @if (Model.ShowRequestId)
+                    {
+                        <div class="d-flex align-items-center text-muted small">
+                            <span class="me-2">Request ID:</span>
+                            <code class="bg-light px-2 py-1 rounded">@Model.RequestId</code>
+                        </div>
+                    }
 
-@if (Model.ShowRequestId) {
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
-    </p>
-}
-
-<a asp-action="Index" asp-controller="Home" class="btn btn-primary">Go Back Home</a>
+                    <div class="mt-4">
+                        <a asp-action="Index" asp-controller="Home" class="btn btn-primary">
+                            <i class="bi bi-house-fill me-2"></i>
+                            Return Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

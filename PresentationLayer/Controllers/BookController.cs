@@ -12,28 +12,33 @@ using ServerBook = BusinessLogicLayer.Servers.Books.Book;
 using Chapter = BusinessLogicLayer.Servers.Books.Chapter;
 using Book = BusinessLogicLayer.Services.Book;
 
-namespace PresentationLayer.Controllers
-{
+namespace PresentationLayer.Controllers {
 
     [Authorize]
     public class BookController(IBookService bookService,
                                     IEventTracker eventTracker,
                                     IFileUploader fileUploader) : Controller {
-        public async Task<IActionResult> Index(string searchString = "") {
+        public async Task<IActionResult> Index(string searchString, int pageSize = 10, int pageIndex = 1) {
             var books = await bookService.GetAllAsync();
 
             if (!string.IsNullOrEmpty(searchString)) {
-                books = books.Where(book =>
-                    book.Metadata?.Title.Contains(searchString, StringComparison.CurrentCultureIgnoreCase) == true ||
-                    book.Metadata?.Description.Contains(searchString, StringComparison.CurrentCultureIgnoreCase) == true);
+                books = books.Where(b => 
+                    b.Metadata.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                    (b.Author?.UserName?.Contains(searchString, StringComparison.OrdinalIgnoreCase) ?? false));
             }
 
-            BookIndexViewModel viewModel = new() {
-                Books = books,
-                SearchString = searchString
-            };
+            var paginatedBooks = PaginatedList<Book>.Create(
+                books.AsQueryable(),
+                pageIndex,
+                pageSize
+            );
 
-            return View(viewModel);
+            return View(new BookIndexViewModel 
+            { 
+                Books = paginatedBooks,
+                SearchString = searchString,
+                PageSize = pageSize
+            });
         }
 
         [HttpGet]
@@ -101,6 +106,10 @@ namespace PresentationLayer.Controllers
             if (book == null)
                 return NotFound();
 
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            if (book.AuthorId != userId)
+                return RedirectToAction(nameof(Details), new { id });
+
             GetServers(book.Server);
 
             EditBookViewModel model = new() {
@@ -108,7 +117,6 @@ namespace PresentationLayer.Controllers
                 Server = book.Server,
                 Title = book.Metadata?.Title ?? "Unknown",
                 Description = book.Metadata?.Description ?? "Unknown",
-                CurrentImageUrl = book.Metadata?.ImageUrl ?? "https://birkhauser.com/product-not-found.png",
                 Chapters = book.Metadata?.Chapters?.Select(c => new ChapterViewModel {
                     Index = c.Index,
                     Title = c.Title,
@@ -126,7 +134,7 @@ namespace PresentationLayer.Controllers
             if (id != model.Id)
                 return NotFound();
 
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
                 return View(model);
 
             var book = await bookService.GetBookAsync(id);
@@ -145,12 +153,12 @@ namespace PresentationLayer.Controllers
 
                 book.Metadata.Title = model.Title;
                 book.Metadata.Description = model.Description;
-                book.Metadata.ImageUrl = model.CurrentImageUrl;
+                book.Metadata.ImageUrl = book.Metadata.ImageUrl;
 
                 if (model.NewImage != null) {
                     book.Metadata.ImageUrl = await fileUploader.UploadFileAsync(model.NewImage);
                 }
-                
+
                 book.Metadata.Chapters = model.Chapters.Select(c => new Chapter {
                     Index = c.Index,
                     Title = c.Title,
@@ -161,8 +169,7 @@ namespace PresentationLayer.Controllers
                 await eventTracker.TrackEventAsync("Book edited");
 
                 return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 GetServers(book.Server);
 
                 string message = ex is PublicException ? ex.Message : "An error occurred while updating the book.";
@@ -178,6 +185,10 @@ namespace PresentationLayer.Controllers
             var book = await bookService.GetBookAsync(id);
             if (book == null)
                 return NotFound();
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            if (!User.IsInRole("Admin") && book.AuthorId != userId)
+                return RedirectToAction(nameof(Details), new { id });
 
             return View(book);
         }

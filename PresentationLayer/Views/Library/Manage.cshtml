@@ -1,0 +1,97 @@
+@model ManageMembersViewModel
+
+@{
+    ViewData["Title"] = $"Manage {Model.Library.Name} - Library Management";
+}
+
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Libraries</a></li>
+        <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.Library.Id">@Model.Library.Name</a></li>
+        <li class="breadcrumb-item active">Manage Members</li>
+    </ol>
+</nav>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h2 class="mb-0">Management</h2>
+    </div>
+    <div class="card-body">
+        <p class="text-muted">Manage members and their roles in @Model.Library.Name. You can promote members to managers or demote managers to members.</p>
+
+        <div>
+            <a asp-action="AddBook" asp-route-id="@Model.Library.Id" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Add Books
+            </a>
+            <a asp-action="Edit" asp-route-id="@Model.Library.Id" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Edit
+            </a>
+            <a asp-action="Delete" asp-route-id="@Model.Library.Id" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Delete
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="mb-0">Members</h3>
+    </div>
+    <div class="card-body">
+        <form asp-action="Manage" method="get" class="mb-3">
+            <input type="hidden" name="id" value="@Model.Library.Id" />
+            <div class="input-group">
+                <input type="text" name="searchString" class="form-control" placeholder="Search members..." value="@Model.SearchString">
+                <input type="number" name="pageSize" class="form-control" style="max-width: 100px;" placeholder="Page size" value="@ViewBag.PageSize" min="1" max="100">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>User Name</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var member in Model.Members.Items) {
+                        <tr>
+                            <td>@member.User.UserName</td>
+                            <td>@member.Role</td>
+                            <td>
+                                @if (member.Role != MembershipRole.Manager) {
+                                    <form asp-action="RemoveMember" method="post" style="display: inline;">
+                                        <input type="hidden" name="libraryId" value="@Model.Library.Id" />
+                                        <input type="hidden" name="userId" value="@member.UserId" />
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Remove</button>
+                                    </form>
+                                    <form asp-action="PromoteMember" method="post" style="display: inline;">
+                                        <input type="hidden" name="libraryId" value="@Model.Library.Id" />
+                                        <input type="hidden" name="userId" value="@member.UserId" />
+                                        <button type="submit" class="btn btn-warning btn-sm">Promote to Manager</button>
+                                    </form>
+                                } else {
+                                    <form asp-action="DemoteMember" method="post" style="display: inline;">
+                                        <input type="hidden" name="libraryId" value="@Model.Library.Id" />
+                                        <input type="hidden" name="userId" value="@member.UserId" />
+                                        <button type="submit" class="btn btn-secondary btn-sm">Demote to Member</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <partial name="_PaginationPartial" model='new PaginationViewModel { PageIndex = Model.Members.PageIndex, TotalPages = Model.Members.TotalPages, PageSize = ViewBag.PageSize }' />
+    </div>
+</div>
+
+<div class="my-4">
+    <a asp-action="Details" asp-route-id="@Model.Library.Id" class="btn btn-secondary">Back to Library</a>
+</div> 
+</div> 
