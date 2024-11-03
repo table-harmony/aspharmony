@@ -4,8 +4,8 @@ using PresentationLayer.Models;
 using DataAccessLayer.Entities;
 using Microsoft.AspNetCore.Authorization;
 using BusinessLogicLayer.Services;
-using System.Security.Claims;
 using BusinessLogicLayer.Events;
+using System.Security.Claims;
 
 namespace PresentationLayer.Controllers
 {
@@ -15,31 +15,40 @@ namespace PresentationLayer.Controllers
         
         [HttpGet]
         public IActionResult Register() {
-            return View();
+            return View(new RegisterViewModel());
         }
 
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model) {
-            if (ModelState.IsValid) {
-                var user = new User { UserName = model.Email, Email = model.Email, PhoneNumber = model.PhoneNumber };
-                var result = await userManager.CreateAsync(user, model.Password);
+            if (!ModelState.IsValid)
+                return View(model);
 
-                if (result.Succeeded) {
-                    await userManager.AddToRoleAsync(user, "Member");
-                    await eventPublisher.PublishUserRegistered(user);
-                    return RedirectToAction("Index", "Home");
-                }
+            var user = new User { 
+                UserName = model.Email,
+                Email = model.Email,
+            };
+                
+            var result = await userManager.CreateAsync(user, model.Password);
 
+            if (!result.Succeeded) {
                 foreach (var error in result.Errors) {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
+
+                return View(model);
             }
-            return View(model);
+
+            await userManager.AddToRoleAsync(user, "Member");
+            await signInManager.SignInAsync(user, isPersistent: false);
+
+            await eventPublisher.PublishUserRegistered(user);
+                
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
         public IActionResult Login() {
-            return View();
+            return View(new LoginViewModel() { });
         }
 
         [HttpPost]
@@ -75,56 +84,57 @@ namespace PresentationLayer.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Index() {
-            var user = await userManager.GetUserAsync(User);
-            if (user == null)
-                return NotFound();
-
-            var model = new AccountViewModel {
-                User = user,
-                UnreadNotificationsCount = await notificationService.GetUnreadCountAsync(user.Id),
-            };
-
-            return View(model);
-        }
-
-        [HttpGet]
-        public Task<IActionResult> Update() {
-            return Task.FromResult<IActionResult>(View(new UpdatePasswordViewModel()));
+            var viewModel = await BuildAccountViewModel();
+            
+            if (TempData["StatusMessage"] is string statusMessage)
+                ViewBag.StatusMessage = statusMessage;
+                
+            return View(viewModel);
         }
 
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdatePassword(UpdatePasswordViewModel model) {
+        public async Task<IActionResult> UpdatePassword([Bind(Prefix = "UpdatePassword")] UpdatePasswordViewModel model)
+        {
             if (!ModelState.IsValid)
-                return View("Update", model);
+            {
+                var viewModel = await BuildAccountViewModel();
+                viewModel.UpdatePassword = model;
+                return View("Index", viewModel);
+            }
 
             var user = await userManager.GetUserAsync(User);
             if (user == null)
                 return NotFound();
 
             var result = await userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
-            if (result.Succeeded) {
-                await eventPublisher.PublishUserUpdated(user);
-                await signInManager.RefreshSignInAsync(user);
-                return RedirectToAction(nameof(Index));
+            if (!result.Succeeded) {
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
+
+                var viewModel = await BuildAccountViewModel();
+                viewModel.UpdatePassword = model;
+                return View("Index", viewModel);
             }
 
-            foreach (var error in result.Errors)
-                ModelState.AddModelError(string.Empty, error.Description);
+            await signInManager.SignInAsync(user, isPersistent: false);
+            await eventPublisher.PublishUserUpdated(user);
 
-            return View("Update", model);
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Delete() {
-            var user = await userManager.GetUserAsync(User);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var user = await userManager.FindByIdAsync(userId);
+
             if (user == null)
                 return NotFound();
 
-            var model = new DeleteViewModel {
-                UserName = user.UserName
+            DeleteViewModel model = new() {
+                UserName = user.UserName ?? ""
             };
 
             return View(model);
@@ -138,9 +148,10 @@ namespace PresentationLayer.Controllers
             if (user == null)
                 return NotFound();
 
+            await eventPublisher.PublishUserDeleted(user);
+
             var result = await userManager.DeleteAsync(user);
             if (result.Succeeded) {
-                await eventPublisher.PublishUserDeleted(user);
                 await signInManager.SignOutAsync();
                 return RedirectToAction("Index", "Home");
             }
@@ -148,17 +159,12 @@ namespace PresentationLayer.Controllers
             foreach (var error in result.Errors)
                 ModelState.AddModelError(string.Empty, error.Description);
 
-            var model = new DeleteViewModel {
-                UserName = user.UserName
-            };
-
-            return View("Profile", model);
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Notifications(int pageIndex = 1, int pageSize = 10, bool unreadOnly = false)
-        {
+        public async Task<IActionResult> Notifications(int pageIndex = 1, int pageSize = 10, bool unreadOnly = false) {
             var user = await userManager.GetUserAsync(User);
             if (user == null)
                 return NotFound();
@@ -191,8 +197,7 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteNotification(int id)
-        {
+        public async Task<IActionResult> DeleteNotification(int id) {
             await notificationService.DeleteAsync(id);
             return RedirectToAction(nameof(Notifications));
         }
@@ -221,22 +226,42 @@ namespace PresentationLayer.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateProfile(AccountViewModel model) {
-            if (!ModelState.IsValid) {
-                return RedirectToAction(nameof(Index));
+        public async Task<IActionResult> UpdateProfile([Bind(Prefix = "UpdateProfile")] UpdateProfileViewModel model) {
+            if (!ModelState.IsValid)
+            {
+                var viewModel = await BuildAccountViewModel();
+                viewModel.UpdateProfile = model;
+                return View("Index", viewModel);
             }
 
             var user = await userManager.GetUserAsync(User);
             if (user == null)
                 return NotFound();
-            
-            user.Email = model.User.Email;
-            user.UserName = model.User.UserName;
-            user.PhoneNumber = model.User.PhoneNumber;
 
-            await userManager.UpdateAsync(user);
+            // Check for email before updating
+            var existingUser = await userManager.FindByEmailAsync(model.Email);
+            if (existingUser != null && existingUser.Id != user.Id) {
+                ModelState.AddModelError("UpdateProfile.Email", "Email is already taken");
+                var viewModel = await BuildAccountViewModel();
+                viewModel.UpdateProfile = model;
+                return View("Index", viewModel);
+            }
+
+            user.UserName = model.UserName;
+            user.Email = model.Email;
+            user.PhoneNumber = model.PhoneNumber;
+
+            var result = await userManager.UpdateAsync(user);
+            if (!result.Succeeded) {
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
+
+                var viewModel = await BuildAccountViewModel();
+                viewModel.UpdateProfile = model;
+                return View("Index", viewModel);
+            }
+
             await eventPublisher.PublishUserUpdated(user);
-
             return RedirectToAction(nameof(Index));
         }
 
@@ -278,6 +303,21 @@ namespace PresentationLayer.Controllers
         public async Task<IActionResult> MarkAsUnread(int id) {
             await notificationService.MarkAsUnReadAsync(id);
             return RedirectToAction(nameof(Notifications));
+        }
+
+        private async Task<AccountViewModel> BuildAccountViewModel() {
+            var user = await userManager.GetUserAsync(User);
+            return user == null
+                ? throw new ApplicationException("Unable to load user.")
+                : new AccountViewModel {
+                UnreadNotificationsCount = await notificationService.GetUnreadCountAsync(user.Id),
+                UpdateProfile = new UpdateProfileViewModel {
+                    UserName = user.UserName ?? "",
+                    Email = user.Email ?? "",
+                    PhoneNumber = user.PhoneNumber
+                },
+                UpdatePassword = new UpdatePasswordViewModel()
+            };
         }
 
     }

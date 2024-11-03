@@ -9,7 +9,6 @@ namespace PresentationLayer.Models
         [Required]
         public string UserName { get; set; }
 
-        [Required]
-        public string PhoneNumber {  get; set; }
+        public string? PhoneNumber {  get; set; }
     }
 }

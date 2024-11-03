@@ -4,7 +4,7 @@ using DataAccessLayer.Repositories;
 
 namespace BusinessLogicLayer.Services {
     public interface IFeedbackService {
-        Task<IEnumerable<Feedback>?> GetAllAsync();
+        Task<IEnumerable<Feedback>> GetAllAsync();
         Task<Feedback?> GetAsync(int id);
         Task CreateAsync(Feedback feedback);
         Task UpdateAsync(Feedback feedback);
@@ -12,11 +12,11 @@ namespace BusinessLogicLayer.Services {
     }
 
     public class FeedbackService(IFeedbackRepository repository) : IFeedbackService {
-        public async Task<IEnumerable<Feedback>?> GetAllAsync() {
+        public async Task<IEnumerable<Feedback>> GetAllAsync() {
             var dataSet = await repository.GetAllAsync();
 
             if (dataSet.Tables[0].Rows.Count == 0)
-                return null;
+                return [];
 
             List<Feedback> feedbacks = [];
 

@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Identity;
 using DataAccessLayer.Entities;
 using PresentationLayer.Models;
 using BusinessLogicLayer.Events;
+using System.Security.Claims;
 
 namespace PresentationLayer.Controllers {
     [Authorize(Roles = "Admin")]
-    public class AdminController(UserManager<User> userManager,
+    public class AdminController(UserManager<User> userManager, SignInManager<User> signInManager,
                             IEventPublisher eventPublisher,
                             ILogger<AdminController> logger) : Controller {
         [HttpGet]
@@ -63,7 +64,12 @@ namespace PresentationLayer.Controllers {
 
             await eventPublisher.PublishUserDeleted(existingUser);
             await userManager.DeleteAsync(existingUser);
-
+            
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == existingUser.Id) { 
+                await signInManager.SignOutAsync();
+                return RedirectToAction("Index", "Home");
+            }
+            
             return RedirectToAction("Index");
         }
 

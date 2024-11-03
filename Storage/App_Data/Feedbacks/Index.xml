@@ -1,9 +1,2 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Feedbacks xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Schema.xsd">
-  <Feedback Id="12">
-    <UserId>0d122c0c-9ff7-4f3d-96bd-08b20d8b67d3</UserId>
-    <Title>this is feedback</Title>
-    <Description>This is a long feedback</Description>
-    <Label>Complaint</Label>
-  </Feedback>
-</Feedbacks>
+<Feedbacks xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Schema.xsd" />

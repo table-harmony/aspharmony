@@ -11,32 +11,134 @@
                     <span class="text-primary">Asp</span>Harmony
                 </h1>
                 <p class="lead mb-4">
-                    Experience a modern approach to digital library management. 
+                    Experience a modern approach to digital library management.
                 </p>
             </div>
             <div class="col-lg-6 d-none d-lg-block">
                 <div class="hero-image">
-                    <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Background Circle -->
-                        <circle cx="100" cy="100" r="95" fill="white" stroke="black" stroke-width="5" />
+                    <svg id="logo" width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <circle id="background" cx="100" cy="100" r="95" fill="white" stroke="black" stroke-width="5" />
 
-                        <!-- Book Cover -->
-                        <rect x="60" y="50" width="80" height="100" rx="5" fill="#0077cc" stroke="black" stroke-width="3" />
+                        <rect id="book" x="60" y="50" width="80" height="100" rx="5" fill="#0077cc" stroke="black" stroke-width="3" />
 
-                        <!-- Pages Lines -->
-                        <line x1="63" y1="55" x2="135" y2="55" stroke="white" stroke-width="2" />
-                        <line x1="63" y1="65" x2="135" y2="65" stroke="white" stroke-width="2" />
-                        <line x1="63" y1="75" x2="135" y2="75" stroke="white" stroke-width="2" />
-                        <line x1="63" y1="85" x2="135" y2="85" stroke="white" stroke-width="2" />
+                        <g id="accessories">
+                            <!-- Glasses -->
+                            <g id="glasses" class="accessory" style="display: none;">
+                                <circle cx="90" cy="115" r="8" fill="none" stroke="black" stroke-width="2" />
+                                <circle cx="110" cy="115" r="8" fill="none" stroke="black" stroke-width="2" />
+                                <line x1="98" y1="115" x2="102" y2="115" stroke="black" stroke-width="2" />
+                            </g>
+
+                            <!-- Party Hat -->
+                            <g id="party-hat" class="accessory" style="display: none;">
+                                <path d="M80,50 L100,20 L120,50 Z" fill="#ff69b4" stroke="black" stroke-width="2" />
+                                <circle cx="100" cy="35" r="3" fill="yellow" />
+                            </g>
+
+                            <!-- Headphones - Adjusted to book width -->
+                            <g id="headphones" class="accessory" style="display: none;">
+                                <path d="M55,100 C55,70 145,70 145,100" fill="none" stroke="black" stroke-width="3" />
+                                <rect x="52" y="100" width="10" height="25" rx="5" fill="black" />
+                                <rect x="138" y="100" width="10" height="25" rx="5" fill="black" />
+                            </g>
+
+                            <!-- Magic Wand -->
+                            <g id="magic-wand" class="accessory" style="display: none;">
+                                <rect x="130" y="70" width="3" height="40" fill="black" />
+                                <circle cx="131.5" cy="68" r="5" fill="yellow" />
+                                <circle cx="128" cy="65" r="2" fill="blue" />
+                                <circle cx="135" cy="65" r="2" fill="red" />
+                                <circle cx="131.5" cy="62" r="2" fill="green" />
+                            </g>
+                        </g>
 
                         <!-- Bookmark Ribbon -->
-                        <polygon points="90,50 105,50 100,90" fill="#ffcc00" stroke="black" stroke-width="2" />
+                        <path id="bookmark"
+                              d="M85,50 L100,50 L100,90 L92.5,85 L85,90 Z"
+                              fill="#ffcc00"
+                              stroke="black"
+                              stroke-width="2" />
 
                         <!-- Smiley Face -->
-                        <circle cx="90" cy="115" r="3" fill="black" />
-                        <circle cx="110" cy="115" r="3" fill="black" />
-                        <path d="M85,130 Q100,140 115,130" stroke="black" stroke-width="2" fill="none" />
+                        <g id="face">
+                            <circle cx="90" cy="115" r="3" fill="black" />
+                            <circle cx="110" cy="115" r="3" fill="black" />
+                            <path d="M85,130 Q100,140 115,130" stroke="black" stroke-width="2" fill="none" />
+                        </g>
                     </svg>
+                </div>
+
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary mt-3 w-50" data-bs-toggle="modal" data-bs-target="#customizeModal">
+                        <i class="bi bi-palette"></i> Customize Logo
+                    </button>
+                </div>
+
+                <!-- Customize Modal -->
+                <div class="modal" id="customizeModal" tabindex="-1">
+                    <div class="modal-dialog modal-sm position-absolute" style="top: 0; right: 0;">
+                        <div class="modal-content border-0 shadow-lg">
+                            <div class="modal-header border-0">
+                                <h5 class="modal-title">Customize Logo</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Element and Color Selection -->
+                                <div class="mb-3">
+                                    <label class="form-label">Select Element</label>
+                                    <select class="form-select mb-2" id="elementSelect">
+                                        <option value="book">Book</option>
+                                        <option value="bookmark">Bookmark</option>
+                                        <option value="background">Background</option>
+                                    </select>
+
+                                    <div class="d-flex flex-wrap gap-2" id="colorPalette">
+                                        <button class="color-btn" data-color="#98FB98"></button>
+                                        <button class="color-btn" data-color="#FFD700"></button>
+                                        <button class="color-btn" data-color="#FFA500"></button>
+                                        <button class="color-btn" data-color="#32CD32"></button>
+                                        <button class="color-btn" data-color="#87CEEB"></button>
+                                        <button class="color-btn" data-color="#4169E1"></button>
+                                        <button class="color-btn" data-color="#800080"></button>
+                                        <button class="color-btn" data-color="#FF69B4"></button>
+                                        <button class="color-btn" data-color="#FF0000"></button>
+                                        <button class="color-btn" data-color="#000000"></button>
+                                    </div>
+                                </div>
+
+                                <!-- Accessories -->
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="glasses-toggle">
+                                    <label class="form-check-label">Glasses</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="party-hat-toggle">
+                                    <label class="form-check-label">Party Hat</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="headphones-toggle">
+                                    <label class="form-check-label">Headphones</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="magic-wand-toggle">
+                                    <label class="form-check-label">Magic Wand</label>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="d-grid gap-2 mt-2">
+                                    <button type="button" class="btn btn-outline-primary" id="randomizeAll">
+                                        Randomize
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary" id="clearAll">
+                                        Clear
+                                    </button>
+                                    <button type="button" class="btn btn-success" id="saveLogo">
+                                        Save logo ↓
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

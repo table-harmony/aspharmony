@@ -47,40 +47,25 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task NotifyUserAsync(string userId, string message) {
-                User? user = await userService.GetByIdAsync(userId);
+            User? user = await userService.GetByIdAsync(userId);
 
-                if (user == null) {
-                    logger.LogWarning("User {UserId} not found when trying to send notification", userId);
-                    return;
-                }
+            if (user == null)
+                return;
 
-                var senders = await userSenderService.GetByUserIdAsync(userId);
-                var failedSenders = new List<string>();
+            var senders = await userSenderService.GetByUserIdAsync(userId);
 
-                foreach (var dbSender in senders) {
-                    try {
-                        var sender = senderFactory.CreateSender((SenderType)Enum.Parse(typeof(SenderType), dbSender.Sender.Name.ToLower()));
-                        string? to = sender is EmailSender ? user.Email : user.PhoneNumber;
+            foreach (var dbSender in senders) {
+                try {
+                    var sender = senderFactory.CreateSender((SenderType)Enum.Parse(typeof(SenderType), dbSender.Sender.Name.ToLower()));
+                    string to = sender is EmailSender ? user.Email! : user.PhoneNumber!;
 
-                        if (string.IsNullOrEmpty(to)) {
-                            failedSenders.Add($"{dbSender.Sender.Name} (no {(sender is EmailSender ? "email" : "phone")})");
-                            continue;
-                        }
-
-                        if (sender is EmailSender && !IsValidEmail(to)) {
-                            failedSenders.Add($"{dbSender.Sender.Name} (invalid email format)");
-                            continue;
-                        }
-
-                        sender.Send(message, to);
-                    } catch (SenderException) {
-                        failedSenders.Add(dbSender.Sender.Name);
+                    if (string.IsNullOrEmpty(to)) {
+                        continue;
                     }
-                }
 
-            if (failedSenders.Count != 0) {
-                var failedSendersMessage = string.Join(", ", failedSenders);
-                await CreateAsync(userId, $"Failed to deliver message through: {failedSendersMessage}");
+                    sender.Send(message, to);
+                } catch {
+                }
             }
         }
 
@@ -121,15 +106,6 @@ namespace BusinessLogicLayer.Services {
 
         public async Task<int> GetUnreadCountAsync(string userId) {
             return await notificationRepository.GetUnreadCountAsync(userId);
-        }
-
-        private bool IsValidEmail(string email) {
-            try {
-                var addr = new System.Net.Mail.MailAddress(email);
-                return addr.Address == email;
-            } catch {
-                return false;
-            }
         }
     }
 }
