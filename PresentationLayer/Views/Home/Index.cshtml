@@ -13,36 +13,36 @@
                 <p class="lead mb-4">
                     Experience a modern approach to digital library management.
                 </p>
+                <div class="d-flex gap-3">
+                    <a href="#features" class="btn btn-primary">
+                        <i class="bi bi-rocket-takeoff"></i> Get Started
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=ZRa-phlfc10" target="_blank" rel="noreferrer" class="btn btn-outline-secondary">
+                        <i class="bi bi-play-circle"></i> Watch Explanation
+                    </a>
+                </div>
             </div>
             <div class="col-lg-6 d-none d-lg-block">
                 <div class="hero-image">
-                    <svg id="logo" width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <svg id="logo" width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" 
+                        style="cursor: pointer;" role="button" data-bs-toggle="modal" data-bs-target="#customizeModal">
                         <circle id="background" cx="100" cy="100" r="95" fill="white" stroke="black" stroke-width="5" />
-
                         <rect id="book" x="60" y="50" width="80" height="100" rx="5" fill="#0077cc" stroke="black" stroke-width="3" />
-
                         <g id="accessories">
-                            <!-- Glasses -->
                             <g id="glasses" class="accessory" style="display: none;">
                                 <circle cx="90" cy="115" r="8" fill="none" stroke="black" stroke-width="2" />
                                 <circle cx="110" cy="115" r="8" fill="none" stroke="black" stroke-width="2" />
                                 <line x1="98" y1="115" x2="102" y2="115" stroke="black" stroke-width="2" />
                             </g>
-
-                            <!-- Party Hat -->
                             <g id="party-hat" class="accessory" style="display: none;">
                                 <path d="M80,50 L100,20 L120,50 Z" fill="#ff69b4" stroke="black" stroke-width="2" />
                                 <circle cx="100" cy="35" r="3" fill="yellow" />
                             </g>
-
-                            <!-- Headphones - Adjusted to book width -->
                             <g id="headphones" class="accessory" style="display: none;">
                                 <path d="M55,100 C55,70 145,70 145,100" fill="none" stroke="black" stroke-width="3" />
                                 <rect x="52" y="100" width="10" height="25" rx="5" fill="black" />
                                 <rect x="138" y="100" width="10" height="25" rx="5" fill="black" />
                             </g>
-
-                            <!-- Magic Wand -->
                             <g id="magic-wand" class="accessory" style="display: none;">
                                 <rect x="130" y="70" width="3" height="40" fill="black" />
                                 <circle cx="131.5" cy="68" r="5" fill="yellow" />
@@ -51,15 +51,11 @@
                                 <circle cx="131.5" cy="62" r="2" fill="green" />
                             </g>
                         </g>
-
-                        <!-- Bookmark Ribbon -->
                         <path id="bookmark"
                               d="M85,50 L100,50 L100,90 L92.5,85 L85,90 Z"
                               fill="#ffcc00"
                               stroke="black"
                               stroke-width="2" />
-
-                        <!-- Smiley Face -->
                         <g id="face">
                             <circle cx="90" cy="115" r="3" fill="black" />
                             <circle cx="110" cy="115" r="3" fill="black" />
@@ -68,72 +64,66 @@
                     </svg>
                 </div>
 
-                <div class="text-center">
-                    <button type="button" class="btn btn-primary mt-3 w-50" data-bs-toggle="modal" data-bs-target="#customizeModal">
-                        <i class="bi bi-palette"></i> Customize Logo
-                    </button>
-                </div>
-
-                <!-- Customize Modal -->
                 <div class="modal" id="customizeModal" tabindex="-1">
-                    <div class="modal-dialog modal-sm position-absolute" style="top: 0; right: 0;">
+                    <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content border-0 shadow-lg">
                             <div class="modal-header border-0">
-                                <h5 class="modal-title">Customize Logo</h5>
+                                <h5 class="modal-title"><i class="bi bi-brush"></i> Customize Logo</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
-                                <!-- Element and Color Selection -->
                                 <div class="mb-3">
-                                    <label class="form-label">Select Element</label>
-                                    <select class="form-select mb-2" id="elementSelect">
-                                        <option value="book">Book</option>
-                                        <option value="bookmark">Bookmark</option>
-                                        <option value="background">Background</option>
+                                    <label class="form-label"><i class="bi bi-layers"></i> Select Element</label>
+                                    <select class="form-select mb-3" id="elementSelect">
+                                        <option value="book">📚 Book</option>
+                                        <option value="bookmark">🔖 Bookmark</option>
+                                        <option value="background">🎨 Background</option>
                                     </select>
 
-                                    <div class="d-flex flex-wrap gap-2" id="colorPalette">
-                                        <button class="color-btn" data-color="#98FB98"></button>
-                                        <button class="color-btn" data-color="#FFD700"></button>
-                                        <button class="color-btn" data-color="#FFA500"></button>
-                                        <button class="color-btn" data-color="#32CD32"></button>
-                                        <button class="color-btn" data-color="#87CEEB"></button>
-                                        <button class="color-btn" data-color="#4169E1"></button>
-                                        <button class="color-btn" data-color="#800080"></button>
-                                        <button class="color-btn" data-color="#FF69B4"></button>
-                                        <button class="color-btn" data-color="#FF0000"></button>
-                                        <button class="color-btn" data-color="#000000"></button>
+                                    <label class="form-label"><i class="bi bi-palette"></i> Choose Color</label>
+                                    <div class="d-flex flex-wrap gap-2 mb-2" id="colorPalette">
+                                        <button class="color-btn" data-color="#98FB98" title="Pale Green"></button>
+                                        <button class="color-btn" data-color="#FFD700" title="Gold"></button>
+                                        <button class="color-btn" data-color="#FFA500" title="Orange"></button>
+                                        <button class="color-btn" data-color="#32CD32" title="Lime Green"></button>
+                                        <button class="color-btn" data-color="#87CEEB" title="Sky Blue"></button>
+                                        <button class="color-btn" data-color="#4169E1" title="Royal Blue"></button>
+                                        <button class="color-btn" data-color="#800080" title="Purple"></button>
+                                        <button class="color-btn" data-color="#FF69B4" title="Hot Pink"></button>
+                                        <button class="color-btn" data-color="#FF0000" title="Red"></button>
+                                        <button class="color-btn" data-color="#000000" title="Black"></button>
                                     </div>
                                 </div>
 
-                                <!-- Accessories -->
+                                <label class="form-label"><i class="bi bi-stars"></i> Accessories</label>
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="glasses-toggle">
-                                    <label class="form-check-label">Glasses</label>
+                                    <label class="form-check-label">👓 Glasses</label>
                                 </div>
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="party-hat-toggle">
-                                    <label class="form-check-label">Party Hat</label>
+                                    <label class="form-check-label">🎉 Party Hat</label>
                                 </div>
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="headphones-toggle">
-                                    <label class="form-check-label">Headphones</label>
+                                    <label class="form-check-label">🎧 Headphones</label>
                                 </div>
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="magic-wand-toggle">
-                                    <label class="form-check-label">Magic Wand</label>
+                                    <label class="form-check-label">✨ Magic Wand</label>
                                 </div>
 
-                                <!-- Action Buttons -->
-                                <div class="d-grid gap-2 mt-2">
-                                    <button type="button" class="btn btn-outline-primary" id="randomizeAll">
-                                        Randomize
-                                    </button>
-                                    <button type="button" class="btn btn-outline-secondary" id="clearAll">
-                                        Clear
-                                    </button>
-                                    <button type="button" class="btn btn-success" id="saveLogo">
-                                        Save logo ↓
+                                <div class="d-grid gap-2 mt-4">
+                                    <div class="d-flex gap-2 w-100">
+                                        <button type="button" class="btn btn-outline-primary flex-fill" id="randomizeAll">
+                                            <i class="bi bi-shuffle"></i> Randomize
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary flex-fill" id="clearAll">
+                                            <i class="bi bi-eraser"></i> Clear
+                                        </button>
+                                    </div>
+                                    <button type="button" class="btn btn-success w-100" id="saveLogo">
+                                        <i class="bi bi-download"></i> Save
                                     </button>
                                 </div>
                             </div>
@@ -145,7 +135,7 @@
     </div>
 </div>
 
-<div class="card mb-4">
+<div class="card mb-4" id="features">
     <div class="card-body">
         <div class="row g-4">
             <div class="col-md-4">
@@ -153,7 +143,7 @@
                     <div class="card-body text-center">
                         <i class="bi bi-collection display-4 text-primary mb-3"></i>
                         <h3>Explore Libraries</h3>
-                        <p class="text-muted">Discover our vast collection of digital libraries.</p>
+                        <p class="text-muted">Discover our vast collection of digital libraries and find your next favorite read.</p>
                         <a asp-controller="Library" asp-action="Index" class="btn btn-outline-primary">
                             <i class="bi bi-arrow-right"></i> Browse Libraries
                         </a>
@@ -165,7 +155,7 @@
                     <div class="card-body text-center">
                         <i class="bi bi-search display-4 text-primary mb-3"></i>
                         <h3>Find Books</h3>
-                        <p class="text-muted">Search through books across various genres.</p>
+                        <p class="text-muted">Search through an extensive collection of books across various genres and authors.</p>
                         <a asp-controller="Book" asp-action="Index" class="btn btn-outline-primary">
                             <i class="bi bi-arrow-right"></i> Explore Books
                         </a>
@@ -177,8 +167,8 @@
                     <div class="card-body text-center">
                         <i class="bi bi-people display-4 text-primary mb-3"></i>
                         <h3>Join Community</h3>
-                        <p class="text-muted">Become a part of our growing community.</p>
-                        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-primary">
+                        <p class="text-muted">Connect with fellow readers, share recommendations, and participate in discussions.</p>
+                        <a  asp-page="/Account/Register" class="btn btn-outline-primary">
                             <i class="bi bi-arrow-right"></i> Sign Up
                         </a>
                     </div>
@@ -197,7 +187,7 @@
                         <div class="flex-grow-1">
                             <i class="bi bi-calculator display-4 text-success mb-3"></i>
                             <h3>Calculator</h3>
-                            <p class="text-muted">Try our simple calculator tool.</p>
+                            <p class="text-muted">Need quick calculations? Try our simple yet powerful calculator tool.</p>
                         </div>
                         <div>
                             <a asp-action="Calculator" class="btn btn-outline-success">
@@ -226,3 +216,94 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#colorPalette .color-btn').on('change click', function(e) {
+                if (e.type === 'click' && !$(this).hasClass('color-btn')) return;
+                
+                const selectedElement = $('#elementSelect').val();
+                const color = e.type === 'click' ? $(this).data('color') : $(this).val();
+                
+                if (color) {
+                    $(`#${selectedElement}`).attr('fill', color);
+                }
+            });
+
+            $('.color-btn').each(function() {
+                $(this).css('background-color', $(this).data('color'));
+            });
+
+            $('.form-check-input').on('change', function() {
+                const accessoryId = $(this).attr('id').replace('-toggle', '');
+                $(`#${accessoryId}`).css('display', this.checked ? 'block' : 'none');
+            });
+
+            $('#randomizeAll').on('click', function() {
+                const colors = $('#colorPalette .color-btn').map(function() {
+                    return $(this).data('color');
+                }).get();
+
+                ['book', 'bookmark', 'background'].forEach(element => {
+                    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                    $(`#${element}`).attr('fill', randomColor);
+                });
+
+                $('.form-check-input').each(function() {
+                    const shouldShow = Math.random() < 0.5;
+                    $(this).prop('checked', shouldShow);
+                    const accessoryId = $(this).attr('id').replace('-toggle', '');
+                    $(`#${accessoryId}`).css('display', shouldShow ? 'block' : 'none');
+                });
+            });
+
+            $('#clearAll').on('click', function() {
+                $('#book').attr('fill', '#0077cc');
+                $('#bookmark').attr('fill', '#ffcc00');
+                $('#background').attr('fill', 'white');
+                
+                $('.form-check-input').prop('checked', false);
+                $('.accessory').css('display', 'none');
+            });
+
+            $('#saveLogo').on('click', function() {
+                const svgData = new XMLSerializer().serializeToString(document.querySelector('#logo'));
+                const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+                const svgUrl = URL.createObjectURL(svgBlob);
+                
+                const downloadLink = document.createElement('a');
+                downloadLink.href = svgUrl;
+                downloadLink.download = 'aspharmony-logo.svg';
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+                URL.revokeObjectURL(svgUrl);
+            });
+
+            // Add hover effect to logo
+            $('#logo').hover(
+                function() { $(this).css('transform', 'scale(1.05)'); },
+                function() { $(this).css('transform', 'scale(1)'); }
+            ).css('transition', 'transform 0.3s ease');
+        });
+    </script>
+}
+
+<style>
+    .color-btn {
+        width: 30px;
+        height: 30px;
+        border: 2px solid #dee2e6;
+        border-radius: 4px;
+        padding: 0;
+        cursor: pointer;
+        transition: transform 0.2s;
+        border-radius: 50%;
+    }
+
+    .color-btn:hover {
+        transform: scale(1.1);
+        border-color: #6c757d;
+    }
+</style>

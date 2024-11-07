@@ -62,26 +62,28 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarContent">
                     <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Book" asp-action="Index">
-                                <i class="bi bi-book"></i> Books
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Library" asp-action="Index">
-                                <i class="bi bi-collection"></i> Libraries
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Feedback" asp-action="Create">
-                                <i class="bi bi-chat-dots"></i> Feedback
-                            </a>
-                        </li>
+                        @if (User.Identity?.IsAuthenticated ?? false) {
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Book" ? "active text-primary" : "")" asp-controller="Book" asp-action="Index">
+                                    <i class="bi bi-book"></i> Books
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Library" ? "active text-primary" : "")" asp-controller="Library" asp-action="Index">
+                                    <i class="bi bi-collection"></i> Libraries
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Feedback" ? "active text-primary" : "")" asp-controller="Feedback" asp-action="Create">
+                                    <i class="bi bi-chat-dots"></i> Feedback
+                                </a>
+                            </li>
+                        }
                     </ul>
                     <ul class="navbar-nav">
                         @if (User.Identity?.IsAuthenticated ?? false) {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <a class="nav-link dropdown-toggle @((ViewContext.RouteData.Values["Controller"]?.ToString() == "Account" || ViewContext.RouteData.Values["Controller"]?.ToString() == "Admin") ? "active text-primary" : "")" role="button" data-bs-toggle="dropdown">
                                     <i class="bi bi-person-circle"></i> Account
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
@@ -107,9 +109,7 @@
                                     </li>
                                 </ul>
                             </li>
-                        }
-                        else
-                        {
+                        } else {
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Account" asp-action="Register">
                                     <i class="bi bi-person-plus"></i> Register
