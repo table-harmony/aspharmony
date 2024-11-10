@@ -86,16 +86,6 @@
                                 <a asp-action="BookDetails" asp-route-libraryBookId="@libraryBook.Id" class="btn btn-info btn-sm">
                                     <i class="bi bi-info-circle"></i> Details
                                 </a>
-                                @if (ViewBag.Membership.Role == MembershipRole.Manager) {
-                                    <form asp-action="RemoveBook" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="libraryId" value="@Model.Library.Id" />
-                                        <input type="hidden" name="libraryBookId" value="@libraryBook.Id" />
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">
-                                            <i class="bi bi-trash"></i> Remove
-                                        </button>
-                                    </form>
-                                }
                             </td>
                         </tr>
                     }

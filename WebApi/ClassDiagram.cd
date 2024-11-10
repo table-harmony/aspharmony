@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="WebApi.Controllers.BooksController" Collapsed="true">
+    <Position X="7.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BBBAAEAAAAAAAAAAAAACAAAAAAAAAEAAAAAAAAgEAAA=</HashCode>
+      <FileName>Controllers\BooksController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.BooksWrapper" Collapsed="true">
+    <Position X="9.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\BooksController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.LibraryController" Collapsed="true">
+    <Position X="7.75" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIggAAA=</HashCode>
+      <FileName>Controllers\LibraryController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

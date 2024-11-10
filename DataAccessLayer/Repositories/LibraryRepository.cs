@@ -48,7 +48,7 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task DeleteAsync(int id) {
-            Library? library = await GetLibraryAsync(id);
+            Library? library = await context.Libraries.FirstAsync(l => l.Id == id);
 
             if (library == null)
                 return;

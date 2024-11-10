@@ -1,5 +1,6 @@
 ﻿@model ErrorViewModel
 @using Utils.Exceptions
+
 @{
     ViewData["Title"] = "Error";
 }
@@ -15,21 +16,18 @@
                     </h4>
                 </div>
                 <div class="card-body">
-                    @if (Model.Exception is PublicException publicException)
-                    {
+                    @if (Model.Exception is PublicException publicException) {
                         <div class="alert alert-danger mb-4">
                             @publicException.Message
                         </div>
                     }
-                    else
-                    {
+                    else {
                         <div class="alert alert-danger mb-4">
                             An error occurred while processing your request.
                         </div>
                     }
 
-                    @if (Model.ShowRequestId)
-                    {
+                    @if (Model.ShowRequestId) {
                         <div class="d-flex align-items-center text-muted small">
                             <span class="me-2">Request ID:</span>
                             <code class="bg-light px-2 py-1 rounded">@Model.RequestId</code>

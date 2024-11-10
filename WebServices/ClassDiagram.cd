@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="WebServices.BooksService" Collapsed="true">
+    <Position X="7.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BBBAAEAAAAAAAEAAgQBAAAAAAAAAAAAAAAAAAAAEQAA=</HashCode>
+      <FileName>BooksService.asmx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebServices.Book" Collapsed="true">
+    <Position X="6" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABCQAAAAAAgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BooksService.asmx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebServices.Chapter" Collapsed="true">
+    <Position X="6" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAEAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>BooksService.asmx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

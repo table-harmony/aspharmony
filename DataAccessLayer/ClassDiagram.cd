@@ -1,0 +1,433 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="DataAccessLayer.Data.AdoContext" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAICAA=</HashCode>
+      <FileName>Data\AdoContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Data.ApplicationContext" Collapsed="true">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgACAAAAACBAAAkAAAAAABgAAAgAAAAAQ=</HashCode>
+      <FileName>Data\ApplicationContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Nimbus.BookChapter" Collapsed="true">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACCAAAAgAAAEAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Entities\Nimbus\BookChapter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Nimbus.BookMetadata" Collapsed="true">
+    <Position X="5.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACSAAAAAAgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Nimbus\BookMetadata.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Stegan.BookMetadata" Collapsed="true">
+    <Position X="7.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Stegan\BookMetadata.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Book" Collapsed="true">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAgAAAAAAAAAAAAAAAABAAggAAAAA=</HashCode>
+      <FileName>Entities\Book.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Feedback" Collapsed="true">
+    <Position X="9.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAADAAAAEAAgAEAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Feedback.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Library" Collapsed="true">
+    <Position X="2.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAABAAAAAAAAAAgAAAAQAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Library.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.LibraryBook" Collapsed="true">
+    <Position X="4" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACCAAAAAAAAABACAAAAAAAAAAAAEAAAAAAEAAAAAA=</HashCode>
+      <FileName>Entities\LibraryBook.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.LibraryMembership" Collapsed="true">
+    <Position X="7.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAADAAAAAAAAACAAGAAAAAgAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\LibraryMembership.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Notification" Collapsed="true">
+    <Position X="2.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAADAAAAAAAAAAAAACAAEAgAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Entities\Notification.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Sender" Collapsed="true">
+    <Position X="9.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACACAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Sender.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.User" Collapsed="true">
+    <Position X="4" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAgACBAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.UserSender" Collapsed="true">
+    <Position X="7.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAADAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>Entities\UserSender.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BookLoan" Collapsed="true">
+    <Position X="2.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAACAAgAAAAAACAAAAAAAAAAYAAAAAAAgAAAgAAAAAA=</HashCode>
+      <FileName>Entities\BookLoan.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Migrations.Initial" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAI=</HashCode>
+      <FileName>Migrations\20241008065348_Initial.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Migrations.BookData" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAI=</HashCode>
+      <FileName>Migrations\20241013142553_BookData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Migrations.Servers" Collapsed="true">
+    <Position X="2.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAI=</HashCode>
+      <FileName>Migrations\20241014080401_Servers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Migrations.BooksServer" Collapsed="true">
+    <Position X="4" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAI=</HashCode>
+      <FileName>Migrations\20241014102756_BooksServer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Migrations.RemoveServers" Collapsed="true">
+    <Position X="7.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAI=</HashCode>
+      <FileName>Migrations\20241015160311_RemoveServers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Migrations.DeleteServers" Collapsed="true">
+    <Position X="7.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAI=</HashCode>
+      <FileName>Migrations\20241015160554_DeleteServers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Migrations.Senders" Collapsed="true">
+    <Position X="0.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAI=</HashCode>
+      <FileName>Migrations\20241023073050_Senders.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Migrations.UserSenderConnections" Collapsed="true">
+    <Position X="9.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAI=</HashCode>
+      <FileName>Migrations\20241024174237_UserSenderConnections.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Migrations.Copies" Collapsed="true">
+    <Position X="5.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAI=</HashCode>
+      <FileName>Migrations\20241101120911_Copies.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Migrations.NotificationsRead" Collapsed="true">
+    <Position X="5.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAI=</HashCode>
+      <FileName>Migrations\20241101201741_NotificationsRead.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Migrations.ApplicationContextModelSnapshot" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Migrations\ApplicationContextModelSnapshot.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.Nimbus.v1.BookChapterRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="11" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAABAAAAAAAAAAAAIAAAAgAAAAAAIAAAIA=</HashCode>
+      <FileName>Repositories\Nimbus\v1\BookChapterRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.Nimbus.v1.BookMetadataRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAABAAAAABAAAAAAAAAAAAAAAAAgAAAAAIIAAAIA=</HashCode>
+      <FileName>Repositories\Nimbus\v1\BookMetadataRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.Nimbus.v2.BookChapterRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAEAAAAAAAIAAAAgAAAAAAIAAAII=</HashCode>
+      <FileName>Repositories\Nimbus\v2\BookChapterRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.Nimbus.v2.BookMetadataRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="11" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAEAAAAAAAAAAAAgAAAAAIIAAAIA=</HashCode>
+      <FileName>Repositories\Nimbus\v2\BookMetadataRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.Nimbus.NimbusFactory" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\Nimbus\Factory.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.Stegan.BookMetadataRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAABAAAAABAAAAAAAAAAAAAAAAAgAAAAAIIAAAIA=</HashCode>
+      <FileName>Repositories\Stegan\BookMetadataRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.BookLoanRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAIEAAAAgAAAAAAIAACAA=</HashCode>
+      <FileName>Repositories\BookLoanRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.BookRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="2.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAMAAAABAAAAAAAAAAAAAABAAAAAAAgAAAAAAIAAAIA=</HashCode>
+      <FileName>Repositories\BookRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.FeedbackRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="11" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAABAAAAAACACAAAAAQAAgAAAAAIIAAAIA=</HashCode>
+      <FileName>Repositories\FeedbackRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.LibraryBookRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAEAIAAAIA=</HashCode>
+      <FileName>Repositories\LibraryBookRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.LibraryMembershipRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAEQAgAAAAAAIAAAIA=</HashCode>
+      <FileName>Repositories\LibraryMembershipRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.LibraryRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="11" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAgIAAAIA=</HashCode>
+      <FileName>Repositories\LibraryRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.NotificationRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAQAAAAAAAAAAAAAAAABAAAAAAAkAAAAAJIAAAIA=</HashCode>
+      <FileName>Repositories\NotificationRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.SenderRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="11" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAIIAAAIA=</HashCode>
+      <FileName>Repositories\SenderRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.UserRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAIAAAAAAgAAAAAAIAAIIA=</HashCode>
+      <FileName>Repositories\UserRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.UserSenderRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="11" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAgAAAAAAAAAAAAAAAAAgAAAAAIIAAAIA=</HashCode>
+      <FileName>Repositories\UserSenderRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Interface Name="DataAccessLayer.Repositories.Nimbus.INimbusFactory" Collapsed="true">
+    <Position X="4" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Repositories\Nimbus\Factory.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.Nimbus.IBookChapterRepository" Collapsed="true">
+    <Position X="0.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAIAAAAgAAAAAAIAAAIA=</HashCode>
+      <FileName>Repositories\Nimbus\IBookChaptersRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.Nimbus.IBookMetadataRepository" Collapsed="true">
+    <Position X="4" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAIIAAAIA=</HashCode>
+      <FileName>Repositories\Nimbus\IBookMetadataRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.Stegan.IBookMetadataRepository" Collapsed="true">
+    <Position X="5.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAIIAAAIA=</HashCode>
+      <FileName>Repositories\Stegan\BookMetadataRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.IBookLoanRepository" Collapsed="true">
+    <Position X="2.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAIEAAAAgAAAAAAIAACAA=</HashCode>
+      <FileName>Repositories\BookLoanRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.IBookRepository" Collapsed="true">
+    <Position X="7.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAABAAAAAAAAAAAAAABAAAAAAAgAAAAAAIAAAIA=</HashCode>
+      <FileName>Repositories\BookRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.IFeedbackRepository" Collapsed="true">
+    <Position X="9.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAIIAAAIA=</HashCode>
+      <FileName>Repositories\FeedbackRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.ILibraryBookRepository" Collapsed="true">
+    <Position X="11" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAEAIAAAIA=</HashCode>
+      <FileName>Repositories\LibraryBookRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.ILibraryMembershipRepository" Collapsed="true">
+    <Position X="0.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAEQAgAAAAAAIAAAIA=</HashCode>
+      <FileName>Repositories\LibraryMembershipRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.ILibraryRepository" Collapsed="true">
+    <Position X="2.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAgIAAAIA=</HashCode>
+      <FileName>Repositories\LibraryRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.INotificationRepository" Collapsed="true">
+    <Position X="5.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAQAAAAAAAAAAAAAAAABAAAAAAAkAAAAAJIAAAIA=</HashCode>
+      <FileName>Repositories\NotificationRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.ISenderRepository" Collapsed="true">
+    <Position X="7.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAIIAAAIA=</HashCode>
+      <FileName>Repositories\SenderRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.IUserRepository" Collapsed="true">
+    <Position X="9.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAIAAAAAAgAAAAAAIAAIIA=</HashCode>
+      <FileName>Repositories\UserRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.IUserSenderRepository" Collapsed="true">
+    <Position X="11" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAgAAAAAAAAAAAAAAAAAgAAAAAIIAAAIA=</HashCode>
+      <FileName>Repositories\UserSenderRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="DataAccessLayer.Entities.ServerType" Collapsed="true">
+    <Position X="4" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAkAAiAAAAAQgAgAAAAAAAAACQAAAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>Entities\Book.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="DataAccessLayer.Entities.Label" Collapsed="true">
+    <Position X="0.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAEAAAAABAAAAAAAAAAAAAAAAAIAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>Entities\Feedback.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="DataAccessLayer.Entities.MembershipRole" Collapsed="true">
+    <Position X="2.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\LibraryMembership.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -1,0 +1,767 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ForeignBooksServiceReference.GetBookRequest" Collapsed="true">
+    <Position X="16.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.Chapter" Collapsed="true">
+    <Position X="16.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAgAAAEAAAAAAAAAAABAAAAQAAAEAAAAAAAA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.Book" Collapsed="true">
+    <Position X="9.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABBCQAAAAAAgAEAAAAAAAAAAAAAAACABAAAAAAAAEAA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.GetBookResponse" Collapsed="true">
+    <Position X="7.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.GetBookRequest1" Collapsed="true">
+    <Position X="20" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.GetBookResponse1" Collapsed="true">
+    <Position X="11.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.GetAllBooksRequest" Collapsed="true">
+    <Position X="6" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.GetAllBooksRequest1" Collapsed="true">
+    <Position X="7.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.GetAllBooksResponse" Collapsed="true">
+    <Position X="13" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.CreateBookRequest" Collapsed="true">
+    <Position X="18.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.CreateBookResponse" Collapsed="true">
+    <Position X="9.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.CreateBookRequest1" Collapsed="true">
+    <Position X="6" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.CreateBookResponse1" Collapsed="true">
+    <Position X="13" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.UpdateBookRequest" Collapsed="true">
+    <Position X="16.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.UpdateBookResponse" Collapsed="true">
+    <Position X="7.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.UpdateBookRequest1" Collapsed="true">
+    <Position X="18.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.UpdateBookResponse1" Collapsed="true">
+    <Position X="9.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.DeleteBookRequest" Collapsed="true">
+    <Position X="16.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.DeleteBookResponse" Collapsed="true">
+    <Position X="20" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.DeleteBookRequest1" Collapsed="true">
+    <Position X="18.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.DeleteBookResponse1" Collapsed="true">
+    <Position X="6" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForeignBooksServiceReference.BooksServicePortTypeClient" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="11.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ECAAAAABAABAAAACAAAJAQRAAgAAAACAAAAAQkAAAAE=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="LocalBooksServiceReference.Book" Collapsed="true">
+    <Position X="13" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIBSQAAAAAAgAEAAAAAAAAAAAAEAAAAAAAAgAAAQAAA=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LocalBooksServiceReference.Chapter" Collapsed="true">
+    <Position X="14.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAEAAAAAAEAAABAAAAAAAAAEAAAAQAAA=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LocalBooksServiceReference.GetBookRequest" Collapsed="true">
+    <Position X="18.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LocalBooksServiceReference.GetBookRequestBody" Collapsed="true">
+    <Position X="6" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LocalBooksServiceReference.GetBookResponse" Collapsed="true">
+    <Position X="9.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LocalBooksServiceReference.GetBookResponseBody" Collapsed="true">
+    <Position X="13" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LocalBooksServiceReference.GetAllBooksRequest" Collapsed="true">
+    <Position X="20" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LocalBooksServiceReference.GetAllBooksRequestBody" Collapsed="true">
+    <Position X="9.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LocalBooksServiceReference.GetAllBooksResponse" Collapsed="true">
+    <Position X="11.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LocalBooksServiceReference.GetAllBooksResponseBody" Collapsed="true">
+    <Position X="14.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAA=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LocalBooksServiceReference.CreateBookRequest" Collapsed="true">
+    <Position X="20" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LocalBooksServiceReference.CreateBookRequestBody" Collapsed="true">
+    <Position X="7.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LocalBooksServiceReference.CreateBookResponse" Collapsed="true">
+    <Position X="11.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LocalBooksServiceReference.CreateBookResponseBody" Collapsed="true">
+    <Position X="14.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LocalBooksServiceReference.UpdateBookRequest" Collapsed="true">
+    <Position X="14.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LocalBooksServiceReference.UpdateBookRequestBody" Collapsed="true">
+    <Position X="20" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LocalBooksServiceReference.UpdateBookResponse" Collapsed="true">
+    <Position X="6" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LocalBooksServiceReference.UpdateBookResponseBody" Collapsed="true">
+    <Position X="11.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LocalBooksServiceReference.BooksServiceSoapClient" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="13" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAARAAAACCAAIEARAAAAEAACAAAAAQEAAAAE=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Events.EventPublisher" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="13" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgEABAAAAAAAAAAAgAAAAgAAgAAABAAAAgAAAAAA=</HashCode>
+      <FileName>Events\EventPublisher.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Events.EventSubscriber" Collapsed="true">
+    <Position X="14.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQABAAAAAAAABAAAAAAAAQAACAgAAAAAAAAABAAA=</HashCode>
+      <FileName>Events\EventSubscriber.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BusinessLogicLayer.Events.LibraryMembershipEventArgs" Collapsed="true">
+    <Position X="20" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Events\LibraryEvents.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BusinessLogicLayer.Events.LibraryBookEventArgs" Collapsed="true">
+    <Position X="14.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Events\LibraryEvents.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BusinessLogicLayer.Events.LibraryEvents" Collapsed="true">
+    <Position X="18.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABIAQAAAAAAIAAAAAIAQAAAIAAAAAAAAAIAAAAAAAA=</HashCode>
+      <FileName>Events\LibraryEvents.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BusinessLogicLayer.Events.MemberPromotedEvent" Collapsed="true">
+    <Position X="11.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAQAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Events\LibraryEvents.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BusinessLogicLayer.Events.MemberDemotedEvent" Collapsed="true">
+    <Position X="9.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAAAAAEAAAAAAAQAAAAA=</HashCode>
+      <FileName>Events\LibraryEvents.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BusinessLogicLayer.Events.UserEventArgs" Collapsed="true">
+    <Position X="13" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Events\UserEvents.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BusinessLogicLayer.Events.UserEvents" Collapsed="true">
+    <Position X="14.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAACgIgAAQgAAAAAAAAAAAAAAAkIAABAAAAAAAA=</HashCode>
+      <FileName>Events\UserEvents.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Documents.ExcelDocumentStorage" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAgIAAAAAAAAAAAAAAgAAAAAAAQEAAAAAgAAAAQAA=</HashCode>
+      <FileName>Servers\Books\Documents\ExcelStorage.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Documents.DocumentFactory" Collapsed="true">
+    <Position X="7.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAQAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Servers\Books\Documents\Factory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Documents.PowerPointStorage" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="18.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAIAAAARAAAAAAAAAAAAAAAAAlAAAAAAAAAAAA=</HashCode>
+      <FileName>Servers\Books\Documents\PowerpointStorage.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Documents.PresentationChapter" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Servers\Books\Documents\PowerpointStorage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Documents.TextStyle" Collapsed="true">
+    <Position X="13" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAIAAAAAAACAAAAAAAgAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Servers\Books\Documents\PowerpointStorage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Documents.TextConfiguration" Collapsed="true">
+    <Position X="11.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAIAAAAAAAAABAAACAAAAAA=</HashCode>
+      <FileName>Servers\Books\Documents\PowerpointStorage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Documents.WordDocumentStorage" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="20" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAAAAAAAIAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Servers\Books\Documents\WordStorage.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.AetherServer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="6" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAACAAAAAABAAAAAAAAAAIAAAEAAAAE=</HashCode>
+      <FileName>Servers\Books\AetherServer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.ApiServer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAACABAAAABAAAAAAAAAQIAAAEAAAAE=</HashCode>
+      <FileName>Servers\Books\ApiServer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.DummyServer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAACAAAAAABAAAAAAAAAAAAAAEAAAgE=</HashCode>
+      <FileName>Servers\Books\DummyServer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.EchoServer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="11.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABBAAACAAAAAABQAAgACkABAAAQAEAAAAE=</HashCode>
+      <FileName>Servers\Books\EchoServer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Book" Collapsed="true">
+    <Position X="14.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABCQAAAAAAgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Servers\Books\IServer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Chapter" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAEAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Servers\Books\IServer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.NimbusServer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="13" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAACAAAAAABAAAAAAAAAAAAAAEAAAAE=</HashCode>
+      <FileName>Servers\Books\NimbusServer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.OrionServer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAACAAAAAABAAAAAAAAAgIAAAEAAAAE=</HashCode>
+      <FileName>Servers\Books\OrionServer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.BooksServerFactory" Collapsed="true">
+    <Position X="9.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Servers\Books\ServerFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.SolaceServer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="6" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABQAAACAACAAABQAAAAAAAAAAACAEAAAAE=</HashCode>
+      <FileName>Servers\Books\SolaceServer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Stegan1Server" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAABAAAACIAAACABAEAAAAAgAAAAAAEAAAAE=</HashCode>
+      <FileName>Servers\Books\SteganServer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Stegan2Server" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAABAAAACABAACABAEAAAAAAAAAAABEAAAAE=</HashCode>
+      <FileName>Servers\Books\SteganServer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.Nimbus.BookChapterService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAIAAAAgAAAAAAIAAAIA=</HashCode>
+      <FileName>Services\Nimbus\BookChapterService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.Nimbus.BookMetadataService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="20" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAIIAAAIA=</HashCode>
+      <FileName>Services\Nimbus\BookMetadataService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.Stegan.BookMetadataService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="6" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAIIAAAIA=</HashCode>
+      <FileName>Services\Stegan\BookMetadataService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.BookLoanService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="18.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIEAAAAgAAAABAIAQAAA=</HashCode>
+      <FileName>Services\BookLoanService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.Book" Collapsed="true">
+    <Position X="11.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAA=</HashCode>
+      <FileName>Services\BookService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.BookService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAIBAAAAAAAgAACAAAIAAAIA=</HashCode>
+      <FileName>Services\BookService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.FeedbackService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="18.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAIIAAAIA=</HashCode>
+      <FileName>Services\FeedbackService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.LibraryBookService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAEAIAAAIA=</HashCode>
+      <FileName>Services\LibraryBookService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.LibraryMembershipService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="6" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAEAAgAAAAAAIAAAIA=</HashCode>
+      <FileName>Services\LibraryMembershipService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.LibraryService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAgIAAAIA=</HashCode>
+      <FileName>Services\LibraryService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.NotificationService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="14.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAQACAAAAEAAAAAAAAAAAAAAAAAEABAAAJIAAAIA=</HashCode>
+      <FileName>Services\NotificationService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.SenderService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="20" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\SenderService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.UserSenderService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAIAAAIA=</HashCode>
+      <FileName>Services\UserSenderService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.UserService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="18.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAIAAAAAAgAAAAAAIAAIIA=</HashCode>
+      <FileName>Services\UserService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Interface Name="ForeignBooksServiceReference.BooksServicePortType" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAACAAAAAABAAAAAAAAAAAAAAEAAAAE=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ForeignBooksServiceReference.BooksServicePortTypeChannel" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="LocalBooksServiceReference.BooksServiceSoap" Collapsed="true">
+    <Position X="3.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAACAAAAAABAAAAAAAAAAAAAAEAAAAE=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="LocalBooksServiceReference.BooksServiceSoapChannel" Collapsed="true">
+    <Position X="3.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Events.IEventPublisher" Collapsed="true">
+    <Position X="18.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgEABAAAAAAAAAAAgAAAAgAAgAAABAAAAgAAAAAA=</HashCode>
+      <FileName>Events\EventPublisher.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Servers.Books.Documents.IDocumentStorage" Collapsed="true">
+    <Position X="16.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Servers\Books\Documents\IStorage.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Servers.Books.IBookServer" Collapsed="true">
+    <Position X="13" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAACAAAAAABAAAAAAAAAAAAAAEAAAAE=</HashCode>
+      <FileName>Servers\Books\IServer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.Nimbus.IBookChapterService" Collapsed="true">
+    <Position X="6" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAIAAAAgAAAAAAIAAAIA=</HashCode>
+      <FileName>Services\Nimbus\BookChapterService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.Nimbus.IBookMetadataService" Collapsed="true">
+    <Position X="9.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAIIAAAIA=</HashCode>
+      <FileName>Services\Nimbus\BookMetadataService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.Stegan.IBookMetadataService" Collapsed="true">
+    <Position X="11.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAIIAAAIA=</HashCode>
+      <FileName>Services\Stegan\BookMetadataService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.IBookLoanService" Collapsed="true">
+    <Position X="7.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIEAAAAgAAAABAIAQAAA=</HashCode>
+      <FileName>Services\BookLoanService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.IBookService" Collapsed="true">
+    <Position X="14.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAABAAAAAAAgAAAAAAIAAAIA=</HashCode>
+      <FileName>Services\BookService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.IFeedbackService" Collapsed="true">
+    <Position X="20" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAIIAAAIA=</HashCode>
+      <FileName>Services\FeedbackService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.ILibraryBookService" Collapsed="true">
+    <Position X="6" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAEAIAAAIA=</HashCode>
+      <FileName>Services\LibraryBookService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.ILibraryMembershipService" Collapsed="true">
+    <Position X="7.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAEAAgAAAAAAIAAAIA=</HashCode>
+      <FileName>Services\LibraryMembershipService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.ILibraryService" Collapsed="true">
+    <Position X="9.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAgIAAAIA=</HashCode>
+      <FileName>Services\LibraryService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.INotificationService" Collapsed="true">
+    <Position X="11.25" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAQACAAAAEAAAAAAAAAAAAAAAAAEABAAAJIAAAIA=</HashCode>
+      <FileName>Services\NotificationService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.ISenderService" Collapsed="true">
+    <Position X="13" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\SenderService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.IUserSenderService" Collapsed="true">
+    <Position X="14.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAIAAAIA=</HashCode>
+      <FileName>Services\UserSenderService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.IUserService" Collapsed="true">
+    <Position X="16.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAIAAAAAAgAAAAAAIAAIIA=</HashCode>
+      <FileName>Services\UserService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="BusinessLogicLayer.Servers.Books.Documents.DocumentType" Collapsed="true">
+    <Position X="6" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQQAAAAAAAAA=</HashCode>
+      <FileName>Servers\Books\Documents\Factory.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="BusinessLogicLayer.Servers.Books.Documents.SlideType" Collapsed="true">
+    <Position X="7.75" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAgAAAAAAABA=</HashCode>
+      <FileName>Servers\Books\Documents\PowerpointStorage.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

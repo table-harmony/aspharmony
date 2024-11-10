@@ -7,6 +7,7 @@ using PresentationLayer.Models;
 using Utils.Exceptions;
 using BusinessLogicLayer.Events;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using NuGet.Packaging.Signing;
 
 namespace PresentationLayer.Controllers {
     [Authorize]
@@ -102,23 +103,22 @@ namespace PresentationLayer.Controllers {
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Join(int id) {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-
-            var library = await libraryService.GetLibraryAsync(id);
+        public async Task<IActionResult> Join(int libraryId) {
+            var library = await libraryService.GetLibraryAsync(libraryId);
 
             if (library == null)
-                return RedirectToAction(nameof(Details), new { id });
+                return RedirectToAction(nameof(Index));
 
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             LibraryMembership membership = new() {
                 UserId = userId,
-                LibraryId = id,
+                LibraryId = libraryId,
                 Role = MembershipRole.Member,
             };
 
             await libraryMembershipService.CreateAsync(membership);
 
-            return RedirectToAction(nameof(Details), new { id });
+            return RedirectToAction(nameof(Details), new { id = libraryId });
         }
 
         [HttpPost]
@@ -148,12 +148,13 @@ namespace PresentationLayer.Controllers {
         public async Task<IActionResult> AddBook(int libraryId, int bookId, int copies = 1) {
             bool isManager = await IsLibraryManager(libraryId);
 
-            if (isManager) { 
-                for (int i = 0; i < copies; i++) {
-                    await libraryBookService.CreateAsync(libraryId, bookId);
-                }
+            if (!isManager)
+                return RedirectToAction(nameof(Details), new { id = libraryId });
+
+            for (int i = 0; i < copies; i++) {
+                await libraryBookService.CreateAsync(libraryId, bookId);
             }
-            
+
             return RedirectToAction(nameof(Details), new { id = libraryId });
         }
 
@@ -189,7 +190,7 @@ namespace PresentationLayer.Controllers {
                 Book = libraryBook.Book,
                 CurrentLoan = currentLoan,
                 PastLoans = pastLoans,
-                OtherCopies = otherCopies,
+                OtherCopies = otherCopies.Where(lb => lb.Id != libraryBookId),
             };
 
             return View(model);
