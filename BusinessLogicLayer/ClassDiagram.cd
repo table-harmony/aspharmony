@@ -377,7 +377,7 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="BusinessLogicLayer.Servers.Books.Documents.PresentationChapter" Collapsed="true">
-    <Position X="0.5" Y="1.75" Width="1.5" />
+    <Position X="0.5" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Servers\Books\Documents\PowerpointStorage.cs</FileName>
@@ -445,7 +445,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="BusinessLogicLayer.Servers.Books.Chapter" Collapsed="true">
-    <Position X="0.5" Y="0.5" Width="1.5" />
+    <Position X="0.5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAgAAAEAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
       <FileName>Servers\Books\IServer.cs</FileName>
@@ -610,28 +610,28 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Interface Name="ForeignBooksServiceReference.BooksServicePortType" Collapsed="true">
-    <Position X="0.5" Y="3.5" Width="1.5" />
+    <Position X="3.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAABAAAACAAAAAABAAAAAAAAAAAAAAEAAAAE=</HashCode>
       <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="ForeignBooksServiceReference.BooksServicePortTypeChannel" Collapsed="true">
-    <Position X="0.5" Y="4.75" Width="1.5" />
+    <Position X="3.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="LocalBooksServiceReference.BooksServiceSoap" Collapsed="true">
-    <Position X="3.5" Y="0.5" Width="1.5" />
+    <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAABAAAACAAAAAABAAAAAAAAAAAAAAEAAAAE=</HashCode>
       <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="LocalBooksServiceReference.BooksServiceSoapChannel" Collapsed="true">
-    <Position X="3.5" Y="1.75" Width="1.5" />
+    <Position X="0.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>

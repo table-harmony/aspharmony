@@ -4,7 +4,6 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics;
 using JokesServiceReference;
 using System.Xml.Linq;
-using Utils.Exceptions;
 
 namespace PresentationLayer.Controllers {
     public class HomeController(JokesServicePortTypeClient jokesService) : Controller {

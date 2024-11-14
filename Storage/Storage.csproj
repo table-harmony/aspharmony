@@ -89,7 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\Books\Orion.xml.bak" />
-    <None Include="App_Data\Books\Schema.xsd">
+    <None Include="App_Data\Books\Orion.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="App_Data\Feedbacks\Schema.xsd">
