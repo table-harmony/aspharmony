@@ -1,7 +1,6 @@
 ﻿using DataAccessLayer.Entities;
 using DataAccessLayer.Data;
 using Microsoft.EntityFrameworkCore;
-using Utils.Exceptions;
 
 namespace DataAccessLayer.Repositories {
     public interface ILibraryRepository {

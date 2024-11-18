@@ -6,8 +6,7 @@ using Book = BusinessLogicLayer.Services.Book;
 
 namespace PresentationLayer.Models
 {
-    public class AddBookViewModel
-    {
+    public class AddBookViewModel {
         public Library Library { get; set; }
         public List<Book> AvailableBooks { get; set; } = [];
         

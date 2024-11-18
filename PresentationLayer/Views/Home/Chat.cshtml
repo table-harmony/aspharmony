@@ -1,0 +1,162 @@
+﻿@{
+    ViewData["Title"] = "Chat";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="mb-0">
+            <i class="bi bi-chat-dots"></i> Community Chat
+        </h2>
+    </div>
+    <div class="card-body">
+        <p class="lead mb-4">Engage in live discussions with fellow readers and community members.</p>
+
+        <div class="d-flex gap-3 mb-4">
+            <button id="connectButton" class="btn btn-success" type="button">
+                <i class="bi bi-plug"></i> Connect
+            </button>
+            <button id="disconnectButton" class="btn btn-danger" type="button" disabled>
+                <i class="bi bi-x-circle"></i> Disconnect
+            </button>
+        </div>
+
+        <div class="mb-4">
+            <label for="sendMessage" class="form-label">
+                <i class="bi bi-chat-left-text"></i> Your Message
+            </label>
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="bi bi-pencil"></i>
+                </span>
+                <input id="sendMessage" class="form-control" placeholder="Type your message here..." disabled />
+                <button id="sendButton" class="btn btn-primary" type="button" disabled>
+                    <i class="bi bi-send"></i> Send
+                </button>
+            </div>
+            <div class="form-text">Your message will be shared with the community in real-time.</div>
+        </div>
+
+        <div id="chatLog" class="border rounded p-3 bg-light" style="min-height: 300px; overflow-y: auto;">
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let socket;
+        const sendMessage = document.getElementById("sendMessage");
+        const sendButton = document.getElementById("sendButton");
+        const chatLog = document.getElementById("chatLog");
+        const connectButton = document.getElementById("connectButton");
+        const disconnectButton = document.getElementById("disconnectButton");
+        const userName = "@User.Identity.Name";
+        const connectionUrl = "ws://localhost:5000/";
+
+        function updateConnectionState(isConnected) {
+            connectButton.disabled = isConnected;
+            disconnectButton.disabled = !isConnected;
+            sendMessage.disabled = !isConnected;
+            sendButton.disabled = !isConnected;
+        }
+
+        function connectWebSocket() {
+            if (socket && socket.readyState === WebSocket.OPEN) return;
+
+            socket = new WebSocket(connectionUrl);
+
+            socket.onopen = () => {
+                const joinMessage = JSON.stringify({ userName, type: "join" });
+                socket.send(joinMessage);
+                updateConnectionState(true);
+                appendSystemMessage("Connected to chat.");
+            };
+
+            socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                const messageElement = document.createElement("div");
+                messageElement.classList.add("list-group-item");
+                messageElement.innerHTML = `<strong>${data.userName}:</strong> ${data.message}`;
+                chatLog.appendChild(messageElement);
+                chatLog.scrollTop = chatLog.scrollHeight;
+            };
+
+            socket.onclose = () => {
+                updateConnectionState(false);
+                appendSystemMessage("Disconnected from chat.");
+            };
+
+            socket.onerror = (error) => {
+                appendSystemMessage(`WebSocket error: ${error.message}`);
+            };
+        }
+
+        function disconnectWebSocket() {
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                socket.close(1000, "Client requested disconnect.");
+            }
+        }
+
+        sendButton.addEventListener("click", () => {
+            if (!socket || socket.readyState !== WebSocket.OPEN) {
+                alert("Connection to chat is not open.");
+                return;
+            }
+
+            const message = sendMessage.value.trim();
+            if (message) {
+                const chatMessage = JSON.stringify({ userName, message, type: "chat" });
+                socket.send(chatMessage);
+                sendMessage.value = "";
+            }
+        });
+
+        connectButton.addEventListener("click", connectWebSocket);
+        disconnectButton.addEventListener("click", disconnectWebSocket);
+
+        function appendSystemMessage(message) {
+            const messageElement = document.createElement("div");
+            messageElement.classList.add("list-group-item", "text-secondary");
+            messageElement.textContent = message;
+            chatLog.appendChild(messageElement);
+        }
+    </script>
+}
+
+<style>
+    #sendMessage {
+        border-radius: 0.5rem 0 0 0.5rem;
+    }
+
+    #sendButton {
+        border-radius: 0 0.5rem 0.5rem 0;
+    }
+
+    #chatLog {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+    }
+
+    #chatLog div {
+        margin-bottom: 0.5rem;
+        padding: 0.5rem;
+        border-bottom: 1px solid #ddd;
+    }
+
+    #chatLog div:last-child {
+        border-bottom: none;
+    }
+
+    .list-group-item {
+        display: block;
+        padding: 0.75rem 1.25rem;
+        margin-bottom: -1px;
+        background-color: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.125);
+        color: #212529;
+    }
+
+    .list-group-item.text-secondary {
+        font-style: italic;
+        font-size: 0.9rem;
+    }
+</style>

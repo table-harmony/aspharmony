@@ -4,6 +4,8 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics;
 using JokesServiceReference;
 using System.Xml.Linq;
+using System.Net.WebSockets;
+using System.Text;
 
 namespace PresentationLayer.Controllers {
     public class HomeController(JokesServicePortTypeClient jokesService) : Controller {
@@ -15,7 +17,7 @@ namespace PresentationLayer.Controllers {
 
             string joke = response.GenerateJokeResponse.joke;
             ViewBag.Joke = joke;
-            
+
             return View();
         }
 
@@ -39,6 +41,10 @@ namespace PresentationLayer.Controllers {
         }
 
         [HttpGet]
+        public IActionResult Chat() {
+            return View();
+        }
+
         [HttpGet]
         public async Task<IActionResult> MoreJokes(int count = 5) {
             var xmlContent = await _httpClient.GetStringAsync(
@@ -53,8 +59,8 @@ namespace PresentationLayer.Controllers {
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error() {
             var exceptionFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
-            
-            return View(new ErrorViewModel { 
+
+            return View(new ErrorViewModel {
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
                 Exception = exceptionFeature?.Error
             });

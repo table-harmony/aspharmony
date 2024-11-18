@@ -11,7 +11,7 @@ namespace BusinessLogicLayer.Servers.Books.Documents {
         private static readonly Dictionary<DocumentType, string> DocumentSuffixes = new() {
             { DocumentType.Word, "docx" },
             { DocumentType.Excel, "xlsx" },
-            { DocumentType.PowerPoint, "pptx" }
+            { DocumentType.PowerPoint, "pptx" },
         };
 
         public static IDocumentStorage CreateDocumentStorage(DocumentType documentType) {

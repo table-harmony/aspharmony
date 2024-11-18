@@ -180,7 +180,7 @@
 
 <div class="card">
     <div class="card-body">
-        <div class="row g-4">
+        <div class="row g-4 mb-4">
             <div class="col-md-6">
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="card-body text-center d-flex flex-column">
@@ -213,6 +213,26 @@
                     </div>
                 </div>
             </div>
+        </div>
+            <div class="row g-4">
+                <div class="col-md-12">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center d-flex flex-column">
+                            <div class="flex-grow-1">
+                                <i class="bi bi-chat-dots display-4 text-primary mb-3"></i>
+                                <h3>Join the Chat</h3>
+                                <p class="text-muted">
+                                    Engage with the community in our live chat. Share your thoughts, ask questions, or connect with other readers.
+                                </p>
+                            </div>
+                            <div>
+                                <a asp-controller="Home" asp-action="Chat" class="btn btn-outline-primary">
+                                    <i class="bi bi-arrow-right"></i> Go to Chat
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         </div>
     </div>
 </div>

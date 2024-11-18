@@ -10,7 +10,6 @@
         <form asp-action="Edit" asp-controller="Book" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="Server" />
             
             <div class="mb-3">
                 <label asp-for="Title" class="form-label"></label>
@@ -38,6 +37,15 @@
                 </div>
                 <span asp-validation-for="NewImage" class="text-danger"></span>
                 <small class="text-muted">Maximum file size: 5MB. Supported formats: .jpg, .jpeg, .png</small>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Server" class="control-label"></label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-server"></i></span>
+                    <select asp-for="Server" asp-items="ViewBag.Servers" class="form-control"></select>
+                </div>
+                <span asp-validation-for="Server" class="text-danger"></span>
             </div>
 
             <div class="card mb-3">

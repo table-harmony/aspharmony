@@ -1,5 +1,4 @@
-﻿using Syncfusion.Licensing;
-using Syncfusion.Presentation;
+﻿using Syncfusion.Presentation;
 using System.Drawing;
 using System.Security.Cryptography;
 

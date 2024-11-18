@@ -17,7 +17,7 @@ namespace DataAccessLayer.Entities {
         [Display(Name = "Stegan 1.0")]
         Stegan1,
         [Display(Name = "Stegan 2.0")]
-        Stegan2
+        Stegan2,
     }
 
     public class Book {
