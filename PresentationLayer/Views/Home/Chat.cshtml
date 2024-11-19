@@ -2,161 +2,177 @@
     ViewData["Title"] = "Chat";
 }
 
-<div class="card">
+<div class="card shadow-sm">
     <div class="card-header">
         <h2 class="mb-0">
-            <i class="bi bi-chat-dots"></i> Community Chat
+            <i class="bi bi-chat-dots"></i> Live Chat
         </h2>
+        <p class="text-muted mb-0">Connect with other users in real-time</p>
     </div>
     <div class="card-body">
-        <p class="lead mb-4">Engage in live discussions with fellow readers and community members.</p>
-
-        <div class="d-flex gap-3 mb-4">
-            <button id="connectButton" class="btn btn-success" type="button">
-                <i class="bi bi-plug"></i> Connect
-            </button>
-            <button id="disconnectButton" class="btn btn-danger" type="button" disabled>
-                <i class="bi bi-x-circle"></i> Disconnect
-            </button>
+        <div id="messagesList" class="chat-messages mb-4" style="height: 400px; overflow-y: auto;">
+            <!-- Messages will be displayed here -->
         </div>
-
-        <div class="mb-4">
-            <label for="sendMessage" class="form-label">
-                <i class="bi bi-chat-left-text"></i> Your Message
-            </label>
-            <div class="input-group">
-                <span class="input-group-text">
-                    <i class="bi bi-pencil"></i>
-                </span>
-                <input id="sendMessage" class="form-control" placeholder="Type your message here..." disabled />
-                <button id="sendButton" class="btn btn-primary" type="button" disabled>
+        
+        <div class="chat-input-area">
+            <form id="chatForm" class="d-flex gap-2">
+                <div class="flex-grow-1">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-chat-text"></i>
+                        </span>
+                        <input type="text" id="messageInput" class="form-control" 
+                               placeholder="Type your message..." autocomplete="off" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">
                     <i class="bi bi-send"></i> Send
                 </button>
-            </div>
-            <div class="form-text">Your message will be shared with the community in real-time.</div>
-        </div>
-
-        <div id="chatLog" class="border rounded p-3 bg-light" style="min-height: 300px; overflow-y: auto;">
+            </form>
         </div>
     </div>
 </div>
 
 @section Scripts {
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
     <script>
-        let socket;
-        const sendMessage = document.getElementById("sendMessage");
-        const sendButton = document.getElementById("sendButton");
-        const chatLog = document.getElementById("chatLog");
-        const connectButton = document.getElementById("connectButton");
-        const disconnectButton = document.getElementById("disconnectButton");
-        const userName = "@User.Identity.Name";
-        const connectionUrl = "ws://localhost:5000/";
+        $(document).ready(function() {
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("https://localhost:7086/chat-hub")
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
 
-        function updateConnectionState(isConnected) {
-            connectButton.disabled = isConnected;
-            disconnectButton.disabled = !isConnected;
-            sendMessage.disabled = !isConnected;
-            sendButton.disabled = !isConnected;
-        }
+            // Handle receiving messages
+            connection.on("ReceiveMessage", function (message) {
+                const [userId, messageText] = message.split(': ');
+                const encodedMsg = $('<div />').text(messageText).html();
+                const encodedUser = $('<div />').text(userId).html();
+                const isMyMessage = userId === connection.connectionId;
+                
+                const messageElement = $(`
+                    <div class="chat-message mb-3 ${isMyMessage ? 'chat-message-mine' : ''}">
+                        <div class="d-flex flex-column ${isMyMessage ? 'align-items-end' : 'align-items-start'}">
+                            <small class="message-user text-muted mb-1">
+                                ${isMyMessage ? 'You' : encodedUser}
+                            </small>
+                            <div class="chat-bubble p-3 rounded">
+                                <div class="message-content">${encodedMsg}</div>
+                                <small class="message-time text-muted">${new Date().toLocaleTimeString()}</small>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                
+                $("#messagesList").append(messageElement);
+                scrollToBottom();
+            });
 
-        function connectWebSocket() {
-            if (socket && socket.readyState === WebSocket.OPEN) return;
+            // Handle form submission
+            $("#chatForm").on("submit", function(e) {
+                e.preventDefault();
+                sendMessage();
+            });
 
-            socket = new WebSocket(connectionUrl);
+            // Handle enter key
+            $("#messageInput").on("keypress", function(e) {
+                if (e.which === 13 && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
 
-            socket.onopen = () => {
-                const joinMessage = JSON.stringify({ userName, type: "join" });
-                socket.send(joinMessage);
-                updateConnectionState(true);
-                appendSystemMessage("Connected to chat.");
-            };
-
-            socket.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                const messageElement = document.createElement("div");
-                messageElement.classList.add("list-group-item");
-                messageElement.innerHTML = `<strong>${data.userName}:</strong> ${data.message}`;
-                chatLog.appendChild(messageElement);
-                chatLog.scrollTop = chatLog.scrollHeight;
-            };
-
-            socket.onclose = () => {
-                updateConnectionState(false);
-                appendSystemMessage("Disconnected from chat.");
-            };
-
-            socket.onerror = (error) => {
-                appendSystemMessage(`WebSocket error: ${error.message}`);
-            };
-        }
-
-        function disconnectWebSocket() {
-            if (socket && socket.readyState === WebSocket.OPEN) {
-                socket.close(1000, "Client requested disconnect.");
-            }
-        }
-
-        sendButton.addEventListener("click", () => {
-            if (!socket || socket.readyState !== WebSocket.OPEN) {
-                alert("Connection to chat is not open.");
-                return;
+            function sendMessage() {
+                const message = $("#messageInput").val().trim();
+                if (message) {
+                    connection.invoke("SendMessage", message)
+                        .catch(err => console.error("Error sending message:", err));
+                    $("#messageInput").val("").focus();
+                }
             }
 
-            const message = sendMessage.value.trim();
-            if (message) {
-                const chatMessage = JSON.stringify({ userName, message, type: "chat" });
-                socket.send(chatMessage);
-                sendMessage.value = "";
+            function scrollToBottom() {
+                const messagesList = $("#messagesList");
+                messagesList.animate({
+                    scrollTop: messagesList[0].scrollHeight
+                }, 200);
             }
+
+            // Start the connection
+            connection.start()
+                .then(() => console.log("Connected to chat hub"))
+                .catch(err => console.error("Error connecting:", err));
         });
-
-        connectButton.addEventListener("click", connectWebSocket);
-        disconnectButton.addEventListener("click", disconnectWebSocket);
-
-        function appendSystemMessage(message) {
-            const messageElement = document.createElement("div");
-            messageElement.classList.add("list-group-item", "text-secondary");
-            messageElement.textContent = message;
-            chatLog.appendChild(messageElement);
-        }
     </script>
+
+    <style>
+        .chat-messages {
+            scrollbar-width: thin;
+            scrollbar-color: var(--bs-info) transparent;
+            padding: 1rem;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            border-radius: 3px;
+        }
+
+        .chat-bubble {
+            background: var(--bs-light);
+            max-width: 80%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .chat-message-mine .chat-bubble {
+            background: var(--bs-primary);
+            color: white;
+        }
+
+        .message-user {
+            font-size: 0.875rem;
+            padding: 0 0.5rem;
+        }
+
+        .chat-message-mine .message-time {
+            color: rgba(255, 255, 255, 0.75) !important;
+        }
+
+        .chat-input-area {
+            border-top: 1px solid var(--bs-border-color);
+            padding-top: 1rem;
+        }
+
+        .form-control {
+            background-color: var(--bs-body-bg);
+            border-color: var(--bs-info);
+            color: var(--bs-body-color);
+        }
+
+        .form-control:focus {
+            background-color: var(--bs-body-bg);
+            border-color: var(--bs-info);
+            box-shadow: 0 0 0 0.25rem rgba(var(--bs-info-rgb), 0.25);
+            color: var(--bs-body-color);
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .chat-message-mine .message-time,
+        .chat-message-mine .message-user {
+            color: var(--bs-primary) !important;
+        }
+
+        .chat-message-mine .chat-bubble .message-time {
+            color: rgba(255, 255, 255, 0.75) !important;
+        }
+    </style>
 }
-
-<style>
-    #sendMessage {
-        border-radius: 0.5rem 0 0 0.5rem;
-    }
-
-    #sendButton {
-        border-radius: 0 0.5rem 0.5rem 0;
-    }
-
-    #chatLog {
-        font-family: Arial, sans-serif;
-        font-size: 14px;
-    }
-
-    #chatLog div {
-        margin-bottom: 0.5rem;
-        padding: 0.5rem;
-        border-bottom: 1px solid #ddd;
-    }
-
-    #chatLog div:last-child {
-        border-bottom: none;
-    }
-
-    .list-group-item {
-        display: block;
-        padding: 0.75rem 1.25rem;
-        margin-bottom: -1px;
-        background-color: #fff;
-        border: 1px solid rgba(0, 0, 0, 0.125);
-        color: #212529;
-    }
-
-    .list-group-item.text-secondary {
-        font-style: italic;
-        font-size: 0.9rem;
-    }
-</style>
