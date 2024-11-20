@@ -10,11 +10,11 @@
         <p class="text-muted mb-0">Connect with other users in real-time</p>
     </div>
     <div class="card-body">
-        <div id="messagesList" class="chat-messages mb-4" style="height: 400px; overflow-y: auto;">
+        <div id="messagesList" class="mb-4 p-2" style="height: 400px; overflow-y: auto;">
             <!-- Messages will be displayed here -->
         </div>
         
-        <div class="chat-input-area">
+        <div class="border-top pt-3">
             <form id="chatForm" class="d-flex gap-2">
                 <div class="flex-grow-1">
                     <div class="input-group">
@@ -26,7 +26,7 @@
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-send"></i> Send
+                    <i class="bi bi-send text-body-tertiary"></i> Send
                 </button>
             </form>
         </div>
@@ -42,137 +42,95 @@
                 .configureLogging(signalR.LogLevel.Information)
                 .build();
 
-            // Handle receiving messages
-            connection.on("ReceiveMessage", function (message) {
-                const [userId, messageText] = message.split(': ');
-                const encodedMsg = $('<div />').text(messageText).html();
-                const encodedUser = $('<div />').text(userId).html();
-                const isMyMessage = userId === connection.connectionId;
+            connection.start()
+                .then(() => console.log("Connected to chat hub"))
+                .catch(err => console.error("Error connecting:", err));
+
+            connection.on("ReceiveMessage", function (messageJson) {
+                const message = JSON.parse(messageJson);
+
+                const messageTime = new Date(message.Timestamp)
+                const encodedMsg = $('<div />').text(message.Content).html();
+                const encodedUser = $('<div />').text(message.Sender).html();
                 
+                const isMyMessage = message.Sender === connection.connectionId;
+                const isSystemMessage = message.Sender === "Server";
+    
                 const messageElement = $(`
-                    <div class="chat-message mb-3 ${isMyMessage ? 'chat-message-mine' : ''}">
-                        <div class="d-flex flex-column ${isMyMessage ? 'align-items-end' : 'align-items-start'}">
-                            <small class="message-user text-muted mb-1">
-                                ${isMyMessage ? 'You' : encodedUser}
+                    <div class="chat-message mb-3 ${isMyMessage ? 'chat-message-mine' : ''} ${isSystemMessage ? 'chat-message-system' : ''}">
+                        <div class="d-flex flex-column ${isMyMessage ? 'align-items-start' : 'align-items-end'}">
+                            <small class="message-user text-muted mb-1 text-truncate">
+                                ${isMyMessage ? 'You' : isSystemMessage ? '' : encodedUser}
                             </small>
-                            <div class="chat-bubble p-3 rounded">
-                                <div class="message-content">${encodedMsg}</div>
-                                <small class="message-time text-muted">${new Date().toLocaleTimeString()}</small>
+                            <div class="chat-bubble p-2 rounded">
+                                <div class="message-content p-1">${encodedMsg}</div>
+                                <small class="message-time ${!isMyMessage ? 'text-muted' : 'text-light'}">${messageTime.toLocaleTimeString()}</small>
                             </div>
                         </div>
                     </div>
                 `);
-                
+    
                 $("#messagesList").append(messageElement);
                 scrollToBottom();
             });
 
-            // Handle form submission
-            $("#chatForm").on("submit", function(e) {
-                e.preventDefault();
-                sendMessage();
-            });
+            function sendMessage(message) {
+                if (!message)
+                    return;
 
-            // Handle enter key
-            $("#messageInput").on("keypress", function(e) {
-                if (e.which === 13 && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-
-            function sendMessage() {
-                const message = $("#messageInput").val().trim();
-                if (message) {
-                    connection.invoke("SendMessage", message)
-                        .catch(err => console.error("Error sending message:", err));
-                    $("#messageInput").val("").focus();
-                }
+                connection.invoke("SendMessage", message)
+                    .catch(err => console.error("Error sending message:", err));
             }
-
+             
             function scrollToBottom() {
                 const messagesList = $("#messagesList");
+
                 messagesList.animate({
                     scrollTop: messagesList[0].scrollHeight
                 }, 200);
             }
 
-            // Start the connection
-            connection.start()
-                .then(() => console.log("Connected to chat hub"))
-                .catch(err => console.error("Error connecting:", err));
+            // Handle form submission
+            $("#chatForm").on("submit", (e) => {
+                e.preventDefault();
+
+                const message = $("#messageInput").val().trim();
+                sendMessage(message);
+                $("#messageInput").val("").focus();
+            });
+
+            // Handle enter key
+            $("#messageInput").on("keypress", (e) => {
+                if (e.which !== 13 || e.shiftKey)
+                    return;
+
+                e.preventDefault();
+
+                const message = $("#messageInput").val().trim(); 
+                sendMessage(message);
+                $("#messageInput").val("").focus();
+            });
         });
     </script>
-
     <style>
-        .chat-messages {
-            scrollbar-width: thin;
-            scrollbar-color: var(--bs-info) transparent;
-            padding: 1rem;
-        }
-
-        .chat-messages::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .chat-messages::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .chat-messages::-webkit-scrollbar-thumb {
-            border-radius: 3px;
-        }
-
         .chat-bubble {
-            background: var(--bs-light);
             max-width: 80%;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: var(--bs-light);
         }
 
         .chat-message-mine .chat-bubble {
-            background: var(--bs-primary);
+            background: rgba(var(--bs-primary-rgb), 0.6);
             color: white;
         }
 
-        .message-user {
-            font-size: 0.875rem;
-            padding: 0 0.5rem;
+        .chat-message-system .chat-bubble {
+            background: var(--bs-gray-200);
+            color: var(--bs-gray-600);
+            font-style: italic;
         }
 
-        .chat-message-mine .message-time {
-            color: rgba(255, 255, 255, 0.75) !important;
-        }
-
-        .chat-input-area {
-            border-top: 1px solid var(--bs-border-color);
-            padding-top: 1rem;
-        }
-
-        .form-control {
-            background-color: var(--bs-body-bg);
-            border-color: var(--bs-info);
-            color: var(--bs-body-color);
-        }
-
-        .form-control:focus {
-            background-color: var(--bs-body-bg);
-            border-color: var(--bs-info);
-            box-shadow: 0 0 0 0.25rem rgba(var(--bs-info-rgb), 0.25);
-            color: var(--bs-body-color);
-        }
-
-        .message-time {
-            font-size: 0.75rem;
-            margin-top: 0.25rem;
-        }
-
-        .chat-message-mine .message-time,
-        .chat-message-mine .message-user {
-            color: var(--bs-primary) !important;
-        }
-
-        .chat-message-mine .chat-bubble .message-time {
-            color: rgba(255, 255, 255, 0.75) !important;
+        .chat-message-system .message-time {
+            display: none;
         }
     </style>
 }

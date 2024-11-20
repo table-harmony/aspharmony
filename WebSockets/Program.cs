@@ -7,7 +7,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSignalR();
+builder.Services.AddSignalR()
+    .AddJsonProtocol(options => {
+        options.PayloadSerializerOptions.PropertyNamingPolicy = null;
+    });
+
+builder.Services.AddLogging(logging => {
+    logging.AddConsole();
+    logging.AddDebug();
+});
 
 builder.Services.AddCors(options => {
     options.AddDefaultPolicy(builder => {

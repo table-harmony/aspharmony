@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="WebSockets.Message" Collapsed="true">
+    <Position X="9.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAACAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>ChatHub.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSockets.ChatHub" Collapsed="true">
+    <Position X="7.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>FAAAAAAAAAAAAAAAACAAABAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ChatHub.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="WebSockets.IChatClient" Collapsed="true">
+    <Position X="7.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ChatHub.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
