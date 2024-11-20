@@ -38,7 +38,7 @@ app.UseHttpsRedirection();
 
 app.UseCors();
 
-app.MapPost("broadcast", async (string message, IHubContext<ChatHub, IChatClient> context) => {
+app.MapPost("broadcast", async (Message message, IHubContext<ChatHub, IChatClient> context) => {
     await context.Clients.All.ReceiveMessage(message);
 
     return Results.NoContent();

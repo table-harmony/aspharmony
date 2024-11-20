@@ -1,5 +1,6 @@
 ﻿namespace Utils {
     public enum FolderType {
+        Site,
         Books,
         Feedbacks,
         Databases
@@ -12,6 +13,7 @@
             string storageDirectory = Path.Combine(Directory.GetCurrentDirectory(), "..", "Storage", "App_Data");
 
             return new Dictionary<FolderType, string> {
+                { FolderType.Site, storageDirectory },
                 { FolderType.Books, Path.Combine(storageDirectory, "Books") },
                 { FolderType.Feedbacks, Path.Combine(storageDirectory, "Feedbacks") },
                 { FolderType.Databases, storageDirectory }

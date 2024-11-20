@@ -78,6 +78,7 @@
     <Content Include="App_Data\Nimbus_log.ldf">
       <DependentUpon>Nimbus.mdf</DependentUpon>
     </Content>
+    <Content Include="App_Data\Context.txt" />
     <Content Include="App_Data\Stegan.mdf" />
     <Content Include="App_Data\Stegan_log.ldf">
       <DependentUpon>Stegan.mdf</DependentUpon>

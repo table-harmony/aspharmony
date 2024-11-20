@@ -20,7 +20,7 @@ namespace Utils {
 
             return fileUrl;
         }
-
+        
         public async Task<string> UploadFileAsync(IFormFile file) {
             string uploadUrl = await GenerateUploadUrlAsync();
             string storageId = await UploadToUrlAsync(uploadUrl, file);

@@ -85,6 +85,7 @@ namespace PresentationLayer {
             services.AddTransient<IEncryption, Sha256Encryption>();
             services.AddTransient<IFileUploader, FileUploader>();
             services.AddTransient<ISenderFactory, SenderFactory>();
+            services.AddTransient<IAiService, GeminiService>();
 
             // Register web services
             services.AddScoped(serviceProvider =>

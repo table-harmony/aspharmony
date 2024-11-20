@@ -1,0 +1,63 @@
+﻿AspHarmony is a digital library management platform where users can:
+
+CORE FEATURES:
+- Browse, create, and manage digital books
+- Join and create libraries
+- Share books with other users
+- Use different book storage servers
+- Switch between multiple visual themes
+- Chat with other users in real-time
+- Get AI assistance
+
+USER ROLES:
+1. Guests can:
+   - View available books and libraries
+   - Register or login
+   - Chat with AI assistant
+
+2. Registered Users can:
+   - Manage their profile
+   - Create and manage books
+   - Join libraries
+   - Borrow books
+   - Provide feedback
+   - Use live chat
+
+3. Administrators can:
+   - Manage all libraries
+   - Manage user accounts
+   - Access admin dashboard
+
+BOOK SERVERS:
+A server is a way to store the book information, 
+
+Aether: SOAP web service and stores data in XML format.
+Atlas: API and stores data in JSON files.
+Dummy: Simulates a server without actual data storage.
+Echo: XML storage using a DataSet.
+Harmony: a Minecraft plugin to store books in-game.
+Nimbus 1.0: Stores data in SQL Server.
+Nimbus 2.0: Stores data in MongoDB.
+Orion: SOAP web service and stores data in XML files.
+Solace: Stores data in Microsoft Office files such as Word, Excel, or PowerPoint.
+Stegan 1.0: Encrypts book data into random images saved locally.
+Stegan 2.0: Encrypts book data into random images, uploads them, and stores the links in SQL Server.
+
+HOW TO:
+1. Find Books:
+   - Use search bar on Books page
+   - Filter by server type
+   - Browse library collections
+
+2. Join Libraries:
+   - Browse available libraries
+   - Click "Join Library" button
+   - Wait for approval if required
+
+3. Create Books:
+   - Click "Create New Book" button
+   - Fill required information
+   - Choose appropriate server
+   - Upload book content
+
+For technical support or questions, use the AI assistant or submit feedback through the Feedback form.

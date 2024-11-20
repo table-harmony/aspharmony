@@ -10,45 +10,30 @@ public class Message {
 }
 
 public interface IChatClient {
-    Task ReceiveMessage(string message);
+    Task ReceiveMessage(Message message);
 }
 
 public sealed class ChatHub : Hub<IChatClient> {
     public override async Task OnConnectedAsync() {
         Message message = new() {
-            Content = $"User {Context.ConnectionId} has joined the chat",
+            Content = "User has joined the chat",
         };
 
-        await Clients.All.ReceiveMessage(JsonSerializer.Serialize(message));
+        await Clients.All.ReceiveMessage(message);
     }
 
     public override async Task OnDisconnectedAsync(Exception? exception) {
         Message message = new() {
-            Content = $"User {Context.ConnectionId} has left the chat"
+            Content = "User has left the chat"
         };
 
-        await Clients.All.ReceiveMessage(JsonSerializer.Serialize(message));
+        await Clients.All.ReceiveMessage(message);
     }
 
-    public async Task SendMessage(string content) {
-        if (string.IsNullOrWhiteSpace(content)) {
-            throw new HubException("Message content cannot be empty");
-        }
+    public async Task SendMessage(string message) {
+        Message parsedMessage = JsonSerializer.Deserialize<Message>(message) 
+            ?? throw new HubException("Message could not be parsed");
 
-        Message message = new() {
-            Sender = Context.ConnectionId,
-            Content = content
-        };
-
-        await Clients.All.ReceiveMessage(JsonSerializer.Serialize(message));
-    }
-
-    public async Task SendPrivateMessage(string targetUserId, string content) {
-        Message message = new() {
-            Sender = Context.ConnectionId,
-            Content = content
-        };
-
-        await Clients.User(targetUserId).ReceiveMessage(JsonSerializer.Serialize(message));
+        await Clients.All.ReceiveMessage(parsedMessage);
     }
 }
