@@ -31,17 +31,17 @@ USER ROLES:
 BOOK SERVERS:
 A server is a way to store the book information, 
 
-Aether: SOAP web service and stores data in XML format.
-Atlas: API and stores data in JSON files.
-Dummy: Simulates a server without actual data storage.
-Echo: XML storage using a DataSet.
-Harmony: a Minecraft plugin to store books in-game.
-Nimbus 1.0: Stores data in SQL Server.
-Nimbus 2.0: Stores data in MongoDB.
-Orion: SOAP web service and stores data in XML files.
-Solace: Stores data in Microsoft Office files such as Word, Excel, or PowerPoint.
-Stegan 1.0: Encrypts book data into random images saved locally.
-Stegan 2.0: Encrypts book data into random images, uploads them, and stores the links in SQL Server.
+Aether: A SOAP web service that stores book data in XML format for external access.
+Atlas: An API-based server that stores book data in JSON files locally.
+Dummy: A mock server that generates dummy book data for testing purposes.
+Echo: Direct-access server using an in-memory DataSet to store book data in XML format.
+Harmony: A server that integrates with a Minecraft plugin to store books as in-game items via a Java-based API.
+Nimbus 1.0: A SQL Server-based solution storing books in two relational tables: chapters and metadata.
+Nimbus 2.0: An updated version of Nimbus, storing book data in a NoSQL MongoDB database.
+Orion: A SOAP web service storing book data in XML files via a WebServices project.
+Solace: Stores book data in Microsoft Office files (Word, Excel, or PowerPoint) selected by the developer.
+Stegan 1.0: Encrypts book data into random images and stores them locally in the project.
+Stegan 2.0: Encrypts book data into random images, uploads them online, and stores the links in a database.
 
 HOW TO:
 1. Find Books:

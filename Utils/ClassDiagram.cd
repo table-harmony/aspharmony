@@ -148,6 +148,14 @@
       <FileName>PathManager.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="Utils.GeminiService" Collapsed="true">
+    <Position X="17.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>AiService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
   <Interface Name="Utils.Encryption.IEncryption" Collapsed="true">
     <Position X="12.25" Y="4.75" Width="1.5" />
     <TypeIdentifier>
@@ -183,6 +191,13 @@
       <FileName>FileUploader.cs</FileName>
     </TypeIdentifier>
   </Interface>
+  <Interface Name="Utils.IAiService" Collapsed="true">
+    <Position X="14" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>AiService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
   <Enum Name="Utils.Senders.SenderType" Collapsed="true">
     <Position X="14" Y="6.5" Width="1.5" />
     <TypeIdentifier>
@@ -193,7 +208,7 @@
   <Enum Name="Utils.FolderType" Collapsed="true">
     <Position X="12.25" Y="6.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAEAAAAAAAAACAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAEAAgAAAAAACAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>PathManager.cs</FileName>
     </TypeIdentifier>
   </Enum>

@@ -227,9 +227,16 @@
                 e.preventDefault();
                 
                 const form = $(this);
-                const question = form.find('input[name="question"]').val();
+
+                const questionInput = form.find('input[name="question"]');
+                const question = questionInput.val();
                 if (!question) return;
+
+                questionInput.val("");
+                questionInput.attr('disabled', 'disabled');
                 
+                const chatHistory = $("#aiChatHistory");
+
                 const userMessage = `
                     <div class="chat-message mb-3 chat-message-mine">
                         <div class="d-flex flex-column align-items-end">
@@ -241,27 +248,74 @@
                     </div>`;
                 $("#aiChatHistory").append(userMessage);
 
+                const loadingSpinner = `
+                        <div id="loadingSpinner" class="chat-message mb-3">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>`;
+                $("#aiChatHistory").append(loadingSpinner);
+                chatHistory.scrollTop(chatHistory[0].scrollHeight);
+
                 $.post("/Home/GenerateContentAI", { question: question })
                     .done(function (response) {
+                        $("#loadingSpinner").remove();
+
                         const aiMessage = `
                             <div class="chat-message mb-3">
                                 <div class="d-flex flex-column align-items-start">
                                     <small class="message-user text-muted mb-1">AI Assistant</small>
                                     <div class="chat-bubble p-2 rounded">
-                                        ${response.answer}
+                                        
                                     </div>
                                 </div>
                             </div>`;
-                        $("#aiChatHistory").append(aiMessage);
+                        chatHistory.append(aiMessage);
 
-                        form.find('input[name="question"]').val("");
-                        const chatHistory = $("#aiChatHistory");
-                        chatHistory.scrollTop(chatHistory[0].scrollHeight);
+                        const latestAiBubble = $(".chat-message:last .chat-bubble");
+                        typeMessage(latestAiBubble, response.answer, 25, () => {
+                            questionInput.removeAttr('disabled');
+                            questionInput.focus();
+                        });
+
                     })
                     .fail(function () {
-                        alert("Failed to get AI response. Please try again.");
+                        $("#loadingSpinner").remove();
+
+                        const aiMessage = `
+                            <div class="chat-message mb-3">
+                                <div class="d-flex flex-column align-items-start">
+                                    <small class="message-user text-muted mb-1">AI Assistant</small>
+                                    <div class="chat-bubble p-2 rounded">
+                                        Failed to get AI response. Please try again.
+                                    </div>
+                                </div>
+                            </div>`;
+                        chatHistory.append(aiMessage);
+
+                        chatHistory.scrollTop(chatHistory[0].scrollHeight);
+                        
+                        questionInput.removeAttr('disabled');
                     });
             });
+
+            function typeMessage(selector, message, typingSpeed, callback) {
+                let index = 0;
+                const element = $(selector);
+
+                const typeInterval = setInterval(() => {
+                    if (index < message.length) {
+                        element.text(element.text() + message[index]);
+                        index++;
+                    } else {
+                        clearInterval(typeInterval);
+                        if (callback) callback();
+                    }
+
+                    const chatHistory = $("#aiChatHistory");
+                    chatHistory.scrollTop(chatHistory[0].scrollHeight);
+                }, typingSpeed);
+            }
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
@@ -276,7 +330,11 @@
                 </div>
                 <div class="modal-body p-3 stylized-background">
                     <div id="aiChatHistory" class="chat-history mb-4 p-3" style="height: 400px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.5rem;">
-                        <!-- Messages will be displayed dynamically -->
+                        @if (!User.Identity?.IsAuthenticated ?? false) {
+                            <div class="alert alert-warning" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill"></i> You must log in to use the AI assistant.
+                            </div>
+                        }
                     </div>
 
                     <form id="aiForm" class="d-flex gap-2 align-items-center">
@@ -285,7 +343,7 @@
                                 <i class="bi bi-chat-text"></i>
                             </span>
                             <input type="text" name="question" class="form-control"
-                                   placeholder="Type your message..." autocomplete="off" required>
+                                   placeholder="Type your message..." autocomplete="off" @((!User.Identity?.IsAuthenticated ?? false) ? "disabled" : "") required>
                         </div>
                         <button class="btn btn-primary d-flex align-items-center gap-2" type="submit">
                             <i class="bi bi-send"></i> <span>Send</span>

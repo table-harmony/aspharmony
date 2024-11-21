@@ -6,6 +6,10 @@ using JokesServiceReference;
 using System.Xml.Linq;
 using Utils;
 using FileIO = System.IO.File;
+using Humanizer;
+using System;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 
 namespace PresentationLayer.Controllers {
     public class HomeController(JokesServicePortTypeClient jokesService, IAiService aiService) : Controller {
@@ -66,18 +70,19 @@ namespace PresentationLayer.Controllers {
             });
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> GenerateContentAI(string question) {
             if (string.IsNullOrWhiteSpace(question)) {
                 return BadRequest("Please enter a question");
             }
-
+            
             string prompt = BuildPrompt(question);
             string answer = await aiService.GetResponseAsync(prompt);
             
             return Json(new {
                 question,
-                answer,
+                answer
             });
         }
 
