@@ -13,20 +13,24 @@ using ServerBook = BusinessLogicLayer.Servers.Books.Book;
 using Chapter = BusinessLogicLayer.Servers.Books.Chapter;
 using Book = BusinessLogicLayer.Services.Book;
 using Image = Utils.IImageModelService.Image;
+using SpeechRequest = Utils.ITextToSpeechService.SpeechRequest;
+using System.Net.Http;
+using System.Text.Json.Serialization;
 
-namespace PresentationLayer.Controllers
-{
+namespace PresentationLayer.Controllers {
 
     [Authorize]
     public class BookController(IBookService bookService,
                                     IEventTracker eventTracker,
                                     IFileUploader fileUploader,
-                                    IImageModelService imageGenerator) : Controller {
+                                    IImageModelService imageGenerator,
+                                    ITextToSpeechService speechGenerator,
+                                    IConfiguration configuration) : Controller {
         public async Task<IActionResult> Index(string searchString, int pageSize = 10, int pageIndex = 1) {
             var books = await bookService.GetAllAsync();
 
             if (!string.IsNullOrEmpty(searchString)) {
-                books = books.Where(b => 
+                books = books.Where(b =>
                     b.Metadata.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
                     (b.Author?.UserName?.Contains(searchString, StringComparison.OrdinalIgnoreCase) ?? false));
             }
@@ -37,8 +41,7 @@ namespace PresentationLayer.Controllers
                 pageSize
             );
 
-            return View(new BookIndexViewModel 
-            { 
+            return View(new BookIndexViewModel {
                 Books = paginatedBooks,
                 SearchString = searchString,
                 PageSize = pageSize
@@ -57,6 +60,7 @@ namespace PresentationLayer.Controllers
             if (book == null)
                 return NotFound();
 
+            ViewBag.Voices = await GetVoices();
             return View(book);
         }
 
@@ -75,11 +79,10 @@ namespace PresentationLayer.Controllers
 
                 if (model.Image != null) {
                     imageUrl = await fileUploader.UploadFileAsync(model.Image);
-                }
-                else if (model.GenerateImage) {
+                } else if (model.GenerateImage) {
                     string prompt = GenerateImagePrompt(model.Title, model.Description);
                     using var imageStream = await imageGenerator.GenerateImageAsync(new Image(prompt));
-                    
+
                     imageUrl = await fileUploader.UploadFileAsync(imageStream);
                 }
 
@@ -171,11 +174,10 @@ namespace PresentationLayer.Controllers
 
                 if (model.NewImage != null) {
                     book.Metadata.ImageUrl = await fileUploader.UploadFileAsync(model.NewImage);
-                }
-                else if (model.GenerateImage) {
+                } else if (model.GenerateImage) {
                     string prompt = GenerateImagePrompt(model.Title, model.Description);
                     using var stream = await imageGenerator.GenerateImageAsync(new Image(prompt));
-                    
+
                     book.Metadata.ImageUrl = await fileUploader.UploadFileAsync(stream);
                 }
 
@@ -247,6 +249,115 @@ namespace PresentationLayer.Controllers
                 return "Generate a generic book cover image";
             }
             return $"Book cover for '{title}'. {description}";
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GenerateAudioBook(int id, string voiceId) {
+            var book = await bookService.GetBookAsync(id);
+            if (book == null)
+                return NotFound();
+
+            try {
+                string fullText = GenerateAudiobookPrompt(book);
+
+                var request = new SpeechRequest(
+                    Text: fullText,
+                    VoiceId: voiceId
+                );
+                
+                var audioStream = await speechGenerator.GenerateSpeechAsync(request);
+                
+                using var memoryStream = new MemoryStream();
+                await audioStream.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+                
+                return File(memoryStream.ToArray(), "audio/mpeg", $"{book.Metadata.Title} audiobook.mp3");
+            }
+            catch {
+                return StatusCode(500, new { 
+                    error = "Failed to generate audio book. Please try again later." 
+                });
+            }
+        }
+
+        private static string GenerateAudiobookPrompt(Book book) {
+            StringBuilder builder = new();
+
+            builder.AppendLine($"<speak>");
+            builder.AppendLine($"<prosody pitch=\"+10%\" rate=\"medium\" volume=\"loud\">Welcome to the audiobook of <emphasis level=\"strong\">\"{book.Metadata.Title}\"</emphasis>.</prosody>");
+
+            if (!string.IsNullOrWhiteSpace(book.Metadata.Description)) {
+                builder.AppendLine($"<break time=\"1s\" />");
+                builder.AppendLine($"<prosody pitch=\"-5%\" rate=\"slow\" volume=\"medium\">{book.Metadata.Description}</prosody>");
+            }
+
+            foreach (var chapter in book.Metadata.Chapters.OrderBy(c => c.Index)) {
+                builder.AppendLine($"<break time=\"1s\" />");
+                builder.AppendLine($"<prosody pitch=\"+5%\" rate=\"medium\" volume=\"loud\">Chapter {chapter.Index + 1}: {chapter.Title}</prosody>");
+                builder.AppendLine($"<break time=\"0.5s\" />");
+                builder.AppendLine($"<prosody pitch=\"0%\" rate=\"medium\" volume=\"default\">{chapter.Content}</prosody>");
+                builder.AppendLine($"<break time=\"1s\" />");
+            }
+
+            builder.AppendLine($"<prosody pitch=\"-5%\" rate=\"medium\" volume=\"soft\">Thank you for listening to this audiobook.</prosody>");
+            builder.AppendLine($"<prosody pitch=\"-10%\" rate=\"slow\" volume=\"soft\">We hope you enjoyed it.</prosody>");
+            builder.AppendLine($"</speak>");
+
+            return builder.ToString();
+        }
+
+        private async Task<List<Voice>?> GetVoices() {
+            HttpClient client = new() {
+                BaseAddress = new Uri("https://api.elevenlabs.io/")
+            };
+            client.DefaultRequestHeaders.Add("xi-api-key", configuration["ElevenLabs:ApiKey"]);
+
+            try {
+                var response = await client.GetAsync("v1/voices");
+                response.EnsureSuccessStatusCode();
+
+                var result = await response.Content.ReadFromJsonAsync<VoicesResponse>();
+
+                return result?.Voices?
+                    .OrderBy(_ => Guid.NewGuid())
+                    .Take(5)
+                    .ToList();
+            } catch {
+                return [
+                    new Voice {
+                        VoiceId = "9BWtsMINqrJLrRacOk9x",
+                        Name = "Aria",
+                        PreviewUrl = "https://storage.googleapis.com/eleven-public-prod/premade/voices/9BWtsMINqrJLrRacOk9x/405766b8-1f4e-4d3c-aba1-6f25333823ec.mp3",
+                        Labels = new Dictionary<string, string> {
+                            { "Accent", "American" },
+                            { "Description", "Expressive" },
+                            { "Age", "Middle-aged" },
+                            { "Gender", "Female" },
+                            { "Use Case", "Social Media" }
+                        }
+                    }
+                ];
+            }
+        }
+
+        public class VoicesResponse {
+            public List<Voice>? Voices { get; set; }
+        }
+
+        public class Voice {
+
+            [JsonPropertyName("voice_id")]
+            public required string VoiceId { get; set; }
+
+            [JsonPropertyName("name")]
+            public required string Name { get; set; }
+
+            [JsonPropertyName("preview_url")]
+            public string? PreviewUrl { get; set; }
+
+            [JsonPropertyName("labels")]
+            public Dictionary<string, string>? Labels { get; set; }
         }
     }
 }

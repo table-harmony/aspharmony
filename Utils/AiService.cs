@@ -92,10 +92,10 @@ public class ElevenLabsService : ITextToSpeechService {
             throw new Exception("ElevenLabs API Key not found in configuration.");
 
         _httpClient = new HttpClient {
-            BaseAddress = new Uri("https://api.elevenlabs.io/v1/")
+            BaseAddress = new Uri("https://api.elevenlabs.io/v1/"),
+            Timeout = TimeSpan.FromMinutes(5)
         };
-        _httpClient.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", apiKey);
+        _httpClient.DefaultRequestHeaders.Add("xi-api-key", apiKey);
         _httpClient.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("audio/mpeg"));
     }

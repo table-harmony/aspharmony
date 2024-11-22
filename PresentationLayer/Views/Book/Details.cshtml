@@ -31,10 +31,65 @@
                             </a>
                         }
                     }
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#voiceSelectionModal">
+                        <i class="bi bi-file-earmark-music"></i> Audio Book
+                    </button>
                 </div>
             </div>
             <div class="col-md-4">
                 <img src="@Model.Metadata?.ImageUrl" alt="@Model.Metadata?.Title" class="img-fluid rounded" style="max-height: 300px; width: 100%; object-fit: contain;" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="voiceSelectionModal" tabindex="-1" aria-labelledby="voiceSelectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="voiceSelectionModalLabel">Select Voice for Audio Book</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3" id="voicesContainer">
+                    @foreach (var voice in ViewBag.Voices) {
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input voice-select" type="radio"
+                                               name="voiceId" value="@voice.VoiceId"
+                                               id="voice_@voice.VoiceId" @(voice == ViewBag.Voices[0] ? "checked" : "")>
+                                        <label class="form-check-label fw-bold" for="voice_@voice.VoiceId">
+                                            @voice.Name
+                                        </label>
+                                    </div>
+                                    <ul class="list-unstyled mb-3">
+                                        @if (voice.Labels != null) {
+                                            @foreach (var label in voice.Labels) {
+                                                <li class="badge badge-pill bg-secondary">
+                                                    @label.Value
+                                                </li>
+                                            }
+                                        } else {
+                                            <li>No labels available.</li>
+                                        }
+                                    </ul>
+                                    <button class="btn btn-sm btn-outline-secondary preview-voice"
+                                            data-preview-url="@voice.PreviewUrl">
+                                        <i class="bi bi-play-circle"></i> Preview
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="generateAudioBook">
+                    <i class="bi bi-play-circle"></i> Generate
+                </button>
             </div>
         </div>
     </div>
@@ -69,4 +124,80 @@
     <div class="alert alert-info">
         <p class="mb-0">No chapters available for this book.</p>
     </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            let isGenerating = false;
+            let audioPreview = new Audio();
+            const modal = new bootstrap.Modal(document.getElementById('voiceSelectionModal'));
+            
+            $('.preview-voice').click(function() {
+                const previewUrl = $(this).data('preview-url');
+                if (audioPreview.src === previewUrl && !audioPreview.paused) {
+                    audioPreview.pause();
+                    audioPreview.currentTime = 0;
+                    $(this).html('<i class="bi bi-play-circle"></i> Preview');
+                } else {
+                    audioPreview.pause();
+                    $('.preview-voice').html('<i class="bi bi-play-circle"></i> Preview');
+                    audioPreview.src = previewUrl;
+                    audioPreview.play();
+                    $(this).html('<i class="bi bi-stop-circle"></i> Stop');
+                }
+            });
+            
+            $('#voiceSelectionModal').on('hidden.bs.modal', function () {
+                audioPreview.pause();
+                $('.preview-voice').html('<i class="bi bi-play-circle"></i> Preview');
+            });
+            
+            $('#generateAudioBook').click(async function() {
+                if (isGenerating) return;
+                
+                const button = $(this);
+                const originalText = button.html();
+                const selectedVoiceId = $('input[name="voiceId"]:checked').val();
+                isGenerating = true;
+                
+                button.html('<i class="bi bi-hourglass-split"></i> Generating...');
+                button.prop('disabled', true);
+                
+                try {
+                    const response = await fetch(`/Book/GenerateAudioBook/${@Model.Id}?voiceId=${selectedVoiceId}`, {
+                        method: 'POST',
+                        headers: {
+                            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Failed to generate audio book');
+                    }
+                    
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${@Json.Serialize(Model.Metadata?.Title ?? "audiobook")}.mp3`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    
+                    modal.hide();
+                } catch (error) {
+                    console.error('Error generating audio book:', error);
+                    alert(error.message || 'Failed to generate audio book. Please try again later.');
+                } finally {
+                    button.html(originalText);
+                    button.prop('disabled', false);
+                    isGenerating = false;
+                }
+            });
+            
+        });
+    </script>
 }

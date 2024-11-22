@@ -88,6 +88,7 @@ namespace PresentationLayer
             services.AddTransient<ISenderFactory, SenderFactory>();
             services.AddTransient<ITextModelService, GeminiService>();
             services.AddTransient<IImageModelService, StabilityService>();
+            services.AddTransient<ITextToSpeechService, ElevenLabsService>();
 
             // Register web services
             services.AddScoped(serviceProvider =>
