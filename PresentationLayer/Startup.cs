@@ -19,7 +19,8 @@ using NimbusV2 = DataAccessLayer.Repositories.Nimbus.v2;
 using DataAccessLayer.Repositories.Nimbus;
 using Utils.Senders;
 
-namespace PresentationLayer {
+namespace PresentationLayer
+{
     public class Startup(IConfiguration configuration) {
         public IConfiguration Configuration { get; } = configuration;
 
@@ -85,7 +86,8 @@ namespace PresentationLayer {
             services.AddTransient<IEncryption, Sha256Encryption>();
             services.AddTransient<IFileUploader, FileUploader>();
             services.AddTransient<ISenderFactory, SenderFactory>();
-            services.AddTransient<IAiService, GeminiService>();
+            services.AddTransient<ITextModelService, GeminiService>();
+            services.AddTransient<IImageModelService, StabilityService>();
 
             // Register web services
             services.AddScoped(serviceProvider =>

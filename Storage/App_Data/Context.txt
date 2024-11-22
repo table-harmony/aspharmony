@@ -29,7 +29,7 @@ USER ROLES:
    - Access admin dashboard
 
 BOOK SERVERS:
-A server is a way to store the book information, 
+A server is a way to store the book information.
 
 Aether: A SOAP web service that stores book data in XML format for external access.
 Atlas: An API-based server that stores book data in JSON files locally.

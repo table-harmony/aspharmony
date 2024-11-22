@@ -19,6 +19,9 @@ namespace PresentationLayer.Models {
 
         [Display(Name = "Chapters")]
         public List<ChapterViewModel> Chapters { get; set; } = new();
+
+        [Display(Name = "Generate AI Cover Image")]
+        public bool GenerateImage { get; set; }
     }
 
     public class ChapterViewModel {

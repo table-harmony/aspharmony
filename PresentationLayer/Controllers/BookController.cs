@@ -7,17 +7,21 @@ using System.Security.Claims;
 using DataAccessLayer.Entities;
 using Utils.Exceptions;
 using Utils;
+using System.Text;
 
 using ServerBook = BusinessLogicLayer.Servers.Books.Book;
 using Chapter = BusinessLogicLayer.Servers.Books.Chapter;
 using Book = BusinessLogicLayer.Services.Book;
+using Image = Utils.IImageModelService.Image;
 
-namespace PresentationLayer.Controllers {
+namespace PresentationLayer.Controllers
+{
 
     [Authorize]
     public class BookController(IBookService bookService,
                                     IEventTracker eventTracker,
-                                    IFileUploader fileUploader) : Controller {
+                                    IFileUploader fileUploader,
+                                    IImageModelService imageGenerator) : Controller {
         public async Task<IActionResult> Index(string searchString, int pageSize = 10, int pageIndex = 1) {
             var books = await bookService.GetAllAsync();
 
@@ -60,15 +64,24 @@ namespace PresentationLayer.Controllers {
         [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateBookViewModel model) {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) {
+                GetServers();
                 return View(model);
+            }
 
             try {
                 string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+                string imageUrl = "https://via.placeholder.com/400x600?text=No+Cover";
 
-                string imageUrl = "https://birkhauser.com/product-not-found.png";
-                if (model.Image != null)
+                if (model.Image != null) {
                     imageUrl = await fileUploader.UploadFileAsync(model.Image);
+                }
+                else if (model.GenerateImage) {
+                    string prompt = GenerateImagePrompt(model.Title, model.Description);
+                    using var imageStream = await imageGenerator.GenerateImageAsync(new Image(prompt));
+                    
+                    imageUrl = await fileUploader.UploadFileAsync(imageStream);
+                }
 
                 Book book = new() {
                     AuthorId = userId,
@@ -93,7 +106,7 @@ namespace PresentationLayer.Controllers {
                 GetServers(model.Server);
 
                 string message = ex is PublicException ? ex.Message : "An error occurred while creating the book.";
-                ModelState.AddModelError("", message);
+                ModelState.AddModelError("", ex.Message);
 
                 return View(model);
             }
@@ -132,10 +145,12 @@ namespace PresentationLayer.Controllers {
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, EditBookViewModel model) {
             if (id != model.Id)
-                return NotFound();
+                return BadRequest();
 
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) {
+                GetServers(model.Server);
                 return View(model);
+            }
 
             var book = await bookService.GetBookAsync(id);
 
@@ -153,10 +168,15 @@ namespace PresentationLayer.Controllers {
 
                 book.Metadata.Title = model.Title;
                 book.Metadata.Description = model.Description;
-                book.Metadata.ImageUrl = book.Metadata.ImageUrl;
 
                 if (model.NewImage != null) {
                     book.Metadata.ImageUrl = await fileUploader.UploadFileAsync(model.NewImage);
+                }
+                else if (model.GenerateImage) {
+                    string prompt = GenerateImagePrompt(model.Title, model.Description);
+                    using var stream = await imageGenerator.GenerateImageAsync(new Image(prompt));
+                    
+                    book.Metadata.ImageUrl = await fileUploader.UploadFileAsync(stream);
                 }
 
                 book.Metadata.Chapters = model.Chapters.Select(c => new Chapter {
@@ -173,7 +193,7 @@ namespace PresentationLayer.Controllers {
                 GetServers(book.Server);
 
                 string message = ex is PublicException ? ex.Message : "An error occurred while updating the book.";
-                ModelState.AddModelError("", message);
+                ModelState.AddModelError("", ex.Message);
 
                 return View(model);
             }
@@ -220,6 +240,13 @@ namespace PresentationLayer.Controllers {
                     Selected = e == selectedServer
                 })
                 .ToList();
+        }
+
+        private static string GenerateImagePrompt(string title, string description) {
+            if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(description)) {
+                return "Generate a generic book cover image";
+            }
+            return $"Book cover for '{title}'. {description}";
         }
     }
 }

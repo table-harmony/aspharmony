@@ -6,13 +6,10 @@ using JokesServiceReference;
 using System.Xml.Linq;
 using Utils;
 using FileIO = System.IO.File;
-using Humanizer;
-using System;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 
 namespace PresentationLayer.Controllers {
-    public class HomeController(JokesServicePortTypeClient jokesService, IAiService aiService) : Controller {
+    public class HomeController(JokesServicePortTypeClient jokesService, ITextModelService aiService) : Controller {
         private readonly HttpClient _httpClient = new();
 
         public async Task<ActionResult> Index() {

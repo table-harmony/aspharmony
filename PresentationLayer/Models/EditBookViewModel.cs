@@ -19,5 +19,8 @@ namespace PresentationLayer.Models {
         public IFormFile? NewImage { get; set; }
 
         public ServerType Server {  get; set; }
+
+        [Display(Name = "Generate new cover image")]
+        public bool GenerateImage { get; set; }
     }
 }

@@ -41,6 +41,13 @@
             </div>
 
             <div class="mb-3">
+                <div class="form-check">
+                    <input asp-for="GenerateImage" class="form-check-input" id="generateImage" />
+                    <label asp-for="GenerateImage" class="form-check-label"><i class="bi bi-robot"></i> Generate cover image</label>
+                </div>
+            </div>
+
+            <div class="mb-3">
                 <label asp-for="Server" class="control-label"></label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-server"></i></span>
@@ -79,39 +86,39 @@
 
             function addChapter() {
                 const template = `
-                    <div class="col-md-4 mb-3 chapter-card" data-index="${chapterIndex}">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">Chapter ${chapterIndex + 1}</h5>
-                                <button type="button" class="btn btn-danger btn-sm delete-chapter">Delete</button>
-                            </div>
-                            <div class="card-body">
-                                <input type="hidden" name="Chapters[${chapterIndex}].Index" value="${chapterIndex}" />
-                                <div class="mb-2">
-                                    <label class="form-label">Title</label>
-                                    <input type="text" name="Chapters[${chapterIndex}].Title" class="form-control" required />
+                            <div class="col-md-4 mb-3 chapter-card" data-index="${chapterIndex}">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">Chapter ${chapterIndex + 1}</h5>
+                                        <button type="button" class="btn btn-danger btn-sm delete-chapter">Delete</button>
+                                    </div>
+                                    <div class="card-body">
+                                        <input type="hidden" name="Chapters[${chapterIndex}].Index" value="${chapterIndex}" />
+                                        <div class="mb-2">
+                                            <label class="form-label">Title</label>
+                                            <input type="text" name="Chapters[${chapterIndex}].Title" class="form-control" required />
+                                        </div>
+                                        <div>
+                                            <label class="form-label">Content</label>
+                                            <textarea name="Chapters[${chapterIndex}].Content" class="form-control" rows="3" required></textarea>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="form-label">Content</label>
-                                    <textarea name="Chapters[${chapterIndex}].Content" class="form-control" rows="3" required></textarea>
-                                </div>
                             </div>
-                        </div>
-                    </div>
-                `;
+                        `;
                 $('#chapters').append(template);
                 chapterIndex++;
             }
 
             $('#addChapter').click(addChapter);
 
-            $(document).on('click', '.delete-chapter', function() {
+            $(document).on('click', '.delete-chapter', function () {
                 $(this).closest('.chapter-card').remove();
                 updateChapterNumbers();
             });
 
             function updateChapterNumbers() {
-                $('.chapter-card').each(function(idx) {
+                $('.chapter-card').each(function (idx) {
                     const card = $(this);
                     card.attr('data-index', idx);
                     card.find('h5').text(`Chapter ${idx + 1}`);
@@ -122,8 +129,15 @@
                 chapterIndex = $('.chapter-card').length;
             }
 
-            // Add first chapter by default
-            addChapter();
+            $('#generateImage').addEventListener('change', function() {
+                const imageInput = $('input[type="file"]');
+                if (this.checked) {
+                            imageInput.value = '';
+                    imageInput.setAttribute('disabled', 'disabled');
+                } else {
+                    imageInput.removeAttribute('disabled');
+                }
+            });
         });
     </script>
 }
