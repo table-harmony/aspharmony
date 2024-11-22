@@ -1,4 +1,5 @@
 using DataAccessLayer.Data;
+using DataAccessLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.Repositories {
@@ -10,6 +11,11 @@ namespace DataAccessLayer.Repositories {
         IEnumerable<BookLoan> GetBookLoans(int bookId);
         Task<BookLoan?> GetCurrentLoanAsync(int id);
         IEnumerable<BookLoan> GetMemberLoans(int membershipId);
+        Task<BookLoan?> GetActiveLoanAsync(int libraryBookId);
+        Task<BookLoan?> GetNextInQueueAsync(int libraryBookId);
+        Task<int> GetQueuePositionAsync(int libraryBookId, int membershipId);
+        Task<BookLoan?> GetActiveLoanOrRequestAsync(int libraryBookId, int membershipId);
+        Task<IEnumerable<BookLoan>> GetQueueAsync(int libraryBookId);
     }
 
     public class BookLoanRepository(ApplicationContext context) : IBookLoanRepository {
@@ -52,6 +58,52 @@ namespace DataAccessLayer.Repositories {
                 .Include(bl => bl.LibraryMembership)
                     .ThenInclude(lm => lm.User)
                 .FirstOrDefaultAsync(bl => bl.LibraryBookId == libraryBookId && !bl.ReturnDate.HasValue);
+        }
+
+        public async Task<BookLoan?> GetActiveLoanAsync(int libraryBookId) {
+            return await context.BookLoans
+                .FirstOrDefaultAsync(bl => 
+                    bl.LibraryBookId == libraryBookId && 
+                    bl.Status == LoanStatus.Active);
+        }
+
+        public async Task<BookLoan?> GetNextInQueueAsync(int libraryBookId) {
+            return await context.BookLoans
+                .Where(bl => 
+                    bl.LibraryBookId == libraryBookId && 
+                    bl.Status == LoanStatus.Requested)
+                .OrderBy(bl => bl.RequestDate)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<int> GetQueuePositionAsync(int libraryBookId, int membershipId) {
+            var loans = await context.BookLoans
+                .Where(bl => 
+                    bl.LibraryBookId == libraryBookId && 
+                    bl.Status == LoanStatus.Requested)
+                .OrderBy(bl => bl.RequestDate)
+                .ToListAsync();
+
+            return loans.FindIndex(bl => bl.LibraryMembershipId == membershipId) + 1;
+        }
+
+        public async Task<BookLoan?> GetActiveLoanOrRequestAsync(int libraryBookId, int membershipId) {
+            return await context.BookLoans
+                .FirstOrDefaultAsync(bl => 
+                    bl.LibraryBookId == libraryBookId && 
+                    bl.LibraryMembershipId == membershipId && 
+                    (bl.Status == LoanStatus.Active || bl.Status == LoanStatus.Requested));
+        }
+
+        public async Task<IEnumerable<BookLoan>> GetQueueAsync(int libraryBookId) {
+            return await context.BookLoans
+                .Include(bl => bl.LibraryMembership)
+                    .ThenInclude(lm => lm.User)
+                .Where(bl => 
+                    bl.LibraryBookId == libraryBookId && 
+                    bl.Status == LoanStatus.Requested)
+                .OrderBy(bl => bl.RequestDate)
+                .ToListAsync();
         }
     }
 }

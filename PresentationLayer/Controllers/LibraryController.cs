@@ -184,6 +184,10 @@ namespace PresentationLayer.Controllers {
             var currentLoan = await bookLoanService.GetCurrentBookLoanAsync(libraryBookId);
             var pastLoans = bookLoanService.GetBookLoans(libraryBookId);
             var otherCopies = await libraryBookService.GetLibraryBooksAsync(libraryBook.LibraryId, libraryBook.BookId);
+            
+            var activeLoan = await bookLoanService.GetActiveLoanAsync(libraryBookId);
+            var queuePosition = await bookLoanService.GetQueuePositionAsync(libraryBookId, membership.Id);
+            var queue = await bookLoanService.GetQueueAsync(libraryBookId);
 
             var model = new BookDetailsViewModel {
                 LibraryBook = libraryBook,
@@ -191,6 +195,9 @@ namespace PresentationLayer.Controllers {
                 CurrentLoan = currentLoan,
                 PastLoans = pastLoans,
                 OtherCopies = otherCopies.Where(lb => lb.Id != libraryBookId),
+                ActiveLoan = activeLoan,
+                QueuePosition = queuePosition,
+                Queue = queue
             };
 
             return View(model);
@@ -198,19 +205,22 @@ namespace PresentationLayer.Controllers {
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> BorrowBook(int libraryBookId, DateTime dueDate) {
+        public async Task<IActionResult> RequestBook(int libraryBookId) {
             var libraryBook = await libraryBookService.GetLibraryBookAsync(libraryBookId);
-
             if (libraryBook == null)
                 return NotFound();
             
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             var membership = await libraryMembershipService.GetMembershipAsync(libraryBook.LibraryId, userId);
-
             if (membership == null)
                 return NotFound();
 
-            await bookLoanService.CreateAsync(libraryBook.Id, membership.Id, dueDate);
+            // Check if user already has an active request or loan
+            var existingRequest = await bookLoanService.GetActiveLoanOrRequestAsync(libraryBookId, membership.Id);
+            if (existingRequest != null)
+                return BadRequest(new { error = "You already have an active request or loan for this book" });
+
+            await bookLoanService.CreateRequestAsync(libraryBook.Id, membership.Id);
             return RedirectToAction(nameof(BookDetails), new { libraryBookId });
         }
 
@@ -219,10 +229,12 @@ namespace PresentationLayer.Controllers {
         public async Task<IActionResult> ReturnBook(int bookLoanId) {
             await bookLoanService.ReturnBookAsync(bookLoanId);
             var bookLoan = await bookLoanService.GetBookLoanAsync(bookLoanId);
-
             if (bookLoan == null)
                 return NotFound();
 
+            // Process next person in queue
+            await bookLoanService.ProcessNextInQueueAsync(bookLoan.LibraryBookId);
+            
             return RedirectToAction(nameof(BookDetails), new { libraryBookId = bookLoan.LibraryBookId });
         }
 
