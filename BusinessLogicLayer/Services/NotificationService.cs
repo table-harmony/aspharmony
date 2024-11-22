@@ -24,8 +24,7 @@ namespace BusinessLogicLayer.Services {
         INotificationRepository notificationRepository,
         IUserService userService,
         ISenderFactory senderFactory,
-        IUserSenderService userSenderService,
-        ILogger<NotificationService> logger) : INotificationService {
+        IUserSenderService userSenderService) : INotificationService {
         public async Task<IEnumerable<Notification>> GetByUserAsync(string userId) {
             return await notificationRepository.GetByUserAsync(userId);
         }

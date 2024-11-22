@@ -21,30 +21,9 @@
                 <div class="mt-3">
                     <p><strong>Author:</strong> @(book.Author?.UserName ?? "Unknown")</p>
                     <p><strong>Description:</strong> @book.Metadata?.Description</p>
-                    <p><strong>Status:</strong> 
-                        @if (Model.CurrentLoan != null) {
-                            <span class="badge bg-warning">On Loan</span>
-                        } else {
-                            <span class="badge bg-success">Available</span>
-                        }
-                    </p>
-                    @if (Model.CurrentLoan != null) {
-                        <p><strong>Borrowed By:</strong> @Model.CurrentLoan.LibraryMembership.User.UserName</p>
-                        <p><strong>Due Date:</strong> @Model.CurrentLoan.DueDate.ToShortDateString()</p>
-                    }
                 </div>
 
                 <div class="mt-4">
-                    @if (Model.CurrentLoan == null) {
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#borrowModal">
-                            Borrow
-                        </button>
-                    } else if (Model.CurrentLoan.LibraryMembership.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) {
-                        <form asp-action="ReturnBook" method="post" class="d-inline-block">
-                            <input type="hidden" name="bookLoanId" value="@Model.CurrentLoan.Id" />
-                            <button type="submit" class="btn btn-success">Return</button>
-                        </form>
-                    }
                     @if (ViewBag.Membership.Role == MembershipRole.Manager) {
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#removeModal">
                             Remove
@@ -64,6 +43,67 @@
 </div>
 
 <div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="mb-0">Loan Status</h3>
+        @if (Model.CurrentLoan?.LibraryMembershipId != ViewBag.Membership.Id && Model.QueuePosition == 0) {
+            <form asp-action="RequestBook" method="post">
+                <input type="hidden" name="libraryBookId" value="@Model.LibraryBook.Id" />
+                <button type="submit" class="btn btn-primary">Request to Borrow</button>
+            </form>
+        }
+    </div>
+    <div class="card-body">
+        @if (Model.CurrentLoan?.Status == LoanStatus.Active) {
+            <div class="alert alert-warning">
+                <strong>Currently on loan to:</strong> @Model.CurrentLoan?.LibraryMembership.User.UserName
+                <br />
+                <small>Expected Return: @Model.CurrentLoan?.ExpectedReturnDate?.ToShortDateString()</small>
+                @if (Model.CurrentLoan?.LibraryMembershipId == ViewBag.Membership.Id) {
+                    <form asp-action="ReturnBook" method="post" class="mt-2">
+                        <input type="hidden" name="bookLoanId" value="@Model.CurrentLoan.Id" />
+                        <button type="submit" class="btn btn-success btn-sm">Return Book</button>
+                    </form>
+                }
+            </div>
+        }
+        else {
+            <div class="alert alert-success">
+                <strong>Status:</strong> Available
+            </div>
+        }
+
+        @if (Model.QueuePosition > 0) {
+            <div class="alert alert-info">
+                <strong>Your position in queue:</strong> @Model.QueuePosition
+            </div>
+        }
+
+        @if (Model.Queue.Any()) {
+            <h5 class="mt-3">Next in Line</h5>
+            <ol class="list-group list-group-numbered">
+                @foreach (var request in Model.Queue.Take(5)) {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="fw-bold">@request.LibraryMembership.User.UserName</span>
+                            <br />
+                            <small class="text-muted">Requested: @request.RequestDate.ToShortDateString()</small>
+                        </div>
+                        @if (request.LibraryMembershipId == ViewBag.Membership.Id) {
+                            <span class="badge bg-primary rounded-pill">You</span>
+                        }
+                    </li>
+                }
+            </ol>
+            @if (Model.Queue.Count() > 5) {
+                <div class="text-muted text-center mt-2">
+                    <small>+@(Model.Queue.Count() - 5) more in queue</small>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<div class="card mb-4">
     <div class="card-header">
         <h3 class="mb-0">Loan History</h3>
     </div>
@@ -73,17 +113,17 @@
                 <thead>
                     <tr>
                         <th>Borrower</th>
-                        <th>Borrowed Date</th>
-                        <th>Due Date</th>
+                        <th>Requested Date</th>
+                        <th>Loan Date</th>
                         <th>Return Date</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var loan in Model.PastLoans.OrderByDescending(l => l.LoanDate)) {
+                    @foreach (var loan in Model.PastLoans.OrderByDescending(l => l.RequestDate)) {
                         <tr>
                             <td>@loan.LibraryMembership.User.UserName</td>
-                            <td>@loan.LoanDate.ToShortDateString()</td>
-                            <td>@loan.DueDate.ToShortDateString()</td>
+                            <td>@loan.RequestDate.ToShortDateString()</td>
+                            <td>@(loan.LoanDate?.ToShortDateString() ?? "-")</td>
                             <td>@(loan.ReturnDate?.ToShortDateString() ?? "-")</td>
                         </tr>
                     }
@@ -106,7 +146,7 @@
                             <th>Copy ID</th>
                             <th>Status</th>
                             <th>Current Borrower</th>
-                            <th>Due Date</th>
+                            <th>Expected Return</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -123,7 +163,7 @@
                                     }
                                 </td>
                                 <td>@(currentLoan?.LibraryMembership.User.UserName ?? "-")</td>
-                                <td>@(currentLoan?.DueDate.ToShortDateString() ?? "-")</td>
+                                <td>@(currentLoan?.ExpectedReturnDate?.ToShortDateString() ?? "-")</td>
                                 <td>
                                     <a asp-action="BookDetails" asp-route-libraryBookId="@copy.Id" class="btn btn-info btn-sm">View</a>
                                 </td>
@@ -135,33 +175,6 @@
         </div>
     </div>
 }
-
-<!-- Borrow Modal -->
-<div class="modal fade" id="borrowModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Borrow "@book.Metadata?.Title"</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form asp-action="BorrowBook" method="post">
-                <div class="modal-body">
-                    <input type="hidden" name="libraryBookId" value="@Model.LibraryBook.Id" />
-                    <div class="mb-3">
-                        <label for="dueDate" class="form-label">Due Date</label>
-                        <input type="date" class="form-control" id="dueDate" name="dueDate" required 
-                               min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" 
-                               value="@DateTime.Today.AddDays(14).ToString("yyyy-MM-dd")" />
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Borrow</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 <!-- Remove Modal -->
 <div class="modal fade" id="removeModal" tabindex="-1">
