@@ -8,14 +8,15 @@ using DataAccessLayer.Entities;
 using Utils.Exceptions;
 using Utils;
 using System.Text;
+using Newtonsoft.Json;
 
 using ServerBook = BusinessLogicLayer.Servers.Books.Book;
 using Chapter = BusinessLogicLayer.Servers.Books.Chapter;
 using Book = BusinessLogicLayer.Services.Book;
 using Image = Utils.IImageModelService.Image;
 using SpeechRequest = Utils.ITextToSpeechService.SpeechRequest;
-using System.Net.Http;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 namespace PresentationLayer.Controllers {
 
@@ -25,7 +26,9 @@ namespace PresentationLayer.Controllers {
                                     IFileUploader fileUploader,
                                     IImageModelService imageGenerator,
                                     ITextToSpeechService speechGenerator,
-                                    IConfiguration configuration) : Controller {
+                                    IConfiguration configuration,
+                                    ITextModelService aiService) : Controller {
+
         public async Task<IActionResult> Index(string searchString, int pageSize = 10, int pageIndex = 1) {
             var books = await bookService.GetAllAsync();
 
@@ -358,6 +361,130 @@ namespace PresentationLayer.Controllers {
 
             [JsonPropertyName("labels")]
             public Dictionary<string, string>? Labels { get; set; }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GenerateChapters([FromBody] GenerateChaptersRequest request) {
+            try {
+                string prompt = @$"You are an AI assistant helping to generate book chapters.
+                    Given the following book details:
+                    Title: {request.Title}
+                    Description: {request.Description}
+                    
+                    Generate 3-5 chapters that would make sense for this book.
+                    
+                    IMPORTANT: Respond ONLY with a valid JSON array of chapter objects.
+                    Each chapter must have these exact properties:
+                    - title (string): The chapter title
+                    - content (string): A 2-3 paragraph summary of the chapter
+                    - Index (integer): The chapter number starting from ${request.Chapters.Count + 1}";
+
+                string response = await aiService.GetResponseAsync(prompt);
+
+                var chapters = JsonConvert.DeserializeObject<List<ChapterViewModel>>(CleanJsonResponse(response))
+                    ?? throw new Exception("Generated response was empty");
+
+                return Json(chapters);
+            } catch (JsonException) {
+                return BadRequest(new {
+                    error = "Failed to parse AI response. Please try again.",
+                });
+            } catch {
+                return BadRequest(new { 
+                    error = "Failed to generate chapters",
+                });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RefineBook([FromBody] RefineBookRequest request) {
+            try {
+                string prompt = @$"You are an expert book editor helping to refine and enhance a book's content.
+                    Current Book:
+                    Title: {request.Title}
+                    Description: {request.Description}
+                    Chapters: {JsonConvert.SerializeObject(request.Chapters)}
+
+                    Your task is to improve this book while maintaining its core story and themes.
+
+                    Guidelines:
+                    1. Title: Make it more engaging and marketable while preserving the main concept
+                    2. Description: A compelling 1-2 sentences which hook readers
+                    3. Chapters: For each chapter:
+                       - Enhance titles to be more intriguing
+                       - Expand and improve content while maintaining the original plot points
+                       - Ensure consistent tone and style throughout
+                       - Maintain narrative flow between chapters
+                       - Keep the same chapter count and index numbers
+
+                    IMPORTANT: Respond ONLY with a valid JSON object in this exact format:
+                    {{
+                        ""title"": ""Enhanced and engaging title"",
+                        ""description"": ""Compelling description that draws readers in..."",
+                        ""chapters"": [
+                            {{
+                                ""title"": ""Refined chapter title"",
+                                ""content"": ""Improved chapter content with better detail and flow"",
+                                ""index"": ""Keep the Index of each chapter""
+                            }}
+                        ]
+                    }}";
+
+                string response = await aiService.GetResponseAsync(prompt);
+
+                var refinedBook = JsonConvert.DeserializeObject<RefineBookResponse>(CleanJsonResponse(response))
+                    ?? throw new Exception("Generated response was empty");
+
+                return Json(refinedBook);
+            } catch (JsonException) {
+                return BadRequest(new {
+                    error = "Failed to parse AI response. Please try again.",
+                });
+            }
+            catch {
+                return BadRequest(new { 
+                    error = "Failed to refine book",
+                });
+            }
+        }
+
+        private static string CleanJsonResponse(string response) {
+            if (string.IsNullOrWhiteSpace(response))
+                return string.Empty;
+
+            response = response.Replace("\\n", " ").Replace("\\t", " ").Replace("\\r", " ").Trim();
+            response = Regex.Replace(response, @"\s{2,}", " ");
+
+            int startIndex = response.IndexOfAny(['[', '{']);
+            if (startIndex < 0)
+                throw new Exception("Invalid JSON response: No valid start character found");
+
+            int endIndex = response.LastIndexOfAny([']', '}']);
+            if (endIndex < 0)
+                throw new Exception("Invalid JSON response: No valid end character found");
+
+            response = response.Substring(startIndex, endIndex - startIndex + 1);
+
+            return response;
+        }
+        public class GenerateChaptersRequest {
+            public string Title { get; set; } = "";
+            public string Description { get; set; } = "";
+            public List<ChapterViewModel> Chapters { get; set; } = [];
+        }
+
+        public class RefineBookRequest {
+            public string Title { get; set; } = "";
+            public string Description { get; set; } = "";
+            public List<ChapterViewModel> Chapters { get; set; } = [];
+        }
+
+        public class RefineBookResponse {
+            public string Title { get; set; } = "";
+            public string Description { get; set; } = "";
+            public List<ChapterViewModel> Chapters { get; set; } = [];
         }
     }
 }

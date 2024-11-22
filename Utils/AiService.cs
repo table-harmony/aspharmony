@@ -24,12 +24,8 @@ public class GeminiService : ITextModelService {
     }
 
     public async Task<string> GetResponseAsync(string prompt) {
-        try {
-            var response = await _model.GenerateContent(prompt);
-            return response.Text ?? "";
-        } catch {
-            return "I apologize, but I'm unable to answer at the moment. Please try again later.";
-        }
+        var response = await _model.GenerateContent(prompt);
+        return response.Text ?? "";
     }
 }
 

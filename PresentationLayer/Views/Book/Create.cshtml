@@ -59,9 +59,14 @@
             <div class="card mb-3">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">Chapters</h4>
-                    <button type="button" class="btn btn-success btn-sm" id="addChapter">
-                        <i class="bi bi-plus-circle"></i> Add Chapter
-                    </button>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-secondary" id="generateChapters">
+                            <i class="bi bi-robot"></i> Generate
+                        </button>
+                        <button type="button" class="btn btn-success btn-sm" id="addChapter">
+                            <i class="bi bi-plus-circle"></i> Add
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div id="chapters" class="row">
@@ -86,26 +91,26 @@
 
             function addChapter() {
                 const template = `
-                            <div class="col-md-4 mb-3 chapter-card" data-index="${chapterIndex}">
-                                <div class="card">
-                                    <div class="card-header d-flex justify-content-between align-items-center">
-                                        <h5 class="mb-0">Chapter ${chapterIndex + 1}</h5>
-                                        <button type="button" class="btn btn-danger btn-sm delete-chapter">Delete</button>
-                                    </div>
-                                    <div class="card-body">
-                                        <input type="hidden" name="Chapters[${chapterIndex}].Index" value="${chapterIndex}" />
-                                        <div class="mb-2">
-                                            <label class="form-label">Title</label>
-                                            <input type="text" name="Chapters[${chapterIndex}].Title" class="form-control" required />
-                                        </div>
-                                        <div>
-                                            <label class="form-label">Content</label>
-                                            <textarea name="Chapters[${chapterIndex}].Content" class="form-control" rows="3" required></textarea>
-                                        </div>
-                                    </div>
+                    <div class="col-md-4 mb-3 chapter-card" data-index="${chapterIndex}">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Chapter ${chapterIndex + 1}</h5>
+                                <button type="button" class="btn btn-danger btn-sm delete-chapter">Delete</button>
+                            </div>
+                            <div class="card-body">
+                                <input type="hidden" name="Chapters[${chapterIndex}].Index" value="${chapterIndex}" />
+                                <div class="mb-2">
+                                    <label class="form-label">Title</label>
+                                    <input type="text" name="Chapters[${chapterIndex}].Title" class="form-control" required />
+                                </div>
+                                <div>
+                                    <label class="form-label">Content</label>
+                                    <textarea name="Chapters[${chapterIndex}].Content" class="form-control" rows="3" required></textarea>
                                 </div>
                             </div>
-                        `;
+                        </div>
+                    </div>
+                `;
                 $('#chapters').append(template);
                 chapterIndex++;
             }
@@ -129,15 +134,78 @@
                 chapterIndex = $('.chapter-card').length;
             }
 
-            $('#generateImage').addEventListener('change', function() {
+            $('#generateImage').on('change', function() {
                 const imageInput = $('input[type="file"]');
                 if (this.checked) {
-                            imageInput.value = '';
-                    imageInput.setAttribute('disabled', 'disabled');
+                    imageInput.value = '';
+                    imageInput.attr('disabled', 'disabled');
                 } else {
-                    imageInput.removeAttribute('disabled');
+                    imageInput.removeAttr('disabled');
+                }
+            });
+
+            $('#generateChapters').click(async function () {
+                const title = $('#Title').val();
+                const description = $('#Description').val();
+
+                if (!title || !description) {
+                    alert('Please enter both title and description first.');
+                    return;
+                }
+
+                $('#add-chapter, .remove-chapter').prop('disabled', true);
+
+                const button = $(this);
+                const originalText = button.html();
+                button.html('<i class="bi bi-hourglass-split"></i> Generating...').prop('disabled', true);
+
+                try {
+                    const token = $('input[name="__RequestVerificationToken"]').val();
+                    if (!token) throw new Error('CSRF token not found');
+
+                    const existingChapters = $('.chapter-card').map(function() {
+                        return {
+                            index: parseInt($(this).find('input[type="hidden"]').val()),
+                            title: $(this).find('input[name$=".Title"]').val(),
+                            content: $(this).find('textarea[name$=".Content"]').val()
+                        };
+                    }).get();
+
+                    const response = await fetch('/Book/GenerateChapters', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': token,
+                        },
+                        body: JSON.stringify({ 
+                            title, 
+                            description,
+                            chapters: existingChapters 
+                        }),
+                    });
+
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        console.error('Server Error:', data);
+                        throw new Error(data.error || 'Failed to generate chapters');
+                    }
+
+                    data.forEach((chapter) => {
+                        addChapter();
+                        const card = $(`.chapter-card[data-index="${chapter.index - 1}"]`);
+                        card.find('input[name$=".Title"]').val(chapter.title);
+                        card.find('textarea[name$=".Content"]').val(chapter.content);
+                    });
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert(error.message || 'Failed to generate chapters. Please try again.');
+                } finally {
+                    button.html(originalText).prop('disabled', false);
+                    $('#add-chapter, .delete-chapter').prop('disabled', false);
                 }
             });
         });
     </script>
 }
+
