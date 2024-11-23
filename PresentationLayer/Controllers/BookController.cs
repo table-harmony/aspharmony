@@ -4,19 +4,20 @@ using PresentationLayer.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using DataAccessLayer.Entities;
 using Utils.Exceptions;
 using Utils;
 using System.Text;
 using Newtonsoft.Json;
+using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
+using DataAccessLayer.Entities;
 
 using ServerBook = BusinessLogicLayer.Servers.Books.Book;
 using Chapter = BusinessLogicLayer.Servers.Books.Chapter;
 using Book = BusinessLogicLayer.Services.Book;
 using Image = Utils.IImageModelService.Image;
 using SpeechRequest = Utils.ITextToSpeechService.SpeechRequest;
-using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
+using static System.Net.WebRequestMethods;
 
 namespace PresentationLayer.Controllers {
 
@@ -63,7 +64,7 @@ namespace PresentationLayer.Controllers {
             if (book == null)
                 return NotFound();
 
-            ViewBag.Voices = await GetVoices();
+            ViewBag.Voices = await GetVoices(4);
             return View(book);
         }
 
@@ -86,7 +87,7 @@ namespace PresentationLayer.Controllers {
                     string prompt = GenerateImagePrompt(model.Title, model.Description);
                     using var imageStream = await imageGenerator.GenerateImageAsync(new Image(prompt));
 
-                    imageUrl = await fileUploader.UploadFileAsync(imageStream);
+                    imageUrl = await fileUploader.UploadFileAsync(new IFileUploader.File(imageStream));
                 }
 
                 Book book = new() {
@@ -181,7 +182,7 @@ namespace PresentationLayer.Controllers {
                     string prompt = GenerateImagePrompt(model.Title, model.Description);
                     using var stream = await imageGenerator.GenerateImageAsync(new Image(prompt));
 
-                    book.Metadata.ImageUrl = await fileUploader.UploadFileAsync(stream);
+                    book.Metadata.ImageUrl = await fileUploader.UploadFileAsync(new IFileUploader.File(stream));
                 }
 
                 book.Metadata.Chapters = model.Chapters.Select(c => new Chapter {
@@ -256,35 +257,59 @@ namespace PresentationLayer.Controllers {
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAudioBook(int id) {
+            try {
+                var audioBook = await bookService.GetAudioBookAsync(id);
+                if (audioBook == null)
+                    return NotFound(new { error = "Audio book not found" });
+
+                var book = await bookService.GetBookAsync(audioBook.BookId);
+                if (book == null)
+                    return NotFound(new { error = "Book not found" });
+
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+                if (book.AuthorId != userId)
+                    return Forbid();
+
+                await bookService.DeleteAudioBookAsync(id);
+
+                return Ok();
+            } catch (Exception ex) {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> GenerateAudioBook(int id, string voiceId) {
             var book = await bookService.GetBookAsync(id);
             if (book == null)
                 return NotFound();
 
-            try {
-                string fullText = GenerateAudiobookPrompt(book);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            if (book.AuthorId != userId)
+                return Forbid();
 
-                var request = new SpeechRequest(
-                    Text: fullText,
-                    VoiceId: voiceId
+            try {
+                string ssml = GenerateSSML(book);
+                using var audioStream = await speechGenerator.GenerateSpeechAsync(
+                    new SpeechRequest(Text: ssml, VoiceId: voiceId)
                 );
+
+                string audioUrl = await fileUploader.UploadFileAsync(new IFileUploader.File(audioStream, ContentType: "audio/mpeg"));
                 
-                var audioStream = await speechGenerator.GenerateSpeechAsync(request);
-                
-                using var memoryStream = new MemoryStream();
-                await audioStream.CopyToAsync(memoryStream);
-                memoryStream.Position = 0;
-                
-                return File(memoryStream.ToArray(), "audio/mpeg", $"{book.Metadata.Title} audiobook.mp3");
-            }
-            catch {
-                return StatusCode(500, new { 
-                    error = "Failed to generate audio book. Please try again later." 
+                await bookService.CreateAudioBookAsync(new AudioBook {
+                    BookId = book.Id,
+                    AudioUrl = audioUrl,
                 });
+
+                return Ok();
+            } catch (Exception ex) {
+                return BadRequest(new { error = ex.Message });
             }
         }
 
-        private static string GenerateAudiobookPrompt(Book book) {
+        private static string GenerateSSML(Book book) {
             StringBuilder builder = new();
 
             builder.AppendLine($"<speak>");
@@ -310,7 +335,7 @@ namespace PresentationLayer.Controllers {
             return builder.ToString();
         }
 
-        private async Task<List<Voice>?> GetVoices() {
+        private async Task<List<Voice>?> GetVoices(int number = 5) {
             HttpClient client = new() {
                 BaseAddress = new Uri("https://api.elevenlabs.io/")
             };
@@ -324,23 +349,10 @@ namespace PresentationLayer.Controllers {
 
                 return result?.Voices?
                     .OrderBy(_ => Guid.NewGuid())
-                    .Take(5)
+                    .Take(number)
                     .ToList();
             } catch {
-                return [
-                    new Voice {
-                        VoiceId = "9BWtsMINqrJLrRacOk9x",
-                        Name = "Aria",
-                        PreviewUrl = "https://storage.googleapis.com/eleven-public-prod/premade/voices/9BWtsMINqrJLrRacOk9x/405766b8-1f4e-4d3c-aba1-6f25333823ec.mp3",
-                        Labels = new Dictionary<string, string> {
-                            { "Accent", "American" },
-                            { "Description", "Expressive" },
-                            { "Age", "Middle-aged" },
-                            { "Gender", "Female" },
-                            { "Use Case", "Social Media" }
-                        }
-                    }
-                ];
+                return [];
             }
         }
 

@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
+using System.IO;
 
 namespace Utils {
     public interface IFileUploader {
-        Task<string> UploadFileAsync(Stream fileStream);
+        public record struct File(Stream Stream, string ContentType = "image/png");
+        Task<string> UploadFileAsync(File file);
         Task<string> UploadFileAsync(IFormFile file);
     }
 
@@ -12,10 +14,9 @@ namespace Utils {
         private readonly HttpClient _httpClient = new();
         private readonly string API_URL = "https://hearty-sardine-346.convex.site";
 
-        // Uploads a file and returns a URL
-        public async Task<string> UploadFileAsync(Stream fileStream) {
+        public async Task<string> UploadFileAsync(IFileUploader.File file) {
             string uploadUrl = await GenerateUploadUrlAsync();
-            string storageId = await UploadToUrlAsync(uploadUrl, fileStream);
+            string storageId = await UploadToUrlAsync(uploadUrl, file.Stream, file.ContentType);
             string fileUrl = await GetFileUrlAsync(storageId);
 
             return fileUrl;
@@ -29,7 +30,6 @@ namespace Utils {
             return fileUrl;
         }
 
-        // Generating an upload url for a file
         private async Task<string> GenerateUploadUrlAsync() {
             var response = await _httpClient.PostAsync($"{API_URL}/generateUploadUrl", null);
             response.EnsureSuccessStatusCode();
@@ -39,10 +39,9 @@ namespace Utils {
             return result.uploadUrl;
         }
 
-        // Uploading file to an upload url
-        private async Task<string> UploadToUrlAsync(string uploadUrl, Stream fileStream) {
+        private async Task<string> UploadToUrlAsync(string uploadUrl, Stream fileStream, string contentType) {
             using var content = new StreamContent(fileStream);
-            content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+            content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
 
             var response = await _httpClient.PostAsync(uploadUrl, content);
             response.EnsureSuccessStatusCode();
@@ -66,7 +65,6 @@ namespace Utils {
             return result.storageId;
         }
 
-        // Get file url by storage id from convex
         private async Task<string> GetFileUrlAsync(string storageId) {
             var response = await _httpClient.GetAsync($"{API_URL}/getFileUrl?storageId={storageId}");
             var responseContent = await response.Content.ReadAsStringAsync();

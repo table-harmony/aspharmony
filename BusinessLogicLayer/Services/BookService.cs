@@ -5,8 +5,7 @@ using ServerBook = BusinessLogicLayer.Servers.Books.Book;
 using BusinessLogicLayer.Servers.Books;
 using DataAccessLayer.Entities;
 
-namespace BusinessLogicLayer.Services
-{
+namespace BusinessLogicLayer.Services {
     public class Book : DbBook {
         public ServerBook? Metadata { get; set; }
     }
@@ -18,6 +17,9 @@ namespace BusinessLogicLayer.Services
         Task CreateAsync(Book book);
         Task UpdateAsync(Book book);
         Task DeleteAsync(int id);
+        Task CreateAudioBookAsync(AudioBook audioBook);
+        Task<AudioBook?> GetAudioBookAsync(int id);
+        Task DeleteAudioBookAsync(int id);
     }
 
     public class BookService(IBookRepository repository, Func<ServerType, IBookServer> serverFactory) : IBookService {
@@ -25,19 +27,20 @@ namespace BusinessLogicLayer.Services
         private IBookServer GetServer(ServerType serverType) => serverFactory(serverType);
 
         public async Task<Book?> GetBookAsync(int id) {
-            DbBook? dbBook = await repository.GetBookAsync(id);
-            if (dbBook == null) return null;
+            var dbBook = await repository.GetBookAsync(id);
+            if (dbBook == null)
+                return null;
 
             var server = GetServer(dbBook.Server);
-
-            ServerBook? webBook = await server.GetBookAsync(id);
-
+            var metadata = await server.GetBookAsync(id);
+            
             return new Book {
                 Id = dbBook.Id,
                 Server = dbBook.Server,
                 Author = dbBook.Author,
                 AuthorId = dbBook.AuthorId,
-                Metadata = webBook
+                Metadata = metadata,
+                AudioBooks = dbBook.AudioBooks,
             };
         }
 
@@ -54,7 +57,8 @@ namespace BusinessLogicLayer.Services
                     Server = dbBook.Server,
                     Author = dbBook.Author,
                     AuthorId = dbBook.AuthorId,
-                    Metadata = webBook
+                    Metadata = webBook,
+                    AudioBooks = dbBook.AudioBooks,
                 });
             }
 
@@ -76,7 +80,8 @@ namespace BusinessLogicLayer.Services
                     Server = dbBook.Server,
                     Author = dbBook.Author,
                     AuthorId = dbBook.AuthorId,
-                    Metadata = webBook
+                    Metadata = webBook,
+                    AudioBooks = dbBook.AudioBooks,
                 }
             );
 
@@ -176,6 +181,18 @@ namespace BusinessLogicLayer.Services
                 await transaction.RollbackAsync();
                 throw;
             }
+        }
+
+        public async Task CreateAudioBookAsync(AudioBook audioBook) {
+            await repository.CreateAudioBookAsync(audioBook);
+        }
+
+        public async Task<AudioBook?> GetAudioBookAsync(int id) {
+            return await repository.GetAudioBookAsync(id);
+        }
+
+        public async Task DeleteAudioBookAsync(int id) {
+            await repository.DeleteAudioBookAsync(id);
         }
     }
 }

@@ -163,7 +163,7 @@ namespace BusinessLogicLayer.Servers.Books {
             image.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);
             memoryStream.Seek(0, SeekOrigin.Begin);
 
-            string imageUrl = await fileUploader.UploadFileAsync(memoryStream);
+            string imageUrl = await fileUploader.UploadFileAsync(new IFileUploader.File(memoryStream));
 
             return imageUrl;
         }

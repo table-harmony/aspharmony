@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace DataAccessLayer.Entities {
-
     public enum ServerType {
         Aether,
         Atlas,
@@ -28,6 +27,7 @@ namespace DataAccessLayer.Entities {
         public string AuthorId { get; set; }  // Foreign key
         public User Author { get; set; }
 
-        public ICollection<LibraryBook> LibraryBooks { get; set; }
+        public ICollection<LibraryBook> LibraryBooks { get; set; } = [];
+        public ICollection<AudioBook> AudioBooks { get; set; } = [];
     }
 }

@@ -1,5 +1,3 @@
-using DataAccessLayer.Entities;
-using System;
 namespace PresentationLayer.Models {
     public class PaginatedList<T>(List<T> items, int count, int pageIndex, int pageSize) {
         public List<T> Items { get; } = items;
