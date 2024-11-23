@@ -66,7 +66,10 @@
                                     <form asp-action="RemoveMember" method="post" style="display: inline;">
                                         <input type="hidden" name="libraryId" value="@Model.Library.Id" />
                                         <input type="hidden" name="userId" value="@member.UserId" />
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Remove</button>
+                                        <button type="button" class="btn btn-danger btn-sm" 
+                                                onclick="confirmRemoveMember('@member.User.UserName', '@member.UserId')">
+                                            Remove
+                                        </button>
                                     </form>
                                     <form asp-action="PromoteMember" method="post" style="display: inline;">
                                         <input type="hidden" name="libraryId" value="@Model.Library.Id" />
@@ -95,3 +98,46 @@
     <a asp-action="Details" asp-route-id="@Model.Library.Id" class="btn btn-secondary">Back to Library</a>
 </div> 
 </div> 
+
+<!-- Remove Member Modal -->
+<div class="modal fade" id="removeMemberModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Remove Member</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to remove <strong id="memberName"></strong> from @Model.Library.Name?</p>
+                <p class="text-danger">
+                    <i class="bi bi-exclamation-circle"></i> 
+                    This action cannot be undone.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form asp-action="RemoveMember" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="libraryId" value="@Model.Library.Id" />
+                    <input type="hidden" id="removeUserId" name="userId" value="" />
+                    <button type="submit" class="btn btn-danger">Remove Member</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmRemoveMember(username, userId) {
+            const modal = document.getElementById('removeMemberModal');
+            const memberNameElement = modal.querySelector('#memberName');
+            const userIdInput = modal.querySelector('#removeUserId');
+            
+            memberNameElement.textContent = username;
+            userIdInput.value = userId;
+            
+            new bootstrap.Modal(modal).show();
+        }
+    </script>
+} 

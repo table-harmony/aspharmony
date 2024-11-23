@@ -112,7 +112,7 @@ namespace PresentationLayer.Controllers {
                 GetServers(model.Server);
 
                 string message = ex is PublicException ? ex.Message : "An error occurred while creating the book.";
-                ModelState.AddModelError("", ex.Message);
+                ModelState.AddModelError("", message);
 
                 return View(model);
             }
@@ -198,7 +198,7 @@ namespace PresentationLayer.Controllers {
                 GetServers(book.Server);
 
                 string message = ex is PublicException ? ex.Message : "An error occurred while updating the book.";
-                ModelState.AddModelError("", ex.Message);
+                ModelState.AddModelError("", message);
 
                 return View(model);
             }

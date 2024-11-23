@@ -139,7 +139,7 @@ namespace PresentationLayer.Controllers {
                     return RedirectToAction(nameof(Index));
             }
             
-            return RedirectToAction(nameof(Details), new { id = libraryId });
+            return RedirectToAction(nameof(Manage), new { id = libraryId });
         }
 
         [HttpPost]
@@ -215,7 +215,6 @@ namespace PresentationLayer.Controllers {
             if (membership == null)
                 return NotFound();
 
-            // Check if user already has an active request or loan
             var existingRequest = await bookLoanService.GetActiveLoanOrRequestAsync(libraryBookId, membership.Id);
             if (existingRequest != null)
                 return BadRequest(new { error = "You already have an active request or loan for this book" });
@@ -232,7 +231,6 @@ namespace PresentationLayer.Controllers {
             if (bookLoan == null)
                 return NotFound();
 
-            // Process next person in queue
             await bookLoanService.ProcessNextInQueueAsync(bookLoan.LibraryBookId);
             
             return RedirectToAction(nameof(BookDetails), new { libraryBookId = bookLoan.LibraryBookId });
@@ -388,7 +386,7 @@ namespace PresentationLayer.Controllers {
 
             var model = new AddBookViewModel {
                 Library = library,
-                AvailableBooks = paginatedBooks.Items.ToList()
+                AvailableBooks = [.. paginatedBooks.Items]
             };
 
             return View(model);

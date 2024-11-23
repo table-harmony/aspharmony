@@ -31,12 +31,17 @@ namespace PresentationLayer
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((context, config) => {
-                    config.AddUserSecrets<Startup>();
+                    DotNetEnv.Env.Load();
+
+                    config.AddEnvironmentVariables();
+
+                    if (context.HostingEnvironment.IsDevelopment()) {
+                        config.AddUserSecrets<Startup>();
+                    }
                 })
                 .ConfigureWebHostDefaults(webBuilder => {
                     webBuilder.UseStartup<Startup>();
                 });
-
 
         public void ConfigureServices(IServiceCollection services) {
             services.AddDbContext<ApplicationContext>(options =>
