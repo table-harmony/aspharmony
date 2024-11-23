@@ -13,12 +13,16 @@ namespace DataAccessLayer.Repositories {
         Task UpdateAsync(Book book);
         Task DeleteAsync(int id);
         IDbContextTransaction BeginTransaction();
+        Task CreateAudioBookAsync(AudioBook audioBook);
+        Task<AudioBook?> GetAudioBookAsync(int id);
+        Task DeleteAudioBookAsync(int id);
     }
 
     public class BookRepository(ApplicationContext context) : IBookRepository {
         public async Task<Book?> GetBookAsync(int id) {
             return await context.Books
                 .Include(book => book.Author)
+                .Include(book => book.AudioBooks)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(book => book.Id == id);
         }
@@ -32,6 +36,7 @@ namespace DataAccessLayer.Repositories {
         public async Task<IEnumerable<Book>> GetAllAsync() {
             return await context.Books
                 .Include(book => book.Author)
+                .Include(book => book.AudioBooks)
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -40,6 +45,7 @@ namespace DataAccessLayer.Repositories {
             return await context.Books
                 .Where(book => book.Server == serverType)
                 .Include(book => book.Author)
+                .Include(book => book.AudioBooks)
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -67,6 +73,24 @@ namespace DataAccessLayer.Repositories {
         public IDbContextTransaction BeginTransaction() {
             return context.Database.BeginTransaction();
         }
-    }
 
+        public async Task CreateAudioBookAsync(AudioBook audioBook) {
+            await context.AudioBooks.AddAsync(audioBook);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<AudioBook?> GetAudioBookAsync(int id) {
+            return await context.AudioBooks
+                .Include(a => a.Book)
+                .FirstOrDefaultAsync(a => a.Id == id);
+        }
+
+        public async Task DeleteAudioBookAsync(int id) {
+            var audioBook = await context.AudioBooks.FindAsync(id);
+            if (audioBook == null) return;
+
+            context.AudioBooks.Remove(audioBook);
+            await context.SaveChangesAsync();
+        }
+    }
 }

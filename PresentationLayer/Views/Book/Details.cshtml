@@ -29,11 +29,11 @@
                             <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
                                 <i class="bi bi-trash"></i> Delete
                             </a>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#voiceSelectionModal">
+                                <i class="bi bi-file-earmark-music"></i> Audio Book
+                            </button>
                         }
                     }
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#voiceSelectionModal">
-                        <i class="bi bi-file-earmark-music"></i> Audio Book
-                    </button>
                 </div>
             </div>
             <div class="col-md-4">
@@ -43,19 +43,19 @@
     </div>
 </div>
 
-<div class="modal fade" id="voiceSelectionModal" tabindex="-1" aria-labelledby="voiceSelectionModalLabel" aria-hidden="true">
+<div class="modal fade" id="voiceSelectionModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="voiceSelectionModalLabel">Generate Audio book for '@Model.Metadata.Title'</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title">Generate Audio book for '@Model.Metadata.Title'</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <div class="row g-3" id="voicesContainer">
                     @foreach (var voice in ViewBag.Voices) {
                         <div class="col-md-6">
                             <div class="card h-100">
-                                <div class="card-body">
+                                <div class="card-body d-flex flex-column">
                                     <div class="form-check mb-3">
                                         <input class="form-check-input voice-select" type="radio"
                                                name="voiceId" value="@voice.VoiceId"
@@ -71,11 +71,9 @@
                                                     @label.Value
                                                 </li>
                                             }
-                                        } else {
-                                            <li>No labels available.</li>
                                         }
                                     </ul>
-                                    <button class="btn btn-sm btn-outline-secondary preview-voice"
+                                    <button class="btn btn-sm btn-outline-secondary preview-voice mt-auto"
                                             data-preview-url="@voice.PreviewUrl">
                                         <i class="bi bi-play-circle"></i> Preview
                                     </button>
@@ -88,7 +86,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-primary" id="generateAudioBook">
-                    <i class="bi bi-play-circle"></i> Generate
+                    <i class="bi bi-play-circle"></i> <span class="button-text">Generate</span>
                 </button>
             </div>
         </div>
@@ -126,25 +124,97 @@
     </div>
 }
 
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Audio Versions</h3>
+            <span class="badge bg-primary">@Model.AudioBooks.Count() available</span>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                @if (Model.AudioBooks?.Any() == true) {
+                    @foreach (var audio in Model.AudioBooks.OrderByDescending(a => a.CreatedAt)) {
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <p class="text-muted small mb-0">
+                                            <i class="bi bi-calendar"></i> 
+                                            Generated @audio.CreatedAt.ToShortDateString()
+                                        </p>
+                                        @if (Model.AuthorId == User.FindFirstValue(ClaimTypes.NameIdentifier)!) {
+                                            <button class="btn btn-sm btn-outline-danger delete-audio"
+                                                    data-audio-id="@audio.Id"
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#deleteAudioModal">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        }
+                                    </div>
+                                    <audio controls class="w-100">
+                                        <source src="@audio.AudioUrl" type="audio/mpeg">
+                                        Your browser does not support the audio element.
+                                    </audio>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                } else {
+                    <div class="alert alert-info">
+                        <i class="bi bi-exclamation-circle"></i> There are no audio versions for '@Model?.Metadata?.Title'.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+<div class="modal fade" id="deleteAudioModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Audio Version</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this audio version? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteAudio">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         $(document).ready(function() {
+            const savedPosition = localStorage.getItem('scrollPosition');
+
+            if (savedPosition) {
+                const { top, left } = JSON.parse(savedPosition);
+                localStorage.removeItem('scrollPosition');
+                window.scrollTo(left, top);
+            }
+
             let isGenerating = false;
             let audioPreview = new Audio();
             const modal = new bootstrap.Modal(document.getElementById('voiceSelectionModal'));
             
             $('.preview-voice').click(function() {
                 const previewUrl = $(this).data('preview-url');
+                const button = $(this);
+                
                 if (audioPreview.src === previewUrl && !audioPreview.paused) {
                     audioPreview.pause();
                     audioPreview.currentTime = 0;
-                    $(this).html('<i class="bi bi-play-circle"></i> Preview');
+                    button.html('<i class="bi bi-play-circle"></i> Preview');
                 } else {
                     audioPreview.pause();
                     $('.preview-voice').html('<i class="bi bi-play-circle"></i> Preview');
                     audioPreview.src = previewUrl;
                     audioPreview.play();
-                    $(this).html('<i class="bi bi-stop-circle"></i> Stop');
+                    button.html('<i class="bi bi-stop-circle"></i> Stop');
                 }
             });
             
@@ -156,16 +226,59 @@
             $('#generateAudioBook').click(async function() {
                 if (isGenerating) return;
                 
-                const button = $(this);
-                const originalText = button.html();
                 const selectedVoiceId = $('input[name="voiceId"]:checked').val();
-                isGenerating = true;
+                if (!selectedVoiceId) {
+                    alert('Please select a voice first.');
+                    return;
+                }
                 
-                button.html('<i class="bi bi-hourglass-split"></i> Generating...');
+                const button = $(this);
+                const buttonText = button.find('.button-text');
+                const originalText = buttonText.text();
+                
+                isGenerating = true;
                 button.prop('disabled', true);
+                buttonText.text('Generating...');
                 
                 try {
                     const response = await fetch(`/Book/GenerateAudioBook/${@Model.Id}?voiceId=${selectedVoiceId}`, {
+                        method: 'POST',
+                        headers: {
+                            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                        },
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to generate audio book');
+                    }
+                   
+                    reloadWithoutScroll();
+                } catch (error) {
+                    console.error('Error generating audio book:', error);
+                    alert('Failed to generate audio book. Please try again later.');
+                } finally {
+                    button.prop('disabled', false);
+                    buttonText.text(originalText);
+                    isGenerating = false;
+                }
+            });
+
+            let audioToDelete = null;
+            
+            $('.delete-audio').click(function() {
+                audioToDelete = $(this).data('audio-id');
+            });
+            
+            $('#confirmDeleteAudio').click(async function() {
+                if (!audioToDelete) return;
+                
+                const button = $(this);
+                const originalText = button.html();
+                button.prop('disabled', true)
+                      .html('<i class="bi bi-hourglass-split"></i> Deleting...');
+                
+                try {
+                    const response = await fetch(`/Book/DeleteAudioBook/${audioToDelete}`, {
                         method: 'POST',
                         headers: {
                             'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
@@ -173,31 +286,42 @@
                     });
                     
                     if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.error || 'Failed to generate audio book');
+                        const errorData = await response.json().catch(() => null);
+                        throw new Error(errorData?.error || 'Failed to delete audio book');
                     }
                     
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `${@Json.Serialize(Model.Metadata?.Title ?? "audiobook")}.mp3`;
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
-                    
-                    modal.hide();
+                   reloadWithoutScroll();
                 } catch (error) {
-                    console.error('Error generating audio book:', error);
-                    alert(error.message || 'Failed to generate audio book. Please try again later.');
-                } finally {
-                    button.html(originalText);
-                    button.prop('disabled', false);
-                    isGenerating = false;
+                    console.error('Error deleting audio book:', error);
+                    alert(error.message || 'Failed to delete audio book. Please try again later.');
+                    button.prop('disabled', false).html(originalText);
                 }
             });
-            
+
+            function reloadWithoutScroll() {
+                const scrollPosition = { top: window.scrollY, left: window.scrollX };
+
+                localStorage.setItem('scrollPosition', JSON.stringify(scrollPosition));
+                window.location.reload();
+            }
         });
     </script>
 }
+
+<style>
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    
+    .preview-voice {
+        margin-top: auto;
+    }
+    
+    .badge {
+        margin-right: 0.25rem;
+        margin-bottom: 0.25rem;
+        padding: 0.35em 0.65em;
+    }
+</style>

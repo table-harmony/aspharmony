@@ -153,7 +153,7 @@
                     return;
                 }
 
-                $('#add-chapter, .remove-chapter').prop('disabled', true);
+                $('#add-chapter, .delete-chapter').prop('disabled', true);
 
                 const button = $(this);
                 const originalText = button.html();
@@ -184,11 +184,20 @@
                         }),
                     });
 
-                    const data = await response.json();
+                    let data;
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        data = await response.json();
+                    } else {
+                        throw new Error('Invalid response format from server');
+                    }
                     
                     if (!response.ok) {
-                        console.error('Server Error:', data);
                         throw new Error(data.error || 'Failed to generate chapters');
+                    }
+
+                    if (!Array.isArray(data)) {
+                        throw new Error('Invalid response format: expected an array of chapters');
                     }
 
                     data.forEach((chapter) => {

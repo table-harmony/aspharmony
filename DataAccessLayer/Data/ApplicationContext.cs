@@ -40,6 +40,12 @@ namespace DataAccessLayer.Data {
                 .HasForeignKey(b => b.AuthorId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Book>()
+                .HasMany(b => b.AudioBooks)
+                .WithOne(a => a.Book)
+                .HasForeignKey(a => a.BookId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Library
             modelBuilder.Entity<Library>()
                 .HasMany(l => l.Memberships)
@@ -110,10 +116,12 @@ namespace DataAccessLayer.Data {
                 .OnDelete(DeleteBehavior.Cascade);
         }
 
+
         public DbSet<Sender> Senders { get; set; }
         public DbSet<UserSender> UserSenders { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<Book> Books { get; set; }
+        public DbSet<AudioBook> AudioBooks { get; set; }
         public DbSet<Library> Libraries { get; set; }
         public DbSet<LibraryBook> LibraryBooks { get; set; }
         public DbSet<LibraryMembership> LibraryMemberships { get; set; }
