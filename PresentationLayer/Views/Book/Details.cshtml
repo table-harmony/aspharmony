@@ -217,78 +217,92 @@
             
             $('#generateAudioBook').click(async function() {
                 if (isGenerating) return;
-                
+    
                 const selectedVoiceId = $('input[name="voiceId"]:checked').val();
                 if (!selectedVoiceId) {
                     alert('Please select a voice first.');
                     return;
                 }
-                
+    
                 const button = $(this);
                 const buttonText = button.find('.button-text');
                 const originalText = buttonText.text();
-                
+    
                 isGenerating = true;
                 button.prop('disabled', true);
                 buttonText.text('Generating...');
-                
+    
                 try {
+                    const token = $('input[name="__RequestVerificationToken"]').val();
+                    if (!token) throw new Error('CSRF token not found');
+
                     const response = await fetch(`/Book/GenerateAudioBook/${@Model.Id}?voiceId=${selectedVoiceId}`, {
                         method: 'POST',
                         headers: {
-                            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': token
                         },
                     });
-
+        
                     if (!response.ok) {
-                        throw new Error('Failed to generate audio book');
+                        const data = await response.json();
+                        throw new Error(data.error || 'Failed to generate audio book');
                     }
-                   
+        
                     window.location.reload();
                 } catch (error) {
                     console.error('Error generating audio book:', error);
-                    alert('Failed to generate audio book. Please try again later.');
+                    alert(error.message || 'Failed to generate audio book. Please try again later.');
                 } finally {
+                    isGenerating = false;
                     button.prop('disabled', false);
                     buttonText.text(originalText);
-                    isGenerating = false;
+                    modal.hide();
                 }
             });
 
             let audioToDelete = null;
-            
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteAudioModal'));
+
             $('.delete-audio').click(function() {
                 audioToDelete = $(this).data('audio-id');
             });
-            
+
             $('#confirmDeleteAudio').click(async function() {
                 if (!audioToDelete) return;
-                
+    
                 const button = $(this);
-                const originalText = button.html();
-                button.prop('disabled', true)
-                      .html('<i class="bi bi-hourglass-split"></i> Deleting...');
-                
+                const originalText = button.text();
+                button.prop('disabled', true);
+                button.text('Deleting...');
+    
                 try {
+                    const token = $('input[name="__RequestVerificationToken"]').val();
+                    if (!token) throw new Error('CSRF token not found');
+
                     const response = await fetch(`/Book/DeleteAudioBook/${audioToDelete}`, {
                         method: 'POST',
                         headers: {
-                            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                            'RequestVerificationToken': token
                         }
                     });
-                    
+        
                     if (!response.ok) {
-                        const errorData = await response.json().catch(() => null);
-                        throw new Error(errorData?.error || 'Failed to delete audio book');
+                        const data = await response.json();
+                        throw new Error(data.error || 'Failed to delete audio book');
                     }
-                    
+        
                     window.location.reload();
                 } catch (error) {
                     console.error('Error deleting audio book:', error);
                     alert(error.message || 'Failed to delete audio book. Please try again later.');
-                    button.prop('disabled', false).html(originalText);
+                } finally {
+                    button.prop('disabled', false);
+                    button.text(originalText);
+                    deleteModal.hide();
                 }
             });
+            
         });
     </script>
 }
