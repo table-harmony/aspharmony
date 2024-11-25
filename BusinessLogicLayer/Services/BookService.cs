@@ -163,24 +163,15 @@ namespace BusinessLogicLayer.Services {
         }
 
         public async Task DeleteAsync(int id) {
-            var transaction = repository.BeginTransaction();
+            var book = await repository.GetBookAsync(id);
 
-            try {
-                var book = await repository.GetBookAsync(id);
+            if (book == null)
+                return;
 
-                if (book == null)
-                    return;
+            await repository.DeleteAsync(id);
 
-                await repository.DeleteAsync(id);
-
-                var server = GetServer(book.Server);
-                await server.DeleteBookAsync(id);
-
-                transaction.Commit();
-            } catch {
-                await transaction.RollbackAsync();
-                throw;
-            }
+            var server = GetServer(book.Server);
+            await server.DeleteBookAsync(id);
         }
 
         public async Task CreateAudioBookAsync(AudioBook audioBook) {

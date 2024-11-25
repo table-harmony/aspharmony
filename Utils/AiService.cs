@@ -29,8 +29,15 @@ public class GeminiService : ITextModelService {
     }
 }
 
+
 public interface IImageModelService {
-    public readonly record struct Image(string Prompt, int Width = 1000, int Height = 1500, string Format = "webp");
+    public readonly record struct Image(
+        string Prompt,
+        int Width = 1000,
+        int Height = 1500,
+        string Format = "webp",
+        string AspectRatio = "1:1"
+    );
 
     Task<Stream> GenerateImageAsync(Image image);
 }
@@ -56,7 +63,8 @@ public class StabilityService : IImageModelService {
             { new StringContent(image.Prompt), "\"prompt\"" },
             { new StringContent(image.Format), "\"output_format\"" },
             { new StringContent(image.Width.ToString()), "\"width\"" },
-            { new StringContent(image.Height.ToString()), "\"height\"" }
+            { new StringContent(image.Height.ToString()), "\"height\"" },
+            { new StringContent(image.AspectRatio), "\"aspect_ratio\"" }
         };
 
         var response = await _httpClient.PostAsync("v2beta/stable-image/generate/core", content);
@@ -64,7 +72,6 @@ public class StabilityService : IImageModelService {
 
         return await response.Content.ReadAsStreamAsync();
     }
-
 }
 
 

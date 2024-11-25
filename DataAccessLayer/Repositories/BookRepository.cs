@@ -64,10 +64,29 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task DeleteAsync(int id) {
-            Book book = await GetBookAsync(id) ?? throw new NotFoundException();
+            using var transaction = await context.Database.BeginTransactionAsync();
 
-            context.Books.Remove(book);
-            await context.SaveChangesAsync();
+            try {
+                var book = await context.Books
+                    .Include(b => b.LibraryBooks)
+                        .ThenInclude(lb => lb.Loans)
+                    .Include(b => b.AudioBooks)
+                    .FirstOrDefaultAsync(b => b.Id == id)
+                    ?? throw new NotFoundException();
+
+                var loans = book.LibraryBooks.SelectMany(lb => lb.Loans);
+                context.BookLoans.RemoveRange(loans);
+
+                context.LibraryBooks.RemoveRange(book.LibraryBooks);
+
+                context.Books.Remove(book);
+
+                await context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            } catch {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         public IDbContextTransaction BeginTransaction() {

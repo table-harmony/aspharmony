@@ -11,7 +11,7 @@ namespace DataAccessLayer.Repositories {
         Task DeleteAsync(int id);
     }
 
-    public class LibraryRepository(ApplicationContext context) : ILibraryRepository {
+    public class LibraryRepository(ApplicationContext context, ILibraryMembershipRepository libraryMembershipRepository) : ILibraryRepository {
         public async Task<Library?> GetLibraryAsync(int id) {
             return await context.Libraries
                 .AsNoTracking()
@@ -47,10 +47,15 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task DeleteAsync(int id) {
-            Library? library = await context.Libraries.FirstAsync(l => l.Id == id);
+            Library library = await context.Libraries
+                .Include(library => library.Memberships)
+                .FirstAsync(library => library.Id == id);
 
             if (library == null)
                 return;
+
+            foreach (var membership in library.Memberships)
+                await libraryMembershipRepository.DeleteAsync(membership.Id);
 
             context.Libraries.Remove(library);
             await context.SaveChangesAsync();

@@ -17,7 +17,6 @@ using Chapter = BusinessLogicLayer.Servers.Books.Chapter;
 using Book = BusinessLogicLayer.Services.Book;
 using Image = Utils.IImageModelService.Image;
 using SpeechRequest = Utils.ITextToSpeechService.SpeechRequest;
-using static System.Net.WebRequestMethods;
 
 namespace PresentationLayer.Controllers {
 
@@ -85,9 +84,7 @@ namespace PresentationLayer.Controllers {
                     imageUrl = await fileUploader.UploadFileAsync(model.Image);
                 } else if (model.GenerateImage) {
                     string prompt = GenerateImagePrompt(model.Title, model.Description);
-                    using var imageStream = await imageGenerator.GenerateImageAsync(new Image(prompt));
-
-                    imageUrl = await fileUploader.UploadFileAsync(new IFileUploader.File(imageStream));
+                    imageUrl = await GenerateImage(prompt);
                 }
 
                 Book book = new() {
@@ -180,9 +177,7 @@ namespace PresentationLayer.Controllers {
                     book.Metadata.ImageUrl = await fileUploader.UploadFileAsync(model.NewImage);
                 } else if (model.GenerateImage) {
                     string prompt = GenerateImagePrompt(model.Title, model.Description);
-                    using var stream = await imageGenerator.GenerateImageAsync(new Image(prompt));
-
-                    book.Metadata.ImageUrl = await fileUploader.UploadFileAsync(new IFileUploader.File(stream));
+                    book.Metadata.ImageUrl = await GenerateImage(prompt);
                 }
 
                 book.Metadata.Chapters = model.Chapters.Select(c => new Chapter {
@@ -253,6 +248,18 @@ namespace PresentationLayer.Controllers {
                 return "Generate a generic book cover image";
             }
             return $"Book cover for '{title}'. {description}";
+        }
+
+        private async Task<string> GenerateImage(string prompt) {
+            using var stream = await imageGenerator.GenerateImageAsync(new Image(prompt)) 
+                ?? throw new PublicException("Failed to generate image.");
+
+            using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
+
+            string imageUrl = await fileUploader.UploadFileAsync(new IFileUploader.File(memoryStream));
+            return imageUrl;
         }
 
         [HttpPost]

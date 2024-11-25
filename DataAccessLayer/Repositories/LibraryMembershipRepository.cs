@@ -51,13 +51,10 @@ namespace DataAccessLayer.Repositories {
         public async Task DeleteAsync(int id) {
             var transaction = context.Database.BeginTransaction();
 
-            LibraryMembership? membership = await GetMembershipAsync(id);
+            LibraryMembership membership = await GetMembershipAsync(id)
+                ?? throw new NotFoundException();
 
-            if (membership == null)
-                throw new NotFoundException();
-
-            IEnumerable<BookLoan> loans = bookLoanRepository.GetMemberLoans(id);
-
+            var loans = bookLoanRepository.GetMemberLoans(id);
             if (loans.Any())
                 context.BookLoans.RemoveRange(membership.BookLoans);
 
@@ -77,16 +74,13 @@ namespace DataAccessLayer.Repositories {
         public async Task DeleteAsync(int libraryId, string userId) {
             var transaction = context.Database.BeginTransaction();
 
-            LibraryMembership? membership = await GetMembershipAsync(libraryId, userId);
+            LibraryMembership membership = await GetMembershipAsync(libraryId, userId)
+                ?? throw new NotFoundException();
 
-            if (membership == null)
-                throw new NotFoundException();
-
-            IEnumerable<BookLoan> loans = bookLoanRepository.GetMemberLoans(membership.Id);
-            
+            var loans = bookLoanRepository.GetMemberLoans(membership.Id);
             if (loans.Any())
                 context.BookLoans.RemoveRange(membership.BookLoans);
-            
+
             context.LibraryMemberships.Remove(membership);
             await context.SaveChangesAsync();
 

@@ -14,13 +14,13 @@ namespace DataAccessLayer.Repositories {
         Task DeleteAsync(string id);
     }
 
-    public class UserRepository(UserManager<User> userManager, ApplicationContext context) : IUserRepository {
+    public class UserRepository(ApplicationContext context) : IUserRepository {
         public async Task<User?> GetByIdAsync(string id) {
-            return await userManager.FindByIdAsync(id);
+            return await context.Users.FindAsync(id);
         }
 
         public async Task<User?> GetByEmailAsync(string email) {
-            return await userManager.FindByEmailAsync(email);
+            return await context.Users.Where(user => user.Email == email).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<User>> GetAllAsync() {
@@ -28,7 +28,8 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task CreateAsync(User user) {
-            await userManager.UpdateAsync(user);
+            await context.Users.AddAsync(user);
+            await context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(User user) {
@@ -37,12 +38,37 @@ namespace DataAccessLayer.Repositories {
         }
 
         public async Task DeleteAsync(string id) {
-            User? user = await GetByIdAsync(id);
+            using var transaction = await context.Database.BeginTransactionAsync();
+            try {
+                var user = await context.Users
+                    .Include(u => u.Books)
+                        .ThenInclude(b => b.LibraryBooks)
+                            .ThenInclude(lb => lb.Loans)
+                    .Include(u => u.Memberships)
+                        .ThenInclude(m => m.BookLoans)
+                    .FirstOrDefaultAsync(u => u.Id == id)
+                    ?? throw new NotFoundException();
 
-            if (user == null)
-                throw new NotFoundException();
+                var bookLoans = user.Books
+                    .SelectMany(b => b.LibraryBooks)
+                    .SelectMany(lb => lb.Loans)
+                    .Concat(user.Memberships.SelectMany(m => m.BookLoans));
+                context.BookLoans.RemoveRange(bookLoans);
 
-            await userManager.DeleteAsync(user);
+                var libraryBooks = user.Books.SelectMany(b => b.LibraryBooks);
+                context.LibraryBooks.RemoveRange(libraryBooks);
+
+                context.Books.RemoveRange(user.Books);
+
+                context.Users.Remove(user);
+
+                await context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            } catch {
+                await transaction.RollbackAsync();
+                throw;
+            }
+
         }
     }
 }

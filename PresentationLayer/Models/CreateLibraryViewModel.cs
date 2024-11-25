@@ -4,7 +4,7 @@ namespace PresentationLayer.Models
 {
     public class CreateLibraryViewModel {
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 1)]
+        [StringLength(100, ErrorMessage = "The library name must be between {2} and {1} characters long.", MinimumLength = 3)]
         public string Name { get; set; }
     }
 }

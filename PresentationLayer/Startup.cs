@@ -18,6 +18,7 @@ using NimbusV1 = DataAccessLayer.Repositories.Nimbus.v1;
 using NimbusV2 = DataAccessLayer.Repositories.Nimbus.v2;
 using DataAccessLayer.Repositories.Nimbus;
 using Utils.Senders;
+using DataAccessLayer.Identity;
 
 namespace PresentationLayer
 {
@@ -50,6 +51,7 @@ namespace PresentationLayer
 
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationContext>()
+                .AddUserStore<UserStore>()
                 .AddDefaultTokenProviders();
 
             // Register repositories

@@ -4,116 +4,72 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace DataAccessLayer.Data {
     public class ApplicationContext(DbContextOptions<ApplicationContext> options) : IdentityDbContext<User>(options) {
-        protected override void OnModelCreating(ModelBuilder modelBuilder) {
-            base.OnModelCreating(modelBuilder);
+        protected override void OnModelCreating(ModelBuilder builder) {
+            base.OnModelCreating(builder);
 
-            // User
-            modelBuilder.Entity<User>()
+            // User relationships
+            builder.Entity<User>()
                 .HasMany(user => user.Books)
                 .WithOne(book => book.Author)
                 .HasForeignKey(book => book.AuthorId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<User>()
+            builder.Entity<User>()
                 .HasMany(user => user.Memberships)
                 .WithOne(membership => membership.User)
                 .HasForeignKey(membership => membership.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // User senders
-            modelBuilder.Entity<UserSender>()
-                .HasOne(us => us.User)
-                .WithMany(u => u.Senders)
-                .HasForeignKey(us => us.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<UserSender>()
-                .HasOne(us => us.Sender)
-                .WithMany(s => s.Users)
-                .HasForeignKey(us => us.SenderId)
+            builder.Entity<User>()
+                .HasMany(user => user.Notifications)
+                .WithOne(notification => notification.User)
+                .HasForeignKey(notification => notification.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Book
-            modelBuilder.Entity<Book>()
-                .HasOne(b => b.Author)
-                .WithMany(u => u.Books)
-                .HasForeignKey(b => b.AuthorId)
+            builder.Entity<User>()
+                .HasMany(user => user.Senders)
+                .WithOne(sender => sender.User)
+                .HasForeignKey(sender => sender.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Book>()
-                .HasMany(b => b.AudioBooks)
-                .WithOne(a => a.Book)
-                .HasForeignKey(a => a.BookId)
+            // Book relationships
+            builder.Entity<Book>()
+                .HasMany(book => book.AudioBooks)
+                .WithOne(audioBook => audioBook.Book)
+                .HasForeignKey(audioBook => audioBook.BookId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Library
-            modelBuilder.Entity<Library>()
-                .HasMany(l => l.Memberships)
-                .WithOne(m => m.Library)
-                .HasForeignKey(m => m.LibraryId)
+            builder.Entity<Book>()
+                .HasMany(book => book.LibraryBooks)
+                .WithOne(libraryBook => libraryBook.Book)
+                .HasForeignKey(libraryBook => libraryBook.BookId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Library>()
-                .HasMany(l => l.Books)
-                .WithOne(lb => lb.Library)
-                .HasForeignKey(lb => lb.LibraryId)
-                .OnDelete(DeleteBehavior.Cascade);
+            // Library relationships
+            builder.Entity<Library>()
+                .HasMany(library => library.Memberships)
+                .WithOne(membership => membership.Library)
+                .HasForeignKey(membership => membership.LibraryId)
+                .OnDelete(DeleteBehavior.Cascade); 
 
-            // LibraryMembership
-            modelBuilder.Entity<LibraryMembership>()
-                .Property(m => m.Role)
-                .HasConversion<string>();
+            builder.Entity<Library>()
+                .HasMany(library => library.Books)
+                .WithOne(libraryBook => libraryBook.Library)
+                .HasForeignKey(libraryBook => libraryBook.LibraryId)
+                .OnDelete(DeleteBehavior.Cascade); 
 
-            modelBuilder.Entity<LibraryMembership>()
-                .HasOne(m => m.User)
-                .WithMany(u => u.Memberships)
-                .HasForeignKey(m => m.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<LibraryMembership>()
-                .HasOne(m => m.Library)
-                .WithMany(l => l.Memberships)
-                .HasForeignKey(m => m.LibraryId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // LibraryBook
-            modelBuilder.Entity<LibraryBook>()
-                .HasOne(lb => lb.Library)
-                .WithMany(l => l.Books)
-                .HasForeignKey(lb => lb.LibraryId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<LibraryBook>()
-                .HasOne(lb => lb.Book)
-                .WithMany(b => b.LibraryBooks)
-                .HasForeignKey(lb => lb.BookId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<LibraryBook>()
-                .HasMany(lb => lb.Loans)
-                .WithOne(bl => bl.LibraryBook)
-                .HasForeignKey(bl => bl.LibraryBookId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // BookLoan
-            modelBuilder.Entity<BookLoan>()
+            // BookLoan relationships
+            builder.Entity<BookLoan>()
                 .HasOne(bl => bl.LibraryBook)
-                .WithMany(lb => lb.Loans)
+                .WithMany(libraryBook => libraryBook.Loans)
                 .HasForeignKey(bl => bl.LibraryBookId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<BookLoan>()
+            builder.Entity<BookLoan>()
                 .HasOne(bl => bl.LibraryMembership)
-                .WithMany(m => m.BookLoans)
+                .WithMany(membership => membership.BookLoans)
                 .HasForeignKey(bl => bl.LibraryMembershipId)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            // Notification
-            modelBuilder.Entity<Notification>()
-                .HasOne(n => n.User)
-                .WithMany(u => u.Notifications)
-                .HasForeignKey(n => n.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
 
