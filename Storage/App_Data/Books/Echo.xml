@@ -34,4 +34,49 @@
     <Description>This is the testing Book</Description>
     <ImageUrl>https://hearty-sardine-346.convex.cloud/api/storage/a9737435-4a24-4e55-ba40-d4c218ac4b34</ImageUrl>
   </Books>
+  <Books>
+    <Id>13</Id>
+    <Title>Ma Meilleure Ennemie</Title>
+    <Description>Paroles de "Ma Meilleure Ennemie"</Description>
+    <ImageUrl>https://hearty-sardine-346.convex.cloud/api/storage/acfbbff3-88b4-4c7c-80bb-6fb12352bd59</ImageUrl>
+  </Books>
+  <Chapters>
+    <BookId>13</BookId>
+    <Index>0</Index>
+    <Title>Stromae</Title>
+    <Content>T'es la meillеure chose qui m'est arrivéе
+Mais aussi la pire chose qui m'est arrivée
+Ce jour où je t'ai rencontrée, j'aurais peut-être préféré
+Que ce jour ne soit jamais arrivé (Arrivé)
+La pire des bénédictions
+La plus belle des malédictions
+De toi, j'devrais m'éloigner
+Mais comme dit le dicton :
+"Plutôt qu'être seul, mieux vaut être mal accompagné"</Content>
+  </Chapters>
+  <Chapters>
+    <BookId>13</BookId>
+    <Index>1</Index>
+    <Title>Stromae &amp; Pomme</Title>
+    <Content>Mais ma meilleure ennemie, c'est toi
+Fuis-moi, le pire, c'est toi et moi
+Mais si tu cherches encore ma voix
+Oublie-moi, le pire, c'est toi et moi</Content>
+  </Chapters>
+  <Chapters>
+    <BookId>13</BookId>
+    <Index>2</Index>
+    <Title>Pomme</Title>
+    <Content>Je t'avais dit : "Ne regarde pas en arrière"
+Le passé qui te suit te fait la guerre</Content>
+  </Chapters>
+  <Chapters>
+    <BookId>13</BookId>
+    <Index>3</Index>
+    <Title>Stromae &amp; Pomme</Title>
+    <Content>Mais ma meilleure ennemie, c'est toi
+Fuis-moi, le pire, c'est toi et moi
+Mais ma meilleure ennemie, c'est toi
+Fuis-moi, le pire, c'est toi et moi</Content>
+  </Chapters>
 </DataSet>

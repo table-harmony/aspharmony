@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Google.Cloud.Translation.V2;
+using Microsoft.Extensions.Configuration;
 using Mscc.GenerativeAI;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
@@ -78,7 +79,7 @@ public class StabilityService : IImageModelService {
 public interface ITextToSpeechService {
     public readonly record struct SpeechRequest(
         string Text,
-        string ModelId = "eleven_monolingual_v1",
+        string ModelId = "eleven_multilingual_v2",
         string VoiceId = "9BWtsMINqrJLrRacOk9x",
         float Stability = 0.5f,
         float SimilarityBoost = 0.5f
@@ -110,7 +111,7 @@ public class ElevenLabsService : ITextToSpeechService {
             voice_settings = new {
                 stability = request.Stability,
                 similarity_boost = request.SimilarityBoost
-            }
+            },
         };
 
         var content = new StringContent(

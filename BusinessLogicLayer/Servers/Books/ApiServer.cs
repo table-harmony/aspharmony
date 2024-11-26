@@ -5,7 +5,7 @@ namespace BusinessLogicLayer.Servers.Books {
     public class ApiServer : IBookServer {
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions? _jsonOptions;
-        private readonly string _prefix = "/api/books";
+        private readonly string _prefix = "/";
 
         public ApiServer(string baseUri, JsonSerializerOptions? jsonOptions = null) {
             _httpClient = new HttpClient { BaseAddress = new Uri(baseUri) };
@@ -14,9 +14,9 @@ namespace BusinessLogicLayer.Servers.Books {
 
         public async Task<Book?> GetBookAsync(int id) {
             try {
-                var response = await _httpClient.GetAsync($"${_prefix}/{id}");
+                var response = await _httpClient.GetAsync($"/{id}");
                 response.EnsureSuccessStatusCode();
-                
+
                 return await response.Content.ReadFromJsonAsync<Book>(_jsonOptions);
             } catch (HttpRequestException) {
                 return null;
@@ -27,7 +27,7 @@ namespace BusinessLogicLayer.Servers.Books {
             try {
                 var response = await _httpClient.GetAsync(_prefix);
                 response.EnsureSuccessStatusCode();
-                
+
                 return await response.Content.ReadFromJsonAsync<List<Book>>(_jsonOptions) ?? [];
             } catch (HttpRequestException) {
                 return [];

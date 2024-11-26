@@ -20,19 +20,16 @@
                 </div>
                 
                 <div class="mt-4">
-                    @{
-                        string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-                        if (Model.AuthorId == userId) {
-                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
-                                <i class="bi bi-pencil"></i> Edit
-                            </a>
-                            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
-                                <i class="bi bi-trash"></i> Delete
-                            </a>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#voiceSelectionModal">
-                                <i class="bi bi-file-earmark-music"></i> Audio Book
-                            </button>
-                        }
+                    @if (Model.AuthorId == User.FindFirstValue(ClaimTypes.NameIdentifier)!) {
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#voiceSelectionModal">
+                            <i class="bi bi-file-earmark-music"></i> Audio Book
+                        </button>
                     }
                 </div>
             </div>
@@ -47,7 +44,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Generate Audio book for '@Model.Metadata.Title'</h5>
+                <h5 class="modal-title">Generate Audio book for '@Model.Metadata?.Title'</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">

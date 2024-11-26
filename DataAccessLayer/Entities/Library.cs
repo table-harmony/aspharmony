@@ -5,7 +5,7 @@
 
         public bool AllowCopies { get; set; }
 
-        public ICollection<LibraryBook> Books { get; set; }
-        public ICollection<LibraryMembership> Memberships { get; set; }
+        public ICollection<LibraryBook> Books { get; set; } = [];
+        public ICollection<LibraryMembership> Memberships { get; set; } = [];
     }
 }

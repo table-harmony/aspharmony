@@ -25,6 +25,7 @@ namespace DataAccessLayer.Entities {
         public ServerType Server {  get; set; }
 
         public string AuthorId { get; set; }  // Foreign key
+
         public User Author { get; set; }
 
         public ICollection<LibraryBook> LibraryBooks { get; set; } = [];

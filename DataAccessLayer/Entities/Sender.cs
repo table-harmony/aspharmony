@@ -4,6 +4,6 @@
 
         public required string Name { get; set; }
 
-        public ICollection<UserSender> Users { get; set; }
+        public ICollection<UserSender> Users { get; set; } = [];
     }
 }
