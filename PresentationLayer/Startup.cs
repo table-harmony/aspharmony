@@ -95,6 +95,7 @@ namespace PresentationLayer
             services.AddTransient<ISenderFactory, SenderFactory>();
             services.AddTransient<ITextModelService, GeminiService>();
             services.AddTransient<IImageModelService, StabilityService>();
+            services.AddTransient<ITranslationService, AiTranslateService>();
             services.AddTransient<ITextToSpeechService, ElevenLabsService>();
 
             // Register web services

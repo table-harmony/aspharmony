@@ -11,10 +11,10 @@ public interface ITranslationService {
     Task<string> TranslateHtmlAsync(TranslationRequest request);
 }
 
-public class TranslationService : ITranslationService {
+public class GoogleService : ITranslationService {
     private readonly TranslationClient _client;
 
-    public TranslationService(IConfiguration configuration) {
+    public GoogleService(IConfiguration configuration) {
         string apiKey = configuration["Google:TranslationApiKey"] ??
             throw new Exception("Google Translation API Key not found in configuration.");
 
@@ -37,5 +37,34 @@ public class TranslationService : ITranslationService {
         );
 
         return response.TranslatedText;
+    }
+}
+
+public class AiTranslateService(ITextModelService textModel) : ITranslationService {
+    public async Task<string> TranslateAsync(TranslationRequest request) {
+        string prompt = @$"Translate the following text from it's source language to {request.Language}: 
+                    `{request.Text}`. Ensure accuracy and natural fluency in the translation.";
+
+        return await textModel.GetResponseAsync(prompt);
+    }
+
+    public async Task<string> TranslateHtmlAsync(TranslationRequest request) {
+        string prompt = @$"
+            Translate the following SSML/HTML to {request.Language}:
+            {request.Text}
+
+            - Ensure no segments remain untranslated.
+            - Keep all SSML/HTML tags intact.
+            - Only translate the text content.
+            - Ensure the translation is natural and appropriate for audiobook narration.";
+
+        string response = await textModel.GetResponseAsync(prompt);
+
+        const string xmlPrefix = "```xml";
+        if (response.StartsWith(xmlPrefix, StringComparison.OrdinalIgnoreCase)) {
+            response = response[xmlPrefix.Length..].Trim();
+        }
+
+        return response;
     }
 }

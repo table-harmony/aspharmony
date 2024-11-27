@@ -48,6 +48,17 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
+                <div class="mb-4">
+                    <label for="targetLanguage" class="form-label">Target Language</label>
+                    <select class="form-select" id="targetLanguage">
+                        <option value="">Original</option>
+                        @foreach (var language in ViewBag.Languages) {
+                            <option value="@language.Id">@language.Name</option>
+                        }
+                    </select>
+                    <div class="form-text">Select a language to translate the audio book content</div>
+                </div>
+
                 <div class="row g-3" id="voicesContainer">
                     @foreach (var voice in ViewBag.Voices) {
                         <div class="col-md-6">
@@ -221,6 +232,8 @@
                     return;
                 }
     
+                const targetLanguage = $('#targetLanguage').val();
+
                 const button = $(this);
                 const buttonText = button.find('.button-text');
                 const originalText = buttonText.text();
@@ -233,7 +246,7 @@
                     const token = $('input[name="__RequestVerificationToken"]').val();
                     if (!token) throw new Error('CSRF token not found');
 
-                    const response = await fetch(`/Book/GenerateAudioBook/${@Model.Id}?voiceId=${selectedVoiceId}`, {
+                    const response = await fetch(`/Book/GenerateAudioBook/${@Model.Id}?voiceId=${selectedVoiceId}&targetLanguage=${targetLanguage}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

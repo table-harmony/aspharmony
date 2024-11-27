@@ -4,6 +4,7 @@ using Mscc.GenerativeAI;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
+using static Utils.ITextToSpeechService;
 
 namespace Utils;
 
@@ -104,7 +105,7 @@ public class ElevenLabsService : ITextToSpeechService {
             new MediaTypeWithQualityHeaderValue("audio/mpeg"));
     }
 
-    public async Task<Stream> GenerateSpeechAsync(ITextToSpeechService.SpeechRequest request) {
+    public async Task<Stream> GenerateSpeechAsync(SpeechRequest request) {
         var payload = new {
             text = request.Text,
             model_id = request.ModelId,

@@ -17,6 +17,7 @@ using Chapter = BusinessLogicLayer.Servers.Books.Chapter;
 using Book = BusinessLogicLayer.Services.Book;
 using Image = Utils.IImageModelService.Image;
 using SpeechRequest = Utils.ITextToSpeechService.SpeechRequest;
+using static Utils.ITranslationService;
 
 namespace PresentationLayer.Controllers {
 
@@ -27,7 +28,8 @@ namespace PresentationLayer.Controllers {
                                     IImageModelService imageGenerator,
                                     ITextToSpeechService speechGenerator,
                                     IConfiguration configuration,
-                                    ITextModelService aiService) : Controller {
+                                    ITextModelService textGenerator,
+                                    ITranslationService translationService) : Controller {
 
         public async Task<IActionResult> Index(string searchString, int pageSize = 10, int pageIndex = 1) {
             var books = await bookService.GetAllAsync();
@@ -64,6 +66,8 @@ namespace PresentationLayer.Controllers {
                 return NotFound();
 
             ViewBag.Voices = await GetVoices(4);
+            ViewBag.Languages = await GetLanguages();
+
             return View(book);
         }
 
@@ -288,7 +292,7 @@ namespace PresentationLayer.Controllers {
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> GenerateAudioBook(int id, string voiceId) {
+        public async Task<IActionResult> GenerateAudioBook(int id, string voiceId, string targetLanguage = "") {
             var book = await bookService.GetBookAsync(id);
             if (book == null)
                 return NotFound();
@@ -299,6 +303,13 @@ namespace PresentationLayer.Controllers {
 
             try {
                 string ssml = GenerateSSML(book);
+
+                if (!string.IsNullOrEmpty(ssml)) {
+                    ssml = await translationService.TranslateHtmlAsync(
+                        new TranslationRequest(ssml, targetLanguage)
+                    );
+                }
+
                 using var audioStream = await speechGenerator.GenerateSpeechAsync(
                     new SpeechRequest(Text: ssml, VoiceId: voiceId)
                 );
@@ -339,7 +350,9 @@ namespace PresentationLayer.Controllers {
             builder.AppendLine($"<prosody pitch=\"-10%\" rate=\"slow\" volume=\"soft\">We hope you enjoyed it.</prosody>");
             builder.AppendLine($"</speak>");
 
-            return builder.ToString();
+            string result = builder.ToString();
+
+            return result;
         }
 
         private async Task<List<Voice>?> GetVoices(int number = 5) {
@@ -361,6 +374,35 @@ namespace PresentationLayer.Controllers {
             } catch {
                 return [];
             }
+        }
+
+        private async Task<List<Language>> GetLanguages(string modelId = "eleven_multilingual_v2") {
+            HttpClient client = new() {
+                BaseAddress = new Uri("https://api.elevenlabs.io/")
+            };
+            client.DefaultRequestHeaders.Add("xi-api-key", configuration["ElevenLabs:ApiKey"]);
+
+            try {
+                var response = await client.GetAsync("v1/models");
+                response.EnsureSuccessStatusCode();
+
+                var data = await response.Content.ReadAsStringAsync();
+                var models = JsonConvert.DeserializeObject<List<dynamic>>(data);
+
+                var model = (models?.Find(m => m.model_id == modelId))
+                    ?? throw new Exception($"Model {modelId} not found.");
+
+                List<Language> languages = JsonConvert.DeserializeObject<List<Language>>(JsonConvert.SerializeObject(model.languages));
+                return [.. languages.OrderBy(language => language.Name)];
+            } catch {
+                return [];
+            }
+        }
+
+        public class Language {
+            [JsonProperty("language_id")]
+            public required string Id { get; set; }
+            public required string Name { get; set; }
         }
 
         public class VoicesResponse {
@@ -399,7 +441,7 @@ namespace PresentationLayer.Controllers {
                     - content (string): A 2-3 paragraph summary of the chapter
                     - Index (integer): The chapter number starting from ${request.Chapters.Count + 1}";
 
-                string response = await aiService.GetResponseAsync(prompt);
+                string response = await textGenerator.GetResponseAsync(prompt);
 
                 var chapters = JsonConvert.DeserializeObject<List<ChapterViewModel>>(CleanJsonResponse(response))
                     ?? throw new Exception("Generated response was empty");
@@ -451,7 +493,7 @@ namespace PresentationLayer.Controllers {
                         ]
                     }}";
 
-                string response = await aiService.GetResponseAsync(prompt);
+                string response = await textGenerator.GetResponseAsync(prompt);
 
                 var refinedBook = JsonConvert.DeserializeObject<RefineBookResponse>(CleanJsonResponse(response))
                     ?? throw new Exception("Generated response was empty");
