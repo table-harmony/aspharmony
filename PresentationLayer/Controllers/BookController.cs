@@ -7,8 +7,7 @@ using System.Security.Claims;
 using Utils.Exceptions;
 using Utils;
 using System.Text;
-using Newtonsoft.Json;
-using System.Text.Json.Serialization;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using DataAccessLayer.Entities;
 
@@ -18,6 +17,7 @@ using Book = BusinessLogicLayer.Services.Book;
 using Image = Utils.IImageModelService.Image;
 using SpeechRequest = Utils.ITextToSpeechService.SpeechRequest;
 using static Utils.ITranslationService;
+using System.Text.Json.Serialization;
 
 namespace PresentationLayer.Controllers {
 
@@ -132,6 +132,7 @@ namespace PresentationLayer.Controllers {
                 return RedirectToAction(nameof(Details), new { id });
 
             GetServers(book.Server);
+            ViewBag.Languages = await GetLanguages();
 
             EditBookViewModel model = new() {
                 Id = book.Id,
@@ -255,7 +256,7 @@ namespace PresentationLayer.Controllers {
         }
 
         private async Task<string> GenerateImage(string prompt) {
-            using var stream = await imageGenerator.GenerateImageAsync(new Image(prompt)) 
+            using var stream = await imageGenerator.GenerateImageAsync(new Image(prompt))
                 ?? throw new PublicException("Failed to generate image.");
 
             using var memoryStream = new MemoryStream();
@@ -315,13 +316,44 @@ namespace PresentationLayer.Controllers {
                 );
 
                 string audioUrl = await fileUploader.UploadFileAsync(new IFileUploader.File(audioStream, ContentType: "audio/mpeg"));
-                
+
                 await bookService.CreateAudioBookAsync(new AudioBook {
                     BookId = book.Id,
                     AudioUrl = audioUrl,
                 });
 
                 return Ok();
+            } catch (Exception ex) {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> TranslateBook([FromBody] TranslateBookRequest request) {
+
+            try {
+                string translation = await translationService.TranslateHtmlAsync(
+                    new TranslationRequest(JsonSerializer.Serialize(request), request.TargetLanguage)
+                );
+
+                var response = JsonSerializer.Deserialize<TranslateBookResponse>(CleanJsonResponse(translation));
+
+                return Ok(response);
+            } catch (Exception ex) {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpPatch] 
+        public async Task<IActionResult> PreviewTranslation([FromBody] PreviewTranslateRequest request) {
+            try {
+                string translation = await translationService.TranslateHtmlAsync(
+                    new TranslationRequest(JsonSerializer.Serialize(request), request.TargetLanguage)
+                );
+
+                var response = JsonSerializer.Deserialize<dynamic>(CleanJsonResponse(translation));
+
+                return Ok(response);
             } catch (Exception ex) {
                 return BadRequest(new { error = ex.Message });
             }
@@ -387,21 +419,30 @@ namespace PresentationLayer.Controllers {
                 response.EnsureSuccessStatusCode();
 
                 var data = await response.Content.ReadAsStringAsync();
-                var models = JsonConvert.DeserializeObject<List<dynamic>>(data);
+                var models = JsonSerializer.Deserialize<List<Model>>(data);
 
-                var model = (models?.Find(m => m.model_id == modelId))
+                var model = (models?.Find(model => model.Id == modelId))
                     ?? throw new Exception($"Model {modelId} not found.");
 
-                List<Language> languages = JsonConvert.DeserializeObject<List<Language>>(JsonConvert.SerializeObject(model.languages));
-                return [.. languages.OrderBy(language => language.Name)];
+                return [.. model.Languages.OrderBy(language => language.Name)];
             } catch {
                 return [];
             }
         }
 
-        public class Language {
-            [JsonProperty("language_id")]
+        public class Model {
+            [JsonPropertyName("model_id")]
             public required string Id { get; set; }
+
+            [JsonPropertyName("languages")]
+            public required List<Language> Languages { get; set; } = [];
+        }
+
+        public class Language {
+            [JsonPropertyName("language_id")]
+            public required string Id { get; set; }
+
+            [JsonPropertyName("name")]
             public required string Name { get; set; }
         }
 
@@ -443,7 +484,7 @@ namespace PresentationLayer.Controllers {
 
                 string response = await textGenerator.GetResponseAsync(prompt);
 
-                var chapters = JsonConvert.DeserializeObject<List<ChapterViewModel>>(CleanJsonResponse(response))
+                var chapters = JsonSerializer.Deserialize<List<ChapterViewModel>>(CleanJsonResponse(response))
                     ?? throw new Exception("Generated response was empty");
 
                 return Json(chapters);
@@ -452,7 +493,7 @@ namespace PresentationLayer.Controllers {
                     error = "Failed to parse AI response. Please try again.",
                 });
             } catch {
-                return BadRequest(new { 
+                return BadRequest(new {
                     error = "Failed to generate chapters",
                 });
             }
@@ -466,7 +507,7 @@ namespace PresentationLayer.Controllers {
                     Current Book:
                     Title: {request.Title}
                     Description: {request.Description}
-                    Chapters: {JsonConvert.SerializeObject(request.Chapters)}
+                    Chapters: {JsonSerializer.Serialize(request.Chapters)}
 
                     Your task is to improve this book while maintaining its core story and themes.
 
@@ -495,7 +536,7 @@ namespace PresentationLayer.Controllers {
 
                 string response = await textGenerator.GetResponseAsync(prompt);
 
-                var refinedBook = JsonConvert.DeserializeObject<RefineBookResponse>(CleanJsonResponse(response))
+                var refinedBook = JsonSerializer.Deserialize<RefineBookResponse>(CleanJsonResponse(response))
                     ?? throw new Exception("Generated response was empty");
 
                 return Json(refinedBook);
@@ -503,9 +544,8 @@ namespace PresentationLayer.Controllers {
                 return BadRequest(new {
                     error = "Failed to parse AI response. Please try again.",
                 });
-            }
-            catch {
-                return BadRequest(new { 
+            } catch {
+                return BadRequest(new {
                     error = "Failed to refine book",
                 });
             }
@@ -531,6 +571,32 @@ namespace PresentationLayer.Controllers {
             return response;
         }
         public class GenerateChaptersRequest {
+            public string Title { get; set; } = "";
+            public string Description { get; set; } = "";
+            public List<ChapterViewModel> Chapters { get; set; } = [];
+        }
+
+
+        public class PreviewTranslateRequest {
+            [JsonPropertyName("target_language")]
+            public string TargetLanguage { get; set; } = "";
+
+            [JsonPropertyName("title")]
+            public string Title { get; set; } = "";
+
+            [JsonPropertyName("description")]
+            public string Description { get; set; } = "";
+        }
+
+        public class TranslateBookRequest {
+            [JsonPropertyName("target_language")]
+            public string TargetLanguage { get; set; } = "";
+            public string Title { get; set; } = "";
+            public string Description { get; set; } = "";
+            public List<ChapterViewModel> Chapters { get; set; } = [];
+        }
+
+        public class TranslateBookResponse {
             public string Title { get; set; } = "";
             public string Description { get; set; } = "";
             public List<ChapterViewModel> Chapters { get; set; } = [];

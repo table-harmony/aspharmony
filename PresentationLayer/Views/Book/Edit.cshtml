@@ -5,9 +5,14 @@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h2 class="mb-0">Edit Book</h2>
-        <button type="button" class="btn btn-secondary" id="refineBook">
-            <i class="bi bi-robot"></i> Refine
-        </button>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#translateModel">
+                <i class="bi bi-translate"></i> Translate
+            </button>
+            <button type="button" class="btn btn-secondary" id="refineBook">
+                <i class="bi bi-robot"></i> Refine
+            </button>
+        </div>
     </div>
     <div class="card-body">
         <form asp-action="Edit" asp-controller="Book" method="post" enctype="multipart/form-data">
@@ -106,11 +111,91 @@
     </div>
 </div>
 
+<div class="modal fade" id="translateModel" tabindex="-2">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Translate '@Model.Title'</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-4">
+                    <label for="targetLanguage" class="form-label">Target Language</label>
+                    <select class="form-select" id="targetLanguage">
+                        <option value="">Original</option>
+                        @foreach (var language in ViewBag.Languages) {
+                            <option value="@language.Id">@language.Name</option>
+                        }
+                    </select>
+                    <div class="form-text">Select a language to translate the book</div>
+                </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-file-text"></i> Original</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-primary">
+                                    <i class="bi bi-bookmark-star"></i> Title
+                                </label>
+                                <p class="form-control-plaintext pb-2" id="originalTitle">@Model.Title</p>
+                            </div>
+                            <div>
+                                <label class="form-label fw-bold text-primary">
+                                    <i class="bi bi-card-text"></i> Description
+                                </label>
+                                <p class="form-control-plaintext pb-2" id="originalDescription">@Model.Description</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="bi bi-translate"></i> Translation</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-success">
+                                    <i class="bi bi-bookmark-star"></i> Title
+                                </label>
+                                <p class="form-control-plaintext pb-2" id="translatedTitle">
+                                    <span class="text-muted fst-italic">Select a language to see translation</span>
+                                </p>
+                            </div>
+                            <div>
+                                <label class="form-label fw-bold text-success">
+                                    <i class="bi bi-card-text"></i> Description
+                                </label>
+                                <p class="form-control-plaintext pb-2" id="translatedDescription">
+                                    <span class="text-muted fst-italic">Select a language to see translation</span>
+                                </p>
+                            </div>
+                        </div>
+
+                       </div>
+            </div>
+            </div>
+        </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="translateBook">
+                    <i class="bi bi-translate"></i> <span class="button-text">Translate</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $(document).ready(function () {
-            let chapterCount = @Model.Chapters.Count
 
             function addChapter() {
                 const chapterHtml = `
@@ -118,7 +203,8 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Chapter ${chapterCount + 1}</h5>
-                                <button type="button" class="btn btn-danger btn-sm delete-chapter">Delete</button>
+                                <button type
+            let chapterCount = @Model.Chapters.Count="button" class="btn btn-danger btn-sm delete-chapter">Delete</button>
                             </div>
                             <div class="card-body">
                                 <input type="hidden" name="Chapters[${chapterCount}].Index" value="${chapterCount}" />
@@ -170,8 +256,109 @@
                 }
             });
 
-            $('#refineBook').click(async function() {
+            $("#translateBook").click(async function() {
+                const translateModal = new bootstrap.Modal(document.getElementById("translateModel")); 
 
+                const button = $(this);
+                const originalText = button.html();
+                button.html('<i class="bi bi-hourglass-split"></i> Translating...').prop('disabled', true);
+
+                $('#addChapter, .delete-chapter').prop('disabled', true);
+
+                const bookData = {
+                    target_language: $("#targetLanguage").val(),
+                    title: $('#Title').val(),
+                    description: $('#Description').val(),
+                    chapters: $('.chapter-card').map(function() {
+                        return {
+                            index: parseInt($(this).attr('data-index')),
+                            title: $(this).find('input[name$=".Title"]').val(),
+                            content: $(this).find('textarea[name$=".Content"]').val()
+                        };
+                    }).get()
+                };
+
+                try {
+                    const response = await fetch('/Book/TranslateBook', {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        body: JSON.stringify(bookData)
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        console.error('Server Error:', data);
+                        throw new Error(data.error || 'Failed to translate book');
+                    }
+
+                    $('#Title').val(data.title);
+                    $('#Description').val(data.description);
+
+                    data.chapters.forEach((chapter) => {
+                        const card = $(`.chapter-card[data-index="${chapter.index}"]`);
+                        if (card.length) {
+                            card.find('input[name$=".Title"]').val(chapter.title);
+                            card.find('textarea[name$=".Content"]').val(chapter.content);
+                        }
+                    });
+
+                    translateModal.hide();
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert(error.message || 'Failed to translate book. Please try again.');
+                } finally {
+                    button.html(originalText).prop('disabled', false);
+                    $('#addChapter, .delete-chapter').prop('disabled', false);
+                }
+            });
+
+            $('#targetLanguage').on('change', async function() {
+                const select = $(this);
+                select.prop('disabled', true);
+
+                const button = $("#translateBook");
+                const originalText = button.html();
+                button.html('<i class="bi bi-hourglass-split"></i> Translating...').prop('disabled', true);
+
+                const bookData = {
+                    target_language: $("#targetLanguage").val(),
+                    title: $('#Title').val(),
+                    description: $('#Description').val(),
+                };
+
+                try {
+                    const response = await fetch('/Book/PreviewTranslation', {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        body: JSON.stringify(bookData)
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        console.error('Server Error:', data);
+                        throw new Error(data.error || 'Failed to translate book');
+                    }
+
+                    $('#translatedTitle').text(data.title);
+                    $('#translatedDescription').text(data.description);
+                } catch (error) {
+                    $('#translatedTitle').text('-');
+                    $('#translatedDescription').text('-');
+                } finally {
+                    button.html(originalText).prop('disabled', false);
+                    select.prop('disabled', false);
+                }
+            });
+
+            $('#refineBook').click(async function() {
                 const button = $(this);
                 const originalText = button.html();
                 button.html('<i class="bi bi-hourglass-split"></i> Refining...').prop('disabled', true);

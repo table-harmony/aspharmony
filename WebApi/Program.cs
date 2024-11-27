@@ -14,6 +14,9 @@ using NimbusV1 = DataAccessLayer.Repositories.Nimbus.v1;
 using NimbusV2 = DataAccessLayer.Repositories.Nimbus.v2;
 using DataAccessLayer.Repositories.Nimbus;
 using Utils.Senders;
+using DataAccessLayer.Entities;
+using DataAccessLayer.Identity;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +24,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationContext>(options =>
     options.UseSqlServer(PathManager.GenerateConnectionString("Main.mdf"))
         .EnableSensitiveDataLogging());
+
+// Configure identity
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationContext>()
+    .AddUserStore<UserStore>()
+    .AddDefaultTokenProviders();
 
 // Register repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -83,6 +92,9 @@ builder.Services.AddSwaggerGen(c => {
             return "DataAccessLayer.Book";
         if (type == typeof(BusinessLogicLayer.Servers.Books.Book))
             return "BusinessLogicLayer.Servers.Books.Book";
+        if (type == typeof(DataAccessLayer.Entities.User))
+            return "DataAccessLayer.Entites.User";
+
         return type.FullName;
     };
 });
@@ -95,16 +107,6 @@ builder.Services.AddControllers()
     });
 builder.Services.AddEndpointsApiExplorer();
 
-
-builder.Services.AddCors(options => {
-    options.AddDefaultPolicy(builder => {
-        builder
-            .AllowAnyOrigin()
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-});
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
@@ -113,9 +115,14 @@ if (app.Environment.IsDevelopment()) {
     app.UseSwaggerUI();
 }
 
-app.UseCors();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+app.UseCors(options => {
+    options
+        .AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+});
 
 app.Run();
