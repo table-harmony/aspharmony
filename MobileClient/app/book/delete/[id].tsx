@@ -1,43 +1,43 @@
-import { useEffect, useState } from "react";
-import { StyleSheet, Alert, Pressable } from "react-native";
+import { useState, useEffect } from "react";
+import { StyleSheet, Alert } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import {
+  Surface,
+  Text,
+  Button,
+  Card,
+  Portal,
+  Dialog,
+  useTheme,
+  Avatar,
+} from "react-native-paper";
 
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
-import { getBookById, deleteBook } from "@/services/books";
-import { useUserStore } from "@/stores/userStore";
+import { deleteBook, getBookById } from "@/services/books";
 import type { Book } from "@/services/books";
 
 export default function DeleteBookScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const [book, setBook] = useState<Book | null>(null);
-  const [loading, setLoading] = useState(true);
-  const user = useUserStore((state) => state.user);
+  const theme = useTheme();
 
-  async function fetchBook() {
-    try {
-      const fetchedBook = await getBookById(Number(id));
-      if (fetchedBook.author.id !== user?.id) {
-        Alert.alert("Error", "You don't have permission to delete this book");
+  useEffect(() => {
+    async function fetchBook() {
+      try {
+        const fetchedBook = await getBookById(Number(id));
+        setBook(fetchedBook);
+      } catch (error) {
+        console.error("Failed to fetch book:", error);
+        Alert.alert("Error", "Failed to load book details");
         router.back();
-        return;
       }
-      setBook(fetchedBook);
-    } catch (error) {
-      console.error("Failed to fetch book:", error);
-      Alert.alert("Error", "Failed to load book details");
-      router.back();
-    } finally {
-      setLoading(false);
     }
-  }
+    fetchBook();
+  }, [id]);
 
   async function handleDelete() {
-    if (!book) return;
-
     try {
-      await deleteBook(book.id);
+      await deleteBook(Number(id));
       router.replace("/book");
     } catch (error) {
       console.error("Failed to delete book:", error);
@@ -45,76 +45,112 @@ export default function DeleteBookScreen() {
     }
   }
 
-  useEffect(() => {
-    fetchBook();
-  }, [id]);
-
-  if (loading || !book) {
-    return (
-      <ThemedView style={styles.container}>
-        <ThemedText>Loading book details...</ThemedText>
-      </ThemedView>
-    );
+  if (!book) {
+    return null;
   }
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedView style={styles.content}>
-        <ThemedText type="title">Delete Book</ThemedText>
-        <ThemedText type="subtitle">
-          Are you sure you want to delete "{book.metadata.title}"?
-        </ThemedText>
-        <ThemedText style={styles.warning}>
-          This action cannot be undone.
-        </ThemedText>
-
-        <ThemedView style={styles.actions}>
-          <Pressable style={styles.cancelButton} onPress={() => router.back()}>
-            <ThemedText style={styles.buttonText}>Cancel</ThemedText>
-          </Pressable>
-          <Pressable style={styles.deleteButton} onPress={handleDelete}>
-            <ThemedText style={styles.buttonText}>Delete Book</ThemedText>
-          </Pressable>
-        </ThemedView>
-      </ThemedView>
-    </ThemedView>
+    <Surface style={styles.container}>
+      <Card style={styles.card}>
+        <Card.Cover
+          source={{ uri: book.metadata.image_url }}
+          style={styles.coverImage}
+          resizeMode="contain"
+        />
+        <Card.Content style={styles.content}>
+          <Avatar.Icon
+            icon="alert"
+            size={64}
+            style={styles.warningIcon}
+            color={theme.colors.error}
+          />
+          <Text variant="headlineSmall" style={styles.title}>
+            Delete Book
+          </Text>
+          <Text variant="titleMedium" style={styles.bookTitle}>
+            "{book.metadata.title}"
+          </Text>
+          <Text variant="bodyLarge" style={styles.description}>
+            Are you sure you want to delete this book? This action cannot be
+            undone.
+          </Text>
+          <Surface style={styles.actions} elevation={0}>
+            <Button
+              mode="contained-tonal"
+              onPress={() => router.back()}
+              style={[styles.button, styles.cancelButton]}
+              contentStyle={styles.buttonContent}
+            >
+              Cancel
+            </Button>
+            <Button
+              mode="contained"
+              onPress={handleDelete}
+              style={[styles.button, styles.deleteButton]}
+              buttonColor={theme.colors.error}
+              contentStyle={styles.buttonContent}
+            >
+              Delete Book
+            </Button>
+          </Surface>
+        </Card.Content>
+      </Card>
+    </Surface>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 16,
+    justifyContent: "center",
+    paddingBottom: 32,
+  },
+  card: {
+    overflow: "hidden",
+  },
+  coverImage: {
+    height: 250,
+    backgroundColor: "#f5f5f5",
+    opacity: 0.5,
   },
   content: {
-    padding: 16,
-    gap: 16,
+    padding: 24,
     alignItems: "center",
+    gap: 24,
   },
-  warning: {
-    color: "#dc3545",
-    fontWeight: "600",
+  warningIcon: {
+    backgroundColor: "transparent",
+    marginTop: -32,
+    marginBottom: 8,
+  },
+  title: {
+    fontWeight: "bold",
+  },
+  bookTitle: {
+    textAlign: "center",
+    fontStyle: "italic",
+  },
+  description: {
+    textAlign: "center",
+    opacity: 0.7,
   },
   actions: {
     flexDirection: "row",
     gap: 16,
-    marginTop: 24,
+    marginTop: 8,
+    width: "100%",
+  },
+  button: {
+    flex: 1,
+  },
+  buttonContent: {
+    paddingVertical: 8,
   },
   cancelButton: {
-    flex: 1,
-    backgroundColor: "#6c757d",
-    padding: 16,
-    borderRadius: 8,
-    alignItems: "center",
+    borderWidth: 0,
   },
   deleteButton: {
-    flex: 1,
-    backgroundColor: "#dc3545",
-    padding: 16,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "600",
+    borderWidth: 0,
   },
 });

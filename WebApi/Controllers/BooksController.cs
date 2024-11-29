@@ -2,6 +2,7 @@ using BusinessLogicLayer.Services;
 using DataAccessLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Serialization;
+using Utils;
 using Book = BusinessLogicLayer.Services.Book;
 
 namespace WebApi.Controllers;
@@ -46,6 +47,7 @@ public class BooksController(IBookService bookService) : ControllerBase {
         };
 
         await bookService.UpdateAsync(book);
+
         return NoContent();
     }
 
@@ -73,6 +75,17 @@ public class BooksController(IBookService bookService) : ControllerBase {
         await bookService.DeleteAudioBookAsync(id);
         return NoContent();
     }
+
+    [HttpGet("servers")]
+    public ActionResult<IEnumerable<ServerTypeResponse>> GetServers() {
+        var servers = Enum.GetValues<ServerType>()
+            .Select(s => new ServerTypeResponse {
+                Id = (int)s,
+                Name = s.ToString(),
+                DisplayName = s.GetDisplayName()
+            });
+        return Ok(servers);
+    }
 }
 
 public class UserResponse(User user) {
@@ -97,14 +110,17 @@ public class BookResponse(Book book) {
     public ServerType Server { get; set; } = book.Server;
 
     [JsonPropertyName("author")]
-    public UserResponse Author { get; set; } = new(book.Author);
+    public UserResponse? Author { get; set; } = book.Author != null ? new UserResponse(book.Author) : null;
 
     [JsonPropertyName("metadata")]
     public BusinessLogicLayer.Servers.Books.Book? Metadata { get; set; } = book.Metadata;
-}
 
+    [JsonPropertyName("audio_books")]
+    public IEnumerable<AudioBookResponse> AudioBooks { get; set; } = book.AudioBooks?.Select(a => new AudioBookResponse(a)) ?? [];
+}
 public class CreateBookRequest {
     [JsonPropertyName("server")]
+    [JsonConverter(typeof(JsonNumberEnumConverter))]
     public ServerType Server { get; set; }
 
     [JsonPropertyName("author_id")]
@@ -119,6 +135,7 @@ public class UpdateBookRequest {
     public int Id { get; set; }
 
     [JsonPropertyName("server")]
+    [JsonConverter(typeof(JsonNumberEnumConverter))]
     public ServerType Server { get; set; }
 
     [JsonPropertyName("author_id")]
@@ -126,4 +143,26 @@ public class UpdateBookRequest {
 
     [JsonPropertyName("metadata")]
     public BusinessLogicLayer.Servers.Books.Book Metadata { get; set; } = null!;
+}
+
+public class ServerTypeResponse {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; } = "";
+
+    [JsonPropertyName("display_name")]
+    public string DisplayName { get; set; } = "";
+}
+
+public class AudioBookResponse(AudioBook audioBook) {
+    [JsonPropertyName("id")]
+    public int Id { get; set; } = audioBook.Id;
+
+    [JsonPropertyName("book_id")]
+    public int BookId { get; set; } = audioBook.BookId;
+
+    [JsonPropertyName("audio_url")]
+    public string AudioUrl { get; set; } = audioBook.AudioUrl;
 }

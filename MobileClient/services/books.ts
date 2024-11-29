@@ -1,6 +1,12 @@
 import { api } from "./api";
 import { User } from "./auth";
 
+export type ServerType = {
+  id: number;
+  name: string;
+  display_name: string;
+};
+
 export type AudioBook = {
   id: number;
   book_id: number;
@@ -25,6 +31,7 @@ export type Book = {
   server: number;
   author: User;
   metadata: BookMetadata;
+  audio_books: AudioBook[];
 };
 
 export type CreateBookDto = Omit<Book, "id" | "author"> & {
@@ -52,4 +59,9 @@ export async function updateBook(book: Book): Promise<void> {
 
 export async function deleteBook(id: number): Promise<void> {
   await api.delete(`/books/${id}`);
+}
+
+export async function getServers(): Promise<ServerType[]> {
+  const response = await api.get("/books/servers");
+  return response.data as ServerType[];
 }

@@ -5,12 +5,19 @@ import {
   Alert,
   Pressable,
   ScrollView,
+  View,
 } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { Picker } from "@react-native-picker/picker";
 
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { getBookById, updateBook } from "@/services/books";
+import {
+  getBookById,
+  updateBook,
+  ServerType,
+  getServers,
+} from "@/services/books";
 import { useUserStore } from "@/stores/userStore";
 import type { Book, Chapter } from "@/services/books";
 
@@ -20,6 +27,18 @@ export default function EditBookScreen() {
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
   const user = useUserStore((state) => state.user);
+  const [servers, setServers] = useState<ServerType[]>([]);
+  const [selectedServer, setSelectedServer] = useState<number>(0);
+
+  async function loadServers() {
+    try {
+      const data = await getServers();
+      setServers(data);
+    } catch (error) {
+      console.error("Failed to load servers:", error);
+      Alert.alert("Error", "Failed to load available servers");
+    }
+  }
 
   async function fetchBook() {
     try {
@@ -104,6 +123,7 @@ export default function EditBookScreen() {
   }
 
   useEffect(() => {
+    loadServers();
     fetchBook();
   }, [id]);
 
@@ -112,6 +132,23 @@ export default function EditBookScreen() {
       fetchBook();
     }, [])
   );
+
+  const handleServerChange = async (serverId: number) => {
+    if (!book) return;
+
+    try {
+      setSelectedServer(serverId);
+      const updatedBook: Book = {
+        ...book,
+        server: Number(serverId),
+      };
+      setBook(updatedBook);
+      Alert.alert("Success", "Server updated successfully");
+    } catch (error) {
+      Alert.alert("Error", "Failed to update server");
+      setSelectedServer(book.server);
+    }
+  };
 
   if (loading || !book) {
     return (
@@ -125,6 +162,25 @@ export default function EditBookScreen() {
     <ScrollView style={styles.container}>
       <ThemedView style={styles.content}>
         <ThemedText type="title">Edit Book</ThemedText>
+
+        <ThemedView style={styles.field}>
+          <ThemedText>Server</ThemedText>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={book?.server}
+              onValueChange={handleServerChange}
+              style={styles.picker}
+            >
+              {servers.map((server) => (
+                <Picker.Item
+                  key={server.id}
+                  label={server.display_name}
+                  value={server.id}
+                />
+              ))}
+            </Picker>
+          </View>
+        </ThemedView>
 
         <ThemedView style={styles.field}>
           <ThemedText>Title</ThemedText>
@@ -266,5 +322,15 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontWeight: "600",
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    overflow: "hidden",
+  },
+  picker: {
+    backgroundColor: "#f5f5f5",
+    height: 50,
   },
 });

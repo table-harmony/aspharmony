@@ -1,10 +1,23 @@
 import { useCallback, useEffect, useState } from "react";
-import { StyleSheet, Alert, Pressable, Image, ScrollView } from "react-native";
+import { StyleSheet, Alert, ScrollView } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { Audio } from "expo-av";
+import {
+  Button,
+  Card,
+  Title,
+  Paragraph,
+  List,
+  Surface,
+  IconButton,
+  useTheme,
+  ActivityIndicator,
+  Divider,
+  Avatar,
+} from "react-native-paper";
 
-import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { getBookById, deleteBook } from "@/services/books";
+import { getBookById } from "@/services/books";
 import { useUserStore } from "@/stores/userStore";
 import type { Book } from "@/services/books";
 
@@ -14,11 +27,71 @@ export default function BookScreen() {
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
   const user = useUserStore((state) => state.user);
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentAudioId, setCurrentAudioId] = useState<number | null>(null);
+
+  useEffect(() => {
+    return sound
+      ? () => {
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [sound]);
+
+  async function handlePlayAudio(audioUrl: string, audioId: number) {
+    try {
+      if (sound) {
+        await sound.unloadAsync();
+        setSound(null);
+        setIsPlaying(false);
+
+        if (currentAudioId === audioId) {
+          setCurrentAudioId(null);
+          return;
+        }
+      }
+
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        { uri: audioUrl },
+        { shouldPlay: true }
+      );
+
+      setSound(newSound);
+      setIsPlaying(true);
+      setCurrentAudioId(audioId);
+
+      newSound.setOnPlaybackStatusUpdate((status) => {
+        if (status.isLoaded && status.didJustFinish) {
+          setIsPlaying(false);
+          setCurrentAudioId(null);
+        }
+      });
+    } catch (error) {
+      console.error("Failed to play audio:", error);
+      Alert.alert("Error", "Failed to play audio");
+    }
+  }
+
+  async function handlePauseAudio() {
+    if (sound) {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    }
+  }
+
+  async function handleResumeAudio() {
+    if (sound) {
+      await sound.playAsync();
+      setIsPlaying(true);
+    }
+  }
 
   async function fetchBook() {
     try {
       const fetchedBook = await getBookById(Number(id));
       setBook(fetchedBook);
+      console.log(fetchedBook);
     } catch (error) {
       console.error("Failed to fetch book:", error);
       Alert.alert("Error", "Failed to load book details");
@@ -38,10 +111,12 @@ export default function BookScreen() {
     }, [])
   );
 
+  const theme = useTheme();
+
   if (loading || !book) {
     return (
-      <ThemedView style={styles.container}>
-        <ThemedText>Loading book details...</ThemedText>
+      <ThemedView style={styles.loadingContainer}>
+        <ActivityIndicator size="large" />
       </ThemedView>
     );
   }
@@ -50,71 +125,160 @@ export default function BookScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      <ThemedView style={styles.content}>
-        <Image
-          source={{ uri: book.metadata.image_url }}
-          style={styles.coverImage}
-          defaultSource={require("@/assets/images/placeholder-book.png")}
-        />
-        {book.metadata.image_url.includes("placeholder") && (
-          <ThemedText style={styles.placeholderText}>
-            No cover image available
-          </ThemedText>
-        )}
+      <Surface style={styles.content}>
+        <Card style={styles.headerCard}>
+          <Surface style={styles.headerContent} elevation={0}>
+            <Card>
+              <Card.Cover
+                source={{ uri: book.metadata.image_url }}
+                style={styles.coverImage}
+                resizeMode="cover"
+              />
+            </Card>
+            <Surface style={styles.bookInfo} elevation={0}>
+              <Title style={styles.title}>{book.metadata.title}</Title>
+              <Surface style={styles.authorRow} elevation={0}>
+                <Avatar.Icon
+                  icon="account"
+                  size={24}
+                  style={styles.authorIcon}
+                  color={theme.colors.primary}
+                />
+                <Paragraph style={styles.subtitle}>
+                  By {book.author.username}
+                </Paragraph>
+              </Surface>
+              <Paragraph style={styles.description}>
+                {book.metadata.description}
+              </Paragraph>
+            </Surface>
+          </Surface>
+        </Card>
 
-        <ThemedText type="title">{book.metadata.title}</ThemedText>
-        <ThemedText type="subtitle">By {book.author.username}</ThemedText>
+        <Card style={styles.section}>
+          <Card.Content>
+            <Surface style={styles.sectionHeader} elevation={0}>
+              <Avatar.Icon
+                icon="book-open-variant"
+                size={24}
+                style={styles.sectionIcon}
+                color={theme.colors.primary}
+              />
+              <Title>Chapters</Title>
+            </Surface>
+            {book.metadata.chapters.length === 0 ? (
+              <Paragraph style={styles.placeholderText}>
+                No chapters available
+              </Paragraph>
+            ) : (
+              book.metadata.chapters.map((chapter) => (
+                <Card key={chapter.index} style={styles.chapterCard}>
+                  <Card.Content>
+                    <Surface style={styles.chapterHeader} elevation={0}>
+                      <Avatar.Icon
+                        icon="bookmark"
+                        size={24}
+                        style={styles.chapterIcon}
+                        color={theme.colors.primary}
+                      />
+                      <Title style={styles.chapterTitle}>
+                        Chapter {chapter.index + 1}: {chapter.title}
+                      </Title>
+                    </Surface>
+                    <Paragraph style={styles.chapterContent}>
+                      {chapter.content}
+                    </Paragraph>
+                  </Card.Content>
+                </Card>
+              ))
+            )}
+          </Card.Content>
+        </Card>
 
-        <ThemedView style={styles.section}>
-          <ThemedText type="subtitle">Description</ThemedText>
-          <ThemedText>{book.metadata.description}</ThemedText>
-        </ThemedView>
-
-        <ThemedView style={styles.section}>
-          <ThemedText type="subtitle">Chapters</ThemedText>
-          {book.metadata.chapters.length === 0 ? (
-            <ThemedText style={styles.placeholderText}>
-              No chapters available
-            </ThemedText>
-          ) : (
-            book.metadata.chapters.map((chapter) => (
-              <ThemedView key={chapter.index} style={styles.chapter}>
-                <ThemedText type="defaultSemiBold">
-                  Chapter {chapter.index + 1}: {chapter.title}
-                </ThemedText>
-                <ThemedText>{chapter.content}</ThemedText>
-              </ThemedView>
-            ))
-          )}
-        </ThemedView>
+        <Card style={styles.section}>
+          <Card.Content>
+            <Surface style={styles.sectionHeader} elevation={0}>
+              <Avatar.Icon
+                icon="headphones"
+                size={24}
+                style={styles.sectionIcon}
+                color={theme.colors.primary}
+              />
+              <Title>Audio Books</Title>
+            </Surface>
+            {!book.audio_books || book.audio_books.length === 0 ? (
+              <Paragraph style={styles.placeholderText}>
+                No audio books available
+              </Paragraph>
+            ) : (
+              book.audio_books.map((audio) => (
+                <Surface key={audio.id} style={styles.audioBook}>
+                  <Surface style={styles.audioInfo} elevation={0}>
+                    <Avatar.Icon
+                      icon="music"
+                      size={24}
+                      style={styles.audioIcon}
+                      color={theme.colors.primary}
+                    />
+                    <Title style={styles.audioTitle}>
+                      Audio Book {audio.id}
+                    </Title>
+                  </Surface>
+                  <IconButton
+                    icon={
+                      currentAudioId === audio.id
+                        ? isPlaying
+                          ? "pause"
+                          : "play"
+                        : "play"
+                    }
+                    mode="contained"
+                    onPress={() => {
+                      if (currentAudioId === audio.id) {
+                        isPlaying ? handlePauseAudio() : handleResumeAudio();
+                      } else {
+                        handlePlayAudio(audio.audio_url, audio.id);
+                      }
+                    }}
+                  />
+                </Surface>
+              ))
+            )}
+          </Card.Content>
+        </Card>
 
         {isOwner && (
-          <ThemedView style={styles.actions}>
-            <Pressable
-              style={styles.editButton}
+          <Surface style={styles.actions} elevation={0}>
+            <Button
+              mode="contained"
+              icon="pencil"
               onPress={() =>
                 router.push({
                   pathname: "/book/edit/[id]",
                   params: { id: book.id },
                 })
               }
+              style={styles.actionButton}
             >
-              <ThemedText style={styles.buttonText}>Edit Book</ThemedText>
-            </Pressable>
-            <Pressable
-              style={styles.deleteButton}
+              Edit Book
+            </Button>
+            <Button
+              mode="contained"
+              icon="delete"
+              buttonColor={theme.colors.error}
               onPress={() =>
                 router.push({
                   pathname: "/book/delete/[id]",
                   params: { id: book.id },
                 })
               }
+              style={styles.actionButton}
             >
-              <ThemedText style={styles.buttonText}>Delete Book</ThemedText>
-            </Pressable>
-          </ThemedView>
+              Delete Book
+            </Button>
+          </Surface>
         )}
-      </ThemedView>
+      </Surface>
     </ScrollView>
   );
 }
@@ -123,47 +287,116 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   content: {
+    padding: 16,
+    gap: 16,
+    paddingBottom: 32,
+  },
+  headerCard: {
+    overflow: "hidden",
+  },
+  headerContent: {
+    flexDirection: "row",
     padding: 16,
     gap: 16,
   },
   coverImage: {
-    width: "100%",
-    height: 300,
-    borderRadius: 8,
+    width: 120,
+    height: 180,
+    borderRadius: 4,
   },
-  section: {
+  bookInfo: {
+    flex: 1,
     gap: 8,
   },
-  chapter: {
-    marginLeft: 16,
-    gap: 4,
+  authorRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  authorIcon: {
+    backgroundColor: "transparent",
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  subtitle: {
+    fontSize: 16,
+    opacity: 0.7,
+  },
+  description: {
+    fontSize: 14,
+    opacity: 0.8,
+  },
+  section: {
+    marginVertical: 8,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 16,
+  },
+  sectionIcon: {
+    backgroundColor: "transparent",
+  },
+  chapterCard: {
+    marginBottom: 16,
+  },
+  chapterHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 8,
+  },
+  chapterIcon: {
+    backgroundColor: "transparent",
+  },
+  chapterTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  chapterContent: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  audioBook: {
+    padding: 16,
+    marginVertical: 8,
+    borderRadius: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#f5f5f5",
+  },
+  audioInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  audioIcon: {
+    backgroundColor: "transparent",
+  },
+  audioTitle: {
+    fontSize: 16,
   },
   actions: {
     flexDirection: "row",
     gap: 16,
+    marginTop: 16,
   },
-  editButton: {
+  actionButton: {
     flex: 1,
-    backgroundColor: "#0a7ea4",
-    padding: 12,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  deleteButton: {
-    flex: 1,
-    backgroundColor: "#dc3545",
-    padding: 12,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "600",
   },
   placeholderText: {
-    color: "#666",
     fontStyle: "italic",
     textAlign: "center",
+    opacity: 0.7,
   },
 });

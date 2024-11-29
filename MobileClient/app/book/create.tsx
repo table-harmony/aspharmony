@@ -1,26 +1,50 @@
-import { useState } from "react";
-import {
-  StyleSheet,
-  TextInput,
-  Alert,
-  Pressable,
-  ScrollView,
-} from "react-native";
+import { useEffect, useState } from "react";
+import { Alert, ScrollView, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
+import {
+  TextInput,
+  Button,
+  Surface,
+  Text,
+  useTheme,
+  Portal,
+  Dialog,
+  IconButton,
+  Card,
+} from "react-native-paper";
+import { Picker } from "@react-native-picker/picker";
 
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
-import { createBook } from "@/services/books";
+import { createBook, getServers } from "@/services/books";
 import { useUserStore } from "@/stores/userStore";
-import type { Book, Chapter, CreateBookDto } from "@/services/books";
-import type { User } from "@/services/auth";
+import type { Chapter, CreateBookDto, ServerType } from "@/services/books";
 
 export default function CreateBookScreen() {
   const router = useRouter();
-  const user = useUserStore((state) => state.user) as User;
+  const user = useUserStore((state) => state.user);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [chapters, setChapters] = useState<Chapter[]>([]);
+  const [servers, setServers] = useState<ServerType[]>([]);
+  const [selectedServer, setSelectedServer] = useState<number>(1); // Default server
+
+  const theme = useTheme();
+
+  const loadServers = async () => {
+    try {
+      const data = await getServers();
+      setServers(data);
+      if (data.length > 0) {
+        setSelectedServer(data[0].id);
+      }
+    } catch (error) {
+      console.error("Failed to load servers:", error);
+      Alert.alert("Error", "Failed to load available servers");
+    }
+  };
+
+  useEffect(() => {
+    loadServers();
+  }, []);
 
   if (!user) {
     router.replace("/login");
@@ -53,6 +77,11 @@ export default function CreateBookScreen() {
   }
 
   async function handleCreate() {
+    if (!user) {
+      router.replace("/login");
+      return;
+    }
+
     if (!title.trim() || !description.trim()) {
       Alert.alert("Error", "Please fill in all required fields");
       return;
@@ -60,8 +89,9 @@ export default function CreateBookScreen() {
 
     try {
       const newBook: CreateBookDto = {
-        server: 1,
+        server: Number(selectedServer),
         author_id: user.id,
+        audio_books: [],
         metadata: {
           title,
           description,
@@ -80,76 +110,105 @@ export default function CreateBookScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      <ThemedView style={styles.content}>
-        <ThemedText type="title">Create New Book</ThemedText>
+      <Surface style={styles.content} elevation={0}>
+        <Text variant="headlineMedium">Create New Book</Text>
 
-        <ThemedView style={styles.field}>
-          <ThemedText>Title</ThemedText>
-          <TextInput
-            style={styles.input}
-            value={title}
-            onChangeText={setTitle}
-            placeholder="Book title"
-          />
-        </ThemedView>
+        <Card style={styles.field}>
+          <Card.Content>
+            <Text variant="titleMedium">Title</Text>
+            <TextInput
+              mode="outlined"
+              value={title}
+              onChangeText={setTitle}
+              placeholder="Book title"
+            />
+          </Card.Content>
+        </Card>
 
-        <ThemedView style={styles.field}>
-          <ThemedText>Description</ThemedText>
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            value={description}
-            onChangeText={setDescription}
-            multiline
-            numberOfLines={4}
-            placeholder="Book description"
-          />
-        </ThemedView>
+        <Card style={styles.field}>
+          <Card.Content>
+            <Text variant="titleMedium">Description</Text>
+            <TextInput
+              mode="outlined"
+              value={description}
+              onChangeText={setDescription}
+              multiline
+              numberOfLines={4}
+              placeholder="Book description"
+            />
+          </Card.Content>
+        </Card>
 
-        <ThemedView style={styles.chaptersSection}>
-          <ThemedView style={styles.chapterHeader}>
-            <ThemedText type="subtitle">Chapters</ThemedText>
-            <Pressable style={styles.addButton} onPress={addChapter}>
-              <ThemedText style={styles.buttonText}>Add Chapter</ThemedText>
-            </Pressable>
-          </ThemedView>
+        <Card style={styles.field}>
+          <Card.Content>
+            <Text variant="titleMedium">Server</Text>
+            <Surface style={styles.pickerContainer}>
+              <Picker
+                selectedValue={selectedServer}
+                onValueChange={(value) => setSelectedServer(value)}
+                style={styles.picker}
+              >
+                {servers.map((server) => (
+                  <Picker.Item
+                    key={server.id}
+                    label={server.display_name}
+                    value={server.id}
+                  />
+                ))}
+              </Picker>
+            </Surface>
+          </Card.Content>
+        </Card>
 
-          {chapters.map((chapter, index) => (
-            <ThemedView key={chapter.index} style={styles.chapter}>
-              <ThemedView style={styles.chapterTitleRow}>
-                <ThemedText type="defaultSemiBold">
-                  Chapter {index + 1}
-                </ThemedText>
-                <Pressable
-                  style={styles.removeButton}
-                  onPress={() => removeChapter(index)}
-                >
-                  <ThemedText style={styles.buttonText}>Remove</ThemedText>
-                </Pressable>
-              </ThemedView>
+        <Card style={styles.chaptersSection}>
+          <Card.Content>
+            <Surface style={styles.chapterHeader} elevation={0}>
+              <Text variant="titleMedium">Chapters</Text>
+              <Button mode="contained" onPress={addChapter} icon="plus">
+                Add Chapter
+              </Button>
+            </Surface>
 
-              <TextInput
-                style={styles.input}
-                value={chapter.title}
-                onChangeText={(text) => updateChapter(index, "title", text)}
-                placeholder="Chapter title"
-              />
+            {chapters.map((chapter, index) => (
+              <Surface key={chapter.index} style={styles.chapter} elevation={1}>
+                <Surface style={styles.chapterTitleRow} elevation={0}>
+                  <Text variant="titleMedium">Chapter {index + 1}</Text>
+                  <IconButton
+                    icon="delete"
+                    mode="contained-tonal"
+                    onPress={() => removeChapter(index)}
+                    iconColor={theme.colors.error}
+                  />
+                </Surface>
 
-              <TextInput
-                style={[styles.input, styles.textArea]}
-                value={chapter.content}
-                onChangeText={(text) => updateChapter(index, "content", text)}
-                multiline
-                numberOfLines={4}
-                placeholder="Chapter content"
-              />
-            </ThemedView>
-          ))}
-        </ThemedView>
+                <TextInput
+                  mode="outlined"
+                  value={chapter.title}
+                  onChangeText={(text) => updateChapter(index, "title", text)}
+                  placeholder="Chapter title"
+                />
 
-        <Pressable style={styles.createButton} onPress={handleCreate}>
-          <ThemedText style={styles.buttonText}>Create Book</ThemedText>
-        </Pressable>
-      </ThemedView>
+                <TextInput
+                  mode="outlined"
+                  value={chapter.content}
+                  onChangeText={(text) => updateChapter(index, "content", text)}
+                  multiline
+                  numberOfLines={4}
+                  placeholder="Chapter content"
+                />
+              </Surface>
+            ))}
+          </Card.Content>
+        </Card>
+
+        <Button
+          mode="contained"
+          onPress={handleCreate}
+          style={styles.createButton}
+        >
+          Create Book
+        </Button>
+      </Surface>
     </ScrollView>
   );
 }
@@ -163,57 +222,38 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   field: {
-    gap: 8,
+    marginVertical: 8,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
+  pickerContainer: {
     borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
+    overflow: "hidden",
+    marginTop: 8,
   },
-  textArea: {
-    height: 100,
-    textAlignVertical: "top",
+  picker: {
+    backgroundColor: "#f5f5f5",
+    height: 50,
   },
   chaptersSection: {
-    gap: 16,
+    marginVertical: 16,
   },
   chapterHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: 16,
   },
   chapter: {
-    gap: 8,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: "#ccc",
+    padding: 16,
     borderRadius: 8,
+    marginBottom: 16,
+    gap: 12,
   },
   chapterTitleRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  addButton: {
-    backgroundColor: "#198754",
-    padding: 8,
-    borderRadius: 8,
-  },
-  removeButton: {
-    backgroundColor: "#dc3545",
-    padding: 8,
-    borderRadius: 8,
-  },
   createButton: {
-    backgroundColor: "#0a7ea4",
-    padding: 16,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "600",
+    marginTop: 16,
   },
 });
