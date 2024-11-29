@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { Picker } from "@react-native-picker/picker";
+import { Card, Surface, Avatar, useTheme } from "react-native-paper";
 
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -29,6 +30,7 @@ export default function EditBookScreen() {
   const user = useUserStore((state) => state.user);
   const [servers, setServers] = useState<ServerType[]>([]);
   const [selectedServer, setSelectedServer] = useState<number>(0);
+  const theme = useTheme();
 
   async function loadServers() {
     try {
@@ -163,95 +165,129 @@ export default function EditBookScreen() {
       <ThemedView style={styles.content}>
         <ThemedText type="title">Edit Book</ThemedText>
 
-        <ThemedView style={styles.field}>
-          <ThemedText>Server</ThemedText>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={book?.server}
-              onValueChange={handleServerChange}
-              style={styles.picker}
-            >
-              {servers.map((server) => (
-                <Picker.Item
-                  key={server.id}
-                  label={server.display_name}
-                  value={server.id}
-                />
-              ))}
-            </Picker>
-          </View>
-        </ThemedView>
+        <Card style={styles.field}>
+          <Card.Content>
+            <Surface style={styles.fieldHeader} elevation={0}>
+              <Avatar.Icon
+                size={24}
+                icon="book"
+                style={styles.fieldIcon}
+                color={theme.colors.primary}
+              />
+              <ThemedText type="subtitle">Title</ThemedText>
+            </Surface>
+            <TextInput
+              style={styles.input}
+              value={book.metadata.title}
+              onChangeText={(text) =>
+                setBook({
+                  ...book,
+                  metadata: { ...book.metadata, title: text },
+                })
+              }
+            />
+          </Card.Content>
+        </Card>
 
-        <ThemedView style={styles.field}>
-          <ThemedText>Title</ThemedText>
-          <TextInput
-            style={styles.input}
-            value={book.metadata.title}
-            onChangeText={(text) =>
-              setBook({
-                ...book,
-                metadata: { ...book.metadata, title: text },
-              })
-            }
-          />
-        </ThemedView>
+        <Card style={styles.field}>
+          <Card.Content>
+            <Surface style={styles.fieldHeader} elevation={0}>
+              <Avatar.Icon
+                size={24}
+                icon="text"
+                style={styles.fieldIcon}
+                color={theme.colors.primary}
+              />
+              <ThemedText type="subtitle">Description</ThemedText>
+            </Surface>
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              value={book.metadata.description}
+              onChangeText={(text) =>
+                setBook({
+                  ...book,
+                  metadata: { ...book.metadata, description: text },
+                })
+              }
+              multiline
+              numberOfLines={4}
+            />
+          </Card.Content>
+        </Card>
 
-        <ThemedView style={styles.field}>
-          <ThemedText>Description</ThemedText>
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            value={book.metadata.description}
-            onChangeText={(text) =>
-              setBook({
-                ...book,
-                metadata: { ...book.metadata, description: text },
-              })
-            }
-            multiline
-            numberOfLines={4}
-          />
-        </ThemedView>
+        <Card style={styles.field}>
+          <Card.Content>
+            <Surface style={styles.fieldHeader} elevation={0}>
+              <Avatar.Icon
+                size={24}
+                icon="server"
+                style={styles.fieldIcon}
+                color={theme.colors.primary}
+              />
+              <ThemedText type="subtitle">Server</ThemedText>
+            </Surface>
+            <Surface style={styles.pickerContainer}>
+              <Picker
+                selectedValue={book?.server}
+                onValueChange={handleServerChange}
+                style={styles.picker}
+              >
+                {servers.map((server) => (
+                  <Picker.Item
+                    key={server.id}
+                    label={server.display_name}
+                    value={server.id}
+                  />
+                ))}
+              </Picker>
+            </Surface>
+          </Card.Content>
+        </Card>
 
-        <ThemedView style={styles.chaptersSection}>
-          <ThemedView style={styles.chapterHeader}>
+        <Surface style={styles.chapterHeader} elevation={0}>
+          <Surface style={styles.chapterHeaderLeft} elevation={0}>
+            <Avatar.Icon
+              size={24}
+              icon="book-open-variant"
+              style={styles.fieldIcon}
+              color={theme.colors.primary}
+            />
             <ThemedText type="subtitle">Chapters</ThemedText>
-            <Pressable style={styles.addButton} onPress={addChapter}>
-              <ThemedText style={styles.buttonText}>Add Chapter</ThemedText>
-            </Pressable>
-          </ThemedView>
+          </Surface>
+          <Pressable style={styles.addButton} onPress={addChapter}>
+            <ThemedText style={styles.buttonText}>Add Chapter</ThemedText>
+          </Pressable>
+        </Surface>
 
-          {book.metadata.chapters.map((chapter, index) => (
-            <ThemedView key={chapter.index} style={styles.chapter}>
-              <ThemedView style={styles.chapterTitleRow}>
-                <ThemedText type="defaultSemiBold">
-                  Chapter {index + 1}
-                </ThemedText>
-                <Pressable
-                  style={styles.removeButton}
-                  onPress={() => removeChapter(index)}
-                >
-                  <ThemedText style={styles.buttonText}>Remove</ThemedText>
-                </Pressable>
-              </ThemedView>
-
-              <TextInput
-                style={styles.input}
-                value={chapter.title}
-                onChangeText={(text) => updateChapter(index, "title", text)}
-                placeholder="Chapter title"
-              />
-
-              <TextInput
-                style={[styles.input, styles.textArea]}
-                value={chapter.content}
-                onChangeText={(text) => updateChapter(index, "content", text)}
-                multiline
-                numberOfLines={4}
-                placeholder="Chapter content"
-              />
+        {book.metadata.chapters.map((chapter, index) => (
+          <ThemedView key={chapter.index} style={styles.chapter}>
+            <ThemedView style={styles.chapterTitleRow}>
+              <ThemedText type="subtitle">Chapter {index + 1}</ThemedText>
+              <Pressable
+                style={styles.removeButton}
+                onPress={() => removeChapter(index)}
+              >
+                <ThemedText style={styles.buttonText}>Remove</ThemedText>
+              </Pressable>
             </ThemedView>
-          ))}
-        </ThemedView>
+
+            <TextInput
+              style={styles.input}
+              value={chapter.title}
+              onChangeText={(text) => updateChapter(index, "title", text)}
+              placeholder="Chapter title"
+            />
+
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              value={chapter.content}
+              onChangeText={(text) => updateChapter(index, "content", text)}
+              multiline
+              numberOfLines={4}
+              placeholder="Chapter content"
+            />
+          </ThemedView>
+        ))}
 
         <Pressable style={styles.saveButton} onPress={handleSave}>
           <ThemedText style={styles.buttonText}>Save Changes</ThemedText>
@@ -304,17 +340,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   addButton: {
-    backgroundColor: "#198754",
     padding: 8,
     borderRadius: 8,
   },
   removeButton: {
-    backgroundColor: "#dc3545",
     padding: 8,
     borderRadius: 8,
   },
   saveButton: {
-    backgroundColor: "#0a7ea4",
     padding: 16,
     borderRadius: 8,
     alignItems: "center",
@@ -332,5 +365,19 @@ const styles = StyleSheet.create({
   picker: {
     backgroundColor: "#f5f5f5",
     height: 50,
+  },
+  fieldHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 12,
+  },
+  fieldIcon: {
+    backgroundColor: "transparent",
+  },
+  chapterHeaderLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
 });

@@ -58,37 +58,41 @@ export default function DeleteBookScreen() {
           resizeMode="contain"
         />
         <Card.Content style={styles.content}>
-          <Avatar.Icon
-            icon="alert"
-            size={64}
-            style={styles.warningIcon}
-            color={theme.colors.error}
-          />
-          <Text variant="headlineSmall" style={styles.title}>
-            Delete Book
-          </Text>
-          <Text variant="titleMedium" style={styles.bookTitle}>
-            "{book.metadata.title}"
-          </Text>
-          <Text variant="bodyLarge" style={styles.description}>
-            Are you sure you want to delete this book? This action cannot be
-            undone.
-          </Text>
+          <Surface style={styles.warningContainer} elevation={0}>
+            <Avatar.Icon
+              icon="alert"
+              size={64}
+              style={styles.warningIcon}
+              color={theme.colors.primary}
+            />
+            <Text variant="headlineSmall" style={styles.title}>
+              Delete Book
+            </Text>
+            <Text variant="titleMedium" style={styles.bookTitle}>
+              "{book.metadata.title}"
+            </Text>
+            <Text variant="bodyLarge" style={styles.warningText}>
+              Are you sure you want to delete this book? This action cannot be
+              undone.
+            </Text>
+          </Surface>
+
           <Surface style={styles.actions} elevation={0}>
             <Button
               mode="contained-tonal"
+              icon="close"
               onPress={() => router.back()}
-              style={[styles.button, styles.cancelButton]}
-              contentStyle={styles.buttonContent}
+              style={styles.button}
+              buttonColor={theme.colors.primary}
             >
               Cancel
             </Button>
             <Button
               mode="contained"
+              icon="delete"
               onPress={handleDelete}
-              style={[styles.button, styles.deleteButton]}
               buttonColor={theme.colors.error}
-              contentStyle={styles.buttonContent}
+              style={styles.button}
             >
               Delete Book
             </Button>
@@ -119,10 +123,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 24,
   },
+  warningContainer: {
+    alignItems: "center",
+    gap: 16,
+    padding: 16,
+  },
   warningIcon: {
     backgroundColor: "transparent",
-    marginTop: -32,
-    marginBottom: 8,
+  },
+  warningText: {
+    textAlign: "center",
+    opacity: 0.7,
   },
   title: {
     fontWeight: "bold",
@@ -130,10 +141,6 @@ const styles = StyleSheet.create({
   bookTitle: {
     textAlign: "center",
     fontStyle: "italic",
-  },
-  description: {
-    textAlign: "center",
-    opacity: 0.7,
   },
   actions: {
     flexDirection: "row",
@@ -143,14 +150,5 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-  },
-  buttonContent: {
-    paddingVertical: 8,
-  },
-  cancelButton: {
-    borderWidth: 0,
-  },
-  deleteButton: {
-    borderWidth: 0,
   },
 });

@@ -91,7 +91,7 @@ export default function HomeScreen() {
         {user ? (
           <>
             <Text variant="titleLarge" style={styles.welcomeText}>
-              Welcome back, {user.username}!
+              Welcome back, {user.email}!
             </Text>
             <Surface style={styles.actionButtons} elevation={0}>
               <Button

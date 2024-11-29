@@ -2,6 +2,7 @@ import { Stack } from "expo-router";
 import {
   PaperProvider,
   MD3LightTheme,
+  MD3DarkTheme,
   configureFonts,
 } from "react-native-paper";
 import { useMemo } from "react";
@@ -12,15 +13,30 @@ export default function AppLayout() {
 
   const theme = useMemo(
     () => ({
-      ...MD3LightTheme,
+      ...(colorScheme === "light" ? MD3LightTheme : MD3DarkTheme),
       colors: {
-        ...MD3LightTheme.colors,
+        ...(colorScheme === "light"
+          ? MD3LightTheme.colors
+          : MD3DarkTheme.colors),
         primary: "#0a7ea4",
         secondary: "#198754",
         error: "#dc3545",
         icon: colorScheme === "light" ? "#687076" : "#9BA1A6",
         background: colorScheme === "light" ? "#fff" : "#151718",
         text: colorScheme === "light" ? "#11181C" : "#ECEDEE",
+        surface: colorScheme === "light" ? "#fff" : "#151718",
+        surfaceVariant: colorScheme === "light" ? "#ffffff" : "#1e1f20",
+        elevation: {
+          level0: colorScheme === "light" ? "#fff" : "#151718",
+          level1: colorScheme === "light" ? "#ffffff" : "#1e1f20",
+          level2: colorScheme === "light" ? "#ffffff" : "#252628",
+          level3: colorScheme === "light" ? "#f8f9fa" : "#2a2b2d",
+          level4: colorScheme === "light" ? "#f3f4f6" : "#2f3032",
+          level5: colorScheme === "light" ? "#e9ecef" : "#343537",
+        },
+        onSurface: colorScheme === "light" ? "#11181C" : "#ECEDEE",
+        onSurfaceVariant: colorScheme === "light" ? "#687076" : "#9BA1A6",
+        outline: colorScheme === "light" ? "#ccc" : "#2f3032",
       },
       fonts: configureFonts({
         config: {

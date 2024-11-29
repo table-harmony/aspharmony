@@ -111,7 +111,7 @@ builder.Services.AddControllers()
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowAllOrigins", builder => {
         builder
-            .SetIsOriginAllowed(_ => true)
+            .SetIsOriginAllowed(_ => true) 
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials();

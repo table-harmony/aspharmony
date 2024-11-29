@@ -11,12 +11,14 @@ import {
   Dialog,
   IconButton,
   Card,
+  Avatar,
 } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
 
 import { createBook, getServers } from "@/services/books";
 import { useUserStore } from "@/stores/userStore";
 import type { Chapter, CreateBookDto, ServerType } from "@/services/books";
+import { ThemedText } from "@/components/ThemedText";
 
 export default function CreateBookScreen() {
   const router = useRouter();
@@ -25,7 +27,7 @@ export default function CreateBookScreen() {
   const [description, setDescription] = useState("");
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [servers, setServers] = useState<ServerType[]>([]);
-  const [selectedServer, setSelectedServer] = useState<number>(1); // Default server
+  const [selectedServer, setSelectedServer] = useState<number>(1);
 
   const theme = useTheme();
 
@@ -111,37 +113,61 @@ export default function CreateBookScreen() {
   return (
     <ScrollView style={styles.container}>
       <Surface style={styles.content} elevation={0}>
-        <Text variant="headlineMedium">Create New Book</Text>
+        <ThemedText type="title">Create New Book</ThemedText>
 
         <Card style={styles.field}>
           <Card.Content>
-            <Text variant="titleMedium">Title</Text>
+            <Surface style={styles.fieldHeader} elevation={0}>
+              <Avatar.Icon
+                size={24}
+                icon="book"
+                style={styles.fieldIcon}
+                color={theme.colors.primary}
+              />
+              <ThemedText type="subtitle">Title</ThemedText>
+            </Surface>
             <TextInput
               mode="outlined"
               value={title}
               onChangeText={setTitle}
-              placeholder="Book title"
+              placeholder="Enter book title"
             />
           </Card.Content>
         </Card>
 
         <Card style={styles.field}>
           <Card.Content>
-            <Text variant="titleMedium">Description</Text>
+            <Surface style={styles.fieldHeader} elevation={0}>
+              <Avatar.Icon
+                size={24}
+                icon="text"
+                style={styles.fieldIcon}
+                color={theme.colors.primary}
+              />
+              <ThemedText type="subtitle">Description</ThemedText>
+            </Surface>
             <TextInput
               mode="outlined"
               value={description}
               onChangeText={setDescription}
               multiline
               numberOfLines={4}
-              placeholder="Book description"
+              placeholder="Enter book description"
             />
           </Card.Content>
         </Card>
 
         <Card style={styles.field}>
           <Card.Content>
-            <Text variant="titleMedium">Server</Text>
+            <Surface style={styles.fieldHeader} elevation={0}>
+              <Avatar.Icon
+                size={24}
+                icon="server"
+                style={styles.fieldIcon}
+                color={theme.colors.primary}
+              />
+              <ThemedText type="subtitle">Server</ThemedText>
+            </Surface>
             <Surface style={styles.pickerContainer}>
               <Picker
                 selectedValue={selectedServer}
@@ -163,7 +189,15 @@ export default function CreateBookScreen() {
         <Card style={styles.chaptersSection}>
           <Card.Content>
             <Surface style={styles.chapterHeader} elevation={0}>
-              <Text variant="titleMedium">Chapters</Text>
+              <Surface style={styles.chapterHeaderLeft} elevation={0}>
+                <Avatar.Icon
+                  size={24}
+                  icon="book-open-variant"
+                  style={styles.fieldIcon}
+                  color={theme.colors.primary}
+                />
+                <ThemedText type="subtitle">Chapters</ThemedText>
+              </Surface>
               <Button mode="contained" onPress={addChapter} icon="plus">
                 Add Chapter
               </Button>
@@ -172,12 +206,12 @@ export default function CreateBookScreen() {
             {chapters.map((chapter, index) => (
               <Surface key={chapter.index} style={styles.chapter} elevation={1}>
                 <Surface style={styles.chapterTitleRow} elevation={0}>
-                  <Text variant="titleMedium">Chapter {index + 1}</Text>
+                  <ThemedText type="subtitle">Chapter {index + 1}</ThemedText>
                   <IconButton
                     icon="delete"
                     mode="contained-tonal"
                     onPress={() => removeChapter(index)}
-                    iconColor={theme.colors.error}
+                    iconColor={theme.colors.primary}
                   />
                 </Surface>
 
@@ -255,5 +289,19 @@ const styles = StyleSheet.create({
   },
   createButton: {
     marginTop: 16,
+  },
+  fieldHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 8,
+  },
+  fieldIcon: {
+    backgroundColor: "transparent",
+  },
+  chapterHeaderLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
 });

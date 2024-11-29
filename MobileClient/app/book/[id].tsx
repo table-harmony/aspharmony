@@ -127,28 +127,60 @@ export default function BookScreen() {
     <ScrollView style={styles.container}>
       <Surface style={styles.content}>
         <Card style={styles.headerCard}>
-          <Surface style={styles.headerContent} elevation={0}>
-            <Card>
+          <Surface
+            style={[
+              styles.headerContent,
+              { backgroundColor: theme.colors.surfaceVariant },
+            ]}
+            elevation={2}
+          >
+            <Card elevation={4}>
               <Card.Cover
                 source={{ uri: book.metadata.image_url }}
                 style={styles.coverImage}
                 resizeMode="cover"
               />
             </Card>
-            <Surface style={styles.bookInfo} elevation={0}>
-              <Title style={styles.title}>{book.metadata.title}</Title>
-              <Surface style={styles.authorRow} elevation={0}>
+            <Surface
+              style={[
+                styles.bookInfo,
+                { backgroundColor: theme.colors.surfaceVariant },
+              ]}
+              elevation={0}
+            >
+              <Title
+                style={[styles.title, { color: theme.colors.onSurfaceVariant }]}
+              >
+                {book.metadata.title}
+              </Title>
+              <Surface
+                style={[
+                  styles.authorRow,
+                  { backgroundColor: theme.colors.surfaceVariant },
+                ]}
+                elevation={0}
+              >
                 <Avatar.Icon
                   icon="account"
                   size={24}
                   style={styles.authorIcon}
                   color={theme.colors.primary}
                 />
-                <Paragraph style={styles.subtitle}>
+                <Paragraph
+                  style={[
+                    styles.subtitle,
+                    { color: theme.colors.onSurfaceVariant },
+                  ]}
+                >
                   By {book.author.username}
                 </Paragraph>
               </Surface>
-              <Paragraph style={styles.description}>
+              <Paragraph
+                style={[
+                  styles.description,
+                  { color: theme.colors.onSurfaceVariant },
+                ]}
+              >
                 {book.metadata.description}
               </Paragraph>
             </Surface>
@@ -157,35 +189,70 @@ export default function BookScreen() {
 
         <Card style={styles.section}>
           <Card.Content>
-            <Surface style={styles.sectionHeader} elevation={0}>
+            <Surface
+              style={[
+                styles.sectionHeader,
+                { backgroundColor: theme.colors.surfaceVariant },
+              ]}
+              elevation={1}
+            >
               <Avatar.Icon
                 icon="book-open-variant"
                 size={24}
                 style={styles.sectionIcon}
                 color={theme.colors.primary}
               />
-              <Title>Chapters</Title>
+              <Title style={{ color: theme.colors.onSurfaceVariant }}>
+                Chapters
+              </Title>
             </Surface>
             {book.metadata.chapters.length === 0 ? (
-              <Paragraph style={styles.placeholderText}>
+              <Paragraph
+                style={[
+                  styles.placeholderText,
+                  { color: theme.colors.onSurfaceVariant },
+                ]}
+              >
                 No chapters available
               </Paragraph>
             ) : (
               book.metadata.chapters.map((chapter) => (
-                <Card key={chapter.index} style={styles.chapterCard}>
+                <Card
+                  key={chapter.index}
+                  style={[
+                    styles.chapterCard,
+                    { backgroundColor: theme.colors.surfaceVariant },
+                  ]}
+                >
                   <Card.Content>
-                    <Surface style={styles.chapterHeader} elevation={0}>
+                    <Surface
+                      style={[
+                        styles.chapterHeader,
+                        { backgroundColor: theme.colors.surfaceVariant },
+                      ]}
+                      elevation={0}
+                    >
                       <Avatar.Icon
                         icon="bookmark"
                         size={24}
                         style={styles.chapterIcon}
                         color={theme.colors.primary}
                       />
-                      <Title style={styles.chapterTitle}>
+                      <Title
+                        style={[
+                          styles.chapterTitle,
+                          { color: theme.colors.onSurfaceVariant },
+                        ]}
+                      >
                         Chapter {chapter.index + 1}: {chapter.title}
                       </Title>
                     </Surface>
-                    <Paragraph style={styles.chapterContent}>
+                    <Paragraph
+                      style={[
+                        styles.chapterContent,
+                        { color: theme.colors.onSurfaceVariant },
+                      ]}
+                    >
                       {chapter.content}
                     </Paragraph>
                   </Card.Content>
@@ -197,30 +264,61 @@ export default function BookScreen() {
 
         <Card style={styles.section}>
           <Card.Content>
-            <Surface style={styles.sectionHeader} elevation={0}>
+            <Surface
+              style={[
+                styles.sectionHeader,
+                { backgroundColor: theme.colors.surfaceVariant },
+              ]}
+              elevation={1}
+            >
               <Avatar.Icon
                 icon="headphones"
                 size={24}
                 style={styles.sectionIcon}
                 color={theme.colors.primary}
               />
-              <Title>Audio Books</Title>
+              <Title style={{ color: theme.colors.onSurfaceVariant }}>
+                Audio Books
+              </Title>
             </Surface>
             {!book.audio_books || book.audio_books.length === 0 ? (
-              <Paragraph style={styles.placeholderText}>
+              <Paragraph
+                style={[
+                  styles.placeholderText,
+                  { color: theme.colors.onSurfaceVariant },
+                ]}
+              >
                 No audio books available
               </Paragraph>
             ) : (
               book.audio_books.map((audio) => (
-                <Surface key={audio.id} style={styles.audioBook}>
-                  <Surface style={styles.audioInfo} elevation={0}>
+                <Surface
+                  key={audio.id}
+                  style={[
+                    styles.audioBook,
+                    { backgroundColor: theme.colors.surfaceVariant },
+                  ]}
+                  elevation={2}
+                >
+                  <Surface
+                    style={[
+                      styles.audioInfo,
+                      { backgroundColor: theme.colors.surfaceVariant },
+                    ]}
+                    elevation={0}
+                  >
                     <Avatar.Icon
                       icon="music"
                       size={24}
                       style={styles.audioIcon}
                       color={theme.colors.primary}
                     />
-                    <Title style={styles.audioTitle}>
+                    <Title
+                      style={[
+                        styles.audioTitle,
+                        { color: theme.colors.onSurfaceVariant },
+                      ]}
+                    >
                       Audio Book {audio.id}
                     </Title>
                   </Surface>
@@ -299,16 +397,18 @@ const styles = StyleSheet.create({
   },
   headerCard: {
     overflow: "hidden",
+    borderRadius: 12,
   },
   headerContent: {
     flexDirection: "row",
     padding: 16,
     gap: 16,
+    borderRadius: 12,
   },
   coverImage: {
     width: 120,
     height: 180,
-    borderRadius: 4,
+    borderRadius: 8,
   },
   bookInfo: {
     flex: 1,
@@ -342,12 +442,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     marginBottom: 16,
+    padding: 12,
+    borderRadius: 8,
   },
   sectionIcon: {
     backgroundColor: "transparent",
   },
   chapterCard: {
     marginBottom: 16,
+    borderRadius: 8,
   },
   chapterHeader: {
     flexDirection: "row",
@@ -369,11 +472,10 @@ const styles = StyleSheet.create({
   audioBook: {
     padding: 16,
     marginVertical: 8,
-    borderRadius: 8,
+    borderRadius: 12,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#f5f5f5",
   },
   audioInfo: {
     flexDirection: "row",
