@@ -18,22 +18,22 @@ export default function LoginScreen() {
   const router = useRouter();
   const theme = useTheme();
   const setUser = useUserStore((state) => state.setUser);
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   async function handleLogin() {
-    if (!username.trim() || !password.trim()) {
+    if (!email.trim() || !password.trim()) {
       Alert.alert("Error", "Please fill in all fields");
       return;
     }
 
     setLoading(true);
     try {
-      const user = await login(username, password);
+      const user = await login(email, password);
       setUser(user);
-      router.replace("/book");
+      router.replace("/");
     } catch (error) {
       console.error("Login failed:", error);
       Alert.alert("Error", "Login failed. Please check your credentials.");
@@ -61,11 +61,11 @@ export default function LoginScreen() {
 
           <TextInput
             mode="outlined"
-            label="Username"
-            value={username}
-            onChangeText={setUsername}
+            label="Email"
+            value={email}
+            onChangeText={setEmail}
             autoCapitalize="none"
-            left={<TextInput.Icon icon="account" />}
+            left={<TextInput.Icon icon="email" tabIndex={-1} />}
             style={styles.input}
           />
 
@@ -81,7 +81,7 @@ export default function LoginScreen() {
                 onPress={() => setShowPassword(!showPassword)}
               />
             }
-            left={<TextInput.Icon icon="lock" />}
+            left={<TextInput.Icon icon="lock" tabIndex={-1} />}
             style={styles.input}
           />
 

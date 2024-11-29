@@ -19,11 +19,12 @@ export default function HomeScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Hero Section */}
       <Surface style={styles.hero} elevation={0}>
-        <Image
-          source={require("@/assets/images/books-icon.png")}
-          style={styles.heroImage}
+        <Avatar.Icon
+          size={80}
+          icon="book-open-page-variant"
+          style={styles.heroIcon}
+          color={theme.colors.primary}
         />
         <Text variant="headlineLarge" style={styles.heroTitle}>
           Welcome to AspHarmony
@@ -31,15 +32,57 @@ export default function HomeScreen() {
         <Text variant="bodyLarge" style={styles.heroSubtitle}>
           Your personal library in the cloud
         </Text>
+
+        {user ? (
+          <Surface style={styles.actionButtons} elevation={0}>
+            <Button
+              mode="contained"
+              icon="book-multiple"
+              onPress={() => router.push("/book")}
+              style={styles.actionButton}
+            >
+              Books
+            </Button>
+            <Button
+              mode="contained-tonal"
+              icon="library"
+              onPress={() => router.push("/libraries")}
+              style={styles.actionButton}
+            >
+              Libraries
+            </Button>
+          </Surface>
+        ) : (
+          <Surface style={styles.authButtons} elevation={0}>
+            <Button
+              mode="contained"
+              icon="login"
+              onPress={() => router.push("/login")}
+              style={styles.authButton}
+            >
+              Login
+            </Button>
+            <Button
+              mode="contained-tonal"
+              icon="account-plus"
+              onPress={() => router.push("/register")}
+              style={styles.authButton}
+            >
+              Register
+            </Button>
+          </Surface>
+        )}
       </Surface>
 
       <Divider style={styles.divider} />
 
-      {/* Features Section */}
       <Surface style={styles.featuresContainer} elevation={0}>
-        <Text variant="titleLarge" style={styles.sectionTitle}>
-          Features
-        </Text>
+        <Surface style={styles.sectionHeader} elevation={0}>
+          <Text variant="titleLarge" style={styles.sectionTitle}>
+            Features
+          </Text>
+        </Surface>
+
         <Surface style={styles.features} elevation={0}>
           <Card style={styles.featureCard}>
             <Card.Content>
@@ -85,59 +128,6 @@ export default function HomeScreen() {
           </Card>
         </Surface>
       </Surface>
-
-      {/* Call to Action Section */}
-      <Surface style={styles.ctaSection} elevation={0}>
-        {user ? (
-          <>
-            <Text variant="titleLarge" style={styles.welcomeText}>
-              Welcome back, {user.email}!
-            </Text>
-            <Surface style={styles.actionButtons} elevation={0}>
-              <Button
-                mode="contained"
-                icon="book-multiple"
-                onPress={() => router.push("/book")}
-                style={styles.actionButton}
-              >
-                Browse Books
-              </Button>
-              <Button
-                mode="contained-tonal"
-                icon="plus"
-                onPress={() => router.push("/book/create")}
-                style={styles.actionButton}
-              >
-                Create Book
-              </Button>
-            </Surface>
-          </>
-        ) : (
-          <>
-            <Text variant="titleLarge" style={styles.ctaText}>
-              Join our community today!
-            </Text>
-            <Surface style={styles.authButtons} elevation={0}>
-              <Button
-                mode="contained"
-                icon="login"
-                onPress={() => router.push("/login")}
-                style={styles.authButton}
-              >
-                Login
-              </Button>
-              <Button
-                mode="contained-tonal"
-                icon="account-plus"
-                onPress={() => router.push("/register")}
-                style={styles.authButton}
-              >
-                Register
-              </Button>
-            </Surface>
-          </>
-        )}
-      </Surface>
     </ScrollView>
   );
 }
@@ -150,7 +140,7 @@ const styles = StyleSheet.create({
     padding: 24,
     paddingTop: 32,
     alignItems: "center",
-    gap: 12,
+    gap: 16,
   },
   heroImage: {
     width: 120,
@@ -209,6 +199,9 @@ const styles = StyleSheet.create({
   actionButtons: {
     flexDirection: "row",
     gap: 16,
+    marginTop: 16,
+    width: "100%",
+    maxWidth: 400,
   },
   actionButton: {
     flex: 1,
@@ -216,10 +209,29 @@ const styles = StyleSheet.create({
   authButtons: {
     flexDirection: "row",
     gap: 16,
+    marginTop: 16,
     width: "100%",
     maxWidth: 400,
   },
   authButton: {
     flex: 1,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    marginBottom: 16,
+  },
+  sectionIcon: {
+    backgroundColor: "transparent",
+  },
+  heroIcon: {
+    backgroundColor: "transparent",
+    marginBottom: 16,
+  },
+  description: {
+    opacity: 0.7,
+    marginTop: 4,
   },
 });

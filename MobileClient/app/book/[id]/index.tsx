@@ -352,7 +352,7 @@ export default function BookScreen() {
               icon="pencil"
               onPress={() =>
                 router.push({
-                  pathname: "/book/edit/[id]",
+                  pathname: "/book/[id]/edit",
                   params: { id: book.id },
                 })
               }
@@ -366,7 +366,7 @@ export default function BookScreen() {
               buttonColor={theme.colors.error}
               onPress={() =>
                 router.push({
-                  pathname: "/book/delete/[id]",
+                  pathname: "/book/[id]/delete",
                   params: { id: book.id },
                 })
               }

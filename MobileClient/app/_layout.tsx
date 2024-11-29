@@ -106,13 +106,13 @@ export default function AppLayout() {
           }}
         />
         <Stack.Screen
-          name="book/edit/[id]"
+          name="book/[id]/edit"
           options={{
             title: "Edit Book",
           }}
         />
         <Stack.Screen
-          name="book/delete/[id]"
+          name="book/[id]/delete"
           options={{
             title: "Delete Book",
             presentation: "modal",
@@ -128,6 +128,42 @@ export default function AppLayout() {
           name="register"
           options={{
             title: "Register",
+          }}
+        />
+        <Stack.Screen
+          name="libraries"
+          options={{
+            title: "Libraries",
+          }}
+        />
+        <Stack.Screen
+          name="libraries/create"
+          options={{
+            title: "Create Library",
+          }}
+        />
+        <Stack.Screen
+          name="libraries/[id]"
+          options={{
+            title: "Library Details",
+          }}
+        />
+        <Stack.Screen
+          name="libraries/[id]/edit"
+          options={{
+            title: "Edit Library",
+          }}
+        />
+        <Stack.Screen
+          name="libraries/[id]/manage"
+          options={{
+            title: "Manage Library",
+          }}
+        />
+        <Stack.Screen
+          name="libraries/[id]/delete"
+          options={{
+            title: "Delete Library",
           }}
         />
       </Stack>
