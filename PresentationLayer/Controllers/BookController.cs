@@ -480,10 +480,10 @@ namespace PresentationLayer.Controllers {
                     Each chapter must have these exact properties:
                     - title (string): The chapter title
                     - content (string): A 2-3 paragraph summary of the chapter
-                    - Index (integer): The chapter number starting from ${request.Chapters.Count + 1}";
+                    - index (integer): The chapter number starting from ${request.Chapters.Count + 1}";
 
                 string response = await textGenerator.GetResponseAsync(prompt);
-
+                string x = CleanJsonResponse(response);
                 var chapters = JsonSerializer.Deserialize<List<ChapterViewModel>>(CleanJsonResponse(response))
                     ?? throw new Exception("Generated response was empty");
 
@@ -509,7 +509,7 @@ namespace PresentationLayer.Controllers {
                     Description: {request.Description}
                     Chapters: {JsonSerializer.Serialize(request.Chapters)}
 
-                    Your task is to improve this book while maintaining its core story and themes.
+                    Your task is to improve this book while maintaining its core story themes and language.
 
                     Guidelines:
                     1. Title: Make it more engaging and marketable while preserving the main concept
@@ -571,8 +571,13 @@ namespace PresentationLayer.Controllers {
             return response;
         }
         public class GenerateChaptersRequest {
+            [JsonPropertyName("title")]
             public string Title { get; set; } = "";
+
+            [JsonPropertyName("description")]
             public string Description { get; set; } = "";
+
+            [JsonPropertyName("chapters")]
             public List<ChapterViewModel> Chapters { get; set; } = [];
         }
 
@@ -591,26 +596,47 @@ namespace PresentationLayer.Controllers {
         public class TranslateBookRequest {
             [JsonPropertyName("target_language")]
             public string TargetLanguage { get; set; } = "";
+
+            [JsonPropertyName("title")]
             public string Title { get; set; } = "";
+
+            [JsonPropertyName("description")]
             public string Description { get; set; } = "";
+
+            [JsonPropertyName("chapters")]
             public List<ChapterViewModel> Chapters { get; set; } = [];
         }
 
         public class TranslateBookResponse {
+            [JsonPropertyName("title")]
             public string Title { get; set; } = "";
+
+            [JsonPropertyName("description")]
             public string Description { get; set; } = "";
+
+            [JsonPropertyName("chapters")]
             public List<ChapterViewModel> Chapters { get; set; } = [];
         }
 
         public class RefineBookRequest {
+            [JsonPropertyName("title")]
             public string Title { get; set; } = "";
+
+            [JsonPropertyName("description")]
             public string Description { get; set; } = "";
+
+            [JsonPropertyName("chapters")]
             public List<ChapterViewModel> Chapters { get; set; } = [];
         }
 
         public class RefineBookResponse {
+            [JsonPropertyName("title")]
             public string Title { get; set; } = "";
+
+            [JsonPropertyName("description")]
             public string Description { get; set; } = "";
+
+            [JsonPropertyName("chapters")]
             public List<ChapterViewModel> Chapters { get; set; } = [];
         }
     }

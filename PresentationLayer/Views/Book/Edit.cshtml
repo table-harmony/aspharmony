@@ -123,8 +123,10 @@
                     <label for="targetLanguage" class="form-label">Target Language</label>
                     <select class="form-select" id="targetLanguage">
                         <option value="">Original</option>
-                        @foreach (var language in ViewBag.Languages) {
-                            <option value="@language.Id">@language.Name</option>
+                        @if (ViewBag.Languages != null) {
+                            @foreach (var language in ViewBag.Languages) {
+                                <option value="@language.Id">@language.Name</option>
+                            }
                         }
                     </select>
                     <div class="form-text">Select a language to translate the book</div>
@@ -196,15 +198,17 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $(document).ready(function () {
+            let chapterCount = @Model.Chapters.Count;
 
-            function addChapter() {
+            $("#addChapter").click(function () {
                 const chapterHtml = `
                     <div class="col-md-4 mb-3 chapter-card" data-index="${chapterCount}">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Chapter ${chapterCount + 1}</h5>
-                                <button type
-            let chapterCount = @Model.Chapters.Count="button" class="btn btn-danger btn-sm delete-chapter">Delete</button>
+                                <button type="button" class="btn btn-danger btn-sm delete-chapter">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
                             </div>
                             <div class="card-body">
                                 <input type="hidden" name="Chapters[${chapterCount}].Index" value="${chapterCount}" />
@@ -220,29 +224,25 @@
                         </div>
                     </div>
                 `;
-                
                 $("#chapters").append(chapterHtml);
                 chapterCount++;
                 updateChapterIndexes();
-            }
-
-            $("#addChapter").click(function () {
-               addChapter();
             });
 
             $(document).on('click', '.delete-chapter', function () {
                 $(this).closest('.chapter-card').remove();
-                chapterCount--;
                 updateChapterIndexes();
             });
 
             function updateChapterIndexes() {
+                chapterCount = 0;
                 $('.chapter-card').each(function (index) {
                     $(this).attr('data-index', index);
                     $(this).find('h5').text(`Chapter ${index + 1}`);
                     $(this).find('input[type="hidden"]').attr('name', `Chapters[${index}].Index`).val(index);
-                    $(this).find('input[type="text"]').attr('name', `Chapters[${index}].Title`);
+                    $(this).find('input[type="text"], input[name$=".Title"]').attr('name', `Chapters[${index}].Title`);
                     $(this).find('textarea').attr('name', `Chapters[${index}].Content`);
+                    chapterCount = index + 1;
                 });
             }
 
@@ -257,8 +257,6 @@
             });
 
             $("#translateBook").click(async function() {
-                const translateModal = new bootstrap.Modal(document.getElementById("translateModel")); 
-
                 const button = $(this);
                 const originalText = button.html();
                 button.html('<i class="bi bi-hourglass-split"></i> Translating...').prop('disabled', true);
@@ -306,13 +304,13 @@
                         }
                     });
 
-                    translateModal.hide();
                 } catch (error) {
                     console.error('Error:', error);
                     alert(error.message || 'Failed to translate book. Please try again.');
                 } finally {
                     button.html(originalText).prop('disabled', false);
                     $('#addChapter, .delete-chapter').prop('disabled', false);
+                    $('#translateModel').modal('hide');
                 }
             });
 

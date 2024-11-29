@@ -110,6 +110,15 @@ namespace PresentationLayer
             services.AddControllersWithViews();
             services.AddRazorPages();
 
+            services.AddCors(options => {
+                options.AddPolicy("AllowAllOrigins", builder => {
+                    builder
+                        .SetIsOriginAllowed(_ => true)
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                });
+            });
 
             services.ConfigureApplicationCookie(options => {
                 options.AccessDeniedPath = "/Account/AccessDenied";
@@ -127,6 +136,8 @@ namespace PresentationLayer
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
+            app.UseCors("AllowAllOrigins");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

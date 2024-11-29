@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using DataAccessLayer.Entities;
 
 namespace PresentationLayer.Models {
@@ -26,14 +27,17 @@ namespace PresentationLayer.Models {
     }
 
     public class ChapterViewModel {
+        [JsonPropertyName("index")]
         public int Index { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "The chapter title must be between {2} and {1} characters long.", MinimumLength = 1)]
+        [JsonPropertyName("title")]
         public string Title { get; set; } = "";
 
         [Required]
         [StringLength(50000, ErrorMessage = "The chapter content must be between {2} and {1} characters long.", MinimumLength = 10)]
+        [JsonPropertyName("content")]
         public string Content { get; set; } = "";
     }
 

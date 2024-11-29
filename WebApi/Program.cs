@@ -17,6 +17,8 @@ using Utils.Senders;
 using DataAccessLayer.Entities;
 using DataAccessLayer.Identity;
 using Microsoft.AspNetCore.Identity;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -102,9 +104,20 @@ builder.Services.AddSwaggerGen(c => {
 // Add services to the container
 builder.Services.AddControllers()
     .AddJsonOptions(options => {
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.WriteIndented = true;
     });
+builder.Services.AddCors(options => {
+    options.AddPolicy("AllowAllOrigins", builder => {
+        builder
+            .SetIsOriginAllowed(_ => true)
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+});
+
 builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
@@ -116,13 +129,10 @@ if (app.Environment.IsDevelopment()) {
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAllOrigins");
+
 app.UseAuthorization();
 app.MapControllers();
-app.UseCors(options => {
-    options
-        .AllowAnyOrigin()
-        .AllowAnyHeader()
-        .AllowAnyMethod();
-});
 
 app.Run();

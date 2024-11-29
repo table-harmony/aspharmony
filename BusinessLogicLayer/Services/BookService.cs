@@ -4,9 +4,11 @@ using DbBook = DataAccessLayer.Entities.Book;
 using ServerBook = BusinessLogicLayer.Servers.Books.Book;
 using BusinessLogicLayer.Servers.Books;
 using DataAccessLayer.Entities;
+using System.Text.Json.Serialization;
 
 namespace BusinessLogicLayer.Services {
     public class Book : DbBook {
+        [JsonPropertyName("metadata")]
         public ServerBook? Metadata { get; set; }
     }
 

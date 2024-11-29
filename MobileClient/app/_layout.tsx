@@ -1,48 +1,58 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
-import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
-import "react-native-reanimated";
+import { useUserStore } from "@/stores/userStore";
 
-import { useColorScheme } from "@/hooks/useColorScheme";
-import { AuthProvider } from "@/contexts/AuthContext";
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
+export default function AppLayout() {
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <AuthProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="login" options={{ headerShown: false }} />
-          <Stack.Screen name="register" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-      </AuthProvider>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Stack>
+      <Stack.Screen
+        name="index"
+        options={{
+          title: "Home",
+        }}
+      />
+      <Stack.Screen
+        name="book/index"
+        options={{
+          title: "Books",
+        }}
+      />
+      <Stack.Screen
+        name="book/[id]"
+        options={{
+          title: "Book Details",
+        }}
+      />
+      <Stack.Screen
+        name="book/create"
+        options={{
+          title: "Create Book",
+        }}
+      />
+      <Stack.Screen
+        name="book/edit/[id]"
+        options={{
+          title: "Edit Book",
+        }}
+      />
+      <Stack.Screen
+        name="book/delete/[id]"
+        options={{
+          title: "Delete Book",
+          presentation: "modal",
+        }}
+      />
+      <Stack.Screen
+        name="login"
+        options={{
+          title: "Login",
+        }}
+      />
+      <Stack.Screen
+        name="register"
+        options={{
+          title: "Register",
+        }}
+      />
+    </Stack>
   );
 }
