@@ -166,6 +166,12 @@ export default function AppLayout() {
             title: "Delete Library",
           }}
         />
+        <Stack.Screen
+          name="libraries/[id]/add-books"
+          options={{
+            title: "Add Books",
+          }}
+        />
       </Stack>
     </PaperProvider>
   );

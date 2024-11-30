@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { StyleSheet, FlatList, Pressable, Image } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { useFocusEffect } from "@react-navigation/native";
+import { Card, TextInput } from "react-native-paper";
 
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -12,6 +13,7 @@ import type { Book } from "@/services/books";
 export default function BooksScreen() {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const user = useUserStore((state) => state.user);
 
@@ -30,6 +32,12 @@ export default function BooksScreen() {
     useCallback(() => {
       fetchBooks();
     }, [])
+  );
+
+  const filteredBooks = books.filter(
+    (book) =>
+      book.metadata.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      book.author.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const renderBook = ({ item }: { item: Book }) => (
@@ -76,8 +84,21 @@ export default function BooksScreen() {
           </Pressable>
         )}
       </ThemedView>
+
+      <Card style={styles.searchCard}>
+        <Card.Content>
+          <TextInput
+            mode="outlined"
+            placeholder="Search books..."
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            left={<TextInput.Icon icon="magnify" />}
+          />
+        </Card.Content>
+      </Card>
+
       <FlatList
-        data={books}
+        data={filteredBooks}
         renderItem={renderBook}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.listContainer}
@@ -127,5 +148,8 @@ const styles = StyleSheet.create({
   },
   description: {
     color: "#666",
+  },
+  searchCard: {
+    marginBottom: 16,
   },
 });

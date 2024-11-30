@@ -22,15 +22,15 @@ namespace BusinessLogicLayer.Servers.Books {
 
             return (serverType) => {
                 if (disabledServers.Contains(serverType)) {
-                    throw new PublicException($"The server '{serverType}' is disabled");
+                    throw new ServerDisabledException(serverType.GetDisplayName());
                 }
 
                 return serverType switch {
                     ServerType.Aether => new AetherServer(new BooksServicePortTypeClient(BooksServicePortTypeClient.EndpointConfiguration.BooksServicePort)),
-                    ServerType.Atlas => new ApiServer("https://localhost:7137/api/atlas/"),
+                    ServerType.Atlas => new ApiServer("http://localhost:7137/api/atlas/", new JsonSerializerOptions { PropertyNameCaseInsensitive = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
                     ServerType.Dummy => new DummyServer(),
                     ServerType.Echo => new EchoServer(),
-                    ServerType.Harmony => new ApiServer($"http://{configuration["MINECRAFT_SERVICE_IP_ADDRESS"]}:8000/api/books/"),
+                    ServerType.Harmony => new ApiServer($"http://{configuration["MINECRAFT_SERVICE_IP_ADDRESS"]}:8000/api/books"),
                     ServerType.Nimbus1 => CreateNimbusServer(serviceProvider, ServerType.Nimbus1),
                     ServerType.Nimbus2 => CreateNimbusServer(serviceProvider, ServerType.Nimbus2),
                     ServerType.Orion => new OrionServer(new BooksServiceSoapClient(BooksServiceSoapClient.EndpointConfiguration.BooksServiceSoap)),

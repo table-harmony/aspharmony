@@ -1,0 +1,155 @@
+﻿@model LibraryProfileViewModel
+
+@{
+    ViewData["Title"] = $"{Model.Membership.Library.Name} - Member Profile";
+}
+
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Libraries</a></li>
+        <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.Membership.LibraryId">@Model.Membership.Library.Name</a></li>
+        <li class="breadcrumb-item active">My Profile</li>
+    </ol>
+</nav>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h2 class="mb-0">Member Profile</h2>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Library:</strong> @Model.Membership.Library.Name</p>
+                <p><strong>Role:</strong> <span class="badge bg-primary">@Model.Membership.Role</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.ActiveLoans.Any()) {
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3 class="mb-0">Currently Borrowed Books</h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Book</th>
+                            <th>Borrowed Date</th>
+                            <th>Expected Return</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var loan in Model.ActiveLoans) {
+                            var book = loan.LibraryBook.Book as BusinessLogicLayer.Services.Book;
+                            <tr>
+                                <td class="align-middle">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img src="@book?.Metadata?.ImageUrl" alt="@book?.Metadata?.Title"
+                                             class="rounded" style="width: 40px; height: 56px; object-fit: cover;" />
+                                        <span>@book?.Metadata?.Title</span>
+                                    </div>
+                                </td>
+                                <td class="align-middle">@loan.LoanDate?.ToShortDateString()</td>
+                                <td class="align-middle">@loan.ExpectedReturnDate?.ToShortDateString()</td>
+                                <td class="align-middle">
+                                    <a asp-controller="Book" asp-action="Details" asp-route-id="@loan.LibraryBook.Book.Id" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-info-circle"></i> View book
+                                    </a>
+                                    <a asp-action="BookDetails" asp-route-libraryBookId="@loan.LibraryBookId" class="btn btn-info btn-sm">
+                                        View loan
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.RequestedLoans.Any()) {
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3 class="mb-0">Requested Books</h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Book</th>
+                            <th>Request Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var loan in Model.RequestedLoans) {
+                            var book = loan.LibraryBook.Book as BusinessLogicLayer.Services.Book;
+                            <tr>
+                                <td class="align-middle">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img src="@book?.Metadata?.ImageUrl" alt="@book?.Metadata?.Title"
+                                             class="rounded" style="width: 40px; height: 56px; object-fit: cover;" />
+                                        <span>@book?.Metadata?.Title</span>
+                                    </div>
+                                </td>
+                                <td class="align-middle">@loan.RequestDate.ToShortDateString()</td>
+                                <td class="align-middle">
+                                    <a asp-action="BookDetails" asp-route-libraryBookId="@loan.LibraryBookId" class="btn btn-info btn-sm">
+                                        View loan
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="mb-0">Loan History</h3>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>Borrowed Date</th>
+                        <th>Returned Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var loan in Model.PastLoans) {
+                        var book = loan.LibraryBook.Book as BusinessLogicLayer.Services.Book;
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <img src="@book?.Metadata?.ImageUrl" alt="@book?.Metadata?.Title"
+                                         class="rounded" style="width: 40px; height: 56px; object-fit: cover;" />
+                                    <span>@book?.Metadata?.Title</span>
+                                </div>
+                            </td>
+                            <td>@loan.LoanDate?.ToShortDateString()</td>
+                            <td>@loan.ReturnDate?.ToShortDateString()</td>
+                            <td>
+                                <a asp-action="BookDetails" asp-route-libraryBookId="@loan.LibraryBookId" class="btn btn-info btn-sm">
+                                    View Book
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

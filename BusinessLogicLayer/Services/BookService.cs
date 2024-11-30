@@ -5,6 +5,8 @@ using ServerBook = BusinessLogicLayer.Servers.Books.Book;
 using BusinessLogicLayer.Servers.Books;
 using DataAccessLayer.Entities;
 using System.Text.Json.Serialization;
+using Utils.Exceptions;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace BusinessLogicLayer.Services {
     public class Book : DbBook {
@@ -33,17 +35,28 @@ namespace BusinessLogicLayer.Services {
             if (dbBook == null)
                 return null;
 
-            var server = GetServer(dbBook.Server);
-            var metadata = await server.GetBookAsync(id);
-            
-            return new Book {
-                Id = dbBook.Id,
-                Server = dbBook.Server,
-                Author = dbBook.Author,
-                AuthorId = dbBook.AuthorId,
-                Metadata = metadata,
-                AudioBooks = dbBook.AudioBooks,
-            };
+            try {
+                var server = GetServer(dbBook.Server);
+                var metadata = await server.GetBookAsync(id);
+
+                return new Book {
+                    Id = dbBook.Id,
+                    Server = dbBook.Server,
+                    Author = dbBook.Author,
+                    AuthorId = dbBook.AuthorId,
+                    Metadata = metadata,
+                    AudioBooks = dbBook.AudioBooks,
+                };
+            } catch (ServerDisabledException) {
+                return new Book {
+                    Id = dbBook.Id,
+                    Server = dbBook.Server,
+                    Author = dbBook.Author,
+                    AuthorId = dbBook.AuthorId,
+                    AudioBooks = dbBook.AudioBooks,
+                    Metadata = null,
+                };
+            }
         }
 
         public async Task<IEnumerable<Book>> GetAllAsync() {
@@ -51,26 +64,34 @@ namespace BusinessLogicLayer.Services {
             List<Book> books = [];
 
             foreach (var dbBook in dbBooks) {
-                var server = GetServer(dbBook.Server);
-                var webBook = await server.GetBookAsync(dbBook.Id);
+                try {
+                    var server = GetServer(dbBook.Server);
+                    var webBook = await server.GetBookAsync(dbBook.Id);
 
-                books.Add(new Book {
-                    Id = dbBook.Id,
-                    Server = dbBook.Server,
-                    Author = dbBook.Author,
-                    AuthorId = dbBook.AuthorId,
-                    Metadata = webBook,
-                    AudioBooks = dbBook.AudioBooks,
-                });
+                    books.Add(new Book {
+                        Id = dbBook.Id,
+                        Server = dbBook.Server,
+                        Author = dbBook.Author,
+                        AuthorId = dbBook.AuthorId,
+                        Metadata = webBook,
+                        AudioBooks = dbBook.AudioBooks,
+                    });
+                } catch (ServerDisabledException) { }
             }
 
             return books;
         }
 
         public async Task<IEnumerable<Book>> GetAllAsync(ServerType serverType) {
-            var dbBooks = await repository.GetAllAsync(serverType);
+            IBookServer server;
 
-            var server = GetServer(serverType);
+            try {
+                server = GetServer(serverType);
+            } catch (ServerDisabledException) {
+                return [];
+            }
+
+            var dbBooks = await repository.GetAllAsync(serverType);            
             var webBooks = await server.GetAllBooksAsync();
 
             var books = dbBooks.Join(

@@ -9,6 +9,7 @@ namespace BusinessLogicLayer.Services {
         Task CreateAsync(int libraryBookId, int libraryMembershipId, DateTime dueDate);
         Task ReturnBookAsync(int id);
         IEnumerable<BookLoan> GetBookLoans(int bookId);
+        Task<IEnumerable<BookLoan>> GetMemberLoansAsync(int membershipId);
         Task UpdateAsync(BookLoan loan);
         Task<BookLoan?> GetCurrentBookLoanAsync(int id);
         Task<BookLoan?> GetActiveLoanOrRequestAsync(int libraryBookId, int membershipId);
@@ -29,6 +30,17 @@ namespace BusinessLogicLayer.Services {
 
         public IEnumerable<BookLoan> GetBookLoans(int bookId) {
             return loanRepository.GetBookLoans(bookId);
+        }
+
+        public async Task<IEnumerable<BookLoan>> GetMemberLoansAsync(int membershipId) {
+            var loans = await loanRepository.GetMemberLoansAsync(membershipId);
+
+            foreach (var loan in loans) {
+                var x =  await libraryBookService.GetLibraryBookAsync(loan.LibraryBookId);
+                loan.LibraryBook = x;
+            }
+
+            return loans;
         }
 
         public async Task CreateAsync(int libraryBookId, int libraryMembershipId, DateTime dueDate) {

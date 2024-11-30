@@ -392,6 +392,28 @@ namespace PresentationLayer.Controllers {
             return View(model);
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> Profile(int id) {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var membership = await libraryMembershipService.GetMembershipAsync(id, userId);
+
+            if (membership == null)
+                return NotFound();
+
+            var allLoans = await bookLoanService.GetMemberLoansAsync(membership.Id);
+
+            var viewModel = new LibraryProfileViewModel {
+                Membership = membership,
+                RequestedLoans = allLoans.Where(l => l.Status == LoanStatus.Requested),
+                ActiveLoans = allLoans.Where(l => l.Status == LoanStatus.Active),
+                PastLoans = allLoans.Where(l => l.Status == LoanStatus.Completed)
+                    .OrderByDescending(l => l.ReturnDate)
+            };
+
+            return View(viewModel);
+        }
+
         private async Task<bool> IsLibraryManager(int libraryId) {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var membership = await libraryMembershipService.GetMembershipAsync(libraryId, userId);

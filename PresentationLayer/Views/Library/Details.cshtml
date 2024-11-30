@@ -30,6 +30,9 @@
                     <i class="bi bi-gear"></i> Manage
                 </a>
             }
+            <a asp-action="Profile" asp-route-id="@Model.Library.Id" class="btn btn-info">
+                <i class="bi bi-person"></i> Profile
+            </a>
             <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#leaveModal">
                 <i class="bi bi-box-arrow-right"></i> Leave
             </button>

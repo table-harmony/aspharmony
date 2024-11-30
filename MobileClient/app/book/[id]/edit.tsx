@@ -9,7 +9,14 @@ import {
 } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { Picker } from "@react-native-picker/picker";
-import { Card, Surface, Avatar, useTheme } from "react-native-paper";
+import {
+  Button,
+  Card,
+  Surface,
+  Avatar,
+  useTheme,
+  IconButton,
+} from "react-native-paper";
 
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -68,40 +75,6 @@ export default function EditBookScreen() {
       ...updatedChapters[index],
       [field]: value,
     };
-
-    setBook({
-      ...book,
-      metadata: {
-        ...book.metadata,
-        chapters: updatedChapters,
-      },
-    });
-  }
-
-  function addChapter() {
-    if (!book) return;
-
-    const newChapter: Chapter = {
-      index: book.metadata.chapters.length,
-      title: "",
-      content: "",
-    };
-
-    setBook({
-      ...book,
-      metadata: {
-        ...book.metadata,
-        chapters: [...book.metadata.chapters, newChapter],
-      },
-    });
-  }
-
-  function removeChapter(index: number) {
-    if (!book) return;
-
-    const updatedChapters = book.metadata.chapters
-      .filter((_, i) => i !== index)
-      .map((chapter, i) => ({ ...chapter, index: i }));
 
     setBook({
       ...book,
@@ -244,54 +217,62 @@ export default function EditBookScreen() {
           </Card.Content>
         </Card>
 
-        <Surface style={styles.chapterHeader} elevation={0}>
-          <Surface style={styles.chapterHeaderLeft} elevation={0}>
-            <Avatar.Icon
-              size={24}
-              icon="book-open-variant"
-              style={styles.fieldIcon}
-              color={theme.colors.primary}
-            />
-            <ThemedText type="subtitle">Chapters</ThemedText>
-          </Surface>
-          <Pressable style={styles.addButton} onPress={addChapter}>
-            <ThemedText style={styles.buttonText}>Add Chapter</ThemedText>
-          </Pressable>
-        </Surface>
+        <Card style={styles.field}>
+          <Card.Content>
+            <Surface style={styles.sectionHeader} elevation={0}>
+              <Surface style={styles.chapterHeaderLeft} elevation={0}>
+                <Avatar.Icon
+                  size={24}
+                  icon="book-open-variant"
+                  style={styles.fieldIcon}
+                  color={theme.colors.primary}
+                />
+                <ThemedText type="subtitle">Chapters</ThemedText>
+              </Surface>
+            </Surface>
 
-        {book.metadata.chapters.map((chapter, index) => (
-          <ThemedView key={chapter.index} style={styles.chapter}>
-            <ThemedView style={styles.chapterTitleRow}>
-              <ThemedText type="subtitle">Chapter {index + 1}</ThemedText>
-              <Pressable
-                style={styles.removeButton}
-                onPress={() => removeChapter(index)}
-              >
-                <ThemedText style={styles.buttonText}>Remove</ThemedText>
-              </Pressable>
-            </ThemedView>
+            {book.metadata.chapters.map((chapter, index) => (
+              <ThemedView key={chapter.index} style={styles.chapter}>
+                <Surface style={styles.chapterHeader} elevation={0}>
+                  <Surface style={styles.chapterHeaderLeft} elevation={0}>
+                    <Avatar.Icon
+                      size={24}
+                      icon="bookmark"
+                      style={styles.fieldIcon}
+                      color={theme.colors.primary}
+                    />
+                    <ThemedText type="subtitle">Chapter {index + 1}</ThemedText>
+                  </Surface>
+                </Surface>
 
-            <TextInput
-              style={styles.input}
-              value={chapter.title}
-              onChangeText={(text) => updateChapter(index, "title", text)}
-              placeholder="Chapter title"
-            />
+                <TextInput
+                  style={styles.input}
+                  value={chapter.title}
+                  onChangeText={(text) => updateChapter(index, "title", text)}
+                  placeholder="Chapter title"
+                />
 
-            <TextInput
-              style={[styles.input, styles.textArea]}
-              value={chapter.content}
-              onChangeText={(text) => updateChapter(index, "content", text)}
-              multiline
-              numberOfLines={4}
-              placeholder="Chapter content"
-            />
-          </ThemedView>
-        ))}
+                <TextInput
+                  style={[styles.input, styles.textArea]}
+                  value={chapter.content}
+                  onChangeText={(text) => updateChapter(index, "content", text)}
+                  multiline
+                  numberOfLines={4}
+                  placeholder="Chapter content"
+                />
+              </ThemedView>
+            ))}
+          </Card.Content>
+        </Card>
 
-        <Pressable style={styles.saveButton} onPress={handleSave}>
-          <ThemedText style={styles.buttonText}>Save Changes</ThemedText>
-        </Pressable>
+        <Button
+          mode="contained"
+          onPress={handleSave}
+          icon="content-save"
+          style={styles.saveButton}
+        >
+          Save Changes
+        </Button>
       </ThemedView>
     </ScrollView>
   );
@@ -326,6 +307,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: 8,
   },
   chapter: {
     gap: 8,
@@ -333,6 +315,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 8,
+    marginBottom: 8,
   },
   chapterTitleRow: {
     flexDirection: "row",
@@ -346,11 +329,6 @@ const styles = StyleSheet.create({
   removeButton: {
     padding: 8,
     borderRadius: 8,
-  },
-  saveButton: {
-    padding: 16,
-    borderRadius: 8,
-    alignItems: "center",
   },
   buttonText: {
     color: "white",
@@ -379,5 +357,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  addChapterButton: {
+    minWidth: 130,
+  },
+  saveButton: {
+    alignSelf: "center",
+    marginTop: 16,
+    borderRadius: 8,
+    alignItems: "center",
   },
 });

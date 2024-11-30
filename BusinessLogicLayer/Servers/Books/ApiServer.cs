@@ -4,14 +4,11 @@ using System.Text.Json;
 namespace BusinessLogicLayer.Servers.Books {
     public class ApiServer : IBookServer {
         private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _jsonOptions;
+        private readonly JsonSerializerOptions? _jsonOptions;
 
         public ApiServer(string baseUri, JsonSerializerOptions? jsonOptions = null) {
             _httpClient = new HttpClient { BaseAddress = new Uri(baseUri) };
-            _jsonOptions = jsonOptions ?? new JsonSerializerOptions {
-                PropertyNameCaseInsensitive = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
+            _jsonOptions = jsonOptions;
         }
 
         public async Task<Book?> GetBookAsync(int id) {
@@ -22,7 +19,15 @@ namespace BusinessLogicLayer.Servers.Books {
                 var content = await response.Content.ReadAsStringAsync();
                 return JsonSerializer.Deserialize<Book>(content, _jsonOptions);
             } catch (HttpRequestException) {
-                return null;
+                try {
+                    var response = await _httpClient.GetAsync($"/api/books/{id}");
+                    response.EnsureSuccessStatusCode();
+
+                    var content = await response.Content.ReadAsStringAsync();
+                    return JsonSerializer.Deserialize<Book>(content, _jsonOptions);
+                } catch {
+                    return null;
+                }
             }
         }
 
@@ -46,7 +51,10 @@ namespace BusinessLogicLayer.Servers.Books {
         }
 
         public async Task DeleteBookAsync(int id) {
-            await _httpClient.DeleteAsync($"{id}");
+            try {
+                await _httpClient.DeleteAsync($"{id}");
+                await _httpClient.DeleteAsync($"/api/books/{id}");
+            } catch { }
         }
     }
 }

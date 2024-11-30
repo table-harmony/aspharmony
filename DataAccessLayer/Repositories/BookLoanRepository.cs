@@ -10,6 +10,7 @@ namespace DataAccessLayer.Repositories {
         Task UpdateAsync(BookLoan bookLoan);
         IEnumerable<BookLoan> GetBookLoans(int bookId);
         Task<BookLoan?> GetCurrentLoanAsync(int id);
+        Task<IEnumerable<BookLoan>> GetMemberLoansAsync(int membershipId);
         IEnumerable<BookLoan> GetMemberLoans(int membershipId);
         Task<BookLoan?> GetActiveLoanAsync(int libraryBookId);
         Task<BookLoan?> GetNextInQueueAsync(int libraryBookId);
@@ -40,17 +41,25 @@ namespace DataAccessLayer.Repositories {
 
         public IEnumerable<BookLoan> GetBookLoans(int bookId) {
             return context.BookLoans
-                .Include(libraryBook => libraryBook.LibraryMembership)
-                    .ThenInclude(m => m.User)
-                .Where(libraryBook => libraryBook.LibraryBookId == bookId)
-                .OrderByDescending(libraryBook => libraryBook.LoanDate);
+                .Include(bookLoan => bookLoan.LibraryMembership)
+                    .ThenInclude(membership => membership.User)
+                .Where(bookLoan => bookLoan.LibraryBookId == bookId)
+                .OrderByDescending(bookLoan => bookLoan.LoanDate);
         }
 
         public IEnumerable<BookLoan> GetMemberLoans(int membershipId) {
             return context.BookLoans
-                .Include(libraryBook => libraryBook.LibraryMembership)
-                .Where(libraryBook => libraryBook.LibraryMembershipId == membershipId);
-        } 
+                .Include(bookLoan => bookLoan.LibraryMembership)
+                .Where(bookLoan => bookLoan.LibraryMembershipId == membershipId);
+        }
+
+        public async Task<IEnumerable<BookLoan>> GetMemberLoansAsync(int membershipId) {
+            return await context.BookLoans
+                .AsNoTracking()
+                .Include(bookLoan => bookLoan.LibraryMembership)
+                .Include(bookLoan => bookLoan.LibraryBook)
+                .Where(bookLoan => bookLoan.LibraryMembershipId == membershipId).ToListAsync();
+        }
 
         public async Task<BookLoan?> GetCurrentLoanAsync(int libraryBookId) {
             return await context.BookLoans
