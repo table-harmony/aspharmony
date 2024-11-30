@@ -1,0 +1,39 @@
+<svg id="logo" width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" 
+    style="cursor: pointer;" role="button" data-bs-toggle="modal" data-bs-target="#customizeModal">
+    <circle id="background" cx="100" cy="100" r="95" fill="white" stroke="black" stroke-width="5" />
+    <rect id="book" x="60" y="50" width="80" height="100" rx="5" fill="#0077cc" stroke="black" stroke-width="3" />
+    <g id="accessories">
+      <g id="glasses" class="accessory" style="display: none;">
+        <circle cx="90" cy="115" r="8" fill="none" stroke="black" stroke-width="2" />
+        <circle cx="110" cy="115" r="8" fill="none" stroke="black" stroke-width="2" />
+        <line x1="98" y1="115" x2="102" y2="115" stroke="black" stroke-width="2" />
+      </g>
+      <g id="party-hat" class="accessory" style="display: none;">
+        <path d="M80,50 L100,20 L120,50 Z" fill="#ff69b4" stroke="black" stroke-width="2" />
+        <circle cx="100" cy="35" r="3" fill="yellow" />
+      </g>
+      <g id="headphones" class="accessory" style="display: none;">
+        <path d="M55,100 C55,70 145,70 145,100" fill="none" stroke="black" stroke-width="3" />
+        <rect x="52" y="100" width="10" height="25" rx="5" fill="black" />
+        <rect x="138" y="100" width="10" height="25" rx="5" fill="black" />
+      </g>
+      <g id="magic-wand" class="accessory" style="display: none;">
+        <rect x="130" y="70" width="3" height="40" fill="black" />
+        <circle cx="131.5" cy="68" r="5" fill="yellow" />
+        <circle cx="128" cy="65" r="2" fill="blue" />
+        <circle cx="135" cy="65" r="2" fill="red" />
+        <circle cx="131.5" cy="62" r="2" fill="green" />
+      </g>
+    </g>
+    <path id="bookmark"
+      d="M85,50 L100,50 L100,90 L92.5,85 L85,90 Z"
+      fill="#ffcc00"
+      stroke="black"
+      stroke-width="2"
+    />
+    <g id="face">
+      <circle cx="90" cy="115" r="3" fill="black" />
+      <circle cx="110" cy="115" r="3" fill="black" />
+      <path d="M85,130 Q100,140 115,130" stroke="black" stroke-width="2" fill="none" />
+  </g>
+</svg>
