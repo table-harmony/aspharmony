@@ -13,6 +13,13 @@ import LoginPage from "@/pages/auth/login";
 import RegisterPage from "@/pages/auth/register";
 
 import HomePage from "@/pages/page";
+import LibrariesPage from "@/pages/libraries/page";
+import LibraryDetailsPage from "@/pages/libraries/[id]/page";
+import CreateLibraryPage from "@/pages/libraries/create/page";
+import ManageLibraryPage from "@/pages/libraries/[id]/manage/page";
+import DeleteLibraryPage from "./pages/libraries/[id]/delete/page";
+import EditLibraryPage from "./pages/libraries/[id]/edit/page";
+import AddBooksToLibraryPage from "./pages/libraries/[id]/add-books/page";
 
 export default function App() {
   return (
@@ -29,6 +36,17 @@ export default function App() {
           <Route path="/books/:id" element={<BookDetailsPage />} />
           <Route path="/books/:id/edit" element={<EditBookPage />} />
           <Route path="/books/:id/delete" element={<DeleteBookPage />} />
+
+          <Route path="/libraries" element={<LibrariesPage />} />
+          <Route path="/libraries/create" element={<CreateLibraryPage />} />
+          <Route path="/libraries/:id" element={<LibraryDetailsPage />} />
+          <Route path="/libraries/:id/edit" element={<EditLibraryPage />} />
+          <Route path="/libraries/:id/delete" element={<DeleteLibraryPage />} />
+          <Route path="/libraries/:id/manage" element={<ManageLibraryPage />} />
+          <Route
+            path="/libraries/:id/add-books"
+            element={<AddBooksToLibraryPage />}
+          />
         </Routes>
       </SiteLayout>
       <Toaster />

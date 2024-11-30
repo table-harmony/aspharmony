@@ -43,13 +43,13 @@ export function SiteHeader() {
               <>
                 <Button asChild>
                   <Link to="/login">
-                    <LogInIcon className="h-4 w-4 mr-2" />
+                    <LogInIcon className="h-4 w-4" />
                     Login
                   </Link>
                 </Button>
                 <Button variant="outline" asChild>
                   <Link to="/register">
-                    <UserPlusIcon className="h-4 w-4 mr-2" />
+                    <UserPlusIcon className="h-4 w-4" />
                     Register
                   </Link>
                 </Button>

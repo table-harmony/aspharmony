@@ -1,15 +1,42 @@
 {
-  "name": "desktopclient",
+  "name": "aspharmony",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "author": {
+    "name": "Table Harmony",
+    "email": "tableharmony123@gmail.com"
+  },
+  "main": "src/main.js",
+  "build": {
+    "appId": "com.aspharmony.app",
+    "productName": "AspHarmony",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "dist/**/*",
+      "src/main.js",
+      "src/assets/*"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "electron:dev": "concurrently \"vite\" \"electron ./src/main.js\"",
-    "electron:build": "vite build && electron-builder"
+    "electron:build": "vite build && electron-builder",
+    "package": "npm run build && npm run electron:build"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -19,6 +46,7 @@
     "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-switch": "^1.1.1",
     "@radix-ui/react-toast": "^1.2.2",
     "axios": "^1.7.8",
     "class-variance-authority": "^0.7.1",
