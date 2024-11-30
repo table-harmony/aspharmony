@@ -54,11 +54,13 @@ namespace DataAccessLayer.Repositories {
             if (library == null)
                 return;
 
-            foreach (var membership in library.Memberships)
+            var membershipsToDelete = library.Memberships.ToList();
+            foreach (var membership in membershipsToDelete)
                 await libraryMembershipRepository.DeleteAsync(membership.Id);
 
             context.Libraries.Remove(library);
             await context.SaveChangesAsync();
         }
+
     }
 }

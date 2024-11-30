@@ -34,6 +34,9 @@ namespace PresentationLayer.Controllers {
         public async Task<IActionResult> Index(string searchString, int pageSize = 10, int pageIndex = 1) {
             var books = await bookService.GetAllAsync();
 
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            books = books.Where(book => book.AuthorId == userId);
+
             if (!string.IsNullOrEmpty(searchString)) {
                 books = books.Where(b =>
                     b.Metadata.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||

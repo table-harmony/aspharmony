@@ -36,8 +36,8 @@ namespace BusinessLogicLayer.Services {
             var loans = await loanRepository.GetMemberLoansAsync(membershipId);
 
             foreach (var loan in loans) {
-                var x =  await libraryBookService.GetLibraryBookAsync(loan.LibraryBookId);
-                loan.LibraryBook = x;
+                var libraryBook = await libraryBookService.GetLibraryBookAsync(loan.LibraryBookId);
+                loan.LibraryBook = libraryBook;
             }
 
             return loans;

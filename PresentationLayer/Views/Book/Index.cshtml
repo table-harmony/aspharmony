@@ -3,7 +3,7 @@
 
 <div class="card mb-4">
     <div class="card-header">
-        <h2 class="mb-0">All Books</h2>
+        <h2 class="mb-0">Your Books</h2>
     </div>
     <div class="card-body">
         <p class="text-muted">Browse all available books or create your own to share with others.</p>
@@ -29,7 +29,6 @@
                 <thead>
                     <tr>
                         <th>Title</th>
-                        <th>Author</th>
                         <th>Server</th>
                         <th>Actions</th>
                     </tr>
@@ -44,7 +43,6 @@
                                     <span>@(item.Metadata?.Title ?? "Unknown")</span>
                                 </div>
                             </td>
-                            <td class="align-middle">@(item.Author?.UserName ?? "Unknown")</td>
                             <td class="align-middle">@item.Server.GetDisplayName()</td>
                             <td class="align-middle">
                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">

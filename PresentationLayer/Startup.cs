@@ -35,10 +35,7 @@ namespace PresentationLayer
                     DotNetEnv.Env.Load();
 
                     config.AddEnvironmentVariables();
-
-                    if (context.HostingEnvironment.IsDevelopment()) {
-                        config.AddUserSecrets<Startup>();
-                    }
+                    config.AddUserSecrets<Startup>();
                 })
                 .ConfigureWebHostDefaults(webBuilder => {
                     webBuilder.UseStartup<Startup>();
