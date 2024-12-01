@@ -7,9 +7,9 @@ import { scrollToTop } from "@/lib/utils";
 
 export default function BooksPage() {
   return (
-    <div className="min-h-screen py-8">
+    <div className="py-8">
       <div className="container max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="flex flex-col gap-8 animate-in fade-in-50">
+        <div className="flex flex-col gap-8">
           <section className="flex flex-col items-center text-center gap-6">
             <div className="rounded-full bg-primary/10 p-4">
               <BookOpenText className="h-8 w-8 text-primary" />

@@ -12,15 +12,17 @@
     "appId": "com.aspharmony.app",
     "productName": "AspHarmony",
     "directories": {
-      "output": "dist"
+      "output": "release"
     },
     "files": [
       "dist/**/*",
-      "src/main.js",
-      "src/assets/*"
+      "src/**/*",
+      "!src/**/*.test.ts",
+      "!src/**/*.test.tsx"
     ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "src/assets/logo.jpg"
     },
     "mac": {
       "target": "dmg"
@@ -32,8 +34,6 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview",
     "electron:dev": "concurrently \"vite\" \"electron ./src/main.js\"",
     "electron:build": "vite build && electron-builder",
     "package": "npm run build && npm run electron:build"
