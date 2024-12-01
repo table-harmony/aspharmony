@@ -11,13 +11,17 @@ import { Plus } from "lucide-react";
 
 import emptyState from "@/assets/empty.svg";
 import { scrollToTop } from "@/lib/utils";
+import { useUserStore } from "@/lib/userStore";
 
 export function BooksList() {
   const [books, setBooks] = useState<Book[] | null>(null);
+  const user = useUserStore((state) => state.user);
 
   useEffect(() => {
-    getBooks().then(setBooks);
-  }, []);
+    getBooks().then((books) => {
+      setBooks(books.filter((book) => book.author.id === user?.id));
+    });
+  }, [user]);
 
   if (!books) {
     return <BooksListSkeleton />;

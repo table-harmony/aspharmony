@@ -5,53 +5,18 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { AudioLinesIcon, EditIcon, PlusIcon, Trash2Icon } from "lucide-react";
+import { AudioLinesIcon, PlusIcon } from "lucide-react";
 
 import emptyState from "@/assets/empty.svg";
 import { scrollToTop } from "@/lib/utils";
+import { useUserStore } from "@/lib/userStore";
 
 export function BookDetails({ book }: { book: Book }) {
+  const user = useUserStore((state) => state.user);
+
   return (
     <div className="flex flex-col gap-12">
-      <div className="flex flex-col gap-8 sm:flex-row sm:items-start">
-        <div className="relative aspect-square w-full max-w-[300px] overflow-hidden rounded-lg border bg-muted sm:w-[300px]">
-          <img
-            src={book.metadata.image_url}
-            alt={book.metadata.title}
-            className="object-cover"
-          />
-        </div>
-        <div className="flex flex-1 flex-col gap-6">
-          <div className="space-y-4">
-            <h1 className="text-3xl font-bold">{book.metadata.title}</h1>
-            <p className="text-lg text-muted-foreground">
-              by {book.author.username}
-            </p>
-            <p className="text-base leading-relaxed text-muted-foreground">
-              {book.metadata.description}
-            </p>
-            <div className="flex gap-4 pt-2">
-              <Button asChild variant="outline">
-                <Link to={`/books/${book.id}/edit`} onClick={scrollToTop}>
-                  <EditIcon className="h-4 w-4" />
-                  Edit
-                </Link>
-              </Button>
-              <Button asChild variant="destructive">
-                <Link to={`/books/${book.id}/delete`} onClick={scrollToTop}>
-                  <Trash2Icon className="h-4 w-4" />
-                  Delete
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <Separator />
-
-      <section className="space-y-6">
-        <h2 className="text-2xl font-semibold">Chapters</h2>
+      <div className="grid gap-4">
         {book.metadata.chapters.length === 0 ? (
           <div className="flex min-h-[300px] flex-col items-center justify-center gap-6 rounded-lg border border-dashed p-8 text-center animate-in fade-in-50">
             <div className="mx-auto flex max-w-[420px] flex-col items-center justify-center gap-2 text-center">
@@ -67,12 +32,14 @@ export function BookDetails({ book }: { book: Book }) {
               alt="No chapters"
               className="rounded-lg border"
             />
-            <Button asChild>
-              <Link to={`/books/${book.id}/edit`} onClick={scrollToTop}>
-                <PlusIcon className="mr-2 h-4 w-4" />
-                Add chapters
-              </Link>
-            </Button>
+            {user?.id === book.author.id && (
+              <Button asChild>
+                <Link to={`/books/${book.id}/edit`} onClick={scrollToTop}>
+                  <PlusIcon className="h-4 w-4 mr-2" />
+                  Add chapters
+                </Link>
+              </Button>
+            )}
           </div>
         ) : (
           <div className="grid gap-4">
@@ -97,7 +64,7 @@ export function BookDetails({ book }: { book: Book }) {
             ))}
           </div>
         )}
-      </section>
+      </div>
 
       <Separator />
 
@@ -118,14 +85,15 @@ export function BookDetails({ book }: { book: Book }) {
               width={200}
               height={200}
               alt="No audiobooks"
-              className="rounded-lg border"
             />
-            <Button asChild>
-              <Link to={`/books/${book.id}/edit`} onClick={scrollToTop}>
-                <PlusIcon className="mr-2 h-4 w-4" />
-                Add audio book
-              </Link>
-            </Button>
+            {user?.id === book.author.id && (
+              <Button asChild>
+                <Link to={`/books/${book.id}/edit`} onClick={scrollToTop}>
+                  <PlusIcon className="mr-2 h-4 w-4" />
+                  Add audio book
+                </Link>
+              </Button>
+            )}
           </div>
         ) : (
           <div className="grid gap-4">

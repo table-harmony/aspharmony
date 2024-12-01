@@ -9,6 +9,7 @@ import {
 import { useUserStore } from "@/lib/userStore";
 import { Button } from "@/components/ui/button";
 import { scrollToTop } from "@/lib/utils";
+import { LogoutButton } from "./logout-button";
 
 export function SiteHeader() {
   const user = useUserStore((state) => state.user);
@@ -22,10 +23,8 @@ export function SiteHeader() {
               <BookOpenText className="h-5 w-5" />
               <span className="text-lg font-bold">AspHarmony</span>
             </Link>
-          </div>
-          <div className="flex items-center gap-4">
-            {user ? (
-              <>
+            {user && (
+              <div className="flex items-center gap-4 ml-6">
                 <Button asChild>
                   <Link to="/books" onClick={scrollToTop}>
                     <BookIcon className="h-4 w-4" />
@@ -38,24 +37,27 @@ export function SiteHeader() {
                     Libraries
                   </Link>
                 </Button>
-              </>
-            ) : (
-              <>
-                <Button asChild>
-                  <Link to="/login">
-                    <LogInIcon className="h-4 w-4" />
-                    Login
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link to="/register">
-                    <UserPlusIcon className="h-4 w-4" />
-                    Register
-                  </Link>
-                </Button>
-              </>
+              </div>
             )}
           </div>
+          {!user ? (
+            <div className="flex items-center gap-4 ml-6">
+              <Button asChild>
+                <Link to="/login">
+                  <LogInIcon className="h-4 w-4" />
+                  Login
+                </Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <Link to="/register">
+                  <UserPlusIcon className="h-4 w-4" />
+                  Register
+                </Link>
+              </Button>
+            </div>
+          ) : (
+            <LogoutButton variant="secondary" />
+          )}
         </div>
       </div>
     </header>

@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Book, getBooks } from "@/lib/books";
-import { Library, getLibrary, addBookToLibrary } from "@/lib/libraries";
-import { useUserStore } from "@/lib/userStore";
+import { Library, addBookToLibrary } from "@/lib/libraries";
 import {
   Card,
   CardContent,
@@ -27,17 +26,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowLeft, Library as LibraryIcon, Plus } from "lucide-react";
+import {
+  Library as LibraryIcon,
+  Loader2,
+  MinusIcon,
+  PlusIcon,
+} from "lucide-react";
 import { toast } from "sonner";
-import { scrollToTop } from "@/lib/utils";
 import { Pagination } from "@/components/ui/pagination";
-import { Search } from "lucide-react";
 
-export function AddBooksToLibrary({ id }: { id: number }) {
+export function AddBooks({ library }: { library: Library }) {
   const navigate = useNavigate();
-  const user = useUserStore((state) => state.user);
   const [isLoading, setIsLoading] = useState(true);
-  const [library, setLibrary] = useState<Library | null>(null);
   const [books, setBooks] = useState<Book[]>([]);
   const [search, setSearch] = useState("");
   const [selectedBooks, setSelectedBooks] = useState<{ [key: number]: number }>(
@@ -53,11 +53,7 @@ export function AddBooksToLibrary({ id }: { id: number }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [libraryData, booksData] = await Promise.all([
-          getLibrary(id),
-          getBooks(),
-        ]);
-        setLibrary(libraryData);
+        const [booksData] = await Promise.all([getBooks()]);
         setBooks(booksData);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -67,15 +63,7 @@ export function AddBooksToLibrary({ id }: { id: number }) {
       }
     };
     fetchData();
-  }, [id]);
-
-  const userMembership = library?.members.find((m) => m.user.id === user?.id);
-  const isManager = userMembership?.role === "Manager";
-
-  if (!isManager) {
-    navigate(`/libraries/${id}`);
-    return null;
-  }
+  }, []);
 
   const filteredBooks = books.filter((book) => {
     const isInLibrary = library?.books.some((lb) => lb.book.id === book.id);
@@ -109,12 +97,12 @@ export function AddBooksToLibrary({ id }: { id: number }) {
 
       for (const [bookId, copies] of Object.entries(selectedBooks)) {
         for (let i = 0; i < copies; i++) {
-          await addBookToLibrary(id, parseInt(bookId));
+          await addBookToLibrary(library.id, parseInt(bookId));
         }
       }
 
       toast.success("Books added successfully");
-      navigate(`/libraries/${id}`);
+      navigate(`/libraries/${library.id}`);
     } catch (error) {
       console.error("Error adding books:", error);
       toast.error("Failed to add books");
@@ -127,28 +115,34 @@ export function AddBooksToLibrary({ id }: { id: number }) {
     <div className="space-y-8">
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-2xl font-bold">Add Books</CardTitle>
-              <CardDescription>Add books to {library?.name}</CardDescription>
-            </div>
-            <Button variant="outline" asChild>
-              <Link to={`/libraries/${id}`} onClick={scrollToTop}>
-                <ArrowLeft className="h-4 w-4" />
-                Back
-              </Link>
-            </Button>
-          </div>
+          <CardTitle className="text-2xl font-bold">Add Books</CardTitle>
+          <CardDescription>
+            Select books to add to "{library?.name}"
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center space-x-2">
-            <Search className="h-4 w-4 text-muted-foreground" />
+          <div className="flex justify-between space-x-2">
             <Input
               placeholder="Search books..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="max-w-sm"
             />
+            {Object.keys(selectedBooks).length > 0 && (
+              <Button onClick={handleAddBooks} disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Adding books...
+                  </>
+                ) : (
+                  <>
+                    <LibraryIcon className="h-4 w-4" />
+                    Add books
+                  </>
+                )}
+              </Button>
+            )}
           </div>
 
           <Table>
@@ -156,16 +150,21 @@ export function AddBooksToLibrary({ id }: { id: number }) {
               <TableRow>
                 <TableHead>Title</TableHead>
                 <TableHead>Author</TableHead>
-                {library?.allow_copies && <TableHead>Copies</TableHead>}
-                <TableHead className="text-right">Actions</TableHead>
+                {library?.allow_copies ? (
+                  <TableHead>Copies</TableHead>
+                ) : (
+                  <TableHead>Select</TableHead>
+                )}
               </TableRow>
             </TableHeader>
             <TableBody>
               {paginatedBooks.map((book) => (
                 <TableRow key={book.id}>
-                  <TableCell>{book.metadata.title}</TableCell>
+                  <TableCell className="font-medium">
+                    {book.metadata.title}
+                  </TableCell>
                   <TableCell>{book.author.username}</TableCell>
-                  {library?.allow_copies && (
+                  {library?.allow_copies ? (
                     <TableCell>
                       <Select
                         value={selectedBooks[book.id]?.toString() || "0"}
@@ -185,30 +184,32 @@ export function AddBooksToLibrary({ id }: { id: number }) {
                         </SelectContent>
                       </Select>
                     </TableCell>
+                  ) : (
+                    <TableCell>
+                      {(selectedBooks[book.id]?.toString() === "0" ||
+                        !selectedBooks[book.id]) && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleCopiesChange(book.id, "1")}
+                        >
+                          <PlusIcon className="h-4 w-4" />
+                          Add
+                        </Button>
+                      )}
+                      {selectedBooks[book.id]?.toString() !== "0" &&
+                        selectedBooks[book.id] && (
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleCopiesChange(book.id, "0")}
+                          >
+                            <MinusIcon className="h-4 w-4" />
+                            Remove
+                          </Button>
+                        )}
+                    </TableCell>
                   )}
-                  <TableCell className="text-right">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        if (library?.allow_copies) {
-                          handleCopiesChange(book.id, "1");
-                        } else {
-                          handleCopiesChange(
-                            book.id,
-                            selectedBooks[book.id] ? "0" : "1"
-                          );
-                        }
-                      }}
-                    >
-                      <Plus className="h-4 w-4" />
-                      {library?.allow_copies
-                        ? "Select"
-                        : selectedBooks[book.id]
-                        ? "Selected"
-                        : "Select"}
-                    </Button>
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -224,15 +225,6 @@ export function AddBooksToLibrary({ id }: { id: number }) {
               onPageChange={setCurrentPage}
             />
           </div>
-
-          {Object.keys(selectedBooks).length > 0 && (
-            <div className="flex justify-end">
-              <Button onClick={handleAddBooks} disabled={isLoading}>
-                <LibraryIcon className="h-4 w-4" />
-                Add Selected Books
-              </Button>
-            </div>
-          )}
         </CardContent>
       </Card>
     </div>

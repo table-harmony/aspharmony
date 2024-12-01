@@ -11,6 +11,7 @@ import {
   PenSquare,
   UserPlus,
 } from "lucide-react";
+import { LogoutButton } from "@/components/logout-button";
 
 export default function HomePage() {
   const user = useUserStore((state) => state.user);
@@ -39,7 +40,7 @@ export default function HomePage() {
                   Books
                 </Link>
               </Button>
-              <Button asChild variant="secondary" className="flex-1">
+              <Button asChild variant="outline" className="flex-1">
                 <Link to="/libraries">
                   <Library className="mr-2 h-4 w-4" />
                   Libraries
@@ -54,7 +55,7 @@ export default function HomePage() {
                   Login
                 </Link>
               </Button>
-              <Button asChild variant="secondary" className="flex-1">
+              <Button asChild variant="outline" className="flex-1">
                 <Link to="/register">
                   <UserPlus className="mr-2 h-4 w-4" />
                   Register

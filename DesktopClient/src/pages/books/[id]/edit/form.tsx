@@ -5,10 +5,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
   updateBook,
-  getBookById,
   getServers,
   ServerType,
   UpdateBookDto,
+  Book,
 } from "@/lib/books";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,10 +25,8 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import {
   Select,
@@ -68,23 +66,24 @@ const bookSchema = z.object({
 
 type BookFormValues = z.infer<typeof bookSchema>;
 
-export default function EditBookForm({ id }: { id: number }) {
+export default function EditBookForm({ book }: { book: Book }) {
   const user = useUserStore((state) => state.user);
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [servers, setServers] = useState<ServerType[]>([]);
 
   const form = useForm<BookFormValues>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
-      id: 0,
-      server: 0,
+      id: book.id,
+      server: book.server,
+      author: book.author,
       metadata: {
-        id: 0,
-        title: "",
-        description: "",
-        chapters: [],
-        image_url: "",
+        id: book.id,
+        title: book.metadata.title,
+        description: book.metadata.description,
+        chapters: book.metadata.chapters,
+        image_url: book.metadata.image_url,
       },
     },
   });
@@ -97,13 +96,8 @@ export default function EditBookForm({ id }: { id: number }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [book, serverList] = await Promise.all([
-          getBookById(id),
-          getServers(),
-        ]);
-        if (book) {
-          form.reset(book);
-        }
+        setIsLoading(true);
+        const serverList = await getServers();
         setServers(serverList);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -113,7 +107,7 @@ export default function EditBookForm({ id }: { id: number }) {
       }
     };
     fetchData();
-  }, [id, form]);
+  }, [form]);
 
   const onSubmit = async (data: BookFormValues) => {
     if (!user || user.id !== data.author.id) {
@@ -135,7 +129,7 @@ export default function EditBookForm({ id }: { id: number }) {
       toast.success("Book updated successfully");
 
       scrollToTop();
-      navigate(`/books/${id}`);
+      navigate(`/books/${book.id}`);
     } catch (error) {
       console.error("Error updating book:", error);
       toast.error("Failed to update book. Please try again.");
@@ -147,12 +141,7 @@ export default function EditBookForm({ id }: { id: number }) {
   return (
     <div className="container max-w-3xl py-8">
       <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">Edit Book</CardTitle>
-          <CardDescription>
-            Update your book's details and chapters
-          </CardDescription>
-        </CardHeader>
+        <CardHeader></CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -194,10 +183,10 @@ export default function EditBookForm({ id }: { id: number }) {
                 control={form.control}
                 name="server"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem {...field}>
                     <FormLabel>Server</FormLabel>
                     <Select
-                      onValueChange={field.onChange}
+                      onValueChange={(value) => field.onChange(parseInt(value))}
                       defaultValue={field.value.toString()}
                     >
                       <FormControl>
@@ -297,12 +286,12 @@ export default function EditBookForm({ id }: { id: number }) {
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Updating...
+                      Saving...
                     </>
                   ) : (
                     <>
                       <Save className="mr-2 h-4 w-4" />
-                      Update
+                      Save Changes
                     </>
                   )}
                 </Button>

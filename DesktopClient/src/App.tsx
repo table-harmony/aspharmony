@@ -9,8 +9,8 @@ import DeleteBookPage from "@/pages/books/[id]/delete/page";
 import EditBookPage from "@/pages/books/[id]/edit/page";
 import CreateBookPage from "@/pages/books/create/page";
 
-import LoginPage from "@/pages/auth/login";
-import RegisterPage from "@/pages/auth/register";
+import LoginPage from "@/pages/auth/login/page";
+import RegisterPage from "@/pages/auth/register/page";
 
 import HomePage from "@/pages/page";
 import LibrariesPage from "@/pages/libraries/page";
@@ -19,7 +19,6 @@ import CreateLibraryPage from "@/pages/libraries/create/page";
 import ManageLibraryPage from "@/pages/libraries/[id]/manage/page";
 import DeleteLibraryPage from "./pages/libraries/[id]/delete/page";
 import EditLibraryPage from "./pages/libraries/[id]/edit/page";
-import AddBooksToLibraryPage from "./pages/libraries/[id]/add-books/page";
 
 export default function App() {
   return (
@@ -43,10 +42,6 @@ export default function App() {
           <Route path="/libraries/:id/edit" element={<EditLibraryPage />} />
           <Route path="/libraries/:id/delete" element={<DeleteLibraryPage />} />
           <Route path="/libraries/:id/manage" element={<ManageLibraryPage />} />
-          <Route
-            path="/libraries/:id/add-books"
-            element={<AddBooksToLibraryPage />}
-          />
         </Routes>
       </SiteLayout>
       <Toaster />

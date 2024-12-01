@@ -18,7 +18,7 @@ export default function BooksPage() {
               <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl">
                 Book Collection
               </h1>
-              <p className="text-muted-foreground max-w-[600px] mx-auto text-balance">
+              <p className="text-muted-foreground max-w-[600px] mx-auto">
                 Explore your personal library, create new books, and manage your
                 collection all in one place.
               </p>

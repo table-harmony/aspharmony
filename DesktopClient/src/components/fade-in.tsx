@@ -7,6 +7,6 @@ interface FadeInProps {
 
 export function FadeIn({ children, className }: FadeInProps) {
   return (
-    <div className={cn("animate-in fade-in-50", className)}>{children}</div>
+    <div className={cn("animate-in fade-in-500", className)}>{children}</div>
   );
 }

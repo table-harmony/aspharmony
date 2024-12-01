@@ -19,10 +19,8 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import {
   Select,
@@ -122,10 +120,7 @@ export default function CreateBookForm() {
   return (
     <div className="container max-w-3xl py-8">
       <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">Create Book</CardTitle>
-          <CardDescription>Create a new book with chapters</CardDescription>
-        </CardHeader>
+        <CardHeader></CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -167,7 +162,7 @@ export default function CreateBookForm() {
                 control={form.control}
                 name="server"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem {...field}>
                     <FormLabel>Server</FormLabel>
                     <Select
                       onValueChange={(value) => field.onChange(parseInt(value))}

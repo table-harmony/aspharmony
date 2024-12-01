@@ -24,16 +24,13 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { ArrowLeft, Loader2, Save } from "lucide-react";
+import { Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
 import { scrollToTop } from "@/lib/utils";
-import { Link } from "react-router-dom";
 
 const librarySchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -110,10 +107,7 @@ export function EditLibraryForm({ id }: { id: number }) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold">Edit Library</CardTitle>
-        <CardDescription>Update library settings</CardDescription>
-      </CardHeader>
+      <CardHeader></CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -155,13 +149,7 @@ export function EditLibraryForm({ id }: { id: number }) {
               )}
             />
 
-            <CardFooter className="flex justify-between px-0">
-              <Button variant="outline" asChild>
-                <Link to={`/libraries/${id}`} onClick={scrollToTop}>
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Cancel
-                </Link>
-              </Button>
+            <CardFooter className="flex justify-end px-0">
               <Button type="submit" disabled={isLoading}>
                 {isLoading ? (
                   <>
