@@ -15,6 +15,7 @@
       "output": "release"
     },
     "files": [
+      ".env",
       "dist/**/*",
       "src/**/*",
       "!src/**/*.test.ts",
@@ -22,21 +23,22 @@
     ],
     "win": {
       "target": "nsis",
-      "icon": "src/assets/logo.jpg"
+      "icon": "src/assets/logo.png"
     },
     "mac": {
-      "target": "dmg"
+      "target": "dmg",
+      "icon": "src/assets/logo.png"
     },
     "linux": {
-      "target": "AppImage"
+      "target": "AppImage",
+      "icon": "src/assets/logo.png"
     }
   },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "vite:dev": "vite",
+    "vite:build": "tsc -b && vite build",
     "electron:dev": "concurrently \"vite\" \"electron ./src/main.js\"",
-    "electron:build": "vite build && electron-builder",
-    "package": "npm run build && npm run electron:build"
+    "electron:build": "vite build && electron-builder"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -51,6 +53,7 @@
     "axios": "^1.7.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.5",
     "lucide-react": "^0.462.0",
     "next-themes": "^0.4.3",
     "react": "^18.3.1",

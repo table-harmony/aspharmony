@@ -2,6 +2,7 @@ import { SiteHeader } from "./site-header";
 import { SiteFooter } from "./site-footer";
 import { ThemeProvider } from "next-themes";
 import { FadeIn } from "./fade-in";
+import { Toaster } from "sonner";
 
 export function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -18,6 +19,7 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
         </div>
         <SiteFooter />
       </div>
+      <Toaster duration={2000} richColors />
     </ThemeProvider>
   );
 }

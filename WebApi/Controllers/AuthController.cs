@@ -19,6 +19,11 @@ public class AuthController(
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request) {
+        var existingUser = await userManager.FindByEmailAsync(request.Email);
+
+        if (existingUser != null)
+            return BadRequest("User already exists");
+
         User user = new() {
             UserName = request.Email,
             Email = request.Email,

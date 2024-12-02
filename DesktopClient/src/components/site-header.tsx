@@ -16,7 +16,7 @@ export function SiteHeader() {
 
   return (
     <header className="top-0 z-50 w-full border-b border-border/40 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container max-w-6xl mx-auto px-4 sm:px-6 py-2 sm:py-4">
+      <div className="container max-w-6xl mx-auto px-2 sm:px-4 py-1 sm:py-2">
         <div className="flex h-14 items-center justify-between">
           <div className="flex items-center gap-2">
             <Link to="/" className="flex items-center gap-2">

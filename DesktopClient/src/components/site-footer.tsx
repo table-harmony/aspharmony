@@ -4,7 +4,7 @@ import { ModeToggle } from "./mode-toggle";
 export function SiteFooter() {
   return (
     <footer className="border-t">
-      <div className="container max-w-6xl mx-auto px-4 sm:px-6 py-2 sm:py-4">
+      <div className="container max-w-6xl mx-auto px-2 sm:px-4 py-1 sm:py-2">
         <div className="flex h-14 items-center justify-between gap-4">
           <p className="text-balance text-sm font-semibold leading-loose text-muted-foreground">
             Built by{" "}

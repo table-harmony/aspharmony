@@ -1,5 +1,4 @@
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
-import { Toaster } from "sonner";
 
 import { SiteLayout } from "@/components/site-layout";
 
@@ -11,14 +10,16 @@ import CreateBookPage from "@/pages/books/create/page";
 
 import LoginPage from "@/pages/auth/login/page";
 import RegisterPage from "@/pages/auth/register/page";
+import ForgotPasswordPage from "@/pages/auth/forgot-password/page";
 
 import HomePage from "@/pages/page";
+
 import LibrariesPage from "@/pages/libraries/page";
 import LibraryDetailsPage from "@/pages/libraries/[id]/page";
 import CreateLibraryPage from "@/pages/libraries/create/page";
 import ManageLibraryPage from "@/pages/libraries/[id]/manage/page";
-import DeleteLibraryPage from "./pages/libraries/[id]/delete/page";
-import EditLibraryPage from "./pages/libraries/[id]/edit/page";
+import DeleteLibraryPage from "@/pages/libraries/[id]/delete/page";
+import EditLibraryPage from "@/pages/libraries/[id]/edit/page";
 
 export default function App() {
   return (
@@ -29,6 +30,7 @@ export default function App() {
 
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
           <Route path="/books" element={<BooksPage />} />
           <Route path="/books/create" element={<CreateBookPage />} />
@@ -44,7 +46,6 @@ export default function App() {
           <Route path="/libraries/:id/manage" element={<ManageLibraryPage />} />
         </Routes>
       </SiteLayout>
-      <Toaster />
     </Router>
   );
 }
