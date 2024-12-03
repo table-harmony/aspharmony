@@ -377,7 +377,7 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="BusinessLogicLayer.Servers.Books.Documents.PresentationChapter" Collapsed="true">
-    <Position X="0.5" Y="4.75" Width="1.5" />
+    <Position X="0.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Servers\Books\Documents\PowerpointStorage.cs</FileName>
@@ -416,7 +416,7 @@
   <Class Name="BusinessLogicLayer.Servers.Books.ApiServer" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="7.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAABAAAACABAAAABAAAAAAAAAQIAAAEAAAAE=</HashCode>
+      <HashCode>AAAAAAAAAABAAAACABAAAABAAAAAAAAAAIAAAEAAAAE=</HashCode>
       <FileName>Servers\Books\ApiServer.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -445,7 +445,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="BusinessLogicLayer.Servers.Books.Chapter" Collapsed="true">
-    <Position X="0.5" Y="3.5" Width="1.5" />
+    <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAgAAAEAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
       <FileName>Servers\Books\IServer.cs</FileName>
@@ -525,7 +525,7 @@
   <Class Name="BusinessLogicLayer.Services.BookLoanService" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="18.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIEAAAAgAAAABAIAQAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAhAAAAAAAAIEhAAIggAAABEIAQAAA=</HashCode>
       <FileName>Services\BookLoanService.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -540,7 +540,7 @@
   <Class Name="BusinessLogicLayer.Services.BookService" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="7.75" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEAAAAAAAAAAAAAAAAAAIBAAAAAAAgAACAAAIAAAIA=</HashCode>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAIBAAAAAAAgAACAIAIgAAIA=</HashCode>
       <FileName>Services\BookService.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -588,7 +588,7 @@
   <Class Name="BusinessLogicLayer.Services.SenderService" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="20" Y="6.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Services\SenderService.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -610,28 +610,28 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Interface Name="ForeignBooksServiceReference.BooksServicePortType" Collapsed="true">
-    <Position X="3.5" Y="0.5" Width="1.5" />
+    <Position X="0.5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAABAAAACAAAAAABAAAAAAAAAAAAAAEAAAAE=</HashCode>
       <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="ForeignBooksServiceReference.BooksServicePortTypeChannel" Collapsed="true">
-    <Position X="3.5" Y="1.75" Width="1.5" />
+    <Position X="0.5" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Connected Services\ForeignBooksServiceReference\Reference.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="LocalBooksServiceReference.BooksServiceSoap" Collapsed="true">
-    <Position X="0.5" Y="0.5" Width="1.5" />
+    <Position X="3.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAABAAAACAAAAAABAAAAAAAAAAAAAAEAAAAE=</HashCode>
       <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="LocalBooksServiceReference.BooksServiceSoapChannel" Collapsed="true">
-    <Position X="0.5" Y="1.75" Width="1.5" />
+    <Position X="3.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Connected Services\LocalBooksServiceReference\Reference.cs</FileName>
@@ -682,14 +682,14 @@
   <Interface Name="BusinessLogicLayer.Services.IBookLoanService" Collapsed="true">
     <Position X="7.75" Y="9.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIEAAAAgAAAABAIAQAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAhAAAAAAAAIEhAAIggAAABEIAQAAA=</HashCode>
       <FileName>Services\BookLoanService.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="BusinessLogicLayer.Services.IBookService" Collapsed="true">
     <Position X="14.75" Y="9.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEAAAAAAAAAAAAAAAAAAABAAAAAAAgAAAAAAIAAAIA=</HashCode>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAABAAAAAAAgAAAAIAIgAAIA=</HashCode>
       <FileName>Services\BookService.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -731,7 +731,7 @@
   <Interface Name="BusinessLogicLayer.Services.ISenderService" Collapsed="true">
     <Position X="13" Y="10.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>Services\SenderService.cs</FileName>
     </TypeIdentifier>
   </Interface>

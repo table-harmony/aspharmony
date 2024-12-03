@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MobileClient2.Views.LibrariesPage"
+             Title="Libraries">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            <Label Text="Libraries"
+                   Style="{StaticResource Headline}"
+                   HorizontalOptions="Center"/>
+
+            <SearchBar x:Name="SearchBar" 
+                      Placeholder="Search libraries..."
+                      TextChanged="OnSearchTextChanged"/>
+
+            <RefreshView Command="{Binding RefreshCommand}"
+                        IsRefreshing="{Binding IsRefreshing}">
+                <CollectionView x:Name="LibrariesCollection"
+                              ItemsSource="{Binding Libraries}"
+                              EmptyView="No libraries found">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Margin="0,0,0,10" Padding="15">
+                                <Grid RowDefinitions="Auto,Auto">
+                                    <Label Text="{Binding Name}"
+                                           Style="{StaticResource SubHeadline}"/>
+                                    
+                                    <Label Grid.Row="1"
+                                           Text="{Binding AllowCopies, StringFormat='Multiple copies: {0}'}"
+                                           Style="{StaticResource Caption}"
+                                           Margin="0,5,0,0"/>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

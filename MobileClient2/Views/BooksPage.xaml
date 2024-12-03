@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MobileClient2.Views.BooksPage"
+             Title="Books">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            <Label Text="Books"
+                   Style="{StaticResource Headline}"
+                   HorizontalOptions="Center"/>
+
+            <SearchBar x:Name="SearchBar" 
+                      Placeholder="Search books..."
+                      TextChanged="OnSearchTextChanged"/>
+
+            <RefreshView Command="{Binding RefreshCommand}"
+                        IsRefreshing="{Binding IsRefreshing}">
+                <CollectionView x:Name="BooksCollection"
+                              ItemsSource="{Binding Books}"
+                              EmptyView="No books found">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Margin="0,0,0,10" Padding="10">
+                                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto">
+                                    <Image Source="{Binding Metadata.ImageUrl}"
+                                           HeightRequest="120"
+                                           WidthRequest="80"
+                                           Aspect="AspectFill"
+                                           Grid.RowSpan="3"/>
+                                    
+                                    <Label Text="{Binding Metadata.Title}"
+                                           Grid.Column="1"
+                                           Style="{StaticResource SubHeadline}"
+                                           Margin="10,0,0,0"/>
+                                    
+                                    <Label Text="{Binding Author.UserName}"
+                                           Grid.Column="1"
+                                           Grid.Row="1"
+                                           Style="{StaticResource Caption}"
+                                           Margin="10,5,0,0"/>
+                                    
+                                    <Label Text="{Binding Metadata.Description}"
+                                           Grid.Column="1"
+                                           Grid.Row="2"
+                                           Style="{StaticResource Body}"
+                                           MaxLines="2"
+                                           Margin="10,5,0,0"/>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

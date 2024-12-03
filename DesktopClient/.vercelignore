@@ -1,0 +1,25 @@
+# Ignore build output directories
+dist/
+release/
+
+# Ignore node_modules
+node_modules/
+
+# Ignore local environment files
+.env
+
+# Ignore logs
+logs/
+*.log
+
+# Ignore editor directories and files
+.vscode/
+.idea/
+.DS_Store
+
+# Ignore test files
+src/**/*.test.ts
+src/**/*.test.tsx
+
+# Ignore any other files you don't want to deploy
+*.local

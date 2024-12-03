@@ -1,0 +1,1709 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="MobileClient2.Models.Book" Collapsed="true">
+    <Position X="27.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAgAEAAA=</HashCode>
+      <FileName>Models\Book.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.Models.BookMetadata" Collapsed="true">
+    <Position X="20.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACQAAAAAAgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Book.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.Models.Author" Collapsed="true">
+    <Position X="24" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAACAAAAAAAAAAQAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Models\Book.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.Models.Library" Collapsed="true">
+    <Position X="20.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAABAAAAAAAAAAAAAAAQAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Library.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.Models.LibraryBook" Collapsed="true">
+    <Position X="22.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACCAAAAAAAAABAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Library.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.Models.User" Collapsed="true">
+    <Position X="20.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAACAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.Models.LoginRequest" Collapsed="true">
+    <Position X="27.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Models\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.Models.RegisterRequest" Collapsed="true">
+    <Position X="27.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Models\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.MainActivity" Collapsed="true">
+    <Position X="20.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Platforms\Android\MainActivity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.MainApplication" Collapsed="true">
+    <Position X="22.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Platforms\Android\MainApplication.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.App" Collapsed="true">
+    <Position X="20.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.AppShell" Collapsed="true">
+    <Position X="22.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAQgAAAAAAAAAAAAAIAAAAA=</HashCode>
+      <FileName>AppShell.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.MauiProgram" Collapsed="true">
+    <Position X="24" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MauiProgram.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.Services.AuthService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="25.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAABAAAAAgAAAAIAAgAAAQAAAAAAA=</HashCode>
+      <FileName>Services\AuthService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MobileClient2.Services.BookService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="22.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAABAQAABAAAAAAAAAAIAAAEAAAAE=</HashCode>
+      <FileName>Services\BookService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MobileClient2.Services.LibraryService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="24" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAgAABAgAAAgAAAQAAgAAIAAgAAAAAA=</HashCode>
+      <FileName>Services\LibraryService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MobileClient2.ViewModels.BaseViewModel" Collapsed="true">
+    <Position X="13.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAgAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\BaseViewModel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MobileClient2.ViewModels.BooksViewModel" Collapsed="true">
+    <Position X="13.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEBAAACAAABAAAAAgAAAAAAAgAIAACAAgEAQAAAAAAA=</HashCode>
+      <FileName>ViewModels\BooksViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.ViewModels.HomeViewModel" Collapsed="true">
+    <Position X="15.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAAQAAAAAAAQgIAASAAAAAAAQAIAAAIA=</HashCode>
+      <FileName>ViewModels\HomeViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.ViewModels.LibrariesViewModel" Collapsed="true">
+    <Position X="18" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAFAAAAAgAAAAAAAAAAAAAoAoEAAAAAQAAQ=</HashCode>
+      <FileName>ViewModels\LibrariesViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.ViewModels.LoginViewModel" Collapsed="true">
+    <Position X="9" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgQAAAAAACAAAAAAAAAAAARgAAAAAAACAAAAAACAAAE=</HashCode>
+      <FileName>ViewModels\LoginViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.ViewModels.RegisterViewModel" Collapsed="true">
+    <Position X="11.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACAAAAAAAACAAARgIAAAAACiAAAAAAAAIAE=</HashCode>
+      <FileName>ViewModels\RegisterViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.Views.BooksPage" Collapsed="true">
+    <Position X="24" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAQAAAAAAAAAAAAAAAAAAIAAAAAAAA=</HashCode>
+      <FileName>Views\BooksPage.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.Views.HomePage" Collapsed="true">
+    <Position X="25.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\HomePage.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.Views.LibrariesPage" Collapsed="true">
+    <Position X="27.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAQAAAAAAAAAAAAAAAAAAIAAAAAAAA=</HashCode>
+      <FileName>Views\LibrariesPage.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.Views.LoginPage" Collapsed="true">
+    <Position X="25.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\LoginPage.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MobileClient2.Views.RegisterPage" Collapsed="true">
+    <Position X="25.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\RegisterPage.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.AtlasController" Collapsed="true">
+    <Position X="31.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BBBAAEAAAAAAAAAAAAACAAAAAAAAAEAAAAAAAAgEAAA=</HashCode>
+      <FileName>Controllers\AtlasController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.AuthController" Collapsed="true">
+    <Position X="35" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAABAAAAAAAAAIAAAABAAAAAAAQCAAAAIA=</HashCode>
+      <FileName>Controllers\AuthController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.RegisterRequest" Collapsed="true">
+    <Position X="31.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\AuthController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.LoginRequest" Collapsed="true">
+    <Position X="36.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\AuthController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.BookLoansController" Collapsed="true">
+    <Position X="36.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAwAABgAAQAEAAAIAAAAEAAAABAAAAAAAA=</HashCode>
+      <FileName>Controllers\BookLoansController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.CreateBookLoanRequest" Collapsed="true">
+    <Position X="31.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAACAAAAAAAAAAIAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\BookLoansController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.CreateLoanRequestRequest" Collapsed="true">
+    <Position X="38.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\BookLoansController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.BooksController" Collapsed="true">
+    <Position X="29.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAQBAAAAAAAAAAAEAEEAAAkAAAAAAAAA=</HashCode>
+      <FileName>Controllers\BooksController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.UserResponse" Collapsed="true">
+    <Position X="29.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAACAAAAAAAAAAQAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Controllers\BooksController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.BookResponse" Collapsed="true">
+    <Position X="38.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAIAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAgAEAAA=</HashCode>
+      <FileName>Controllers\BooksController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.CreateBookRequest" Collapsed="true">
+    <Position X="33.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAgAEAAA=</HashCode>
+      <FileName>Controllers\BooksController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.UpdateBookRequest" Collapsed="true">
+    <Position X="36.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAgAEAAA=</HashCode>
+      <FileName>Controllers\BooksController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.ServerTypeResponse" Collapsed="true">
+    <Position X="35" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACEAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\BooksController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.AudioBookResponse" Collapsed="true">
+    <Position X="33.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACCAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\BooksController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.FeedbackController" Collapsed="true">
+    <Position X="33.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAABAAAAAAAAAAAEAAEAAAgAAAAAAAAA=</HashCode>
+      <FileName>Controllers\FeedbackController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.LibraryBooksController" Collapsed="true">
+    <Position X="29.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAACABAAAAAAAAAAAEAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\LibraryBooksController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.CreateLibraryBookRequest" Collapsed="true">
+    <Position X="35" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\LibraryBooksController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.LibraryController" Collapsed="true">
+    <Position X="31.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQEAAAAAAAAAABAACAAACAIAAEgAEAAAgAEAAAAAAA=</HashCode>
+      <FileName>Controllers\LibraryController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.LibraryResponse" Collapsed="true">
+    <Position X="35" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAABAAAAAAAAAAAAAAAQAgAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>Controllers\LibraryController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.LibraryBookResponse" Collapsed="true">
+    <Position X="38.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACCAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\LibraryController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.MembershipResponse" Collapsed="true">
+    <Position X="38.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAADAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\LibraryController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.CreateLibraryRequest" Collapsed="true">
+    <Position X="36.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\LibraryController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.UpdateLibraryRequest" Collapsed="true">
+    <Position X="38.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAABAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\LibraryController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.AddBookRequest" Collapsed="true">
+    <Position X="29.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\LibraryController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.JoinLibraryRequest" Collapsed="true">
+    <Position X="35" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\LibraryController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.LibraryMembershipsController" Collapsed="true">
+    <Position X="33.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAEAAABAAEAAAAAAAAEEAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\LibraryMembershipsController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.NotificationsController" Collapsed="true">
+    <Position X="29.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAAAAAAAgAAAAAEEAAEAIAgAAAAAAAAE=</HashCode>
+      <FileName>Controllers\NotificationsController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.CreateNotificationRequest" Collapsed="true">
+    <Position X="29.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Controllers\NotificationsController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.SendersController" Collapsed="true">
+    <Position X="33.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>Controllers\SendersController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.UsersController" Collapsed="true">
+    <Position X="31.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAABAAAAAAAAAAAGAAEAAAgAAAAAAAAA=</HashCode>
+      <FileName>Controllers\UsersController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.CreateUserModel" Collapsed="true">
+    <Position X="31.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\UsersController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.Controllers.UserSendersController" Collapsed="true">
+    <Position X="33.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAAAAAAEAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\UserSendersController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebApi.JsonNumberEnumConverter" Collapsed="true">
+    <Position X="36.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>JsonNumberEnumConverter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSockets.Message" Collapsed="true">
+    <Position X="43" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAACAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>ChatHub.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSockets.ChatHub" Collapsed="true">
+    <Position X="41.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAACAAABAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ChatHub.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebServices.BooksService" Collapsed="true">
+    <Position X="47" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BBBAAEAAAAAAAEAAgQBAAAAAAAAAAAAAAAAAAAAEQAA=</HashCode>
+      <FileName>BooksService.asmx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebServices.Book" Collapsed="true">
+    <Position X="45.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABCQAAAAAAgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BooksService.asmx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebServices.Chapter" Collapsed="true">
+    <Position X="45.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAEAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>BooksService.asmx.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Data.AdoContext" Collapsed="true">
+    <Position X="108.25" Y="1" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="DataAccessLayer.Data.ApplicationContext" Collapsed="true">
+    <Position X="110" Y="1" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Nimbus.BookChapter" Collapsed="true">
+    <Position X="119" Y="1" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier />
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Nimbus.BookMetadata" Collapsed="true">
+    <Position X="115.25" Y="2" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Stegan.BookMetadata" Collapsed="true">
+    <Position X="117" Y="2" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="DataAccessLayer.Entities.AudioBook" Collapsed="true">
+    <Position X="113.5" Y="1" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Book" Collapsed="true">
+    <Position X="115.25" Y="1" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="DataAccessLayer.Entities.BookLoan" Collapsed="true">
+    <Position X="111.75" Y="2" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Feedback" Collapsed="true">
+    <Position X="117" Y="3" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Library" Collapsed="true">
+    <Position X="111.75" Y="4" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="DataAccessLayer.Entities.LibraryBook" Collapsed="true">
+    <Position X="113.5" Y="4" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="DataAccessLayer.Entities.LibraryMembership" Collapsed="true">
+    <Position X="117" Y="4" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Notification" Collapsed="true">
+    <Position X="113.5" Y="5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Sender" Collapsed="true">
+    <Position X="117" Y="5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="DataAccessLayer.Entities.User" Collapsed="true">
+    <Position X="110" Y="6" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="DataAccessLayer.Entities.UserSender" Collapsed="true">
+    <Position X="113.5" Y="6" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="DataAccessLayer.Identity.UserStore" Collapsed="true">
+    <Position X="117" Y="6" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="DataAccessLayer.Migrations.Initial" Collapsed="true">
+    <Position X="110" Y="4" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="DataAccessLayer.Migrations.Cascade" Collapsed="true">
+    <Position X="115.25" Y="3" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="DataAccessLayer.Migrations.ApplicationContextModelSnapshot" Collapsed="true">
+    <Position X="111.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Migrations\ApplicationContextModelSnapshot.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.Nimbus.v1.BookChapterRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="108.25" Y="2" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.Nimbus.v1.BookMetadataRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="111.75" Y="3" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.Nimbus.v2.BookChapterRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="110" Y="2" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.Nimbus.v2.BookMetadataRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="110" Y="3" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Orientation="Left" Position="0.362" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.Nimbus.NimbusFactory" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="111.75" Y="5" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.Stegan.BookMetadataRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="108.25" Y="3" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.BookLoanRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="113.5" Y="2" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.BookRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="113.5" Y="3" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Orientation="Right" Position="0.362" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.FeedbackRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="108.25" Y="4" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.LibraryBookRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="115.25" Y="4" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Orientation="Right" Position="0.362" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.LibraryMembershipRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="108.25" Y="5" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.LibraryRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="110" Y="5" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.NotificationRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="115.25" Y="5" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.SenderRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="108.25" Y="6" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.UserRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="111.75" Y="6" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DataAccessLayer.Repositories.UserSenderRepository" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="115.25" Y="6" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Utils.Encryption.BcryptEncryption" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="65.5" Y="1" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Utils.Encryption.Sha256Encryption" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="60.25" Y="4" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Utils.Encryption.Steganography" Collapsed="true">
+    <Position X="65.5" Y="4" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Utils.Exceptions.AuthenticationException" Collapsed="true">
+    <Position X="53.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Utils.Exceptions.AuthorizationException" Collapsed="true">
+    <Position X="55.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Utils.Exceptions.NotFoundException" Collapsed="true">
+    <Position X="57.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Utils.Exceptions.PublicException" Collapsed="true">
+    <Position X="53.25" Y="1" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Utils.Exceptions.SenderException" Collapsed="true">
+    <Position X="48.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Utils.Exceptions.ServerDisabledException" Collapsed="true">
+    <Position X="51" Y="2.5" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Utils.Senders.EmailSender" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="60.25" Y="2" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Utils.Senders.SenderFactory" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="67.25" Y="3" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Utils.Senders.SMSSender" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="62" Y="4" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Utils.Senders.WhatsAppSender" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="67.25" Y="4" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Utils.GeminiService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="60.25" Y="3" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Utils.StabilityService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="63.75" Y="4" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Utils.ElevenLabsService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="67.25" Y="1" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Utils.EnumExtensions" Collapsed="true">
+    <Position X="62" Y="2" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Utils.EventTracker" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="65.5" Y="2" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Utils.ApiResponse" Collapsed="true">
+    <Position X="63.75" Y="1" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Utils.ApiEvent" Collapsed="true">
+    <Position X="62" Y="1" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Utils.School" Collapsed="true">
+    <Position X="65.5" Y="3" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Utils.Event" Collapsed="true">
+    <Position X="63.75" Y="2" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Utils.FileUploader" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="67.25" Y="2" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Utils.PathManager" Collapsed="true">
+    <Position X="63.75" Y="3" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Utils.GoogleService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="62" Y="3" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Utils.AiTranslateService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="60.25" Y="1" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.GetBookRequest" Collapsed="true">
+    <Position X="87.25" Y="5" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.Chapter" Collapsed="true">
+    <Position X="87.25" Y="2" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.Book" Collapsed="true">
+    <Position X="80.25" Y="1" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.GetBookResponse" Collapsed="true">
+    <Position X="78.5" Y="6" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.GetBookRequest1" Collapsed="true">
+    <Position X="90.75" Y="5" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.GetBookResponse1" Collapsed="true">
+    <Position X="82" Y="6" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.GetAllBooksRequest" Collapsed="true">
+    <Position X="76.75" Y="5" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.GetAllBooksRequest1" Collapsed="true">
+    <Position X="78.5" Y="5" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.GetAllBooksResponse" Collapsed="true">
+    <Position X="83.75" Y="5" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.CreateBookRequest" Collapsed="true">
+    <Position X="89" Y="2" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.CreateBookResponse" Collapsed="true">
+    <Position X="80.25" Y="3" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.CreateBookRequest1" Collapsed="true">
+    <Position X="76.75" Y="3" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.CreateBookResponse1" Collapsed="true">
+    <Position X="83.75" Y="3" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.UpdateBookRequest" Collapsed="true">
+    <Position X="87.25" Y="8" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.UpdateBookResponse" Collapsed="true">
+    <Position X="78.5" Y="9" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.UpdateBookRequest1" Collapsed="true">
+    <Position X="89" Y="8" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.UpdateBookResponse1" Collapsed="true">
+    <Position X="80.25" Y="9" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.DeleteBookRequest" Collapsed="true">
+    <Position X="87.25" Y="3" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.DeleteBookResponse" Collapsed="true">
+    <Position X="90.75" Y="3" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.DeleteBookRequest1" Collapsed="true">
+    <Position X="89" Y="3" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.DeleteBookResponse1" Collapsed="true">
+    <Position X="76.75" Y="4" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="ForeignBooksServiceReference.BooksServicePortTypeClient" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="82" Y="2" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="LocalBooksServiceReference.Book" Collapsed="true">
+    <Position X="83.75" Y="1" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="LocalBooksServiceReference.Chapter" Collapsed="true">
+    <Position X="85.5" Y="2" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="LocalBooksServiceReference.GetBookRequest" Collapsed="true">
+    <Position X="89" Y="5" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="LocalBooksServiceReference.GetBookRequestBody" Collapsed="true">
+    <Position X="76.75" Y="6" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="LocalBooksServiceReference.GetBookResponse" Collapsed="true">
+    <Position X="80.25" Y="6" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="LocalBooksServiceReference.GetBookResponseBody" Collapsed="true">
+    <Position X="83.75" Y="6" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="LocalBooksServiceReference.GetAllBooksRequest" Collapsed="true">
+    <Position X="90.75" Y="4" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="LocalBooksServiceReference.GetAllBooksRequestBody" Collapsed="true">
+    <Position X="80.25" Y="5" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="LocalBooksServiceReference.GetAllBooksResponse" Collapsed="true">
+    <Position X="82" Y="5" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="LocalBooksServiceReference.GetAllBooksResponseBody" Collapsed="true">
+    <Position X="85.5" Y="5" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="LocalBooksServiceReference.CreateBookRequest" Collapsed="true">
+    <Position X="90.75" Y="2" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="LocalBooksServiceReference.CreateBookRequestBody" Collapsed="true">
+    <Position X="78.5" Y="3" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="LocalBooksServiceReference.CreateBookResponse" Collapsed="true">
+    <Position X="82" Y="3" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="LocalBooksServiceReference.CreateBookResponseBody" Collapsed="true">
+    <Position X="85.5" Y="3" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="LocalBooksServiceReference.UpdateBookRequest" Collapsed="true">
+    <Position X="85.5" Y="8" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="LocalBooksServiceReference.UpdateBookRequestBody" Collapsed="true">
+    <Position X="90.75" Y="8" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="LocalBooksServiceReference.UpdateBookResponse" Collapsed="true">
+    <Position X="76.75" Y="9" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="LocalBooksServiceReference.UpdateBookResponseBody" Collapsed="true">
+    <Position X="82" Y="9" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="LocalBooksServiceReference.BooksServiceSoapClient" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="83.75" Y="2" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Events.EventPublisher" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="83.75" Y="4" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Events.EventSubscriber" Collapsed="true">
+    <Position X="85.5" Y="4" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="BusinessLogicLayer.Events.LibraryMembershipEventArgs" Collapsed="true">
+    <Position X="90.75" Y="6" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="BusinessLogicLayer.Events.LibraryBookEventArgs" Collapsed="true">
+    <Position X="85.5" Y="6" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="BusinessLogicLayer.Events.LibraryEvents" Collapsed="true">
+    <Position X="89" Y="6" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="BusinessLogicLayer.Events.MemberPromotedEvent" Collapsed="true">
+    <Position X="82" Y="7" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="BusinessLogicLayer.Events.MemberDemotedEvent" Collapsed="true">
+    <Position X="80.25" Y="7" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="BusinessLogicLayer.Events.UserEventArgs" Collapsed="true">
+    <Position X="83.75" Y="9" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="BusinessLogicLayer.Events.UserEvents" Collapsed="true">
+    <Position X="85.5" Y="9" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Documents.ExcelDocumentStorage" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="87.25" Y="4" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Documents.DocumentFactory" Collapsed="true">
+    <Position X="78.5" Y="4" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Documents.PowerPointStorage" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="89" Y="7" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Documents.PresentationChapter" Collapsed="true">
+    <Position X="71.25" Y="2.25" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Servers\Books\Documents\PowerpointStorage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Documents.TextStyle" Collapsed="true">
+    <Position X="83.75" Y="8" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AgAAAIAAAAAAACAAAAAAAgAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Servers\Books\Documents\PowerpointStorage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Documents.TextConfiguration" Collapsed="true">
+    <Position X="82" Y="8" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAIAAAAAAAAABAAACAAAAAA=</HashCode>
+      <FileName>Servers\Books\Documents\PowerpointStorage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Documents.WordDocumentStorage" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="90.75" Y="9" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.AetherServer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="76.75" Y="1" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.ApiServer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="78.5" Y="1" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.DummyServer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="80.25" Y="4" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.EchoServer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="82" Y="4" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Book" Collapsed="true">
+    <Position X="85.5" Y="1" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Chapter" Collapsed="true">
+    <Position X="71.25" Y="1" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.NimbusServer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="83.75" Y="7" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.OrionServer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="87.25" Y="7" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.BooksServerFactory" Collapsed="true">
+    <Position X="80.25" Y="2" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.SolaceServer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="76.75" Y="8" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Stegan1Server" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="78.5" Y="8" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Servers.Books.Stegan2Server" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="80.25" Y="8" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.Nimbus.BookChapterService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="87.25" Y="1" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.Nimbus.BookMetadataService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="90.75" Y="1" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.Stegan.BookMetadataService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="76.75" Y="2" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.BookLoanService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="89" Y="1" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.Book" Collapsed="true">
+    <Position X="82" Y="1" Width="1.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.BookService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="78.5" Y="2" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.FeedbackService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="89" Y="4" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.LibraryBookService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="87.25" Y="6" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.LibraryMembershipService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="76.75" Y="7" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.LibraryService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="78.5" Y="7" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.NotificationService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="85.5" Y="7" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.SenderService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="90.75" Y="7" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.UserSenderService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="87.25" Y="9" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="BusinessLogicLayer.Services.UserService" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="89" Y="9" Width="1.25" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="JokesServiceReference.AddNumbersRequest" Collapsed="true">
+    <Position X="100.75" Y="1" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAAAAAAAAAEAAgAQAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JokesServiceReference.AddNumbersResponse" Collapsed="true">
+    <Position X="104.25" Y="1" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JokesServiceReference.AddNumbersRequest1" Collapsed="true">
+    <Position X="102.5" Y="1" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JokesServiceReference.AddNumbersResponse1" Collapsed="true">
+    <Position X="106" Y="1" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JokesServiceReference.GenerateJokeRequest" Collapsed="true">
+    <Position X="99" Y="4" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JokesServiceReference.GenerateJokeResponse" Collapsed="true">
+    <Position X="102.5" Y="4" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAACEAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JokesServiceReference.GenerateJokeRequest1" Collapsed="true">
+    <Position X="100.75" Y="4" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JokesServiceReference.GenerateJokeResponse1" Collapsed="true">
+    <Position X="104.25" Y="4" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JokesServiceReference.JokesServicePortTypeClient" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="95.5" Y="5" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAQAAAIIAAAAJAAQAAAEAAACAAAAAQAAAAAA=</HashCode>
+      <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="PresentationLayer.Controllers.AccountController" Collapsed="true">
+    <Position X="95.5" Y="1" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAQBAAAQAgAACgAAAgAAIAAAEBAAAIAAEQAAIAAAA=</HashCode>
+      <FileName>Controllers\AccountController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Controllers.AdminController" Collapsed="true">
+    <Position X="95.5" Y="2" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAACAAAAAAAAAAAEAAEACAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\AdminController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Controllers.BookController" Collapsed="true">
+    <Position X="97.25" Y="2" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAEABAwCAAAAAAQQAAAEAEkADEAEEAAACACA=</HashCode>
+      <FileName>Controllers\BookController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Controllers.FeedbackController" Collapsed="true">
+    <Position X="95.5" Y="4" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEAAEAAAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\FeedbackController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Controllers.HomeController" Collapsed="true">
+    <Position X="106" Y="4" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAABACAAAAACAAAAgAAEEAgAAAAAA=</HashCode>
+      <FileName>Controllers\HomeController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Controllers.LibraryController" Collapsed="true">
+    <Position X="97.25" Y="5" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAARAAiBACAAACAIAAUgAEACABEEAAEAAAA=</HashCode>
+      <FileName>Controllers\LibraryController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.AccountViewModel" Collapsed="true">
+    <Position X="97.25" Y="1" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Models\AccountViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.SenderOptionViewModel" Collapsed="true">
+    <Position X="106" Y="6" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAEAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\AccountViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.AddBookViewModel" Collapsed="true">
+    <Position X="99" Y="1" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAACAACAAAAAAQAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\AddBookViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.BookDetailsViewModel" Collapsed="true">
+    <Position X="99" Y="2" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAACAAABIAAAAAAAAUEAAAAAAAgBAgAAAAAA=</HashCode>
+      <FileName>Models\BookDetailsViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.BookIndexViewModel" Collapsed="true">
+    <Position X="100.75" Y="2" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAgAAAAAAAAAAAAgAAAAAAAAAAAECAAAAA=</HashCode>
+      <FileName>Models\BookIndexViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.CreateBookViewModel" Collapsed="true">
+    <Position X="104.25" Y="2" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAgAEAAAAAAAAAAAAAAAhAAAAAAAgAAAAA=</HashCode>
+      <FileName>Models\CreateBookViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.ChapterViewModel" Collapsed="true">
+    <Position X="102.5" Y="2" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAEAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Models\CreateBookViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.MaxFileSizeAttribute" Collapsed="true">
+    <Position X="97.25" Y="6" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\CreateBookViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.CreateFeedbackViewModel" Collapsed="true">
+    <Position X="106" Y="2" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\CreateFeedbackViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.CreateLibraryViewModel" Collapsed="true">
+    <Position X="95.5" Y="3" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\CreateLibraryViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.CreateUserViewModel" Collapsed="true">
+    <Position X="97.25" Y="3" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAQAAAAAAAAAACAQAAAAAAIAA=</HashCode>
+      <FileName>Models\CreateUserViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.DeleteModalViewModel" Collapsed="true">
+    <Position X="99" Y="3" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAgA=</HashCode>
+      <FileName>Models\DeleteModalViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.DeleteViewModel" Collapsed="true">
+    <Position X="100.75" Y="3" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Models\DeleteViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.EditBookViewModel" Collapsed="true">
+    <Position X="102.5" Y="3" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AABKAAAAAAAgAEAAAAAAAAAAAAAAAgAAAAAAAgAAAAA=</HashCode>
+      <FileName>Models\EditBookViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.EditUserViewModel" Collapsed="true">
+    <Position X="104.25" Y="3" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAQAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Models\EditUserViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.ErrorViewModel" Collapsed="true">
+    <Position X="106" Y="3" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAQAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Models\ErrorViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.FeedbackIndexViewModel" Collapsed="true">
+    <Position X="97.25" Y="4" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAECAAAAA=</HashCode>
+      <FileName>Models\FeedbackIndexViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.LibraryDetailsViewModel" Collapsed="true">
+    <Position X="99" Y="5" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\LibraryDetailsViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.ManageBooksViewModel" Collapsed="true">
+    <Position X="106" Y="5" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAACAAAAgAAAAAAAAAAAECAAAAA=</HashCode>
+      <FileName>Models\LibraryDetailsViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.ManageMembersViewModel" Collapsed="true">
+    <Position X="95.5" Y="6" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAEACAAAAA=</HashCode>
+      <FileName>Models\LibraryDetailsViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.LibraryProfileViewModel" Collapsed="true">
+    <Position X="100.75" Y="5" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAEAQEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\LibraryProfileViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.LibraryViewModel" Collapsed="true">
+    <Position X="102.5" Y="5" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAABAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\LibraryViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.LoginViewModel" Collapsed="true">
+    <Position X="104.25" Y="5" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAACAAAAAAAgAAA=</HashCode>
+      <FileName>Models\LoginViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.NotificationsViewModel" Collapsed="true">
+    <Position X="99" Y="6" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAgAAAAAAAAAAAAAAAAAAAAIAEAAAAAA=</HashCode>
+      <FileName>Models\NotificationsViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.PaginatedList&lt;T&gt;" Collapsed="true">
+    <Position X="100.75" Y="6" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAACAAAAAAAEAAUAAQAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\PaginatedList.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.RegisterViewModel" Collapsed="true">
+    <Position X="104.25" Y="6" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAACAAAAAAAAIAA=</HashCode>
+      <FileName>Models\RegisterViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.UpdatePasswordViewModel" Collapsed="true">
+    <Position X="97.25" Y="7" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAAABAAAAAAA=</HashCode>
+      <FileName>Models\UpdatePasswordViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Models.UpdateProfileViewModel" Collapsed="true">
+    <Position X="99" Y="7" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAQAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Models\UpdateProfileViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PaginationViewModel" Collapsed="true">
+    <Position X="102.5" Y="6" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAAAAAAEAAUAAAAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>Models\PaginationViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PresentationLayer.Startup" Collapsed="true">
+    <Position X="95.5" Y="7" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAABAAAAAAAAAAAAAgAAADAAAAAA=</HashCode>
+      <FileName>Startup.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="MobileClient2.Services.IAuthService" Collapsed="true">
+    <Position X="20.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAgAAAAAAAgAAAQAAAAAAA=</HashCode>
+      <FileName>Services\AuthService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MobileClient2.Services.IBookService" Collapsed="true">
+    <Position X="22.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAQAABAAAAAAAAAAAAAAEAAAAE=</HashCode>
+      <FileName>Services\BookService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="MobileClient2.Services.ILibraryService" Collapsed="true">
+    <Position X="24" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAgAAAAgAAAgAAAQAAgAAAAAgAAAAAA=</HashCode>
+      <FileName>Services\LibraryService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="WebSockets.IChatClient" Collapsed="true">
+    <Position X="41.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ChatHub.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.Nimbus.INimbusFactory" Collapsed="true">
+    <Position X="113.5" Y="8" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.Nimbus.IBookChapterRepository" Collapsed="true">
+    <Position X="108.25" Y="7.25" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.Nimbus.IBookMetadataRepository" Collapsed="true">
+    <Position X="111.75" Y="7.25" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.Stegan.IBookMetadataRepository" Collapsed="true">
+    <Position X="113.5" Y="7.25" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.IBookLoanRepository" Collapsed="true">
+    <Position X="110" Y="7.25" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.IBookRepository" Collapsed="true">
+    <Position X="115.25" Y="7.25" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.IFeedbackRepository" Collapsed="true">
+    <Position X="117" Y="7.25" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.ILibraryBookRepository" Collapsed="true">
+    <Position X="108.25" Y="8" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.ILibraryMembershipRepository" Collapsed="true">
+    <Position X="110" Y="8" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.ILibraryRepository" Collapsed="true">
+    <Position X="111.75" Y="8" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.INotificationRepository" Collapsed="true">
+    <Position X="115.25" Y="8" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.ISenderRepository" Collapsed="true">
+    <Position X="117" Y="8" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.IUserRepository" Collapsed="true">
+    <Position X="108.25" Y="8.75" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="DataAccessLayer.Repositories.IUserSenderRepository" Collapsed="true">
+    <Position X="110" Y="8.75" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Utils.Encryption.IEncryption" Collapsed="true">
+    <Position X="60.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Utils.Senders.ISenderFactory" Collapsed="true">
+    <Position X="60.25" Y="6" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Utils.Senders.ISender" Collapsed="true">
+    <Position X="67.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Utils.ITextModelService" Collapsed="true">
+    <Position X="62" Y="6" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Utils.IImageModelService" Collapsed="true">
+    <Position X="65.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Utils.ITextToSpeechService" Collapsed="true">
+    <Position X="63.75" Y="6" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Utils.IEventTracker" Collapsed="true">
+    <Position X="62" Y="5.25" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Utils.IFileUploader" Collapsed="true">
+    <Position X="63.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Utils.ITranslationService" Collapsed="true">
+    <Position X="65.5" Y="6" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="ForeignBooksServiceReference.BooksServicePortType" Collapsed="true">
+    <Position X="71.25" Y="4" Width="1.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="ForeignBooksServiceReference.BooksServicePortTypeChannel" Collapsed="true">
+    <Position X="71.25" Y="5.25" Width="1.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="LocalBooksServiceReference.BooksServiceSoap" Collapsed="true">
+    <Position X="74.25" Y="1" Width="1.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="LocalBooksServiceReference.BooksServiceSoapChannel" Collapsed="true">
+    <Position X="74.25" Y="2.25" Width="1.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Events.IEventPublisher" Collapsed="true">
+    <Position X="89" Y="10.25" Width="1.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Servers.Books.Documents.IDocumentStorage" Collapsed="true">
+    <Position X="87.25" Y="10.25" Width="1.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Servers.Books.IBookServer" Collapsed="true">
+    <Position X="83.75" Y="10.25" Width="1.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.Nimbus.IBookChapterService" Collapsed="true">
+    <Position X="76.75" Y="10.25" Width="1.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.Nimbus.IBookMetadataService" Collapsed="true">
+    <Position X="80.25" Y="10.25" Width="1.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.Stegan.IBookMetadataService" Collapsed="true">
+    <Position X="82" Y="10.25" Width="1.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.IBookLoanService" Collapsed="true">
+    <Position X="78.5" Y="10.25" Width="1.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.IBookService" Collapsed="true">
+    <Position X="85.5" Y="10.25" Width="1.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.IFeedbackService" Collapsed="true">
+    <Position X="90.75" Y="10.25" Width="1.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.ILibraryBookService" Collapsed="true">
+    <Position X="76.75" Y="11" Width="1.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.ILibraryMembershipService" Collapsed="true">
+    <Position X="78.5" Y="11" Width="1.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.ILibraryService" Collapsed="true">
+    <Position X="80.25" Y="11" Width="1.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.INotificationService" Collapsed="true">
+    <Position X="82" Y="11" Width="1.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.ISenderService" Collapsed="true">
+    <Position X="83.75" Y="11" Width="1.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.IUserSenderService" Collapsed="true">
+    <Position X="85.5" Y="11" Width="1.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BusinessLogicLayer.Services.IUserService" Collapsed="true">
+    <Position X="87.25" Y="11" Width="1.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="JokesServiceReference.JokesServicePortType" Collapsed="true">
+    <Position X="93" Y="1" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="JokesServiceReference.JokesServicePortTypeChannel" Collapsed="true">
+    <Position X="93" Y="2.25" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="MobileClient2.Models.ServerType" Collapsed="true">
+    <Position X="20.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAkAAiAAAAAQgAgAAAAAAAAACQAAAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>Models\Book.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="DataAccessLayer.Entities.ServerType" Collapsed="true">
+    <Position X="113.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAkAAiAAAAAQgAgAAAAAAAAACQAAAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>Entities\Book.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="DataAccessLayer.Entities.LoanStatus" Collapsed="true">
+    <Position X="110" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAIAAAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\BookLoan.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="DataAccessLayer.Entities.Label" Collapsed="true">
+    <Position X="108.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAEAAAAABAAAAAAAAAAAAAAAAAIAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>Entities\Feedback.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="DataAccessLayer.Entities.MembershipRole" Collapsed="true">
+    <Position X="111.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\LibraryMembership.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Utils.Senders.SenderType" Collapsed="true">
+    <Position X="62" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAEAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Senders\Factory.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Utils.FolderType" Collapsed="true">
+    <Position X="60.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAgAAAAAACAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PathManager.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="BusinessLogicLayer.Servers.Books.Documents.DocumentType" Collapsed="true">
+    <Position X="76.75" Y="12" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQQAAAAAAAAA=</HashCode>
+      <FileName>Servers\Books\Documents\Factory.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="BusinessLogicLayer.Servers.Books.Documents.SlideType" Collapsed="true">
+    <Position X="78.5" Y="12" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAgAAAAAAABA=</HashCode>
+      <FileName>Servers\Books\Documents\PowerpointStorage.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

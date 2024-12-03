@@ -1205,9 +1205,9 @@
         })(HubConnectionState || (HubConnectionState = {}));
         /** Represents a connection to a SignalR Hub. */
         class HubConnection {
-            /** @internal */
-            // Using a public static factory method means we can have a private constructor and an _internal_
-            // create method that can be used by HubConnectionBuilder. An "internal" constructor would just
+            /** @public */
+            // Using a public static factory method means we can have a private constructor and an _public_
+            // create method that can be used by HubConnectionBuilder. An "public" constructor would just
             // be stripped away and the '.d.ts' file would have no constructor, which is interpreted as a
             // public parameter-less constructor.
             static create(connection, logger, protocol, reconnectPolicy, serverTimeoutInMilliseconds, keepAliveIntervalInMilliseconds, statefulReconnectBufferSize) {
@@ -1285,7 +1285,7 @@
                 this._connectionState = HubConnectionState.Connecting;
                 this._logger.log(LogLevel.Debug, "Starting HubConnection.");
                 try {
-                    await this._startInternal();
+                    await this._startpublic();
                     if (Platform.isBrowser) {
                         // Log when the browser freezes the tab so users know why their connection unexpectedly stopped working
                         window.document.addEventListener("freeze", this._freezeEventListener);
@@ -1300,7 +1300,7 @@
                     return Promise.reject(e);
                 }
             }
-            async _startInternal() {
+            async _startpublic() {
                 this._stopDuringStartError = undefined;
                 this._receivedHandshakeResponse = false;
                 // Set up the promise before any connection is (re)started otherwise it could race with received messages
@@ -1370,7 +1370,7 @@
                 // Capture the start promise before the connection might be restarted in an onclose callback.
                 const startPromise = this._startPromise;
                 this.connection.features.reconnect = false;
-                this._stopPromise = this._stopInternal();
+                this._stopPromise = this._stoppublic();
                 await this._stopPromise;
                 try {
                     // Awaiting undefined continues immediately
@@ -1380,7 +1380,7 @@
                     // This exception is returned to the user as a rejected Promise from the start method.
                 }
             }
-            _stopInternal(error) {
+            _stoppublic(error) {
                 if (this._connectionState === HubConnectionState.Disconnected) {
                     this._logger.log(LogLevel.Debug, `Call to HubConnection.stop(${error}) ignored because it is already in the disconnected state.`);
                     return Promise.resolve();
@@ -1659,8 +1659,8 @@
                                     this.connection.stop(error);
                                 }
                                 else {
-                                    // We cannot await stopInternal() here, but subsequent calls to stop() will await this if stopInternal() is still ongoing.
-                                    this._stopPromise = this._stopInternal(error);
+                                    // We cannot await stoppublic() here, but subsequent calls to stop() will await this if stoppublic() is still ongoing.
+                                    this._stopPromise = this._stoppublic(error);
                                 }
                                 break;
                             }
@@ -1898,7 +1898,7 @@
                         return;
                     }
                     try {
-                        await this._startInternal();
+                        await this._startpublic();
                         this._connectionState = HubConnectionState.Connected;
                         this._logger.log(LogLevel.Information, "HubConnection reconnected successfully.");
                         if (this._reconnectedCallbacks.length !== 0) {
@@ -2246,10 +2246,10 @@
 
 
 
-        // Not exported from 'index', this type is internal.
+        // Not exported from 'index', this type is public.
         /** @private */
         class LongPollingTransport {
-            // This is an internal type, not exported from 'index' so this is really just internal.
+            // This is an public type, not exported from 'index' so this is really just public.
             get pollAborted() {
                 return this._pollAbort.aborted;
             }
@@ -2751,20 +2751,20 @@
                     return Promise.reject(new Error("Cannot start an HttpConnection that is not in the 'Disconnected' state."));
                 }
                 this._connectionState = "Connecting" /* ConnectionState.Connecting */;
-                this._startInternalPromise = this._startInternal(transferFormat);
-                await this._startInternalPromise;
+                this._startpublicPromise = this._startpublic(transferFormat);
+                await this._startpublicPromise;
                 // The TypeScript compiler thinks that connectionState must be Connecting here. The TypeScript compiler is wrong.
                 if (this._connectionState === "Disconnecting" /* ConnectionState.Disconnecting */) {
                     // stop() was called and transitioned the client into the Disconnecting state.
                     const message = "Failed to start the HttpConnection before stop() was called.";
                     this._logger.log(LogLevel.Error, message);
-                    // We cannot await stopPromise inside startInternal since stopInternal awaits the startInternalPromise.
+                    // We cannot await stopPromise inside startpublic since stoppublic awaits the startpublicPromise.
                     await this._stopPromise;
                     return Promise.reject(new AbortError(message));
                 }
                 else if (this._connectionState !== "Connected" /* ConnectionState.Connected */) {
                     // stop() was called and transitioned the client into the Disconnecting state.
-                    const message = "HttpConnection.startInternal completed gracefully but didn't enter the connection into the connected state!";
+                    const message = "HttpConnection.startpublic completed gracefully but didn't enter the connection into the connected state!";
                     this._logger.log(LogLevel.Error, message);
                     return Promise.reject(new AbortError(message));
                 }
@@ -2794,17 +2794,17 @@
                     // Don't complete stop() until stopConnection() completes.
                     this._stopPromiseResolver = resolve;
                 });
-                // stopInternal should never throw so just observe it.
-                await this._stopInternal(error);
+                // stoppublic should never throw so just observe it.
+                await this._stoppublic(error);
                 await this._stopPromise;
             }
-            async _stopInternal(error) {
+            async _stoppublic(error) {
                 // Set error as soon as possible otherwise there is a race between
                 // the transport closing and providing an error and the error from a close message
                 // We would prefer the close message error.
                 this._stopError = error;
                 try {
-                    await this._startInternalPromise;
+                    await this._startpublicPromise;
                 }
                 catch (e) {
                     // This exception is returned to the user as a rejected Promise from the start method.
@@ -2826,7 +2826,7 @@
                     this._logger.log(LogLevel.Debug, "HttpConnection.transport is undefined in HttpConnection.stop() because start() failed.");
                 }
             }
-            async _startInternal(transferFormat) {
+            async _startpublic(transferFormat) {
                 // Store the original base url and the access token factory since they may change
                 // as part of negotiating
                 let url = this.baseUrl;
@@ -2883,13 +2883,13 @@
                         this.features.inherentKeepAlive = true;
                     }
                     if (this._connectionState === "Connecting" /* ConnectionState.Connecting */) {
-                        // Ensure the connection transitions to the connected state prior to completing this.startInternalPromise.
-                        // start() will handle the case when stop was called and startInternal exits still in the disconnecting state.
+                        // Ensure the connection transitions to the connected state prior to completing this.startpublicPromise.
+                        // start() will handle the case when stop was called and startpublic exits still in the disconnecting state.
                         this._logger.log(LogLevel.Debug, "The HttpConnection connected successfully.");
                         this._connectionState = "Connected" /* ConnectionState.Connected */;
                     }
-                    // stop() is waiting on us via this.startInternalPromise so keep this.transport around so it can clean up.
-                    // This is the only case startInternal can exit in neither the connected nor disconnected state because stopConnection()
+                    // stop() is waiting on us via this.startpublicPromise so keep this.transport around so it can clean up.
+                    // This is the only case startpublic can exit in neither the connected nor disconnected state because stopConnection()
                     // will transition to the disconnected state. start() will wait for the transition using the stopPromise.
                 }
                 catch (e) {

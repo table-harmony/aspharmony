@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MobileClient2.Views.RegisterPage"
+             Title="Register">
+    <ContentPage.Resources>
+        <Style x:Key="TextButton" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="Transparent"/>
+            <Setter Property="TextColor" Value="{StaticResource Primary}"/>
+            <Setter Property="BorderWidth" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+    </ContentPage.Resources>
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            <Image Source="register_icon.png"
+                   HeightRequest="100"
+                   WidthRequest="100"/>
+
+            <Label Text="Create Account"
+                   FontSize="24"
+                   HorizontalOptions="Center"/>
+
+            <Entry Placeholder="Email"
+                   Text="{Binding Email}"
+                   Keyboard="Text"/>
+
+            <Entry Placeholder="Password"
+                   Text="{Binding Password}"
+                   IsPassword="True"/>
+
+            <Entry Placeholder="Confirm Password"
+                   Text="{Binding ConfirmPassword}"
+                   IsPassword="True"/>
+
+            <Button Text="Register"
+                    Command="{Binding RegisterCommand}"
+                    IsEnabled="{Binding !IsBusy}"
+                    BackgroundColor="{StaticResource Primary}"/>
+
+            <Button Text="Back to Login"
+                    Command="{Binding NavigateToLoginCommand}"
+                    Style="{StaticResource TextButton}"/>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                             IsVisible="{Binding IsBusy}"
+                             HorizontalOptions="Center"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

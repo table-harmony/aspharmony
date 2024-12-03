@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="MobileClient2.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:MobileClient2.Views">
+
+    <Shell.FlyoutBehavior>
+        <FlyoutBehavior x:Name="flyoutBehavior" />
+    </Shell.FlyoutBehavior>
+
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate views:HomePage}"
+        Route="home" />
+
+    <FlyoutItem x:Name="AuthenticatedContent" IsVisible="{Binding IsAuthenticated}">
+        <ShellContent
+            Title="Books"
+            ContentTemplate="{DataTemplate views:BooksPage}"
+            Route="books" />
+
+        <ShellContent
+            Title="Libraries"
+            ContentTemplate="{DataTemplate views:LibrariesPage}"
+            Route="libraries" />
+    </FlyoutItem>
+
+    <FlyoutItem x:Name="UnauthenticatedContent" IsVisible="{Binding !IsAuthenticated}">
+        <ShellContent
+            Title="Home"
+            ContentTemplate="{DataTemplate views:HomePage}"
+            Route="main" />
+        <ShellContent
+            Title="Login"
+            ContentTemplate="{DataTemplate views:LoginPage}"
+            Route="login" />
+
+        <ShellContent
+            Title="Register"
+            ContentTemplate="{DataTemplate views:RegisterPage}"
+            Route="register" />
+    </FlyoutItem>
+</Shell>

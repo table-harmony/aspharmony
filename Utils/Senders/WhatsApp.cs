@@ -29,7 +29,7 @@ namespace Utils.Senders {
                 };
 
                 MessageResource.CreateAsync(messageOptions);
-            } catch  {
+            } catch {
                 throw new SenderException();
             }
         }

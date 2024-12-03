@@ -1,50 +1,55 @@
-# Welcome to your Expo app 👋
+# MobileClient
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**AspHarmony MobileClient** is a React Native application designed for managing a digital library. This mobile client allows users to access their libraries, manage books, and interact with other users seamlessly.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **User Authentication**: Users can log in, register, and manage their accounts.
+- **Library Management**: Create, join, and manage libraries.
+- **Book Management**: Add, edit, and delete books within libraries.
+- **Responsive Design**: Optimized for both Android and iOS devices.
+
+## Tech Stack
+
+- **Framework**: React Native
+- **State Management**: Zustand
+- **UI Components**: React Native Paper
+- **Navigation**: React Navigation
+- **API Communication**: Axios
+
+## Getting Started
+
+1. **Install Dependencies**:
 
    ```bash
    npm install
    ```
 
-2. Start the app
+2. **Start the App**:
 
    ```bash
-    npx expo start
+   npm start
    ```
 
-In the output, you'll find options to open the app in a
+3. **Run on Android**:
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+   ```bash
+   npm run android
+   ```
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+4. **Run on iOS**:
+   ```bash
+   npm run ios
+   ```
 
-## Get a fresh project
+## API Endpoints
 
-When you're ready, run:
+The MobileClient interacts with the ASP.NET Core Web API for data management. Ensure the API is running to access the features of the MobileClient.
 
-```bash
-npm run reset-project
-```
+## Contributing
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Contributions are welcome! Please feel free to submit a pull request or open an issue for any enhancements or bug fixes.
 
-## Learn more
+## License
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+This project is licensed under the MIT License.

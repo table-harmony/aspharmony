@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage", "Storage\Storage.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSockets", "WebSockets\WebSockets.csproj", "{2C2840DB-1822-479E-A3CF-24778EA05F1C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileClient2", "MobileClient2\MobileClient2.csproj", "{BB001B7C-C38D-40C4-9B77-17D9971DFB01}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,12 @@ Global
 		{2C2840DB-1822-479E-A3CF-24778EA05F1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C2840DB-1822-479E-A3CF-24778EA05F1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C2840DB-1822-479E-A3CF-24778EA05F1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB001B7C-C38D-40C4-9B77-17D9971DFB01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB001B7C-C38D-40C4-9B77-17D9971DFB01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB001B7C-C38D-40C4-9B77-17D9971DFB01}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{BB001B7C-C38D-40C4-9B77-17D9971DFB01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB001B7C-C38D-40C4-9B77-17D9971DFB01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB001B7C-C38D-40C4-9B77-17D9971DFB01}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,63 +1,63 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="JokesServiceReference.AddNumbersRequest" Collapsed="true">
-    <Position X="16.5" Y="2" Width="1.5" />
+    <Position X="11.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAIAAAAAAAAAAAAAAAEAAgAQAAAAAAAAA=</HashCode>
       <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="JokesServiceReference.AddNumbersResponse" Collapsed="true">
-    <Position X="20" Y="2" Width="1.5" />
+    <Position X="15.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAABAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="JokesServiceReference.AddNumbersRequest1" Collapsed="true">
-    <Position X="18.25" Y="2" Width="1.5" />
+    <Position X="13.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
       <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="JokesServiceReference.AddNumbersResponse1" Collapsed="true">
-    <Position X="21.75" Y="2" Width="1.5" />
+    <Position X="17" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="JokesServiceReference.GenerateJokeRequest" Collapsed="true">
-    <Position X="14.75" Y="5" Width="1.5" />
+    <Position X="10" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="JokesServiceReference.GenerateJokeResponse" Collapsed="true">
-    <Position X="18.25" Y="5" Width="1.5" />
+    <Position X="13.5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAACEAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="JokesServiceReference.GenerateJokeRequest1" Collapsed="true">
-    <Position X="16.5" Y="5" Width="1.5" />
+    <Position X="11.75" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="JokesServiceReference.GenerateJokeResponse1" Collapsed="true">
-    <Position X="20" Y="5" Width="1.5" />
+    <Position X="15.25" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="JokesServiceReference.JokesServicePortTypeClient" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="11.25" Y="6" Width="1.5" />
+    <Position X="6.5" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAABAQAAAIIAAAAJAAQAAAEAAACAAAAAQAAAAAA=</HashCode>
       <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
@@ -65,259 +65,266 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="PresentationLayer.Controllers.AccountController" Collapsed="true">
-    <Position X="11.25" Y="2" Width="1.5" />
+    <Position X="6.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAQBAAAQAgAACgAAAgAAIAAAEBAAAIAAEQAAIAAAA=</HashCode>
       <FileName>Controllers\AccountController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Controllers.AdminController" Collapsed="true">
-    <Position X="11.25" Y="3" Width="1.5" />
+    <Position X="6.5" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAABAACAAAAAAAAAAAEAAEACAAEAAAAAAAA=</HashCode>
       <FileName>Controllers\AdminController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Controllers.BookController" Collapsed="true">
-    <Position X="13" Y="3" Width="1.5" />
+    <Position X="8.25" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAABAACAAAAAAAAAAAEAEEACAAEAAAAAAAA=</HashCode>
+      <HashCode>IAAAAAAAAEABAwCAAAAAAQQAAAEAEkADEAEEAAACACA=</HashCode>
       <FileName>Controllers\BookController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Controllers.FeedbackController" Collapsed="true">
-    <Position X="11.25" Y="5" Width="1.5" />
+    <Position X="6.5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEAAEAAAAEAAAAAAAA=</HashCode>
       <FileName>Controllers\FeedbackController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Controllers.HomeController" Collapsed="true">
-    <Position X="21.75" Y="5" Width="1.5" />
+    <Position X="17" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAQAAABACAAAAACAAAAAAAAEAgAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAQAAABACAAAAACAAAAgAAEEAgAAAAAA=</HashCode>
       <FileName>Controllers\HomeController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Controllers.LibraryController" Collapsed="true">
-    <Position X="13" Y="6" Width="1.5" />
+    <Position X="8.25" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAARAAiBACAAACAIBAUgAEACAAEEAAEAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAARAAiBACAAACAIAAUgAEACABEEAAEAAAA=</HashCode>
       <FileName>Controllers\LibraryController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.AccountViewModel" Collapsed="true">
-    <Position X="13" Y="2" Width="1.5" />
+    <Position X="8.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAABAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
       <FileName>Models\AccountViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.SenderOptionViewModel" Collapsed="true">
-    <Position X="20" Y="7" Width="1.5" />
+    <Position X="17" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAAAAAAAAEAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\AccountViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.AddBookViewModel" Collapsed="true">
-    <Position X="14.75" Y="2" Width="1.5" />
+    <Position X="10" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAACAAAAAAAAAAACAACAAAAAAQAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\AddBookViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.BookDetailsViewModel" Collapsed="true">
-    <Position X="14.75" Y="3" Width="1.5" />
+    <Position X="10" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAABIAAAAAAAAEEAAAAAAAAAAgAAAAAA=</HashCode>
+      <HashCode>AAAgAAAAAACAAABIAAAAAAAAUEAAAAAAAgBAgAAAAAA=</HashCode>
       <FileName>Models\BookDetailsViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.BookIndexViewModel" Collapsed="true">
-    <Position X="16.5" Y="3" Width="1.5" />
+    <Position X="11.75" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAECAAAAA=</HashCode>
+      <HashCode>AAAAAAAEAAAgAAAAAAAAAAAAgAAAAAAAAAAAECAAAAA=</HashCode>
       <FileName>Models\BookIndexViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.CreateBookViewModel" Collapsed="true">
-    <Position X="20" Y="3" Width="1.5" />
+    <Position X="15.25" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AABAAAAAAAAgAEAAAAAAAAAAAAAAABAAAAAAAgAAAAA=</HashCode>
+      <HashCode>AABAAAAAAAAgAEAAAAAAAAAAAAAAAhAAAAAAAgAAAAA=</HashCode>
       <FileName>Models\CreateBookViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.ChapterViewModel" Collapsed="true">
-    <Position X="18.25" Y="3" Width="1.5" />
+    <Position X="13.5" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAgAAAEAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
       <FileName>Models\CreateBookViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.MaxFileSizeAttribute" Collapsed="true">
-    <Position X="11.25" Y="7" Width="1.5" />
+    <Position X="8.25" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\CreateBookViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.CreateFeedbackViewModel" Collapsed="true">
-    <Position X="21.75" Y="3" Width="1.5" />
+    <Position X="17" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAEAAgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\CreateFeedbackViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.CreateLibraryViewModel" Collapsed="true">
-    <Position X="11.25" Y="4" Width="1.5" />
+    <Position X="6.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\CreateLibraryViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.CreateUserViewModel" Collapsed="true">
-    <Position X="13" Y="4" Width="1.5" />
+    <Position X="8.25" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAAAAAQAAAAAAAAAACAQAAAAAAIAA=</HashCode>
       <FileName>Models\CreateUserViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.DeleteModalViewModel" Collapsed="true">
-    <Position X="14.75" Y="4" Width="1.5" />
+    <Position X="10" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAgA=</HashCode>
       <FileName>Models\DeleteModalViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.DeleteViewModel" Collapsed="true">
-    <Position X="16.5" Y="4" Width="1.5" />
+    <Position X="11.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
       <FileName>Models\DeleteViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.EditBookViewModel" Collapsed="true">
-    <Position X="18.25" Y="4" Width="1.5" />
+    <Position X="13.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AABKAAAAAAAgAEAAAAAAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <HashCode>AABKAAAAAAAgAEAAAAAAAAAAAAAAAgAAAAAAAgAAAAA=</HashCode>
       <FileName>Models\EditBookViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.EditUserViewModel" Collapsed="true">
-    <Position X="20" Y="4" Width="1.5" />
+    <Position X="15.25" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAAAAAAAAAAQAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
       <FileName>Models\EditUserViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.ErrorViewModel" Collapsed="true">
-    <Position X="21.75" Y="4" Width="1.5" />
+    <Position X="17" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAIAAQAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
       <FileName>Models\ErrorViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.FeedbackIndexViewModel" Collapsed="true">
-    <Position X="13" Y="5" Width="1.5" />
+    <Position X="8.25" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAECAAAAA=</HashCode>
       <FileName>Models\FeedbackIndexViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.LibraryDetailsViewModel" Collapsed="true">
-    <Position X="14.75" Y="6" Width="1.5" />
+    <Position X="10" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAACAAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\LibraryDetailsViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.ManageBooksViewModel" Collapsed="true">
-    <Position X="20" Y="6" Width="1.5" />
+    <Position X="17" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAACAACAAAAgAAAAAAAAAAAECAAAAA=</HashCode>
       <FileName>Models\LibraryDetailsViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.ManageMembersViewModel" Collapsed="true">
-    <Position X="21.75" Y="6" Width="1.5" />
+    <Position X="6.5" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAEACAAAAA=</HashCode>
       <FileName>Models\LibraryDetailsViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="PresentationLayer.Models.LibraryProfileViewModel" Collapsed="true">
+    <Position X="11.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAEAQEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\LibraryProfileViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Class Name="PresentationLayer.Models.LibraryViewModel" Collapsed="true">
-    <Position X="16.5" Y="6" Width="1.5" />
+    <Position X="13.5" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAABAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\LibraryViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.LoginViewModel" Collapsed="true">
-    <Position X="18.25" Y="6" Width="1.5" />
+    <Position X="15.25" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAACAAAAAAAgAAA=</HashCode>
       <FileName>Models\LoginViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.NotificationsViewModel" Collapsed="true">
-    <Position X="13" Y="7" Width="1.5" />
+    <Position X="10" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAgAgAAAAAAAAAAAAAAAAAAAAIAEAAAAAA=</HashCode>
       <FileName>Models\NotificationsViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.PaginatedList&lt;T&gt;" Collapsed="true">
-    <Position X="14.75" Y="7" Width="1.5" />
+    <Position X="11.75" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAgAAAAAACAAAAAAAEAAUAAQAAEAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\PaginatedList.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.RegisterViewModel" Collapsed="true">
-    <Position X="18.25" Y="7" Width="1.5" />
+    <Position X="15.25" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAACAAAAAAAAIAA=</HashCode>
       <FileName>Models\RegisterViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.UpdatePasswordViewModel" Collapsed="true">
-    <Position X="11.25" Y="8" Width="1.5" />
+    <Position X="8.25" Y="6.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAAABAAAAAAA=</HashCode>
       <FileName>Models\UpdatePasswordViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Models.UpdateProfileViewModel" Collapsed="true">
-    <Position X="13" Y="8" Width="1.5" />
+    <Position X="10" Y="6.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAAAAAQAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
       <FileName>Models\UpdateProfileViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PaginationViewModel" Collapsed="true">
-    <Position X="16.5" Y="7" Width="1.5" />
+    <Position X="13.5" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAgAAAAAAAAAAAAAAEAAUAAAAAAAAAAAAEAAAAAA=</HashCode>
       <FileName>Models\PaginationViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="PresentationLayer.Startup" Collapsed="true">
-    <Position X="21.75" Y="7" Width="1.5" />
+    <Position X="6.5" Y="6.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAIAAAAAAAAAAAABAAAAAAAAAAAAAgAAADAAAAAA=</HashCode>
       <FileName>Startup.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Interface Name="JokesServiceReference.JokesServicePortType" Collapsed="true">
-    <Position X="8.75" Y="2" Width="1.5" />
+    <Position X="4" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAIAAAAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="JokesServiceReference.JokesServicePortTypeChannel" Collapsed="true">
-    <Position X="8.75" Y="3.25" Width="1.5" />
+    <Position X="4" Y="1.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>

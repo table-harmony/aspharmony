@@ -83,7 +83,7 @@ namespace Utils {
     }
 
     /// <summary>
-    /// Represents the Event class for internal use in tracking.
+    /// Represents the Event class for public use in tracking.
     /// </summary>
     public class Event {
         public DateTime CreationTime { get; set; }

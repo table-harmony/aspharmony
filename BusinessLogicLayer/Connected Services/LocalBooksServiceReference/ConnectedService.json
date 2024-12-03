@@ -21,7 +21,7 @@
       "EntityFramework.SqlServer, {EntityFramework, 6.1.0}",
       "Microsoft.AspNet.Identity.Core, {Microsoft.AspNet.Identity.Core, 2.2.4}",
       "Microsoft.AspNet.Identity.EntityFramework, {Microsoft.AspNet.Identity.EntityFramework, 2.2.4}",
-      "Microsoft.AspNetCore.Cryptography.Internal, {Microsoft.AspNetCore.Cryptography.Internal, 8.0.8}",
+      "Microsoft.AspNetCore.Cryptography.public, {Microsoft.AspNetCore.Cryptography.public, 8.0.8}",
       "Microsoft.AspNetCore.Cryptography.KeyDerivation, {Microsoft.AspNetCore.Cryptography.KeyDerivation, 8.0.8}",
       "Microsoft.AspNetCore.Http.Abstractions, {Microsoft.AspNetCore.Http.Abstractions, 2.2.0}",
       "Microsoft.AspNetCore.Http.Features, {Microsoft.AspNetCore.Http.Features, 2.2.0}",
