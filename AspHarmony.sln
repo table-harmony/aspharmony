@@ -19,7 +19,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage", "Storage\Storage.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebSockets", "WebSockets\WebSockets.csproj", "{2C2840DB-1822-479E-A3CF-24778EA05F1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileClient2", "MobileClient2\MobileClient2.csproj", "{BB001B7C-C38D-40C4-9B77-17D9971DFB01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MobileClient2", "MobileClient2\MobileClient2.csproj", "{BB001B7C-C38D-40C4-9B77-17D9971DFB01}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8F0C5D5C-8C38-48F0-A144-CFC3D2CDC0E8}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+		ספר פרויקט.pdf = ספר פרויקט.pdf
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

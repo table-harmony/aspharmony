@@ -11,7 +11,6 @@ import {
   PenSquare,
   UserPlus,
 } from "lucide-react";
-import { LogoutButton } from "@/components/logout-button";
 
 export default function HomePage() {
   const user = useUserStore((state) => state.user);

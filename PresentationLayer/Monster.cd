@@ -654,6 +654,9 @@
   </Class>
   <Class Name="Utils.Exceptions.PublicException" Collapsed="true">
     <Position X="53.25" Y="1" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier />
   </Class>
   <Class Name="Utils.Exceptions.SenderException" Collapsed="true">
@@ -691,6 +694,9 @@
   </Class>
   <Class Name="Utils.StabilityService" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="63.75" Y="4" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier />
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
@@ -1156,6 +1162,9 @@
   </Class>
   <Class Name="JokesServiceReference.GenerateJokeRequest1" Collapsed="true">
     <Position X="100.75" Y="4" Width="1.25" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Connected Services\JokesServiceReference\Reference.cs</FileName>
@@ -1470,6 +1479,9 @@
   </Interface>
   <Interface Name="DataAccessLayer.Repositories.Stegan.IBookMetadataRepository" Collapsed="true">
     <Position X="113.5" Y="7.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier />
   </Interface>
   <Interface Name="DataAccessLayer.Repositories.IBookLoanRepository" Collapsed="true">
