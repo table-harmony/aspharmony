@@ -1,0 +1,89 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="AspClient.Site" %>
+
+<!DOCTYPE html>
+
+<html class="h-100">
+<head runat="server">
+    <title><%: Page.Title %> - AspClient</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body class="d-flex flex-column h-100">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="Home.aspx"><i class="bi bi-book"></i> AspClient</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <% if (AspClient.Utils.SessionManager.IsUserLoggedIn()) { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="Books.aspx">Books</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="Libraries.aspx">Libraries</a>
+                        </li>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="Login.aspx">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="Register.aspx">Register</a>
+                        </li>
+                    <% } %>   
+                </ul>
+            </div>
+        </div>
+    </nav>
+   
+    <main class="flex-grow-1">
+        <div class="container h-100 py-4">
+            <asp:ContentPlaceHolder ID="main" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+    </main>
+
+    <footer class="border-top footer text-muted mt-5">
+        <div class="container py-3">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    &copy; <%: DateTime.Now.Year %> - AspClient
+                </div>
+                <div class="col-md-8 text-end">
+                    <div class="d-inline-block me-3">
+                        <select class="form-select form-select-sm" id="themeSelector">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                        </select>
+                    </div>
+                    <a href="https://github.com/table-harmony/aspharmony/tree/main/AspClient" class="text-muted text-decoration-none" target="_blank">
+                        <i class="bi bi-github"></i> GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        document.getElementById('themeSelector').addEventListener('change', function() {
+            document.body.setAttribute('data-bs-theme', this.value);
+            localStorage.setItem('theme', this.value);
+        });
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.getElementById('themeSelector').value = savedTheme;
+        document.body.setAttribute('data-bs-theme', savedTheme);
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

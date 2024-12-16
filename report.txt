@@ -1,0 +1,16 @@
+﻿Folder AspClient has 3640 lines
+Folder BusinessLogicLayer has 4742 lines
+Folder DataAccessLayer has 2075 lines
+Folder DesktopClient has 17878 lines
+Folder MobileClient has 16466 lines
+Folder MobileClient2 has 4246 lines
+Folder PresentationLayer has 141387 lines
+Folder Storage has 2763 lines
+Folder Utils has 1214 lines
+Folder WebApi has 1430 lines
+Folder WebServices has 529 lines
+Folder WebSockets has 196 lines
+
+File ספר פרויקט.pdf has 8796 lines
+
+Total number of lines: 205917
