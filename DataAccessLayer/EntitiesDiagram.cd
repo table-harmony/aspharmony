@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="DataAccessLayer.Entities.AudioBook" Collapsed="true">
+    <Position X="13.25" Y="3.25" Width="1.5" />
+    <AssociationLine Name="Book" Type="DataAccessLayer.Entities.Book" FixedFromPoint="true">
+      <Path>
+        <Point X="14.062" Y="3.25" />
+        <Point X="14.062" Y="2.562" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAACCAAAAAAAAABAACAAAAAAAAAAAABAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\AudioBook.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Book" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Book" Collapsed="true">
+    <Position X="13.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAIAAAAAAAAAgAAAAAAAAAAAAAAAABAAggAAAAA=</HashCode>
+      <FileName>Entities\Book.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.BookLoan" Collapsed="true">
+    <Position X="10.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAACAAgEAAAAAAAAAAAAAAAAYAAAAAAAgAAAgEAAQAA=</HashCode>
+      <FileName>Entities\BookLoan.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="LibraryBook" />
+      <Property Name="LibraryMembership" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Feedback" Collapsed="true">
+    <Position X="0.75" Y="3.25" Width="1.5" />
+    <AssociationLine Name="User" Type="DataAccessLayer.Entities.User" FixedToPoint="true">
+      <Path>
+        <Point X="1.438" Y="3.25" />
+        <Point X="1.438" Y="2.691" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAADAAAAEAAgAEAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Feedback.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="User" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Library" Collapsed="true">
+    <Position X="7.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAABAAAAAAAAAAgAAAAQAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Library.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.LibraryBook" Collapsed="true">
+    <Position X="10.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACCAAAAAAAAABACAAAAAAAAAAAAEAAAAAAEAAAAAA=</HashCode>
+      <FileName>Entities\LibraryBook.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Book" />
+      <Property Name="Library" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.LibraryMembership" Collapsed="true">
+    <Position X="4" Y="2" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAADAAAAAAAAACAAGAAAAAgAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\LibraryMembership.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="User" />
+      <Property Name="Library" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Notification" Collapsed="true">
+    <Position X="2.5" Y="3.25" Width="1.5" />
+    <AssociationLine Name="User" Type="DataAccessLayer.Entities.User" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="3.219" Y="3.25" />
+        <Point X="3.219" Y="2.991" />
+        <Point X="1.438" Y="2.991" />
+        <Point X="1.438" Y="2.691" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.111" Y="0.064" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAADAAAAAAAAAAAAACAAEAgAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Entities\Notification.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="User" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.Sender" Collapsed="true">
+    <Position X="4.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACACAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Sender.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.User" Collapsed="true">
+    <Position X="0.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAgACBAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DataAccessLayer.Entities.UserSender" Collapsed="true">
+    <Position X="4.25" Y="3.25" Width="1.5" />
+    <AssociationLine Name="User" Type="DataAccessLayer.Entities.User" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5" Y="3.25" />
+        <Point X="5" Y="2.991" />
+        <Point X="1.438" Y="2.991" />
+        <Point X="1.438" Y="2.691" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.107" Y="0.064" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAADAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>Entities\UserSender.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="User" />
+      <Property Name="Sender" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Microsoft.AspNetCore.Identity.IdentityUser" Collapsed="true">
+    <Position X="0.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
