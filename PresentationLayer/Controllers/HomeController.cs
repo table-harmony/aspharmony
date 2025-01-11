@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using Utils;
 using FileIO = System.IO.File;
 using Microsoft.AspNetCore.Authorization;
+using Utils.Exceptions;
 
 namespace PresentationLayer.Controllers {
     public class HomeController(JokesServicePortTypeClient jokesService, ITextModelService aiService) : Controller {

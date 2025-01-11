@@ -27,7 +27,6 @@ namespace BusinessLogicLayer.Services {
     }
 
     public class BookService(IBookRepository repository, Func<ServerType, IBookServer> serverFactory) : IBookService {
-
         private IBookServer GetServer(ServerType serverType) => serverFactory(serverType);
 
         public async Task<Book?> GetBookAsync(int id) {
