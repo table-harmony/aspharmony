@@ -1,0 +1,11 @@
+import { User } from "core/user.harmony"
+
+let currentUser: User
+
+fn set_current_user(user: User) {
+  currentUser = user
+}
+
+fn get_current_user() {
+  return currentUser
+}

@@ -1,0 +1,30 @@
+import http from "http"
+import json from "json"
+
+import { User } from "core/user.harmony"
+
+fn login(email: string, password: string) -> User {
+  const userMap = try {
+    const response = http.post("http://localhost:7137/api/auth/login", map{
+      "headers" -> map{
+        "Content-Type" -> "application/json",
+      },
+      "body" -> json.stringify(map{
+        "email" -> email,
+        "password" -> password,
+      }),
+    })
+
+    const isSuccess = response["statusCode"] < 300
+    if !isSuccess {
+      throw error("request has failed")
+    }
+
+    json.parse(response["body"])
+  } catch err {
+    printf(err)
+    nil
+  }
+
+  return User.create(userMap)
+}

@@ -1,0 +1,25 @@
+struct User {
+  id: string
+  username: string
+  email: string
+
+  static fn create(data) {
+    if data == nil {
+      return nil
+    }
+  
+    return new User{
+      id: data["id"],
+      username: data["userName"],
+      email: data["email"],
+    }
+  }
+
+  fn to_map() {
+    return map{
+      "id" -> self.id,
+      "email" -> self.email,
+      "username" -> self.username,
+    }
+  }
+}

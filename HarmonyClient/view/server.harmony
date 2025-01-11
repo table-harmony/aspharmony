@@ -1,0 +1,83 @@
+import net from "net"
+import os from "os"
+import json from "json"
+
+import { login } from "view/login/index.harmony"
+import session from "view/session.harmony"
+
+const server = net.create_server()
+
+// Home page
+server.get("/", fn(req, res) {
+  const html = os.read_file("view/home/index.html")
+  res.html(html)
+})
+
+// Authentication pages
+server.get("/current-user", fn(req, res) {
+  const currentUser = session.get_current_user()
+
+  if currentUser == nil {
+    res.json(map{})
+  } else {
+    res.json(currentUser.to_map())
+  }
+}) 
+
+server.get("/login", fn(req, res) {
+  if session.get_current_user() != nil {
+    res.redirect("/", 302)
+  }
+
+  const html = os.read_file("view/login/index.html")
+  res.html(html)
+})
+
+server.post("/login", fn(req, res) {
+  if session.get_current_user() != nil {
+    res.redirect("/", 302)
+  }
+
+  //TODO: get credentials from body
+
+  const email = "lironkaner2007@gmail.com"
+  const password = "Liron1!"
+
+  const user = login(email, password)
+
+  if user != nil {
+    session.set_current_user(user)
+    res.redirect("/", 302)
+  } else {
+    res.write("Login has failed please try again")
+  }
+})
+
+server.get("/register", fn(req, res) {
+  if session.get_current_user() != nil {
+    res.redirect("/", 302)
+  }
+
+  const html = os.read_file("view/register/index.html")
+  res.html(html)
+})
+
+server.post("/register", fn(req, res) {
+  if session.get_current_user() != nil {
+    res.redirect("/", 302)
+  }
+
+  //TODO: get credentials from body
+
+  const email = "lironkaner2007@gmail.com"
+  const password = "Liron1!"
+
+  const user = register(email, password)
+
+  if user != nil {
+    session.set_current_user(user)
+    res.redirect("/", 302)
+  } else {
+    res.write("Register has failed please try again")
+  }
+})

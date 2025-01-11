@@ -1,2 +1,4 @@
-const x = 1
-printf(x)
+import net from "net"
+import { server } from "./view/server.harmony"
+
+net.serve(server, 3000)

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+      }
+
+      .container {
+        text-align: center;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .welcome-section .icon img {
+        width: 50px;
+        height: 50px;
+      }
+
+      .welcome-section .text h1 {
+        font-size: 2em;
+        margin: 10px 0;
+      }
+
+      .welcome-section .text p {
+        color: #666;
+      }
+
+      .actions {
+        margin: 20px 0;
+      }
+
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 5px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 4px;
+      }
+
+      .button.outline {
+        background-color: transparent;
+        color: #007bff;
+        border: 2px solid #007bff;
+      }
+
+      .features {
+        margin-top: 20px;
+      }
+
+      .features h2 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+      }
+
+      .feature-list {
+        display: flex;
+        justify-content: space-around;
+      }
+
+      .feature {
+        text-align: center;
+        width: 30%;
+      }
+
+      .feature .icon img {
+        width: 40px;
+        height: 40px;
+      }
+
+      .feature .text h3 {
+        font-size: 1.2em;
+        margin: 10px 0;
+      }
+
+      .feature .text p {
+        color: #666;
+      }
+    </style>
+    <script
+      src="https://kit.fontawesome.com/4b3dad24b2.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div class="container">
+      <section class="welcome-section">
+        <div class="icon">
+          <i class="fas fa-book fa-3x"></i>
+        </div>
+        <div class="text">
+          <h1>Welcome to AspHarmony</h1>
+          <p>Your personal library in the cloud</p>
+        </div>
+      </section>
+      <section class="actions">
+        <div id="user-actions"></div>
+      </section>
+      <hr />
+      <section class="features">
+        <h2>Features</h2>
+        <div class="feature-list">
+          <div class="feature">
+            <div class="icon">
+              <i class="fas fa-book-open fa-2x"></i>
+            </div>
+            <div class="text">
+              <h3>Digital Library</h3>
+              <p>Store and organize your books in one place</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="icon">
+              <i class="fas fa-headphones fa-2x"></i>
+            </div>
+            <div class="text">
+              <h3>Audio Support</h3>
+              <p>Listen to your books on the go</p>
+            </div>
+          </div>
+          <div class="feature">
+            <div class="icon">
+              <i class="fas fa-pen-square fa-2x"></i>
+            </div>
+            <div class="text">
+              <h3>Create & Share</h3>
+              <p>Write and publish your own stories</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <script>
+      fetch("http://localhost:3000/current-user")
+        .then((res) => res.json())
+        .then((data) => {
+          const userActions = document.getElementById("user-actions");
+          const currentUser = data;
+
+          if (Object.keys(currentUser).length !== 0) {
+            userActions.innerHTML = `
+              <a href="/books" class="button">Books</a>
+              <a href="/libraries" class="button outline">Libraries</a>
+            `;
+          } else {
+            userActions.innerHTML = `
+              <a href="/login" class="button">Login</a>
+              <a href="/register" class="button outline">Register</a>
+            `;
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching current user:", error);
+        });
+    </script>
+  </body>
+</html>

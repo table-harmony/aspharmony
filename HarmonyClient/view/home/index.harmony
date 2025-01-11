@@ -1,0 +1,11 @@
+import os from "os"
+
+const PATH = "/"
+
+fn setup_home(server) {
+  const html = os.read_file("view/home/index.html")
+
+  server.get(PATH, fn(req, res) {
+    res.html(html)
+  })
+}
