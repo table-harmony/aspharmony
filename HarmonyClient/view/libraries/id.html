@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .library-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .library-header h1 {
+        font-size: 2.5em;
+        margin: 10px 0;
+        color: #4a90e2;
+      }
+
+      .library-header p {
+        font-size: 1.2em;
+        color: #555;
+      }
+
+      h2 {
+        margin: 20px 0 10px;
+        font-size: 1.8em;
+        color: #4a90e2;
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 5px;
+      }
+
+      .book-list,
+      .user-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        margin-bottom: 40px;
+      }
+
+      .book,
+      .user {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        width: 220px;
+        text-align: center;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      .book:hover,
+      .user:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .book img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+      }
+
+      .book-title,
+      .user-name {
+        font-size: 1.3em;
+        font-weight: bold;
+        margin: 10px 0;
+        color: #333;
+      }
+
+      .book a {
+        display: block;
+        margin: 10px;
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 0.9em;
+        transition: background-color 0.3s;
+      }
+
+      .book a:hover {
+        background-color: #0056b3;
+      }
+
+      .user-name {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .user-email {
+        font-size: 0.9em;
+        color: #666;
+        margin-bottom: 5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .action-buttons {
+        text-align: center;
+        margin-top: 30px;
+      }
+
+      .action-buttons button {
+        padding: 12px 25px;
+        margin: 5px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .exit-button {
+        background-color: #d9534f;
+        color: #fff;
+      }
+
+      .exit-button:hover {
+        background-color: #c9302c;
+      }
+
+      .delete-button {
+        background-color: #dc3545;
+        color: #fff;
+      }
+
+      .delete-button:hover {
+        background-color: #b52a33;
+      }
+
+      .join-button {
+        background-color: #28a745;
+        color: #fff;
+      }
+
+      .join-button:hover {
+        background-color: #218838;
+      }
+
+      .back-button {
+        display: block;
+        margin: 20px;
+        padding: 12px 25px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+        text-align: center;
+        transition: background-color 0.3s, transform 0.2s;
+      }
+
+      .back-button:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+      }
+
+      @media (max-width: 768px) {
+        .book,
+        .user {
+          width: 100%;
+        }
+        .book img {
+          height: auto;
+        }
+      }
+    </style>
+    <title>Library Details</title>
+  </head>
+  <body>
+    <button class="back-button" onclick="window.location.href='/libraries'">
+      Back to all libraries
+    </button>
+    <div class="container">
+      <div class="library-header">
+        <h1 id="library-name"></h1>
+        <p id="library-allow-copies"></p>
+      </div>
+      <h2>Books</h2>
+      <div class="book-list" id="book-list"></div>
+      <h2>Members</h2>
+      <div class="user-list" id="user-list"></div>
+      <div class="action-buttons" id="action-buttons"></div>
+    </div>
+    <script>
+      const libraryId = window.location.pathname.split("/").pop();
+
+      let currentUser;
+
+      fetch(`/api/library/${libraryId}`)
+        .then((response) => response.json())
+        .then((library) => {
+          document.getElementById("library-name").innerText = library.name;
+          document.getElementById(
+            "library-allow-copies"
+          ).innerText = `Allow Copies: ${library.allow_copies ? "Yes" : "No"}`;
+
+          const bookList = document.getElementById("book-list");
+          library.books.forEach((book) => {
+            const bookElement = document.createElement("div");
+            bookElement.className = "book";
+            bookElement.innerHTML = `
+              <img src="${book.metadata.image_url}" alt="${book.metadata.title}">
+              <div class="book-title">${book.metadata.title}</div>
+              <a href="/books/${book.id}">View Book</a>
+            `;
+            bookList.appendChild(bookElement);
+          });
+
+          const userList = document.getElementById("user-list");
+          library.members.forEach((member) => {
+            const userElement = document.createElement("div");
+            userElement.className = "user";
+            userElement.innerHTML = `
+              <div class="user-name">${member.user.username}</div>
+              <div class="user-email">${member.user.email}</div>
+              <div class="user-email">${member.role}</div>
+            `;
+            userList.appendChild(userElement);
+          });
+
+          // Fetch current user and decide buttons
+          fetch("/api/current-user")
+            .then((res) => res.json())
+            .then((data) => {
+              currentUser = data;
+              const actionButtons = document.getElementById("action-buttons");
+              const isMember = library.members.some(
+                (member) => member.user.id === currentUser.id
+              );
+              const isManager = library.members.some(
+                (member) =>
+                  member.user.id === currentUser.id &&
+                  member.role.toLowerCase() === "manager"
+              );
+
+              if (isManager) {
+                actionButtons.innerHTML = `
+                  <button class="exit-button" onclick="exitLibrary()">Exit Library</button>
+                  <button class="delete-button" onclick="deleteLibrary()">Delete Library</button>
+                `;
+              } else if (isMember) {
+                actionButtons.innerHTML = `
+                  <button class="exit-button" onclick="exitLibrary()">Exit Library</button>
+                `;
+              } else {
+                actionButtons.innerHTML = `
+                  <button class="join-button" onclick="joinLibrary()">Join Library</button>
+                `;
+              }
+            });
+        })
+        .catch((error) => {
+          console.error("Error fetching library details:", error);
+        });
+
+      function exitLibrary() {
+        fetch(`/api/libraries/${libraryId}/members/${currentUser.id}`, {
+          method: "DELETE",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to exit library");
+            }
+            window.location.href = "/libraries";
+          })
+          .catch((error) => {
+            console.error("Error deleting membership:", error);
+          });
+      }
+
+      function deleteLibrary() {
+        fetch(`/api/libraries/${libraryId}`, {
+          method: "DELETE",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to delete library");
+            }
+            window.location.href = "/libraries";
+          })
+          .catch((error) => {
+            console.error("Error deleting library:", error);
+          });
+      }
+
+      function joinLibrary() {
+        fetch(`/api/libraries/${libraryId}/members/${currentUser.id}`, {
+          method: "POST",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to join library");
+            }
+            window.location.href = `/libraries/${libraryId}`;
+          })
+          .catch((error) => {
+            console.error("Error joining library:", error);
+          });
+      }
+    </script>
+  </body>
+</html>

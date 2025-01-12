@@ -1,0 +1,122 @@
+import { User } from "core/user.harmony"
+
+struct Chapter {
+  index: number
+  title: string
+  content: string
+
+  static fn create(data) {
+    if data == nil {
+      return nil
+    }
+
+    return new Chapter{
+      index: data["index"],
+      title: data["title"],
+      content: data["content"],
+    }
+  }
+
+  fn to_map() {
+    return map{
+      "index" -> self.index,
+      "title" -> self.title,
+      "content" -> self.content,
+    }
+  }
+}
+
+struct Audio {
+  url: string
+
+  static fn create(data) {
+    if data == nil {
+      return nil
+    }
+
+    return new Audio{
+      url: data["audio_url"],
+    }
+  }
+
+  fn to_map() { 
+    return map{
+      "url" -> self.url,
+    }
+  }
+}
+
+struct BookMetadata {
+  title: string
+  description: string
+  imageUrl: string
+  chapters: []Chapter
+
+  static fn create(data) {
+    if data == nil {
+      return nil
+    }
+    const chapters = []Chapter{}
+    for _, chapter in data["chapters"] {
+      chapters.append(Chapter.create(chapter))
+    }
+
+   
+    return new BookMetadata{
+      title: data["title"],
+      description: data["description"],
+      imageUrl: data["image_url"],
+      chapters: chapters,
+    } 
+  }
+
+  fn to_map() {
+    return map{
+      "title" -> self.title,
+      "description" -> self.description,
+      "image_url" -> self.imageUrl,
+      "chapters" -> self.chapters.each(fn (_, chapter) {
+        return chapter.to_map()
+      }),
+    }
+  }
+}
+
+struct Book {
+  id: number
+  server: number
+  author: User
+  metadata: BookMetadata
+  audios: []Audio
+
+  static fn create(data) {
+    if data == nil {
+      return nil
+    }
+
+    const audios = []Audio{}
+    for _, audio in data["audio_books"] {
+      audios.append(Audio.create(audio))
+    }
+
+    return new Book{
+      id: data["id"],
+      author: User.create(data["author"]),
+      server: data["server"],
+      metadata: BookMetadata.create(data["metadata"]),
+      audios: audios,
+    }
+  }
+
+  fn to_map() {
+    return map{
+      "id" -> self.id,
+      "server" -> self.server,
+      "author" -> self.author.to_map(),
+      "metadata" -> self.metadata.to_map(),
+      "audios" -> self.audios.each(fn (_, audio) {
+        return audio.to_map()
+      }),
+    }
+  }
+}

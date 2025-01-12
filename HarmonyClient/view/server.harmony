@@ -2,8 +2,15 @@ import net from "net"
 import os from "os"
 import json from "json"
 
+import { Chapter, Book, BookMetadata } from "core/book.harmony"
+import { Library } from "core/library.harmony" 
+
+import { get_books, get_book, create_book, delete_book } from "view/books/index.harmony"
+import { get_libraries, get_library, create_library, delete_library, delete_member, create_member } from "view/libraries/index.harmony"
 import { login } from "view/login/index.harmony"
-import session from "view/session.harmony"
+
+import { Session } from "view/session.harmony"
+
 
 const server = net.create_server()
 
@@ -14,19 +21,10 @@ server.get("/", fn(req, res) {
 })
 
 // Authentication pages
-server.get("/current-user", fn(req, res) {
-  const currentUser = session.get_current_user()
-
-  if currentUser == nil {
-    res.json(map{})
-  } else {
-    res.json(currentUser.to_map())
-  }
-}) 
-
 server.get("/login", fn(req, res) {
-  if session.get_current_user() != nil {
+  if Session.get() != nil {
     res.redirect("/", 302)
+    return
   }
 
   const html = os.read_file("view/login/index.html")
@@ -34,19 +32,20 @@ server.get("/login", fn(req, res) {
 })
 
 server.post("/login", fn(req, res) {
-  if session.get_current_user() != nil {
+  if Session.get() != nil {
     res.redirect("/", 302)
+    return
   }
 
-  //TODO: get credentials from body
+  const data = req["body"].split("&")
 
-  const email = "lironkaner2007@gmail.com"
-  const password = "Liron1!"
+  const email = data[0].split("=")[-1].url_decode()
+  const password = data[1].split("=")[-1].url_decode()
 
   const user = login(email, password)
 
   if user != nil {
-    session.set_current_user(user)
+    Session.set(user)
     res.redirect("/", 302)
   } else {
     res.write("Login has failed please try again")
@@ -54,8 +53,9 @@ server.post("/login", fn(req, res) {
 })
 
 server.get("/register", fn(req, res) {
-  if session.get_current_user() != nil {
+  if Session.get() != nil {
     res.redirect("/", 302)
+    return
   }
 
   const html = os.read_file("view/register/index.html")
@@ -63,21 +63,190 @@ server.get("/register", fn(req, res) {
 })
 
 server.post("/register", fn(req, res) {
-  if session.get_current_user() != nil {
+  if Session.get() != nil {
     res.redirect("/", 302)
+    return
   }
 
-  //TODO: get credentials from body
+  const data = req["body"].split("&")
 
-  const email = "lironkaner2007@gmail.com"
-  const password = "Liron1!"
+  const email = data[0].split("=")[-1].url_decode()
+  const password = data[1].split("=")[-1].url_decode()
 
   const user = register(email, password)
 
   if user != nil {
-    session.set_current_user(user)
+    Session.set(user)
     res.redirect("/", 302)
   } else {
     res.write("Register has failed please try again")
   }
+})
+
+// Books pages
+server.get("/books", fn(req, res) {
+  const html = os.read_file("view/books/all.html")
+  res.html(html)
+})
+
+server.get("/book/create", fn(req, res) {
+  const html = os.read_file("view/books/create.html")
+  res.html(html)
+})
+
+server.post("/book/create", fn(req, res) {
+  if Session.get() == nil {
+    res.redirect("/", 302)
+    return
+  }
+
+  const data = req["body"].split("&")
+
+  const title = data[0].split("=")[-1].url_decode()
+  const description = data[1].split("=")[-1].url_decode()
+
+  const chapters = []Chapter{}
+
+  for let i = 2; i < data.len() - 1; i += 2; {
+    chapters.append(new Chapter{
+      index: i - 2,
+      title: data[i].split("=")[-1].url_decode(),
+      content: data[i + 1].split("=")[-1].url_decode(),
+    })
+  }
+
+  const book = new Book{
+    server: 5,
+    author: Session.get(),
+    metadata: new BookMetadata{
+      title: title,
+      description: description,
+      imageUrl: "https://placehold.co/300x300/png",
+      chapters: chapters,
+    },
+  }
+
+  create_book(book)
+  res.redirect("/books", 302)
+})
+
+server.get("/books/:id/", fn(req, res) {
+  const html = os.read_file("view/books/id.html")
+  res.html(html)
+})
+
+server.get("/books/:id/delete", fn(req, res) {
+  const html = os.read_file("view/books/delete.html")
+  res.html(html)
+})
+
+// Libraries pages
+server.get("/libraries", fn(req, res) {
+  const html = os.read_file("view/libraries/all.html")
+  res.html(html)
+}) 
+
+server.get("/libraries/:id/", fn(req, res) {
+  const html = os.read_file("view/libraries/id.html")
+  res.html(html)
+})
+
+server.get("/library/create", fn(req, res) {
+  const html = os.read_file("view/libraries/create.html")
+  res.html(html)
+})
+
+server.post("/library/create", fn(req, res) {
+  if Session.get() == nil {
+    res.redirect("/", 302)
+    return
+  }
+
+  const data = req["body"].split("&")
+
+  const name = data[0].split("=")[-1].url_decode()
+  const allowCopies = data.len() == 1 ? "false" : data[1].split("=")[-1].url_decode()
+
+  const library = new Library{
+    name: name,
+    allowCopies: bool(allowCopies),
+  }
+
+  const libraryId = create_library(library)
+  create_member(libraryId, Session.get().id, 0)
+
+  res.redirect("/libraries", 302)
+})
+
+// API
+server.get("/api/current-user", fn(req, res) {
+  const currentUser = Session.get()
+
+  if currentUser == nil {
+    res.json(map{})
+  } else {
+    res.json(currentUser.to_map())
+  }
+})
+
+server.get("/api/books", fn(req, res) {
+  const books = get_books()
+
+  res.json(books.each(fn (_, book) {
+    return book.to_map()
+  }))
+})
+
+server.get("/api/books/:id/", fn(req, res) {
+  const bookId = number(req.params["id"])
+  const book = get_book(bookId)
+
+  if book != nil {
+    res.json(book.to_map())
+  } else {
+    res.json(map{})
+  }
+})
+
+server.delete("/api/books/:id/", fn(req, res) {
+  const id = number(req.params["id"])
+  delete_book(id)
+})
+
+server.get("/api/libraries", fn(req, res) {
+  const libraries = get_libraries()
+
+  res.json(libraries.each(fn (_, library) {
+    return library.to_map()
+  }))
+})
+
+server.get("/api/library/:id/", fn(req, res) {
+  const libraryId = number(req.params["id"])
+  const library = get_library(libraryId)
+
+  if library != nil {
+    res.json(library.to_map())
+  } else {
+    res.json(map{})
+  }
+})
+
+server.delete("/api/libraries/:id", fn(req, res) {
+  const id = number(req.params["id"])
+  delete_library(id)
+})
+
+server.post("/api/libraries/:libraryId/members/:memberId", fn(req, res) {
+  const libraryId = number(req.params["libraryId"])
+  const memberId = req.params["memberId"]
+
+  create_member(libraryId, memberId, 1)
+})
+
+server.delete("/api/libraries/:libraryId/members/:memberId", fn(req, res) {
+  const libraryId = number(req.params["libraryId"])
+  const memberId = req.params["memberId"]
+
+  delete_member(libraryId, memberId)
 })

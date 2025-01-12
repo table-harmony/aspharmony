@@ -1,0 +1,67 @@
+import { Book } from "core/book.harmony"
+import { User } from "core/user.harmony"
+
+struct LibraryMembership {
+  user: User
+  role: string
+
+  static fn create(data) {
+    return new LibraryMembership{
+      role: data["role"],
+      user: User.create(data["user"]),
+    }
+  }
+
+  fn to_map() {
+    return map{
+      "role" -> self.role,
+      "user" -> self.user.to_map(),
+    }
+  }
+}
+
+struct Library {
+  id: number
+  name: string
+  allowCopies: bool
+  members: []LibraryMembership = []LibraryMembership{}
+  books: []Book = []Book{}
+
+  static fn create(data) {
+    if data == nil {
+      return nil
+    }
+
+    const members = []LibraryMembership{}
+    for _, member in data["members"] {
+      members.append(LibraryMembership.create(member))
+    }
+
+    const books = []Book{}
+    for _, libraryBook in data["books"] {
+      books.append(Book.create(libraryBook["book"]))
+    }
+
+    return new Library{
+      id: data["id"],
+      name: data["name"],
+      allowCopies: data["allow_copies"],
+      members: members,
+      books: books,
+    }
+  }
+
+  fn to_map() {
+    return map{
+      "id" -> self.id,
+      "name" -> self.name,
+      "allow_copies" -> self.allowCopies,
+      "members" -> self.members.each(fn (_, member) {
+        return member.to_map()
+      }),
+      "books" -> self.books.each(fn (_, book) {
+        return book.to_map()
+      }),
+    }
+  }
+}

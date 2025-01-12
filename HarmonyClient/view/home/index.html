@@ -87,6 +87,20 @@
       .feature .text p {
         color: #666;
       }
+
+      .user-info {
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        text-align: left;
+      }
+
+      .user-info p {
+        margin: 5px 0;
+        color: #333;
+      }
     </style>
     <script
       src="https://kit.fontawesome.com/4b3dad24b2.js"
@@ -142,7 +156,7 @@
       </section>
     </div>
     <script>
-      fetch("http://localhost:3000/current-user")
+      fetch("/api/current-user")
         .then((res) => res.json())
         .then((data) => {
           const userActions = document.getElementById("user-actions");
@@ -152,6 +166,12 @@
             userActions.innerHTML = `
               <a href="/books" class="button">Books</a>
               <a href="/libraries" class="button outline">Libraries</a>
+            `;
+            userActions.innerHTML += `
+              <div class="user-info">
+              <p><strong>Username:</strong> ${currentUser.username}</p>
+              <p><strong>Email:</strong> ${currentUser.email}</p>
+              </div>
             `;
           } else {
             userActions.innerHTML = `

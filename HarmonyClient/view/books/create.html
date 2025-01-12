@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Book</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+        color: #333;
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 2.5em;
+        color: #4a90e2;
+        margin-top: 20px;
+        margin-bottom: 30px;
+      }
+
+      form {
+        max-width: 700px;
+        margin: 20px auto;
+        padding: 25px 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      form div {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #555;
+        font-size: 1.1em;
+      }
+
+      input[type="text"],
+      textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 1em;
+        background-color: #f9f9f9;
+        transition: border-color 0.3s;
+      }
+
+      input[type="text"]:focus,
+      textarea:focus {
+        border-color: #4a90e2;
+        outline: none;
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      button {
+        display: inline-block;
+        padding: 12px 20px;
+        margin-top: 15px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+      }
+
+      button[type="submit"] {
+        background-color: #28a745;
+        color: #fff;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+      }
+
+      button[type="button"] {
+        background-color: #007bff;
+        color: #fff;
+      }
+
+      button[type="button"]:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+      }
+
+      .chapter {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f4f4f4;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .chapter label {
+        font-size: 1em;
+        font-weight: normal;
+        color: #333;
+      }
+
+      .back-button {
+        display: block;
+        margin: 20px auto;
+        padding: 12px 25px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+        text-align: center;
+        transition: background-color 0.3s, transform 0.2s;
+      }
+
+      .back-button:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+      }
+
+      @media (max-width: 768px) {
+        form {
+          padding: 15px;
+        }
+
+        h1 {
+          font-size: 2em;
+        }
+
+        button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button class="back-button" onclick="window.location.href='/books'">
+      Back to all books
+    </button>
+    <h1>Create Book</h1>
+    <form action="/book/create" method="post">
+      <div>
+        <label for="bookTitle">Book Title:</label>
+        <input
+          type="text"
+          id="bookTitle"
+          name="bookTitle"
+          placeholder="Enter book title..."
+          required
+        />
+      </div>
+      <div>
+        <label for="bookDescription">Book Description:</label>
+        <textarea
+          id="bookDescription"
+          name="bookDescription"
+          placeholder="Enter book description..."
+          required
+        ></textarea>
+      </div>
+      <div id="chaptersContainer">
+        <h2>Chapters</h2>
+        <div class="chapter">
+          <label for="chapterTitle1">Chapter Title:</label>
+          <input
+            type="text"
+            id="chapterTitle1"
+            name="chapterTitle1"
+            placeholder="Enter chapter title..."
+            required
+          />
+          <label for="chapterContent1">Chapter Content:</label>
+          <textarea
+            id="chapterContent1"
+            name="chapterContent1"
+            placeholder="Enter chapter content..."
+            required
+          ></textarea>
+        </div>
+      </div>
+      <button type="button" onclick="addChapter()">Add Chapter</button>
+      <button type="submit">Create Book</button>
+    </form>
+
+    <script>
+      let chapterCount = 1;
+
+      function addChapter() {
+        chapterCount++;
+        const chaptersContainer = document.getElementById("chaptersContainer");
+        const newChapter = document.createElement("div");
+        newChapter.classList.add("chapter");
+        newChapter.innerHTML = `
+          <label for="chapterTitle${chapterCount}">Chapter Title:</label>
+          <input
+            type="text"
+            id="chapterTitle${chapterCount}"
+            name="chapterTitle${chapterCount}"
+            placeholder="Enter chapter title..."
+            required
+          />
+          <label for="chapterContent${chapterCount}">Chapter Content:</label>
+          <textarea
+            id="chapterContent${chapterCount}"
+            name="chapterContent${chapterCount}"
+            placeholder="Enter chapter content..."
+            required
+          ></textarea>
+        `;
+        chaptersContainer.appendChild(newChapter);
+      }
+    </script>
+  </body>
+</html>

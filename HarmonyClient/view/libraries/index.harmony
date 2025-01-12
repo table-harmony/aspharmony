@@ -1,0 +1,154 @@
+import http from "http"
+import json from "json"
+
+import { Library } from "core/library.harmony"
+
+fn get_libraries() {
+  const fetchedLibraries = try {
+    const response = http.get("http://localhost:7137/api/libraries", map{
+      "headers" -> map{
+        "Content-Type" -> "application/json",
+      },
+    })
+
+    const isSuccess = response["statusCode"] < 300
+    if !isSuccess {
+      throw error("request has failed")
+    }
+
+    json.parse(response["body"])
+  } catch err {
+    printf(err)
+    nil
+  }
+  
+  const libraries = []Library{}
+  for _, library in fetchedLibraries {
+    libraries.append(new Library{
+      id: library["id"],
+      name: library["name"],
+      allowCopies: library["allow_copies"],
+    })
+  }
+
+  return libraries
+}
+
+fn get_library(id: number) {
+  const fetchedLibrary = try {
+    const fullUrl = "http://localhost:7137/api/libraries/" + id
+    const response = http.get(fullUrl, map{
+      "headers" -> map{
+        "Content-Type" -> "application/json",
+      },
+    })
+
+    const isSuccess = response["statusCode"] < 300
+    if !isSuccess {
+      throw error("request has failed")
+    }
+
+    json.parse(response["body"])
+  } catch err {
+    printf(err)
+    nil
+  }
+
+  return Library.create(fetchedLibrary)
+}
+
+fn create_library(library: Library) -> number {
+  const libraryId = try {      
+    const response = http.post("http://localhost:7137/api/libraries", map{
+      "headers" -> map{
+        "Content-Type" -> "application/json",
+      },
+      "body" -> json.stringify(map{
+        "name" -> library.name,
+        "allow_copies" -> library.allowCopies,
+      }),
+    })
+
+    const isSuccess = response["statusCode"] < 300
+    if !isSuccess {
+      throw error("request has failed")
+    }
+    
+    const data = json.parse(response["body"])
+    number(data["id"])
+  } catch err {
+    printf(err)
+    0
+  }
+
+  return libraryId
+}
+
+fn delete_library(id: number) -> bool {
+  const isDeleted = try {
+    const fullUrl = "http://localhost:7137/api/libraries/" + id
+    const response = http.delete(fullUrl, map{
+      "headers" -> map{
+        "Content-Type" -> "application/json",
+      },
+    })
+
+    const isSuccess = response["statusCode"] < 300
+    if !isSuccess {
+      throw error("request has failed")
+    }
+
+    true
+  } catch err {
+    printf(err)
+    false
+  }
+
+  return isDeleted
+}
+
+fn delete_member(libraryId: number, memberId: string) {
+  const isDeleted = try {
+    const fullUrl = "http://localhost:7137/api/libraries/" + libraryId + "/members/" + memberId
+    const response = http.delete(fullUrl, map{
+      "headers" -> map{
+        "Content-Type" -> "application/json",
+      },
+    })
+
+    const isSuccess = response["statusCode"] < 300
+    if !isSuccess {
+      throw error("request has failed")
+    }
+
+    true
+  } catch err {
+    printf(err)
+    false
+  }
+
+  return isDeleted
+}
+
+fn create_member(libraryId: number, memberId: string, role: number) {
+  try {      
+    const fullUrl = "http://localhost:7137/api/libraries/" + libraryId + "/members"
+    const response = http.post(fullUrl, map{
+      "headers" -> map{
+        "Content-Type" -> "application/json",
+      },
+      "body" -> json.stringify(map{
+        "user_id" -> memberId,
+        "role" -> role,
+      }),
+    })
+    
+    const isSuccess = response["statusCode"] < 300
+    if !isSuccess {
+      throw error("request has failed")
+    }
+    
+  } catch err {
+    printf(err)
+  }
+}

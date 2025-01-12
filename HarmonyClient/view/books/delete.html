@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delete Book</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 50px auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        text-align: center;
+        color: #d9534f;
+        margin-bottom: 20px;
+      }
+
+      .book-info {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .book-info img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .book-info p {
+        font-size: 1.1em;
+        color: #555;
+        margin: 5px 0;
+      }
+
+      .delete-button {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        background: #d9534f;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.1em;
+        cursor: pointer;
+        text-align: center;
+        transition: background 0.3s ease, transform 0.2s ease;
+      }
+
+      .delete-button:hover {
+        background: #c9302c;
+        transform: translateY(-2px);
+      }
+
+      .delete-button:disabled {
+        background: #e0e0e0;
+        color: #aaa;
+        cursor: not-allowed;
+      }
+
+      .back-button {
+        display: block;
+        width: 100%;
+        margin-top: 10px;
+        padding: 12px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.1em;
+        cursor: pointer;
+        text-align: center;
+        transition: background 0.3s ease, transform 0.2s ease;
+      }
+
+      .back-button:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+      }
+
+      .error-message {
+        color: #d9534f;
+        font-size: 1em;
+        text-align: center;
+        margin-top: 20px;
+        display: none;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          width: 90%;
+          padding: 15px;
+        }
+
+        h1 {
+          font-size: 1.5em;
+        }
+
+        .delete-button,
+        .back-button {
+          font-size: 1em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Delete Book</h1>
+      <div class="book-info" id="book-info"></div>
+      <button class="delete-button" id="delete-button" onclick="deleteBook()">
+        Delete Book
+      </button>
+      <button
+        class="back-button"
+        onclick="window.location.href='/books/' + bookId"
+      >
+        Back to Book
+      </button>
+      <p class="error-message" id="error-message">
+        An error occurred while deleting the book. Please try again.
+      </p>
+    </div>
+
+    <script>
+      const pathname = window.location.pathname.split("/");
+      const bookId = pathname[pathname.length - 2];
+      const deleteButton = document.getElementById("delete-button");
+      const errorMessage = document.getElementById("error-message");
+
+      // Fetch book details on load
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch(`/api/books/${bookId}`)
+          .then((response) => {
+            if (!response.ok) throw new Error("Failed to fetch book details");
+            return response.json();
+          })
+          .then((data) => {
+            const bookInfoDiv = document.getElementById("book-info");
+            bookInfoDiv.innerHTML = `
+              <p><strong>Title:</strong> ${data.metadata.title}</p>
+              <p><strong>Author:</strong> ${data.author.username}</p>
+              <img src="${data.metadata.image_url}" alt="${data.metadata.title}">
+            `;
+          })
+          .catch((error) => {
+            errorMessage.innerText = "Failed to load book details.";
+            errorMessage.style.display = "block";
+            console.error("Error fetching book data:", error);
+            deleteButton.disabled = true;
+          });
+      });
+
+      // Delete book function
+      function deleteBook() {
+        deleteButton.disabled = true;
+        deleteButton.innerText = "Deleting...";
+
+        fetch(`/api/books/${bookId}`, {
+          method: "DELETE",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to delete book");
+            }
+            window.location.href = "/books";
+          })
+          .catch((error) => {
+            console.error("Error deleting book:", error);
+            deleteButton.disabled = false;
+            deleteButton.innerText = "Delete Book";
+            errorMessage.style.display = "block";
+          });
+      }
+    </script>
+  </body>
+</html>

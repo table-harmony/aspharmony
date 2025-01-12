@@ -1,11 +1,13 @@
 import { User } from "core/user.harmony"
 
-let currentUser: User
+struct Session {
+  static currentUser: User
 
-fn set_current_user(user: User) {
-  currentUser = user
-}
+  static fn set(user: User) {
+    Session.currentUser = user    
+  }
 
-fn get_current_user() {
-  return currentUser
+  static fn get() {
+    return Session.currentUser
+  }
 }

@@ -10,7 +10,7 @@ struct User {
   
     return new User{
       id: data["id"],
-      username: data["userName"],
+      username: data["userName"] != nil ? data["userName"] : data["username"],
       email: data["email"],
     }
   }

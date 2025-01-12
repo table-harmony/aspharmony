@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Library</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+        color: #333;
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 2.5em;
+        color: #4a90e2;
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+
+      form {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 25px 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      form div {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #555;
+        font-size: 1.1em;
+      }
+
+      input[type="text"],
+      input[type="checkbox"] {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 1em;
+      }
+
+      input[type="checkbox"] {
+        width: auto;
+        margin-right: 10px;
+      }
+
+      button {
+        display: inline-block;
+        padding: 12px 20px;
+        margin-top: 15px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+      }
+
+      button[type="submit"] {
+        background-color: #28a745;
+        color: #fff;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+      }
+
+      .back-button {
+        display: block;
+        margin: 20px;
+        padding: 12px 25px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+        text-align: center;
+        transition: background-color 0.3s, transform 0.2s;
+      }
+
+      .back-button:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+      }
+
+      @media (max-width: 768px) {
+        form {
+          padding: 15px;
+        }
+
+        h1 {
+          font-size: 2em;
+        }
+
+        button,
+        .back-button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button class="back-button" onclick="window.location.href='/libraries'">
+      Back to all libraries
+    </button>
+    <h1>Create Library</h1>
+    <form action="/library/create" method="post">
+      <div>
+        <label for="libraryName">Library Name:</label>
+        <input
+          type="text"
+          id="libraryName"
+          name="libraryName"
+          placeholder="Enter library name..."
+          required
+        />
+      </div>
+      <div>
+        <label for="allowCopies">
+          Allow Copies
+          <input type="checkbox" id="allowCopies" name="allowCopies" />
+        </label>
+      </div>
+      <button type="submit">Create Library</button>
+    </form>
+  </body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Details</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .book-header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .book-header img {
+        max-width: 250px;
+        height: auto;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .book-title {
+        font-size: 2.2em;
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      .book-description {
+        font-size: 1.1em;
+        color: #666;
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+
+      .section {
+        margin-bottom: 30px;
+      }
+
+      .section h2 {
+        font-size: 1.5em;
+        color: #4a90e2;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 5px;
+      }
+
+      .author-info p {
+        font-size: 1em;
+        margin: 5px 0;
+        color: #555;
+      }
+
+      .audio-list a {
+        display: block;
+        margin: 10px 0;
+        color: #007bff;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .audio-list a:hover {
+        color: #0056b3;
+        text-decoration: underline;
+      }
+
+      .chapter {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f4f4f4;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .chapter-title {
+        font-size: 1.2em;
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      .chapter-content {
+        font-size: 1em;
+        color: #555;
+        line-height: 1.5;
+      }
+
+      .back-button,
+      .manage-button {
+        display: block;
+        margin: 20px auto;
+        padding: 12px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+        text-align: center;
+        transition: background-color 0.3s, transform 0.2s;
+      }
+
+      .back-button:hover,
+      .manage-button:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+      }
+
+      .manage-button {
+        background-color: #dc3545;
+      }
+
+      .manage-button:hover {
+        background-color: #c82333;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 15px;
+        }
+
+        .book-header img {
+          max-width: 200px;
+        }
+
+        .book-title {
+          font-size: 1.8em;
+        }
+
+        .section h2 {
+          font-size: 1.3em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button class="back-button" onclick="window.location.href='/books'">
+      Back to all books
+    </button>
+    <div class="container" id="book-container">
+      <div class="book-header">
+        <img id="book-image" src="" alt="Book Image" />
+        <h1 class="book-title" id="book-title"></h1>
+        <p class="book-description" id="book-description"></p>
+      </div>
+
+      <div class="section">
+        <h2>Author</h2>
+        <p><strong>Username:</strong> <span id="author-username"></span></p>
+        <p><strong>Email:</strong> <span id="author-email"></span></p>
+      </div>
+
+      <div class="section audio-list">
+        <h2>Audio Books</h2>
+        <div id="audio-list"></div>
+      </div>
+
+      <div class="section chapter-list">
+        <h2>Chapters</h2>
+        <div id="chapter-list"></div>
+      </div>
+    </div>
+
+    <script>
+      const bookId = window.location.pathname.split("/").pop();
+
+      fetch(`/api/books/${bookId}`)
+        .then((response) => response.json())
+        .then((book) => {
+          document.getElementById("book-image").src = book.metadata.image_url;
+          document.getElementById("book-title").innerText = book.metadata.title;
+          document.getElementById("book-description").innerText =
+            book.metadata.description;
+          document.getElementById("author-username").innerText =
+            book.author.username;
+          document.getElementById("author-email").innerText = book.author.email;
+
+          const audioList = document.getElementById("audio-list");
+          book.audios.forEach((audio) => {
+            const audioElement = document.createElement("a");
+            audioElement.href = audio.url;
+            audioElement.innerText = "Listen to Audio";
+            audioList.appendChild(audioElement);
+          });
+
+          const chapterList = document.getElementById("chapter-list");
+          book.metadata.chapters.forEach((chapter) => {
+            const chapterElement = document.createElement("div");
+            chapterElement.className = "chapter";
+            chapterElement.innerHTML = `
+              <h3 class="chapter-title">Chapter ${chapter.index}: ${chapter.title}</h3>
+              <p class="chapter-content">${chapter.content}</p>
+            `;
+            chapterList.appendChild(chapterElement);
+          });
+
+          fetch("/api/current-user")
+            .then((res) => res.json())
+            .then((currentUser) => {
+              if (currentUser.id === book.author.id) {
+                const manageButton = document.createElement("button");
+                manageButton.className = "manage-button";
+                manageButton.innerText = "Delete Book";
+                manageButton.onclick = () =>
+                  (window.location.href = `/books/${book.id}/delete`);
+                document
+                  .getElementById("book-container")
+                  .appendChild(manageButton);
+              }
+            })
+            .catch((error) =>
+              console.error("Error fetching current user:", error)
+            );
+        })
+        .catch((error) => {
+          console.error("Error fetching book details:", error);
+        });
+    </script>
+  </body>
+</html>
